@@ -1,0 +1,13 @@
+.vs
+packages/
+
+
+*/bin/
+*/obj/
+Polokus.Service/
+
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
