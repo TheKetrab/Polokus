@@ -6,15 +6,6 @@
     <Nullable>enable</Nullable>
     <Platforms>x64</Platforms>
 
-
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    
-    <!-- custom output -->
-    <UseCommonOutputDirectory>true</UseCommonOutputDirectory>
-    <BaseOutputPath>$(SolutionDir)bin\</BaseOutputPath>
-    <BaseIntermediateOutputPath>$(SolutionDir)\obj\</BaseIntermediateOutputPath>
-    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-
   </PropertyGroup>
 
   <ItemGroup>

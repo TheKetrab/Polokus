@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Polokus.App.Views;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -18,6 +19,9 @@ namespace Polokus.App.Forms
 
             //this.toolTip1.SetToolTip(this.iconBtn1, "Tooltip text goes here");
 
+            ChromiumWindow chw = new ChromiumWindow();
+            chw.Parent = this.splitContainer1.Panel1;
         }
+
     }
 }

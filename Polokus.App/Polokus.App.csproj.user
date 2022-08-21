@@ -7,6 +7,9 @@
     <Compile Update="Forms\MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="Views\ChromiumWindow.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Update="Views\OptionsPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
