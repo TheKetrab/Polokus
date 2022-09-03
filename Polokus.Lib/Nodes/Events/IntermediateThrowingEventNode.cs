@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Polokus.Lib
+namespace Polokus.Lib.Nodes.Events
 {
-    internal class Class1
+    public class IntermediateThrowingEventNode : IntermediateEventNode
     {
     }
 }
