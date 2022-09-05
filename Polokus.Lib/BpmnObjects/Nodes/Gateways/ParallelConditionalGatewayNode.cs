@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Polokus.Lib.Nodes.Gateways
+namespace Polokus.Lib.BpmnObjects.Nodes.Gateways
 {
     public class ParallelConditionalGatewayNode : ParallelGatewayNode, IConditionalNode
     {

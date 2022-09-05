@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Polokus.Lib.Nodes.Events
+namespace Polokus.Lib.BpmnObjects.Nodes.Gateways
 {
-    public class IntermediateThrowingEventNode : IntermediateEventNode
+    public class EventDrivenGatewayNode : GatewayNode
     {
     }
 }

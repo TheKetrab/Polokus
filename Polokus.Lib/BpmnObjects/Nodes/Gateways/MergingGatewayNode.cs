@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Polokus.Lib.Nodes.Tasks
+namespace Polokus.Lib.BpmnObjects.Nodes.Gateways
 {
-    public class AssemblyMethodInvokeTask
+    public class MergingGatewayNode : GatewayNode
     {
-        // dll name, 
     }
 }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using System.Xml.Linq;
 using System.Xml.Serialization;
+using Polokus.Lib.BpmnObjects;
 
 namespace Polokus.Lib
 {
@@ -13,10 +14,21 @@ namespace Polokus.Lib
 
     public class ProcessInstance
     {
-        public static void M()
+        public Guid Guid { get; set; }
+        public BpmnProcess BpmnProcess { get; set; }
+        public bool IsRunning { get; set; }
+
+
+        public void Stop()
         {
-            //XmlSerializer serializer = new XmlSerializer()
+
         }
+
+        public void Start()
+        {
+
+        }
+
 
     }
 

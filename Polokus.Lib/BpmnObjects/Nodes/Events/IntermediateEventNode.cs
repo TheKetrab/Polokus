@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Polokus.Lib.Interfaces;
 
-namespace Polokus.Lib.Nodes.Gateways
+namespace Polokus.Lib.BpmnObjects.Nodes.Events
 {
-    public class ParallelGatewayNode : GatewayNode
+    public class IntermediateEventNode : EventNode
     {
     }
 }

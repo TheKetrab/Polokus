@@ -4,12 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Polokus.Lib
+namespace Polokus.Lib.BpmnObjects.Nodes.Tasks
 {
-    public class BpmnProcess
+    public class AssemblyMethodInvokeTask
     {
-            public int Id { get; set; }
-
-
+        // dll name, 
     }
 }

@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Polokus.Lib.Interfaces;
 
-namespace Polokus.Lib.Nodes.Events
+namespace Polokus.Lib.Interfaces
 {
-    public class StartEventNode : EventNode
+    public static class Constants
     {
+        public const string Task = "task";
     }
 }

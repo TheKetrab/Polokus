@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polokus.Service", "Polokus.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polokus.Tests", "Polokus.Tests\Polokus.Tests.csproj", "{B01DAD40-5A66-4F58-9CBB-91D87147E36D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polokus.ConsoleApp", "Polokus.ConsoleApp\Polokus.ConsoleApp.csproj", "{7F9A41C2-D5D6-4BA2-B7E1-C0123AC6D708}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{B01DAD40-5A66-4F58-9CBB-91D87147E36D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B01DAD40-5A66-4F58-9CBB-91D87147E36D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B01DAD40-5A66-4F58-9CBB-91D87147E36D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F9A41C2-D5D6-4BA2-B7E1-C0123AC6D708}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F9A41C2-D5D6-4BA2-B7E1-C0123AC6D708}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F9A41C2-D5D6-4BA2-B7E1-C0123AC6D708}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F9A41C2-D5D6-4BA2-B7E1-C0123AC6D708}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
