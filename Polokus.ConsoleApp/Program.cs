@@ -1,7 +1,8 @@
-﻿// See https://aka.ms/new-console-template for more information
-using Polokus.Lib.BpmnParser;
+﻿using Polokus.Lib.BpmnParser;
 
-Console.WriteLine("Hello, World!");
 
-BpmnParser.ParseFile(@"C:\Users\Bartlomiej.Grochowsk\Downloads\flow.bpmn");
+var ctx = BpmnParser.ParseFile(@"C:\Users\Bartlomiej.Grochowsk\Downloads\flow.bpmn");
 
+Console.Write(ctx.Processs.First().GetSimpleGraph());
+
+Console.ReadLine();

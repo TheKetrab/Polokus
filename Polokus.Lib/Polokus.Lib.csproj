@@ -9,9 +9,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="BpmnObjects\**" />
     <Compile Remove="obj\**" />
+    <EmbeddedResource Remove="BpmnObjects\**" />
     <EmbeddedResource Remove="obj\**" />
+    <None Remove="BpmnObjects\**" />
     <None Remove="obj\**" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="NodeHandlers\" />
+  </ItemGroup>
+
+	<Target Name="OnCleanOnly" AfterTargets="Clean">
+		<Message Text="OnCleanOnly" Importance="High" />
+	</Target>
+	
+	
 </Project>

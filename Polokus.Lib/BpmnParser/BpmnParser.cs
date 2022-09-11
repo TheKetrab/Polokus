@@ -1,105 +1,130 @@
-﻿using System;
+﻿using Polokus.Lib.Models;
+using Polokus.Lib.Models.BpmnObjects.Xsd;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
-using System.Xml.Serialization;
 using System.Xml.Linq;
 using System.Xml;
-using System.Reflection.Metadata;
-using System.Reflection.PortableExecutable;
-using System.Reflection;
-using Polokus.Lib.BpmnObjects;
-using Polokus.Lib.BpmnObjects.Nodes;
-using Polokus.Lib.Interfaces;
-using Polokus.Lib.BpmnObjects.Nodes.Tasks;
+using System.Xml.Serialization;
+using System.Reflection.Metadata.Ecma335;
+using System.Runtime.CompilerServices;
 
 namespace Polokus.Lib.BpmnParser
 {
-    public static class BpmnParser
+    public class BpmnParser
     {
-        private static string GetBpmnNSValByAttr(XElement root)
+        public static BpmnContext ParseFile(string filename)
         {
-            string[] bpmns = new string[] { "bpmn2", "bpmn" };
-
-            string? bpmnAttributeVal = null;
-            for (int i = 0; i < bpmns.Length && bpmnAttributeVal == null; i++)
+            if (!File.Exists(filename))
             {
-                bpmnAttributeVal = root.Attribute(XNamespace.Xmlns + bpmns[i])?.Value; 
+                throw new FileNotFoundException(filename);
             }
 
-            return bpmnAttributeVal ?? throw new XmlException("Unable to find bpmn namespace attribute in root.");
+            var definitions = DeserializeXml<tDefinitions>(filename);
+            if (definitions == null)
+            {
+                throw new XmlException($"Failed to parse file {filename}");
+            }
+
+            var processes = LoadDefinitions(definitions);
+
+            BpmnContext context = new BpmnContext()
+            {
+                Definitions = definitions,
+                Processs = processes
+            };
+
+            return context;
         }
 
-        private static XNamespace GetBpmnNamespace(XElement root)
+        private static BpmnProcess CreateProcess(IEnumerable<tSequenceFlow> xmlSequences, IEnumerable<tFlowNode> xmlFlowNodes)
         {
-            string bpmnNs = GetBpmnNSValByAttr(root);
-            return XNamespace.Get(bpmnNs);
+            var process = (BpmnProcess?)Activator.CreateInstance(typeof(BpmnProcess), true);
+            if (process == null)
+            {
+                throw new Exception("Failed to create process via Activator class.");
+            }
+
+            var nodes = xmlFlowNodes.Select(x => new FlowNode(x)).ToList();
+            process.SetNodes(nodes);
+
+            foreach (var x in xmlSequences)
+            {
+                FlowNode? src = process.GetNodeById(x.sourceRef);
+                FlowNode? dest = process.GetNodeById(x.targetRef);
+
+                if (src == null)
+                {
+                    Logger.LogWarning($"Not found sourceRef {x.sourceRef} node for {x.id} sequence.");
+                }
+                if (dest == null)
+                {
+                    Logger.LogWarning($"Not found targetRef {x.targetRef} node for {x.id} sequence.");
+                }
+
+                if (src != null && dest != null)
+                {
+                    src.Outgoing.Add(dest);
+                    dest.Incoming.Add(src);
+                }
+
+            }
+
+            var startNodes = nodes.Where(x => x.XmlElement.GetType() == typeof(tStartEvent));
+            if (!startNodes.Any())
+            {
+                Logger.LogError("None start event found!");
+            }
+            if (startNodes.Count() > 1)
+            {
+                Logger.LogWarning($"Found more than one start event! ({string.Join(' ', startNodes)})");
+            }
+
+            process.StartNode = startNodes.FirstOrDefault();
+
+            return process;
+        }
+
+        public static List<BpmnProcess> LoadDefinitions(tDefinitions definitions)
+        {
+            List<BpmnProcess> processes = new();
+
+            foreach (var item in definitions.Items)
+            {
+                if (item is tProcess xmlProcess)
+                {
+                    var sequences = xmlProcess.Items.Where(x => x is tSequenceFlow).Cast<tSequenceFlow>();
+                    var flowNodes = xmlProcess.Items.Where(x => x is tFlowNode).Cast<tFlowNode>();
+
+                    var process = CreateProcess(sequences, flowNodes);
+                    process.SourceDefinitions = definitions;
+
+                    processes.Add(process);
+                }
+            }
+
+            return processes;
+
         }
 
 
-        public static List<BpmnProcess> ParseFile(string file)
+
+        public static T? DeserializeXml<T>(string filename) where T : class
         {
-            if (!File.Exists(file))
+            XmlSerializer serializer = new XmlSerializer(typeof(T));
+            
+            T? obj;
+            using (Stream reader = new FileStream(filename, FileMode.Open))
             {
-                throw new FileNotFoundException(file);
+                obj = serializer.Deserialize(reader) as T;
             }
 
-            XDocument document = XDocument.Load(file);
-            var root = document.Root;
-            if (root == null)
-            {
-                throw new XmlException("No root element.");
-            }
+            return obj;
 
-            XNamespace ns = GetBpmnNamespace(root);
-            var processNodes = root.Elements(ns + "process");
-
-            if (!processNodes.Any())
-            {
-                throw new Exception($"None process found. Probably wrong namespace: {ns.NamespaceName}");
-            }
-
-            List<BpmnProcess> bpmnProcesses = new();
-            foreach(var processNode in processNodes)
-            {
-                BpmnProcess process = ParseBpmnProcess(ns,processNode);
-                bpmnProcesses.Add(process);
-            }
-
-            return bpmnProcesses;
         }
 
-        public static BpmnProcess ParseBpmnProcess(XNamespace ns, XElement process)
-        {
-            BpmnProcess bpmnProcess = new BpmnProcess(process);
-
-            List<SequenceFlow> sequenceFlows = new List<SequenceFlow>();
-            var sequences = process.Elements(ns + "sequenceFlow");
-            sequences.ForEach(x => sequenceFlows.Add(new SequenceFlow(x)));
-
-            List<Node> nodes = new List<Node>();
-            var nodesElements = process.Elements().Where(x => x.Name != ns + "sequenceFlow");
-            nodesElements.ForEach(x => { var n = ParseNode(x); if (n != null) nodes.Add(ParseNode(x)); });
-            // TODO connect nodes
-
-            bpmnProcess.SetNodes(nodes);
-
-
-            return bpmnProcess;
-        }
-
-        public static Node ParseNode(XElement element)
-        {
-            switch (element.Name.LocalName)
-            {
-                case Constants.Task: return new TaskNode(element);
-
-            }
-
-            return null; // TODO
-        }
 
 
     }

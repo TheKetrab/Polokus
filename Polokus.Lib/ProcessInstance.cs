@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using System.Xml.Linq;
 using System.Xml.Serialization;
-using Polokus.Lib.BpmnObjects;
+using Polokus.Lib.Models;
 
 namespace Polokus.Lib
 {
