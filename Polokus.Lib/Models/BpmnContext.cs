@@ -10,6 +10,6 @@ namespace Polokus.Lib.Models
     public class BpmnContext
     {
         public tDefinitions? Definitions { get; set; }
-        public List<BpmnProcess>? Processs { get; set; }
+        public List<BpmnProcess>? Processes { get; set; }
     }
 }

@@ -18,6 +18,12 @@ namespace Polokus.Lib
                 action(item);
             }
         }
+
+
+        public static bool IsSameOrSubclass(this Type type, Type superType)
+        {
+            return type.IsSubclassOf(superType) || type == superType;
+        }
     }
 
 }

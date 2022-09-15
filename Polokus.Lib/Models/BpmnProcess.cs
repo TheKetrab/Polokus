@@ -1,4 +1,5 @@
 ﻿using Polokus.Lib.Models.BpmnObjects.Xsd;
+using Polokus.Lib.NodeHandlers;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -15,6 +16,8 @@ namespace Polokus.Lib.Models
         public tDefinitions? SourceDefinitions { get; set; }
 
         public FlowNode? StartNode { get; set; }
+
+
 
         private Dictionary<string, FlowNode> nodesDictionary
             = new Dictionary<string, FlowNode>();

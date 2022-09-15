@@ -17,10 +17,6 @@
     <None Remove="obj\**" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="NodeHandlers\" />
-  </ItemGroup>
-
 	<Target Name="OnCleanOnly" AfterTargets="Clean">
 		<Message Text="OnCleanOnly" Importance="High" />
 	</Target>

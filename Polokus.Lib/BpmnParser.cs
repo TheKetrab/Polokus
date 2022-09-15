@@ -11,7 +11,7 @@ using System.Xml.Serialization;
 using System.Reflection.Metadata.Ecma335;
 using System.Runtime.CompilerServices;
 
-namespace Polokus.Lib.BpmnParser
+namespace Polokus.Lib
 {
     public class BpmnParser
     {
@@ -33,7 +33,7 @@ namespace Polokus.Lib.BpmnParser
             BpmnContext context = new BpmnContext()
             {
                 Definitions = definitions,
-                Processs = processes
+                Processes = processes
             };
 
             return context;
@@ -109,12 +109,10 @@ namespace Polokus.Lib.BpmnParser
 
         }
 
-
-
         public static T? DeserializeXml<T>(string filename) where T : class
         {
             XmlSerializer serializer = new XmlSerializer(typeof(T));
-            
+
             T? obj;
             using (Stream reader = new FileStream(filename, FileMode.Open))
             {
