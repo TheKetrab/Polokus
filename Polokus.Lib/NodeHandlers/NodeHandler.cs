@@ -11,34 +11,53 @@ namespace Polokus.Lib.NodeHandlers
     public abstract class NodeHandler<T> : INodeHandler
         where T : tFlowNode
     {
-        public event EventHandler<FlowNode>? Finished;
+
+        // nodehandler przetwarza to co ma zrobic i wybiera kolejne node'y do potencjalnego wywolania
 
         protected ProcessInstance process;
+
+        public event EventHandler<NodeHandlerFinishedEventArgs>? Finished;
+        public event EventHandler<NodeHandlerFailedEventArgs>? Failed;
+
         public NodeHandler(ProcessInstance process)
         {
             this.process = process;
-
-            Finished += (s, e) => RunNextNodes(e);
-
         }
 
-        public virtual void RunNextNodes(FlowNode e)
+        private List<FlowNode> nextFlowNodes = new();
+
+        public int CC { get; set; }
+
+        public async Task Execute(FlowNode node)
         {
-            foreach (var next in e.Outgoing)
+            bool succeed = await ProcessNode(node);
+            if (succeed)
             {
-                this.process.NodeHandlerManager.Execute(next);
+                Finished?.Invoke(this, new NodeHandlerFinishedEventArgs(
+                    node, nextFlowNodes.ToArray(), CC));
+            }
+            else
+            {
+                Failed?.Invoke(this, new NodeHandlerFailedEventArgs(node,CC));
             }
         }
-         
-        public void Execute(FlowNode node)
-        {
-            ProcessNode(node);
-            Finished?.Invoke(this, node);
-        }
 
-        public virtual void ProcessNode(FlowNode node)
+        public virtual async Task<bool> ProcessNode(FlowNode node)
         {
-            Console.WriteLine($"Processing: {node.Id,30} ({typeof(T).Name})");
+            try
+            {
+                await Task.Delay(300);
+                nextFlowNodes = node.Outgoing.ToList();
+                Console.WriteLine($"Processing: {node.Id,30} ({typeof(T).Name}) ... DONE");
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+
+
         }
 
     }

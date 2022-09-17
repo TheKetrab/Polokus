@@ -12,11 +12,14 @@ namespace Polokus.Lib.NodeHandlers
     {
         public ExclusiveGatewayHandler(ProcessInstance process) : base(process)
         {
-        }
-
-        public override void ProcessNode(FlowNode node)
-        {
             
         }
+
+        public override Task<bool> ProcessNode(FlowNode node)
+        {
+            return base.ProcessNode(node);
+        }
+
+
     }
 }

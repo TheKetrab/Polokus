@@ -13,7 +13,7 @@ Console.WriteLine(" ----- Process Run ----- ");
 foreach (var process in ctx.Processes)
 {
     ProcessInstance pi = new ProcessInstance(process);
-    pi.Start();
+    await pi.RunProcess();
 }
 
 Console.WriteLine();

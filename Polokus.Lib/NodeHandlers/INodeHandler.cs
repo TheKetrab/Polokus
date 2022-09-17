@@ -7,9 +7,14 @@ using System.Threading.Tasks;
 
 namespace Polokus.Lib.NodeHandlers
 {
+
     public interface INodeHandler
     {
-        event EventHandler<FlowNode>? Finished;
-        void Execute(FlowNode node);
+        event EventHandler<NodeHandlerFinishedEventArgs>? Finished;
+        event EventHandler<NodeHandlerFailedEventArgs>? Failed;
+
+        int CC { get; set; }
+
+        Task Execute(FlowNode node);
     }
 }
