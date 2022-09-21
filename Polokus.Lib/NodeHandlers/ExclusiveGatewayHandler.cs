@@ -15,9 +15,10 @@ namespace Polokus.Lib.NodeHandlers
             
         }
 
-        public override Task<bool> ProcessNode(FlowNode node)
+        public override Task<int> ProcessNode(FlowNode node, string? predecessorId)
         {
-            return base.ProcessNode(node);
+            return base.ProcessNode(node, predecessorId);
+            //return Task.FromResult(true);
         }
 
 

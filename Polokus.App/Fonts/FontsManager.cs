@@ -16,10 +16,14 @@ namespace Polokus.App.Fonts
         public enum SegMDL2 : int
         {
             Custom = 0,
-            LastArrow = 0xe700,
             Edit = 0xE70F,
             Save = 0xE74E,
-            Setting = 0xE713
+            Setting = 0xE713,
+            Open = 0xF12B,
+            File = 0xE8A5,
+            Repair = 0xE90F,
+            ToggleLeft = 0xE970,
+            Help = 0xE897,
         }
 
         private static PrivateFontCollection pfc = new PrivateFontCollection();

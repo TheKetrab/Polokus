@@ -17,6 +17,7 @@ namespace Polokus.App.Views
 {
     public partial class ChromiumWindow : UserControl
     {
+        private readonly string bpmnioPage = Path.Combine(Application.StartupPath,"bpmnio.html");
 
         public ChromiumWindow()
         {
@@ -28,17 +29,10 @@ namespace Polokus.App.Views
 
         public void InitializeChromium()
         {
-            CefSettings settings = new CefSettings();
-            // Initialize cef with the provided settings
-
-            String page = Path.Combine(Application.StartupPath,"bpmnio.html");
-
-            Cef.Initialize(settings);
-            // Create a browser component
-            chromeBrowser = new ChromiumWebBrowser(page);
-            // Add it to the form and fill it to the form window.
-            this.Controls.Add(chromeBrowser);
+            chromeBrowser = new ChromiumWebBrowser(bpmnioPage);
             chromeBrowser.Dock = DockStyle.Fill;
+
+            this.Controls.Add(chromeBrowser);
         }
     }
 }

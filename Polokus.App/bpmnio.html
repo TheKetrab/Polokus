@@ -45,6 +45,15 @@
         bottom: 20px;
         left: 20px;
       }
+
+      .act {
+          
+      }
+	  
+	  .highlight:not(.djs-connection) .djs-visual > :nth-child(1) {
+  fill: green !important; /* color elements as green */
+}
+
     </style>
   </head>
   <body>
@@ -54,7 +63,9 @@
 
     <script>
 
-      var diagramUrl = 'https://cdn.staticaly.com/gh/bpmn-io/bpmn-js-examples/dfceecba/starter/diagram.bpmn';
+
+      //var diagramUrl = 'https://cdn.staticaly.com/gh/bpmn-io/bpmn-js-examples/dfceecba/starter/diagram.bpmn';
+	var diagramUrl = 'C:\Custom\BPMN\Polokus\EXAMPLE\1\example1.bpmn';
 
       // modeler instance
       var bpmnModeler = new BpmnJS({
@@ -125,6 +136,20 @@
 
       // wire save button
       $('#save-button').click(exportDiagram);
+	  
+	  
+	  
+	  var viewer = bpmnModeler;
+	  //viewer.importXML(diagramXML);
+
+var canvas = viewer.get('canvas');
+
+canvas.addMarker('UserTask_1', 'highlight');
+	  
+	  
+	  
+	  
+
     </script>
     <!--
       Thanks for trying out our BPMN toolkit!

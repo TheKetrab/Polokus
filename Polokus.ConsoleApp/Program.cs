@@ -1,7 +1,7 @@
 ﻿using Polokus.Lib;
 
 
-var ctx = BpmnParser.ParseFile(@"C:\Users\Bartlomiej.Grochowsk\Downloads\flow.bpmn");
+var ctx = BpmnParser.ParseFile(@"C:\Custom\BPMN\Polokus\EXAMPLE\1\example1.bpmn");
 
 Console.WriteLine(" ----- Process Graphs ----- ");
 foreach (var process in ctx?.Processes)

@@ -12,9 +12,10 @@ namespace Polokus.Lib.NodeHandlers
     {
         event EventHandler<NodeHandlerFinishedEventArgs>? Finished;
         event EventHandler<NodeHandlerFailedEventArgs>? Failed;
+        event EventHandler<NodeHandlerSuspendedEventArgs>? Suspended;
 
-        int CC { get; set; }
+        int TaskId { get; }
 
-        Task Execute(FlowNode node);
+        Task Execute(FlowNode node, int taskId, string? predecessor);
     }
 }

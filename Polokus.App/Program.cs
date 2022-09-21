@@ -1,3 +1,5 @@
+using CefSharp.WinForms;
+using CefSharp;
 using Polokus.App.Forms;
 
 namespace Polokus.App
@@ -13,7 +15,17 @@ namespace Polokus.App
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
+
+
+            // CefSharp init
+            CefSettings settings = new CefSettings();
+            Cef.Initialize(settings);
+
+
             Application.Run(new MainWindow());
+
+
+
         }
     }
 }

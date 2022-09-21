@@ -11,25 +11,34 @@ namespace Polokus.Lib.Models
     {
         public FlowNode CurrentNode { get; set; }
         public FlowNode[] NextFlowNodes { get; set; }
-        public int CC { get; set; }
+        public int TaskId { get; set; }
 
-        public NodeHandlerFinishedEventArgs(FlowNode currentNode, FlowNode[] nextFlowNodes, int cc)
+        public NodeHandlerFinishedEventArgs(FlowNode currentNode, FlowNode[] nextFlowNodes, int taskId)
         {
             CurrentNode = currentNode;
             NextFlowNodes = nextFlowNodes;
-            CC = cc;
+            TaskId = taskId;
         }
     }
 
     public class NodeHandlerFailedEventArgs : EventArgs
     {
         public FlowNode CurrentNode { get; set; }
-        public int CC { get; set; }
+        public int TaskId { get; set; }
 
-        public NodeHandlerFailedEventArgs(FlowNode currentNode, int cc)
+        public NodeHandlerFailedEventArgs(FlowNode currentNode, int taskId)
         {
             CurrentNode = currentNode;
-            CC = cc;
+            TaskId = taskId;
+        }
+    }
+
+    public class NodeHandlerSuspendedEventArgs : EventArgs
+    {
+        public int TaskId { get; set; }
+        public NodeHandlerSuspendedEventArgs(int taskId)
+        {
+            TaskId = taskId;
         }
     }
 }

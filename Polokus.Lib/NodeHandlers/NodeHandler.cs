@@ -18,42 +18,49 @@ namespace Polokus.Lib.NodeHandlers
 
         public event EventHandler<NodeHandlerFinishedEventArgs>? Finished;
         public event EventHandler<NodeHandlerFailedEventArgs>? Failed;
+        public event EventHandler<NodeHandlerSuspendedEventArgs>? Suspended;
 
         public NodeHandler(ProcessInstance process)
         {
             this.process = process;
         }
 
-        private List<FlowNode> nextFlowNodes = new();
+        protected List<FlowNode> nextFlowNodes = new();
 
-        public int CC { get; set; }
+        public int TaskId { get; private set; }
 
-        public async Task Execute(FlowNode node)
+        public async Task Execute(FlowNode node, int taskId, string? predecessor)
         {
-            bool succeed = await ProcessNode(node);
-            if (succeed)
+            TaskId = taskId;
+
+            int succeed = await ProcessNode(node, predecessor);
+            if (succeed == 1)
             {
                 Finished?.Invoke(this, new NodeHandlerFinishedEventArgs(
-                    node, nextFlowNodes.ToArray(), CC));
+                    node, nextFlowNodes.ToArray(), TaskId));
+            }
+            else if (succeed == 0)
+            {
+                Suspended?.Invoke(this, new NodeHandlerSuspendedEventArgs(TaskId));
             }
             else
             {
-                Failed?.Invoke(this, new NodeHandlerFailedEventArgs(node,CC));
+                Failed?.Invoke(this, new NodeHandlerFailedEventArgs(node, TaskId));
             }
         }
 
-        public virtual async Task<bool> ProcessNode(FlowNode node)
+        public virtual async Task<int> ProcessNode(FlowNode node, string? predecessor)
         {
             try
             {
                 await Task.Delay(300);
                 nextFlowNodes = node.Outgoing.ToList();
-                Console.WriteLine($"Processing: {node.Id,30} ({typeof(T).Name}) ... DONE");
-                return true;
+                Console.WriteLine($"Processing: {node.Id,30} ({typeof(T).Name}) ({node.Name}) ... DONE");
+                return 1;
             }
             catch (Exception)
             {
-                return false;
+                return -1;
             }
 
 

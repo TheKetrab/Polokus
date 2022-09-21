@@ -68,7 +68,7 @@ namespace Polokus.Lib.Models
 
             for (FlowNode? temp = StartNode; temp != null; temp = temp.Outgoing.FirstOrDefault())
             {
-                sb.AppendLine($"{prefix}{temp.XmlType.Name.PadRight(xmlTypeLen)}{sep}{temp.Id.PadRight(idLen)}{sep}{temp.Name.PadRight(nameLen)}");
+                sb.AppendLine($"{prefix}{temp.XmlType.Name?.PadRight(xmlTypeLen)}{sep}{temp.Id.PadRight(idLen)}{sep}{temp.Name?.PadRight(nameLen)}");
             }
 
             return sb.ToString();

@@ -16,77 +16,92 @@ namespace Polokus.Lib
 
     public class ProcessInstance
     {
-        private int timeout = 50; // 5s
-        private int msPerTick = 100;
-        private int ticks = 0;
-
-        public readonly Guid Guid;
         public readonly BpmnProcess BpmnProcess;
         public bool IsRunning { get; private set; }
 
         public NodeHandlersDictionary NodeHandlersDictionary { get; private set; }
+        public Dictionary<string, INodeHandler> AvailableNodeHandlers { get; set; } = new();
 
-        private int c = 0;
-        public List<int> myTasks = new();
-
+        public ActiveTasksManager ActiveTasksManager { get; private set; } = new();
 
         public ProcessInstance(BpmnProcess bpmnProcess)
         {
             NodeHandlersDictionary = new NodeHandlersDictionary(this);
             NodeHandlersDictionary.SetDefaultNodeHandlers();
 
-            BpmnProcess = bpmnProcess;
-            
+            BpmnProcess = bpmnProcess;            
         }
 
-        public void StartNewSequence(FlowNode firstNode)
+        public void StartNewSequence(FlowNode firstNode, string? predecessor)
         {
-            int cc = c;
-            c++;
-
-            myTasks.Add(cc);
-
-            Task task = new Task(() => ExecuteNode(firstNode,cc));
-            
+            int taskId = ActiveTasksManager.AddNewTask();
+            Task task = new Task(() => ExecuteNode(firstNode, taskId, predecessor));            
             task.Start();
         }
 
-        public void ExecuteNode(FlowNode node, int cc)
+        public void ExecuteNode(FlowNode node, int taskId, string? predecessor)
         {
-            var nh = NodeHandlersDictionary.CreateNodeHandlerFor(node);
-            if (nh is EmptyNodeHandler)
+            INodeHandler nh;
+            if (AvailableNodeHandlers.ContainsKey(node.Id))
             {
-                myTasks.RemoveAll(x => x == cc);
-                return;
+                nh = AvailableNodeHandlers[node.Id];
+            }
+            else
+            {
+                nh = NodeHandlersDictionary.CreateNodeHandlerFor(node);
+                if (nh is EmptyNodeHandler)
+                {
+                    ActiveTasksManager.RemoveRunningTask(taskId);
+                    return;
+                }
+
+                nh.Finished += RemoveAvailableNodeHandler;
+                nh.Finished += RunFurtherNodes;
+
+                nh.Suspended += RemoveInvokingTask;
+
+                nh.Failed += KillFailedTask;
+
+                AvailableNodeHandlers.Add(node.Id, nh);
             }
 
-            nh.Finished += RunFurtherNodes;
-            nh.Failed += KillFailedTask;
-            nh.CC = cc;
 
-            nh.Execute(node);
+            lock (nh)
+            {
+                nh.Execute(node, taskId, predecessor);
+            }
+        }
+
+        private void RemoveInvokingTask(object? sender, NodeHandlerSuspendedEventArgs e)
+        {
+            ActiveTasksManager.RemoveRunningTask(e.TaskId);
+        }
+
+        private void RemoveAvailableNodeHandler(object? sender, NodeHandlerFinishedEventArgs e)
+        {
+            AvailableNodeHandlers.Remove(e.CurrentNode.Id);
         }
 
         public void KillFailedTask(object? sender, NodeHandlerFailedEventArgs e)
         {
             Logger.LogWarning("Task failed");
-            myTasks.RemoveAll(x => x == e.CC);
+            ActiveTasksManager.RemoveRunningTask(e.TaskId);
         }
 
         private void RunFurtherNodes(object? sender, NodeHandlerFinishedEventArgs e)
         {
             if (e.NextFlowNodes.Length == 0)
             {
-                myTasks.RemoveAll(x => x == e.CC);
+                ActiveTasksManager.RemoveRunningTask(e.TaskId);
                 return;
             }
 
             for (int i=1; i<e.NextFlowNodes.Length; i++)
             {
-                StartNewSequence(e.NextFlowNodes[i]);
+                StartNewSequence(e.NextFlowNodes[i], e.CurrentNode.Id);
             }
 
-            ExecuteNode(e.NextFlowNodes[0],e.CC);
+            ExecuteNode(e.NextFlowNodes[0],e.TaskId,e.CurrentNode.Id);
 
         }
 
@@ -94,10 +109,10 @@ namespace Polokus.Lib
 
         public async Task RunProcess()
         {
-            StartNewSequence(this.BpmnProcess.StartNode);
-            while (myTasks.Any())
+            StartNewSequence(this.BpmnProcess.StartNode,null);
+            while (ActiveTasksManager.AnyRunning())
             {
-                await Task.Delay(msPerTick);
+                await Task.Delay(100);
             }
             Console.WriteLine("end");
         }
