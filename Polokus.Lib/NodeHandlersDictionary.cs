@@ -27,6 +27,7 @@ namespace Polokus.Lib
             SetNodeHandler<tEndEvent, EndEventHandler>();
             SetNodeHandler<tExclusiveGateway, ExclusiveGatewayHandler>();
             SetNodeHandler<tInclusiveGateway, InclusiveGatewayHandler>();
+            SetNodeHandler<tParallelGateway, ParallelGatewayNodeHandler>();
         }
 
         private Tuple<Type, Type> NH<TXml, TNodeHandler>()

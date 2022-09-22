@@ -1,7 +1,8 @@
 ﻿using Polokus.Lib;
 
 
-var ctx = BpmnParser.ParseFile(@"C:\Custom\BPMN\Polokus\EXAMPLE\1\example1.bpmn");
+//var ctx = BpmnParser.ParseFile(@"C:\Custom\BPMN\Polokus\EXAMPLE\1\example1.bpmn");
+var ctx = BpmnParser.ParseFile(@"C:\Custom\BPMN\Polokus\Polokus.Tests\NodeHandlersTests\Bpmn\task2.bpmn");
 
 Console.WriteLine(" ----- Process Graphs ----- ");
 foreach (var process in ctx?.Processes)
@@ -13,7 +14,14 @@ Console.WriteLine(" ----- Process Run ----- ");
 foreach (var process in ctx.Processes)
 {
     ProcessInstance pi = new ProcessInstance(process);
-    await pi.RunProcess();
+    if (await pi.RunProcess())
+    {
+        Console.WriteLine("Process finished successfully");
+    }
+    else
+    {
+        Console.WriteLine("Timeout...");
+    }
 }
 
 Console.WriteLine();

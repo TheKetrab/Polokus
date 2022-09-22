@@ -24,16 +24,22 @@ namespace Polokus.Lib
 
         public ActiveTasksManager ActiveTasksManager { get; private set; } = new();
 
-        public ProcessInstance(BpmnProcess bpmnProcess)
+
+        protected IHooksProvider? hooksProvider;
+
+
+        public ProcessInstance(BpmnProcess bpmnProcess, IHooksProvider? hooksProvider = null)
         {
             NodeHandlersDictionary = new NodeHandlersDictionary(this);
             NodeHandlersDictionary.SetDefaultNodeHandlers();
 
-            BpmnProcess = bpmnProcess;            
+            BpmnProcess = bpmnProcess;
+            this.hooksProvider = hooksProvider;
         }
 
         public void StartNewSequence(FlowNode firstNode, string? predecessor)
         {
+            hooksProvider?.OnNewSequence();
             int taskId = ActiveTasksManager.AddNewTask();
             Task task = new Task(() => ExecuteNode(firstNode, taskId, predecessor));            
             task.Start();
@@ -62,12 +68,21 @@ namespace Polokus.Lib
 
                 nh.Failed += KillFailedTask;
 
+                if (hooksProvider != null)
+                {
+                    nh.Finished += hooksProvider.OnNodeHandlerFinished;
+                    nh.Suspended += hooksProvider.OnNodeHandlerSuspended;
+                    nh.Failed += hooksProvider.OnNodeHandlerFailed;
+                }
+
+
                 AvailableNodeHandlers.Add(node.Id, nh);
             }
 
 
             lock (nh)
             {
+                hooksProvider?.OnExecute(node,taskId,predecessor);
                 nh.Execute(node, taskId, predecessor);
             }
         }
@@ -107,14 +122,31 @@ namespace Polokus.Lib
 
         
 
-        public async Task RunProcess()
+        // secTimeout < 0 == no timeout
+        public async Task<bool> RunProcess(int secTimeout = -1)
         {
+            DateTime start = DateTime.Now;
+
             StartNewSequence(this.BpmnProcess.StartNode,null);
+
+
             while (ActiveTasksManager.AnyRunning())
             {
                 await Task.Delay(100);
+
+                if (secTimeout >= 0)
+                {
+                    DateTime tick = DateTime.Now;
+                    TimeSpan span = tick - start;
+                    if (span.Seconds > secTimeout)
+                    {
+                        hooksProvider?.OnTimeOut();
+                        return false;
+                    }
+
+                }
             }
-            Console.WriteLine("end");
+            return true;
         }
 
         public void Execution()
