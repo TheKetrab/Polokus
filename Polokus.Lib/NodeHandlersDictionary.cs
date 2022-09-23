@@ -26,7 +26,7 @@ namespace Polokus.Lib
             SetNodeHandler<tTask, TaskNodeHandler>();
             SetNodeHandler<tEndEvent, EndEventHandler>();
             SetNodeHandler<tExclusiveGateway, ExclusiveGatewayHandler>();
-            SetNodeHandler<tInclusiveGateway, InclusiveGatewayHandler>();
+            //SetNodeHandler<tInclusiveGateway, InclusiveGatewayHandler>();
             SetNodeHandler<tParallelGateway, ParallelGatewayNodeHandler>();
         }
 

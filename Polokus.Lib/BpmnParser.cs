@@ -47,11 +47,19 @@ namespace Polokus.Lib
                 throw new Exception("Failed to create process via Activator class.");
             }
 
-            var nodes = xmlFlowNodes.Select(x => new FlowNode(x)).ToList();
+            var nodes = xmlFlowNodes.Select(x => new FlowNode(process,x)).ToList();
+            var sequences = xmlSequences.Select(x => new Sequence(process,x)).ToList();
             process.SetNodes(nodes);
+            process.SetSequences(sequences);
 
             foreach (var x in xmlSequences)
             {
+                Sequence? seq = process.GetSequenceById(x.id);
+                if (seq == null)
+                {
+                    Logger.LogError($"Unable to find object for {x.id} sequence.");
+                }
+
                 FlowNode? src = process.GetNodeById(x.sourceRef);
                 FlowNode? dest = process.GetNodeById(x.targetRef);
 
@@ -64,10 +72,10 @@ namespace Polokus.Lib
                     Logger.LogWarning($"Not found targetRef {x.targetRef} node for {x.id} sequence.");
                 }
 
-                if (src != null && dest != null)
+                if (src != null && dest != null && seq != null)
                 {
-                    src.Outgoing.Add(dest);
-                    dest.Incoming.Add(src);
+                    src.Outgoing.Add(seq);
+                    dest.Incoming.Add(seq);
                 }
 
             }

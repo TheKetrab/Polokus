@@ -11,6 +11,19 @@ namespace Polokus.Lib.NodeHandlers
     public abstract class NodeHandler<T> : INodeHandler
         where T : tFlowNode
     {
+        // odpowiedzialnosci:
+        // 1. nodehandler -> przetwarza KONKRETNY FLowNode
+        //     moze byc tak, ze sie zakonczy, wtedy mowimy ktore sekwencje odpalic
+        //     moze byc tak ze bedzie blad, wtedy error
+        //     moze byc tak ze stan trzeba zapisac stan, po to mamy slownik z nodehandlerami w processinstance
+        //     moze byc tak ze trzeba czekać iles sekund zanim ponownie odpali sie ten sam nodehandler, zeby cos sprawdzic
+        // 2. process instance: zarzadza tym, ktore aktualnie flownode sa przetwarzane
+        //       czyli tylko on powinien sie martwic o numery taskow...? TaskPool?
+        // 3. eventy -> cos z zewnatrz sie moze stac i to cos rzuca event i process instance REAGUJE
+        //
+        //
+        // 
+
 
         // nodehandler przetwarza to co ma zrobic i wybiera kolejne node'y do potencjalnego wywolania
 
@@ -25,42 +38,44 @@ namespace Polokus.Lib.NodeHandlers
             this.process = process;
         }
 
-        protected List<FlowNode> nextFlowNodes = new();
-
         public int TaskId { get; private set; }
 
+        protected FlowNode ExecutedOnNode;
         public async Task Execute(FlowNode node, int taskId, string? predecessor)
         {
+            ExecutedOnNode = node;
             TaskId = taskId;
 
-            int succeed = await ProcessNode(node, predecessor);
-            if (succeed == 1)
+            ProcessResultInfo info = await ProcessNode(node, predecessor);
+            switch (info.State)
             {
-                Finished?.Invoke(this, new NodeHandlerFinishedEventArgs(
-                    node, nextFlowNodes.ToArray(), TaskId));
+                case ProcessResultState.Success:
+                    Finished?.Invoke(this, new NodeHandlerFinishedEventArgs(
+                    node, info.SequencesToInvoke.ToArray(), TaskId));
+                    break;
+                case ProcessResultState.Suspension:
+                    Suspended?.Invoke(this, new NodeHandlerSuspendedEventArgs(TaskId));
+                    break;
+                case ProcessResultState.Failure:
+                    Failed?.Invoke(this, new NodeHandlerFailedEventArgs(node, TaskId));
+                    break;
             }
-            else if (succeed == 0)
-            {
-                Suspended?.Invoke(this, new NodeHandlerSuspendedEventArgs(TaskId));
-            }
-            else
-            {
-                Failed?.Invoke(this, new NodeHandlerFailedEventArgs(node, TaskId));
-            }
+
+            
         }
 
-        public virtual async Task<int> ProcessNode(FlowNode node, string? predecessor)
+        public virtual async Task<ProcessResultInfo> ProcessNode(FlowNode node, string? predecessor)
         {
             try
             {
                 await Task.Delay(300);
-                nextFlowNodes = node.Outgoing.ToList();
+                var nextSequences = node.Outgoing.ToList();
                 Console.WriteLine($"Processing: {node.Id,30} ({typeof(T).Name}) ({node.Name}) ... DONE");
-                return 1;
+                return new ProcessResultInfo(ProcessResultState.Success, nextSequences);
             }
             catch (Exception)
             {
-                return -1;
+                return new ProcessResultInfo(ProcessResultState.Failure);
             }
 
 

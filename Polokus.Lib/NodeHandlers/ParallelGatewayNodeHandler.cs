@@ -15,10 +15,41 @@ namespace Polokus.Lib.NodeHandlers
 
         }
 
-        public override Task<int> ProcessNode(FlowNode node, string? predecessor)
+        public bool IsJoinGateway => this.ExecutedOnNode.Incoming.Count > 1;
+        public bool IsForkGateway => this.ExecutedOnNode.Outgoing.Count > 1;
+
+
+        private List<string> invokedBy = new();
+        public override Task<ProcessResultInfo> ProcessNode(FlowNode node, string? predecessorId)
         {
-            nextFlowNodes = node.Outgoing.ToList();
-            return Task.FromResult(1);
+            if (IsJoinGateway)
+            {
+                Console.WriteLine("Invoked Parallel JOIN");
+
+                if (predecessorId != null)
+                {
+                    invokedBy.Add(predecessorId);
+                }
+
+                bool canRunFurther = node.Incoming.All(x => invokedBy.Contains(x.Id));
+
+                if (canRunFurther)
+                {
+                    return Task.FromResult(
+                        new ProcessResultInfo(ProcessResultState.Success, node.Outgoing.ToList()));
+                }
+                else
+                {
+                    return Task.FromResult(new ProcessResultInfo(ProcessResultState.Suspension));
+                }
+            }
+            else
+            {
+                return Task.FromResult(
+                    new ProcessResultInfo(ProcessResultState.Success, node.Outgoing.ToList()));
+            }
+
+
         }
     }
 }

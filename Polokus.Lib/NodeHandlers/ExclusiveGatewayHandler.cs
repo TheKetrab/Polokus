@@ -15,10 +15,28 @@ namespace Polokus.Lib.NodeHandlers
             
         }
 
-        public override Task<int> ProcessNode(FlowNode node, string? predecessorId)
+
+
+        bool IsValidSequence(Sequence sequence)
         {
-            return base.ProcessNode(node, predecessorId);
-            //return Task.FromResult(true);
+            if (sequence.Name == "valid")
+                return true;
+
+            return false;
+        }
+
+        public override Task<ProcessResultInfo> ProcessNode(FlowNode node, string? predecessorId)
+        {
+            foreach (var sequence in node.Outgoing)
+            {
+                if (IsValidSequence(sequence))
+                {
+                    return Task.FromResult(
+                        new ProcessResultInfo(ProcessResultState.Success, sequence));
+                }
+            }
+
+            return Task.FromResult(new ProcessResultInfo(ProcessResultState.Failure));
         }
 
 

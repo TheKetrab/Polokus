@@ -22,6 +22,8 @@ namespace Polokus.Lib.Models
         private Dictionary<string, FlowNode> nodesDictionary
             = new Dictionary<string, FlowNode>();
 
+        private Dictionary<string, Sequence> sequencesDictionary
+            = new Dictionary<string, Sequence>();
 
         
         public FlowNode? GetNodeById(string id)
@@ -34,10 +36,25 @@ namespace Polokus.Lib.Models
             return null;
         }
 
+        public Sequence? GetSequenceById(string id)
+        {
+            if (sequencesDictionary.TryGetValue(id, out Sequence? sequence))
+            {
+                return sequence;
+            }
+
+            return null;
+        }
+
 
         public void SetNodes(ICollection<FlowNode> nodes)
         {
             nodesDictionary = nodes.ToDictionary(x => x.Id);
+        }
+
+        public void SetSequences(ICollection<Sequence> sequences)
+        {
+            sequencesDictionary = sequences.ToDictionary(x => x.Id);
         }
 
         public ICollection<FlowNode> GetNodes()
@@ -45,6 +62,10 @@ namespace Polokus.Lib.Models
             return nodesDictionary.Values.ToList();
         }
 
+        public ICollection<Sequence> GetSequences()
+        {
+            return sequencesDictionary.Values.ToList();
+        }
 
         public string GetSimpleGraph()
         {
@@ -66,7 +87,7 @@ namespace Polokus.Lib.Models
             sb.Append(new string('-', nameLen));
             sb.Append(Environment.NewLine);
 
-            for (FlowNode? temp = StartNode; temp != null; temp = temp.Outgoing.FirstOrDefault())
+            for (FlowNode? temp = StartNode; temp != null; temp = temp.Outgoing.FirstOrDefault()?.Target)
             {
                 sb.AppendLine($"{prefix}{temp.XmlType.Name?.PadRight(xmlTypeLen)}{sep}{temp.Id.PadRight(idLen)}{sep}{temp.Name?.PadRight(nameLen)}");
             }

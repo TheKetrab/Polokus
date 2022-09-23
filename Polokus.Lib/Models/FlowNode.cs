@@ -14,15 +14,18 @@ namespace Polokus.Lib.Models
         public string Name { get; set; }
         public string Id { get; set; }
 
-        public ICollection<FlowNode> Incoming { get; set; } = new List<FlowNode>();
-        public ICollection<FlowNode> Outgoing { get; set; } = new List<FlowNode>();
+        public ICollection<Sequence> Incoming { get; set; } = new List<Sequence>();
+        public ICollection<Sequence> Outgoing { get; set; } = new List<Sequence>();
         public Type XmlType => XmlElement.GetType();
 
-        public FlowNode(tFlowNode xmlElement)
+
+        BpmnProcess Process { get; }
+        public FlowNode(BpmnProcess process, tFlowNode xmlElement)
         {
             XmlElement = xmlElement;
             Name = xmlElement.name;
             Id = xmlElement.id;
+            Process = process;
         }
     }
 }

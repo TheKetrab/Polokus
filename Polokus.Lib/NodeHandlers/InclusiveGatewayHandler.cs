@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Polokus.Lib.NodeHandlers
 {
+    /*
     public class InclusiveGatewayHandler : NodeHandler<tInclusiveGateway>
     {
         public InclusiveGatewayHandler(ProcessInstance process) : base(process)
@@ -35,6 +36,6 @@ namespace Polokus.Lib.NodeHandlers
             return Task.FromResult(result);
         }
 
-
     }
+        */
 }

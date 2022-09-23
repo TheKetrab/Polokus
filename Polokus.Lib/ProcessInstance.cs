@@ -16,6 +16,8 @@ namespace Polokus.Lib
 
     public class ProcessInstance
     {
+
+
         public readonly BpmnProcess BpmnProcess;
         public bool IsRunning { get; private set; }
 
@@ -105,18 +107,26 @@ namespace Polokus.Lib
 
         private void RunFurtherNodes(object? sender, NodeHandlerFinishedEventArgs e)
         {
-            if (e.NextFlowNodes.Length == 0)
+            if (e.SequencesToInvoke.Length == 0)
             {
                 ActiveTasksManager.RemoveRunningTask(e.TaskId);
                 return;
             }
 
-            for (int i=1; i<e.NextFlowNodes.Length; i++)
+            for (int i=1; i<e.SequencesToInvoke.Length; i++)
             {
-                StartNewSequence(e.NextFlowNodes[i], e.CurrentNode.Id);
+                var nextNode = e.SequencesToInvoke[i]?.Target;
+                if (nextNode != null)
+                {
+                    StartNewSequence(nextNode, e.CurrentNode.Id);
+                }
             }
 
-            ExecuteNode(e.NextFlowNodes[0],e.TaskId,e.CurrentNode.Id);
+            var nn = e.SequencesToInvoke[0]?.Target;
+            if (nn != null)
+            {
+                ExecuteNode(nn, e.TaskId, e.CurrentNode.Id);
+            }
 
         }
 

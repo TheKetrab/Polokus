@@ -10,13 +10,13 @@ namespace Polokus.Lib.Models
     public class NodeHandlerFinishedEventArgs : EventArgs
     {
         public FlowNode CurrentNode { get; set; }
-        public FlowNode[] NextFlowNodes { get; set; }
+        public Sequence[] SequencesToInvoke { get; set; }
         public int TaskId { get; set; }
 
-        public NodeHandlerFinishedEventArgs(FlowNode currentNode, FlowNode[] nextFlowNodes, int taskId)
+        public NodeHandlerFinishedEventArgs(FlowNode currentNode, Sequence[] sequencesToInvoke, int taskId)
         {
             CurrentNode = currentNode;
-            NextFlowNodes = nextFlowNodes;
+            SequencesToInvoke = sequencesToInvoke;
             TaskId = taskId;
         }
     }
