@@ -10,6 +10,8 @@ namespace Polokus.Lib.NodeHandlers
 {
     public class ParallelGatewayNodeHandler : NodeHandler<tParallelGateway>
     {
+        object mutex = new object();
+
         public ParallelGatewayNodeHandler(FlowNode<tParallelGateway> node) : base(node)
         {
 
@@ -24,23 +26,27 @@ namespace Polokus.Lib.NodeHandlers
         {
             if (IsJoinGateway)
             {
-                Console.WriteLine("Invoked Parallel JOIN");
-
-                if (caller != null)
+                lock (mutex)
                 {
-                    invokedBy.Add(caller);
-                }
+                    Console.WriteLine("Invoked Parallel JOIN");
 
-                bool canRunFurther = Node.Incoming.All(x => invokedBy.Contains(x.Source));
+                    if (caller != null)
+                    {
+                        invokedBy.Add(caller);
+                    }
 
-                if (canRunFurther)
-                {
-                    return Task.FromResult(
-                        new ProcessResultInfo(ProcessResultState.Success, Node.Outgoing.ToList()));
-                }
-                else
-                {
-                    return Task.FromResult(new ProcessResultInfo(ProcessResultState.Suspension));
+                    bool canRunFurther = Node.Incoming.All(x => invokedBy.Contains(x.Source));
+
+                    if (canRunFurther)
+                    {
+                        return Task.FromResult(
+                            new ProcessResultInfo(ProcessResultState.Success, Node.Outgoing.ToList()));
+                    }
+                    else
+                    {
+                        return Task.FromResult(new ProcessResultInfo(ProcessResultState.Suspension));
+                    }
+
                 }
             }
             else

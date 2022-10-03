@@ -1,5 +1,6 @@
 ﻿
 using Polokus.Lib;
+using Polokus.Lib.Hooks;
 
 namespace Polokus.Tests.NodeHandlersTests
 {
@@ -10,20 +11,15 @@ namespace Polokus.Tests.NodeHandlersTests
         public async Task TaskNodeHandler_NormalSituation_Success()
         {
             // Arrange
-            var logger = new EventLogger()
-            {
-                onNodeHandlerFinished = (sb, o, e) => sb.AppendLine(e.CurrentNode.Name)
-            };
-
+            var visitor = new VisitorHooks();
             var process = Utils.GetSingleProcessFromFile("task1.bpmn");
-            ProcessInstance pi = new ProcessInstance(process,logger);
+            ProcessInstance pi = new ProcessInstance(process,visitor);
 
             // Act
             await pi.RunProcess();
 
             // Assert
-            string n = Environment.NewLine;
-            Assert.That(logger.GetResult(), Is.EqualTo($"start{n}task{n}end{n}"));
+            Assert.That(visitor.GetResult(), Is.EqualTo("start;task;end"));
 
         }
 
@@ -31,20 +27,15 @@ namespace Polokus.Tests.NodeHandlersTests
         public async Task TaskNodeHandler_NormalSituation4Tasks_Success()
         {
             // Arrange
-            var logger = new EventLogger()
-            {
-                onNodeHandlerFinished = (sb, o, e) => sb.AppendLine(e.CurrentNode.Name)
-            };
-
+            var visitor = new VisitorHooks();
             var process = Utils.GetSingleProcessFromFile("task2.bpmn");
-            ProcessInstance pi = new ProcessInstance(process,logger);
+            ProcessInstance pi = new ProcessInstance(process,visitor);
 
             // Act
             await pi.RunProcess();
 
             // Assert
-            string n = Environment.NewLine;
-            Assert.That(logger.GetResult(), Is.EqualTo($"start{n}task1{n}task2{n}task3{n}task4{n}end{n}"));
+            Assert.That(visitor.GetResult(), Is.EqualTo($"start;task1;task2;task3;task4;end"));
 
         }
 

@@ -51,26 +51,27 @@ namespace Polokus.Lib
 
         INodeHandler GetNodeHandlerForNode(IFlowNode node)
         {
-            if (AvailableNodeHandlers.ContainsKey(node.Id))
+            lock (AvailableNodeHandlers)
             {
-                return AvailableNodeHandlers[node.Id];
-            }
+                if (AvailableNodeHandlers.ContainsKey(node.Id))
+                {
+                    return AvailableNodeHandlers[node.Id];
+                }
 
-            INodeHandler nodeHandler = NodeHandlersDictionary.CreateNodeHandlerFor(node);
-            AvailableNodeHandlers.Add(node.Id, nodeHandler);
-            return nodeHandler;
+                INodeHandler nodeHandler = NodeHandlersDictionary.CreateNodeHandlerFor(node);
+                AvailableNodeHandlers.Add(node.Id, nodeHandler);
+                return nodeHandler;
+
+            }
         }
 
         public async void ExecuteNode(IFlowNode node, int taskId, IFlowNode? caller)
         {
             INodeHandler nodeHandler = GetNodeHandlerForNode(node);
 
-            //lock (nodeHandler)
-            //{
-                hooksProvider?.OnExecute(node, taskId, caller?.Id);
-                var executionResult = await nodeHandler.Execute(caller);
-                HandleExecutionResult(node, executionResult, taskId);
-            //}
+            hooksProvider?.OnExecute(node, taskId, caller?.Id);
+            var executionResult = await nodeHandler.Execute(caller);
+            HandleExecutionResult(node, executionResult, taskId);
         }
 
         public void HandleExecutionResult(IFlowNode node, ProcessResultInfo resultInfo, int taskId)
@@ -78,13 +79,16 @@ namespace Polokus.Lib
             switch (resultInfo.State)
             {
                 case ProcessResultState.Success:
+                    hooksProvider?.OnFinished(node, taskId);
                     RunFurtherNodes(node, taskId, resultInfo.SequencesToInvoke.ToArray());
                     break;
                 case ProcessResultState.Failure:
+                    hooksProvider?.OnFailure(node, taskId);
                     ActiveTasksManager.RemoveRunningTask(taskId);
                     AvailableNodeHandlers.Remove(node.Id);
                     break;
                 case ProcessResultState.Suspension:
+                    hooksProvider?.OnSuspension(node, taskId);
                     ActiveTasksManager.RemoveRunningTask(taskId);
                     break;
                 // case ProcessResultState. invoke self?????

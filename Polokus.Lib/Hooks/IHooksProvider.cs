@@ -15,7 +15,14 @@ namespace Polokus.Lib.Hooks
 
         void OnTimeOut();
         void OnNewSequence();
-        void OnExecute(IFlowNode node, int taskId, string? predecessor);
+
+
+
+        // ----- nowe
+        void OnExecute(IFlowNode node, int taskId, string? caller);
+        void OnFailure(IFlowNode node, int taskId);
+        void OnSuspension(IFlowNode node, int taskId);
+        void OnFinished(IFlowNode node, int taskId);
 
     }
 }

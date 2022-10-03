@@ -1,4 +1,4 @@
-﻿using Polokus.Lib;
+﻿using Polokus.Lib.Hooks;
 using Polokus.Lib.Models;
 using System;
 using System.Collections.Generic;
@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace Polokus.Tests.NodeHandlersTests
 {
+
     public class EventLogger : IHooksProvider
     {
         StringBuilder sb = new StringBuilder();
@@ -50,9 +51,24 @@ namespace Polokus.Tests.NodeHandlersTests
             
         }
 
-        public void OnExecute(FlowNode node, int taskId, string? predecessor)
+        public void OnExecute(IFlowNode node, int taskId, string? caller)
         {
-            //throw new NotImplementedException();
+            throw new NotImplementedException();
+        }
+
+        public void OnFailure(IFlowNode node, int taskId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnSuspension(IFlowNode node, int taskId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnFinished(IFlowNode node, int taskId)
+        {
+            throw new NotImplementedException();
         }
     }
 
