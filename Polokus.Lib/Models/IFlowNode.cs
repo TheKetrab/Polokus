@@ -15,13 +15,10 @@ namespace Polokus.Lib.Models
         ICollection<Sequence> Incoming { get; set; }
         ICollection<Sequence> Outgoing { get; set; }
 
+        
+
         Type XmlType { get; }
     }
 
-    public interface IFlowNode<T> : IFlowNode
-        where T : tFlowNode
-    {
-        T XmlElement { get; set; }
-    }
 
 }

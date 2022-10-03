@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Polokus.Lib
+namespace Polokus.Lib.Factories
 {
     public class NodeHandlersDictionary
     {
@@ -47,7 +47,10 @@ namespace Polokus.Lib
             }
 
             Type nodeHandlerType = _nodeHandlers[xmlType];
+
+
             INodeHandler? handler = Activator.CreateInstance(nodeHandlerType, new[] { node }) as INodeHandler;
+            //INodeHandler? handler = NodeHandlersFactory.CreateNodeHandler(node);
             return handler ?? throw new Exception("Unable to create nodehandler.");
         }
 

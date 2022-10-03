@@ -10,6 +10,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using System.Reflection.Metadata.Ecma335;
 using System.Runtime.CompilerServices;
+using Polokus.Lib.Factories;
 
 namespace Polokus.Lib
 {

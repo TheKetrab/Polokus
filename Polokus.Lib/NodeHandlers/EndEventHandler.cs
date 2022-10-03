@@ -10,7 +10,7 @@ namespace Polokus.Lib.NodeHandlers
 {
     public class EndEventHandler : NodeHandler<tEndEvent>
     {
-        public EndEventHandler(IFlowNode<tEndEvent> node) : base(node)
+        public EndEventHandler(FlowNode<tEndEvent> node) : base(node)
         {
         }
     }

@@ -10,7 +10,7 @@ namespace Polokus.Lib.NodeHandlers
 {
     public class StartEventHandler : NodeHandler<tStartEvent>
     {
-        public StartEventHandler(IFlowNode<tStartEvent> node) : base(node)
+        public StartEventHandler(FlowNode<tStartEvent> node) : base(node)
         {
 
         }

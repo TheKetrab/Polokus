@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 using System.Xml.Linq;
 using System.Xml.Serialization;
+using Polokus.Lib.Factories;
+using Polokus.Lib.Hooks;
 using Polokus.Lib.Models;
 using Polokus.Lib.Models.BpmnObjects.Xsd;
 using Polokus.Lib.NodeHandlers;
@@ -65,7 +67,7 @@ namespace Polokus.Lib
 
             //lock (nodeHandler)
             //{
-                //hooksProvider?.OnExecute(node, taskId, callerId);
+                hooksProvider?.OnExecute(node, taskId, caller?.Id);
                 var executionResult = await nodeHandler.Execute(caller);
                 HandleExecutionResult(node, executionResult, taskId);
             //}

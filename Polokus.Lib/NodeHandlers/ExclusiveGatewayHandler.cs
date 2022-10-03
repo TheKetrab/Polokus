@@ -11,7 +11,7 @@ namespace Polokus.Lib.NodeHandlers
 {
     public class ExclusiveGatewayHandler : NodeHandler<tExclusiveGateway>
     {
-        public ExclusiveGatewayHandler(IFlowNode<tExclusiveGateway> node) : base(node)
+        public ExclusiveGatewayHandler(FlowNode<tExclusiveGateway> node) : base(node)
         {
             
         }

@@ -28,13 +28,13 @@ namespace Polokus.Lib.NodeHandlers
         // nodehandler przetwarza to co ma zrobic i wybiera kolejne node'y do potencjalnego wywolania
 
         public IFlowNode Node => TypedNode;
-        public IFlowNode<T> TypedNode { get; set; }
+        public FlowNode<T> TypedNode { get; set; }
 
-
-        public NodeHandler(IFlowNode<T> node)
+        public NodeHandler(FlowNode<T> typedNode)
         {
-            TypedNode = node;
+            TypedNode = typedNode;
         }
+
 
         public virtual async Task<ProcessResultInfo> Execute(IFlowNode? caller)
         {

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Polokus.Lib
+namespace Polokus.Lib.Hooks
 {
     public interface IHooksProvider
     {

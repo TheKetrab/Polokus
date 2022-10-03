@@ -10,7 +10,7 @@ namespace Polokus.Lib.NodeHandlers
 {
     public class ParallelGatewayNodeHandler : NodeHandler<tParallelGateway>
     {
-        public ParallelGatewayNodeHandler(IFlowNode<tParallelGateway> node) : base(node)
+        public ParallelGatewayNodeHandler(FlowNode<tParallelGateway> node) : base(node)
         {
 
         }
