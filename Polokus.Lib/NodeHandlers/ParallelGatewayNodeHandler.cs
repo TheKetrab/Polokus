@@ -10,33 +10,33 @@ namespace Polokus.Lib.NodeHandlers
 {
     public class ParallelGatewayNodeHandler : NodeHandler<tParallelGateway>
     {
-        public ParallelGatewayNodeHandler(ProcessInstance process) : base(process)
+        public ParallelGatewayNodeHandler(IFlowNode<tParallelGateway> node) : base(node)
         {
 
         }
 
-        public bool IsJoinGateway => this.ExecutedOnNode.Incoming.Count > 1;
-        public bool IsForkGateway => this.ExecutedOnNode.Outgoing.Count > 1;
+        public bool IsJoinGateway => Node.Incoming.Count > 1;
+        public bool IsForkGateway => Node.Outgoing.Count > 1;
 
 
-        private List<string> invokedBy = new();
-        public override Task<ProcessResultInfo> ProcessNode(FlowNode node, string? predecessorId)
+        private List<IFlowNode> invokedBy = new();
+        public override Task<ProcessResultInfo> Execute(IFlowNode? caller)
         {
             if (IsJoinGateway)
             {
                 Console.WriteLine("Invoked Parallel JOIN");
 
-                if (predecessorId != null)
+                if (caller != null)
                 {
-                    invokedBy.Add(predecessorId);
+                    invokedBy.Add(caller);
                 }
 
-                bool canRunFurther = node.Incoming.All(x => invokedBy.Contains(x.Id));
+                bool canRunFurther = Node.Incoming.All(x => invokedBy.Contains(x.Source));
 
                 if (canRunFurther)
                 {
                     return Task.FromResult(
-                        new ProcessResultInfo(ProcessResultState.Success, node.Outgoing.ToList()));
+                        new ProcessResultInfo(ProcessResultState.Success, Node.Outgoing.ToList()));
                 }
                 else
                 {
@@ -46,7 +46,7 @@ namespace Polokus.Lib.NodeHandlers
             else
             {
                 return Task.FromResult(
-                    new ProcessResultInfo(ProcessResultState.Success, node.Outgoing.ToList()));
+                    new ProcessResultInfo(ProcessResultState.Success, Node.Outgoing.ToList()));
             }
 
 

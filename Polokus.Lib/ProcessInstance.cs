@@ -39,97 +39,81 @@ namespace Polokus.Lib
             this.hooksProvider = hooksProvider;
         }
 
-        public void StartNewSequence(FlowNode firstNode, string? predecessor)
+        public void StartNewSequence(IFlowNode firstNode, IFlowNode? caller)
         {
             hooksProvider?.OnNewSequence();
             int taskId = ActiveTasksManager.AddNewTask();
-            Task task = new Task(() => ExecuteNode(firstNode, taskId, predecessor));            
+            Task task = new Task(() => ExecuteNode(firstNode, taskId, caller));            
             task.Start();
         }
 
-        public void ExecuteNode(FlowNode node, int taskId, string? predecessor)
+        INodeHandler GetNodeHandlerForNode(IFlowNode node)
         {
-            INodeHandler nh;
             if (AvailableNodeHandlers.ContainsKey(node.Id))
             {
-                nh = AvailableNodeHandlers[node.Id];
+                return AvailableNodeHandlers[node.Id];
             }
-            else
+
+            INodeHandler nodeHandler = NodeHandlersDictionary.CreateNodeHandlerFor(node);
+            AvailableNodeHandlers.Add(node.Id, nodeHandler);
+            return nodeHandler;
+        }
+
+        public async void ExecuteNode(IFlowNode node, int taskId, IFlowNode? caller)
+        {
+            INodeHandler nodeHandler = GetNodeHandlerForNode(node);
+
+            //lock (nodeHandler)
+            //{
+                //hooksProvider?.OnExecute(node, taskId, callerId);
+                var executionResult = await nodeHandler.Execute(caller);
+                HandleExecutionResult(node, executionResult, taskId);
+            //}
+        }
+
+        public void HandleExecutionResult(IFlowNode node, ProcessResultInfo resultInfo, int taskId)
+        {
+            switch (resultInfo.State)
             {
-                nh = NodeHandlersDictionary.CreateNodeHandlerFor(node);
-                if (nh is EmptyNodeHandler)
-                {
+                case ProcessResultState.Success:
+                    RunFurtherNodes(node, taskId, resultInfo.SequencesToInvoke.ToArray());
+                    break;
+                case ProcessResultState.Failure:
                     ActiveTasksManager.RemoveRunningTask(taskId);
-                    return;
-                }
+                    AvailableNodeHandlers.Remove(node.Id);
+                    break;
+                case ProcessResultState.Suspension:
+                    ActiveTasksManager.RemoveRunningTask(taskId);
+                    break;
+                // case ProcessResultState. invoke self?????
 
-                nh.Finished += RemoveAvailableNodeHandler;
-                nh.Finished += RunFurtherNodes;
-
-                nh.Suspended += RemoveInvokingTask;
-
-                nh.Failed += KillFailedTask;
-
-                if (hooksProvider != null)
-                {
-                    nh.Finished += hooksProvider.OnNodeHandlerFinished;
-                    nh.Suspended += hooksProvider.OnNodeHandlerSuspended;
-                    nh.Failed += hooksProvider.OnNodeHandlerFailed;
-                }
-
-
-                AvailableNodeHandlers.Add(node.Id, nh);
-            }
-
-
-            lock (nh)
-            {
-                hooksProvider?.OnExecute(node,taskId,predecessor);
-                nh.Execute(node, taskId, predecessor);
             }
         }
 
-        private void RemoveInvokingTask(object? sender, NodeHandlerSuspendedEventArgs e)
+        private void RunFurtherNodes(IFlowNode node, int taskId, Sequence[] sequences)
         {
-            ActiveTasksManager.RemoveRunningTask(e.TaskId);
-        }
-
-        private void RemoveAvailableNodeHandler(object? sender, NodeHandlerFinishedEventArgs e)
-        {
-            AvailableNodeHandlers.Remove(e.CurrentNode.Id);
-        }
-
-        public void KillFailedTask(object? sender, NodeHandlerFailedEventArgs e)
-        {
-            Logger.LogWarning("Task failed");
-            ActiveTasksManager.RemoveRunningTask(e.TaskId);
-        }
-
-        private void RunFurtherNodes(object? sender, NodeHandlerFinishedEventArgs e)
-        {
-            if (e.SequencesToInvoke.Length == 0)
+            if (sequences.Length == 0)
             {
-                ActiveTasksManager.RemoveRunningTask(e.TaskId);
+                ActiveTasksManager.RemoveRunningTask(taskId);
                 return;
             }
 
-            for (int i=1; i<e.SequencesToInvoke.Length; i++)
+            for (int i = 1; i < sequences.Length; i++)
             {
-                var nextNode = e.SequencesToInvoke[i]?.Target;
+                var nextNode = sequences[i]?.Target;
                 if (nextNode != null)
                 {
-                    StartNewSequence(nextNode, e.CurrentNode.Id);
+                    StartNewSequence(nextNode, node);
                 }
             }
 
-            var nn = e.SequencesToInvoke[0]?.Target;
+            var nn = sequences[0]?.Target;
             if (nn != null)
             {
-                ExecuteNode(nn, e.TaskId, e.CurrentNode.Id);
+                ExecuteNode(nn, taskId, node);
             }
 
         }
-
         
 
         // secTimeout < 0 == no timeout

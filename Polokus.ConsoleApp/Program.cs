@@ -2,7 +2,7 @@
 
 
 //var ctx = BpmnParser.ParseFile(@"C:\Custom\BPMN\Polokus\EXAMPLE\1\example1.bpmn");
-var ctx = BpmnParser.ParseFile(@"C:\Custom\BPMN\Polokus\Polokus.Tests\NodeHandlersTests\Bpmn\task2.bpmn");
+var ctx = BpmnParser.ParseFile(@"C:\Custom\BPMN\Polokus\Polokus.Tests\NodeHandlersTests\Bpmn\exclusive1.bpmn");
 
 Console.WriteLine(" ----- Process Graphs ----- ");
 foreach (var process in ctx?.Processes)

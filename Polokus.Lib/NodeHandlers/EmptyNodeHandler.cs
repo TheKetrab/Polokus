@@ -1,4 +1,5 @@
 ﻿using Polokus.Lib.Models;
+using Polokus.Lib.Models.BpmnObjects.Xsd;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,15 +10,11 @@ namespace Polokus.Lib.NodeHandlers
 {
     public class EmptyNodeHandler : INodeHandler
     {
-        public int TaskId { get; private set; }
+        public IFlowNode Node => throw new NotImplementedException();
 
-        public event EventHandler<NodeHandlerFinishedEventArgs>? Finished;
-        public event EventHandler<NodeHandlerFailedEventArgs>? Failed;
-        public event EventHandler<NodeHandlerSuspendedEventArgs>? Suspended;
-
-        public Task Execute(FlowNode node, int taskId, string? predecessorId)
+        public Task<ProcessResultInfo> Execute(IFlowNode? caller)
         {
-            return Task.CompletedTask;
+            return Task.FromResult(new ProcessResultInfo(ProcessResultState.Failure));
         }
     }
 }

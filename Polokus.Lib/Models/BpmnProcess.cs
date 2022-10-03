@@ -15,20 +15,20 @@ namespace Polokus.Lib.Models
 
         public tDefinitions? SourceDefinitions { get; set; }
 
-        public FlowNode? StartNode { get; set; }
+        public IFlowNode? StartNode { get; set; }
 
 
 
-        private Dictionary<string, FlowNode> nodesDictionary
-            = new Dictionary<string, FlowNode>();
+        private Dictionary<string, IFlowNode> nodesDictionary
+            = new Dictionary<string, IFlowNode>();
 
         private Dictionary<string, Sequence> sequencesDictionary
             = new Dictionary<string, Sequence>();
 
         
-        public FlowNode? GetNodeById(string id)
+        public IFlowNode? GetNodeById(string id)
         {
-            if (nodesDictionary.TryGetValue(id, out FlowNode? node))
+            if (nodesDictionary.TryGetValue(id, out IFlowNode? node))
             {
                 return node;
             }
@@ -47,7 +47,7 @@ namespace Polokus.Lib.Models
         }
 
 
-        public void SetNodes(ICollection<FlowNode> nodes)
+        public void SetNodes(ICollection<IFlowNode> nodes)
         {
             nodesDictionary = nodes.ToDictionary(x => x.Id);
         }
@@ -57,7 +57,7 @@ namespace Polokus.Lib.Models
             sequencesDictionary = sequences.ToDictionary(x => x.Id);
         }
 
-        public ICollection<FlowNode> GetNodes()
+        public ICollection<IFlowNode> GetNodes()
         {
             return nodesDictionary.Values.ToList();
         }
@@ -87,10 +87,10 @@ namespace Polokus.Lib.Models
             sb.Append(new string('-', nameLen));
             sb.Append(Environment.NewLine);
 
-            for (FlowNode? temp = StartNode; temp != null; temp = temp.Outgoing.FirstOrDefault()?.Target)
-            {
-                sb.AppendLine($"{prefix}{temp.XmlType.Name?.PadRight(xmlTypeLen)}{sep}{temp.Id.PadRight(idLen)}{sep}{temp.Name?.PadRight(nameLen)}");
-            }
+            //for (FlowNode? temp = StartNode; temp != null; temp = temp.Outgoing.FirstOrDefault()?.Target)
+            //{
+            //    sb.AppendLine($"{prefix}{temp.XmlType.Name?.PadRight(xmlTypeLen)}{sep}{temp.Id.PadRight(idLen)}{sep}{temp.Name?.PadRight(nameLen)}");
+            //}
 
             return sb.ToString();
         }

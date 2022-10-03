@@ -13,8 +13,8 @@ namespace Polokus.Lib.Models
         public string Name { get; set; }
         public string Id { get; set; }
 
-        private FlowNode? _source;
-        public FlowNode? Source
+        private IFlowNode? _source;
+        public IFlowNode? Source
         {
             get
             {
@@ -22,8 +22,8 @@ namespace Polokus.Lib.Models
             }
         }
 
-        private FlowNode? _target;
-        public FlowNode? Target 
+        private IFlowNode? _target;
+        public IFlowNode? Target 
         { 
             get
             {

@@ -3,6 +3,7 @@ using Polokus.Lib.Models.BpmnObjects.Xsd;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,35 +11,39 @@ namespace Polokus.Lib.NodeHandlers
 {
     public class ExclusiveGatewayHandler : NodeHandler<tExclusiveGateway>
     {
-        public ExclusiveGatewayHandler(ProcessInstance process) : base(process)
+        public ExclusiveGatewayHandler(IFlowNode<tExclusiveGateway> node) : base(node)
         {
             
         }
 
 
-
-        bool IsValidSequence(Sequence sequence)
+        async Task<bool> IsValidSequence(Sequence sequence)
         {
-            if (sequence.Name == "valid")
-                return true;
+            string condition = WebUtility.HtmlDecode(sequence.Name);
 
-            return false;
+            var test = new ScriptProvider();
+            test.globals.x = 2;
+
+            var start = DateTime.Now;
+            bool res = await test.EvalCSharpScriptAsync<bool>(condition);
+            var end = DateTime.Now;
+            Console.WriteLine($"Evaling condition: {condition} in {(start - end)}");
+
+            return res;
         }
 
-        public override Task<ProcessResultInfo> ProcessNode(FlowNode node, string? predecessorId)
+        public async override Task<ProcessResultInfo> Execute(IFlowNode? caller)
         {
-            foreach (var sequence in node.Outgoing)
+            foreach (var sequence in Node.Outgoing)
             {
-                if (IsValidSequence(sequence))
+                if (await IsValidSequence(sequence))
                 {
-                    return Task.FromResult(
-                        new ProcessResultInfo(ProcessResultState.Success, sequence));
+                    return new ProcessResultInfo(ProcessResultState.Success, sequence);
                 }
             }
 
-            return Task.FromResult(new ProcessResultInfo(ProcessResultState.Failure));
+            return new ProcessResultInfo(ProcessResultState.Failure);
         }
-
 
     }
 }

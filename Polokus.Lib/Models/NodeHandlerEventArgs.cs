@@ -9,11 +9,11 @@ namespace Polokus.Lib.Models
 
     public class NodeHandlerFinishedEventArgs : EventArgs
     {
-        public FlowNode CurrentNode { get; set; }
+        public IFlowNode CurrentNode { get; set; }
         public Sequence[] SequencesToInvoke { get; set; }
         public int TaskId { get; set; }
 
-        public NodeHandlerFinishedEventArgs(FlowNode currentNode, Sequence[] sequencesToInvoke, int taskId)
+        public NodeHandlerFinishedEventArgs(IFlowNode currentNode, Sequence[] sequencesToInvoke, int taskId)
         {
             CurrentNode = currentNode;
             SequencesToInvoke = sequencesToInvoke;
@@ -23,10 +23,10 @@ namespace Polokus.Lib.Models
 
     public class NodeHandlerFailedEventArgs : EventArgs
     {
-        public FlowNode CurrentNode { get; set; }
+        public IFlowNode CurrentNode { get; set; }
         public int TaskId { get; set; }
 
-        public NodeHandlerFailedEventArgs(FlowNode currentNode, int taskId)
+        public NodeHandlerFailedEventArgs(IFlowNode currentNode, int taskId)
         {
             CurrentNode = currentNode;
             TaskId = taskId;

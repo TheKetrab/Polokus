@@ -26,7 +26,7 @@ namespace Polokus.Lib
             SetNodeHandler<tTask, TaskNodeHandler>();
             SetNodeHandler<tEndEvent, EndEventHandler>();
             SetNodeHandler<tExclusiveGateway, ExclusiveGatewayHandler>();
-            //SetNodeHandler<tInclusiveGateway, InclusiveGatewayHandler>();
+            //SetNodeHandler<tInclusiveGateway, ExclusiveGatewayHandler>(); // TODO!
             SetNodeHandler<tParallelGateway, ParallelGatewayNodeHandler>();
         }
 
@@ -36,8 +36,10 @@ namespace Polokus.Lib
             return Tuple.Create(typeof(TXml), typeof(TNodeHandler));
         }
 
-        public INodeHandler CreateNodeHandlerOfType(Type xmlType)
+
+        public INodeHandler CreateNodeHandlerFor(IFlowNode node)
         {
+            Type xmlType = node.XmlType;
             if (!_nodeHandlers.ContainsKey(xmlType))
             {
                 Logger.LogError($"NodeHandler for type {xmlType.Name} not registered.");
@@ -45,13 +47,8 @@ namespace Polokus.Lib
             }
 
             Type nodeHandlerType = _nodeHandlers[xmlType];
-            INodeHandler? handler = Activator.CreateInstance(nodeHandlerType, new[] { _process }) as INodeHandler;
+            INodeHandler? handler = Activator.CreateInstance(nodeHandlerType, new[] { node }) as INodeHandler;
             return handler ?? throw new Exception("Unable to create nodehandler.");
-        }
-
-        public INodeHandler CreateNodeHandlerFor(FlowNode node)
-        {
-            return CreateNodeHandlerOfType(node.XmlType);
         }
 
 

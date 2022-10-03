@@ -1,4 +1,5 @@
-﻿using Polokus.Lib.Models.BpmnObjects.Xsd;
+﻿using Polokus.Lib.Models;
+using Polokus.Lib.Models.BpmnObjects.Xsd;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace Polokus.Lib.NodeHandlers
 {
     public class EndEventHandler : NodeHandler<tEndEvent>
     {
-        public EndEventHandler(ProcessInstance process) : base(process)
+        public EndEventHandler(IFlowNode<tEndEvent> node) : base(node)
         {
         }
     }

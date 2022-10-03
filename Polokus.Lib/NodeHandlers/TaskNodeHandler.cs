@@ -10,7 +10,7 @@ namespace Polokus.Lib.NodeHandlers
 {
     public class TaskNodeHandler : NodeHandler<tTask>
     {
-        public TaskNodeHandler(ProcessInstance process) : base(process)
+        public TaskNodeHandler(IFlowNode<tTask> node) : base(node)
         {
         }
 

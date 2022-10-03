@@ -15,7 +15,7 @@ namespace Polokus.Lib
 
         void OnTimeOut();
         void OnNewSequence();
-        void OnExecute(FlowNode node, int taskId, string? predecessor);
+        void OnExecute(IFlowNode node, int taskId, string? predecessor);
 
     }
 }

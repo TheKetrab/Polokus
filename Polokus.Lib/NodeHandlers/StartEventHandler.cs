@@ -10,12 +10,9 @@ namespace Polokus.Lib.NodeHandlers
 {
     public class StartEventHandler : NodeHandler<tStartEvent>
     {
-        public StartEventHandler(ProcessInstance process) : base(process)
+        public StartEventHandler(IFlowNode<tStartEvent> node) : base(node)
         {
-            Finished += (s, e) =>
-            {
-                
-            };
+
         }
 
     }

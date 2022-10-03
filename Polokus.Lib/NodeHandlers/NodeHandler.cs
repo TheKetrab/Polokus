@@ -27,50 +27,22 @@ namespace Polokus.Lib.NodeHandlers
 
         // nodehandler przetwarza to co ma zrobic i wybiera kolejne node'y do potencjalnego wywolania
 
-        protected ProcessInstance process;
+        public IFlowNode Node => TypedNode;
+        public IFlowNode<T> TypedNode { get; set; }
 
-        public event EventHandler<NodeHandlerFinishedEventArgs>? Finished;
-        public event EventHandler<NodeHandlerFailedEventArgs>? Failed;
-        public event EventHandler<NodeHandlerSuspendedEventArgs>? Suspended;
 
-        public NodeHandler(ProcessInstance process)
+        public NodeHandler(IFlowNode<T> node)
         {
-            this.process = process;
+            TypedNode = node;
         }
 
-        public int TaskId { get; private set; }
-
-        protected FlowNode ExecutedOnNode;
-        public async Task Execute(FlowNode node, int taskId, string? predecessor)
-        {
-            ExecutedOnNode = node;
-            TaskId = taskId;
-
-            ProcessResultInfo info = await ProcessNode(node, predecessor);
-            switch (info.State)
-            {
-                case ProcessResultState.Success:
-                    Finished?.Invoke(this, new NodeHandlerFinishedEventArgs(
-                    node, info.SequencesToInvoke.ToArray(), TaskId));
-                    break;
-                case ProcessResultState.Suspension:
-                    Suspended?.Invoke(this, new NodeHandlerSuspendedEventArgs(TaskId));
-                    break;
-                case ProcessResultState.Failure:
-                    Failed?.Invoke(this, new NodeHandlerFailedEventArgs(node, TaskId));
-                    break;
-            }
-
-            
-        }
-
-        public virtual async Task<ProcessResultInfo> ProcessNode(FlowNode node, string? predecessor)
+        public virtual async Task<ProcessResultInfo> Execute(IFlowNode? caller)
         {
             try
             {
                 await Task.Delay(300);
-                var nextSequences = node.Outgoing.ToList();
-                Console.WriteLine($"Processing: {node.Id,30} ({typeof(T).Name}) ({node.Name}) ... DONE");
+                var nextSequences = Node.Outgoing.ToList();
+                Console.WriteLine($"Processing: {Node.Id,30} ({typeof(T).Name}) ({Node.Name}) ... DONE");
                 return new ProcessResultInfo(ProcessResultState.Success, nextSequences);
             }
             catch (Exception)
