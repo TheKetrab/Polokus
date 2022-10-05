@@ -15,7 +15,7 @@ namespace Polokus.Lib.Models
         ICollection<Sequence> Incoming { get; set; }
         ICollection<Sequence> Outgoing { get; set; }
 
-        
+        BpmnProcess Process { get; }
 
         Type XmlType { get; }
     }

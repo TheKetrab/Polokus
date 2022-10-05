@@ -11,5 +11,6 @@ namespace Polokus.Lib.Models
     {
         public tDefinitions? Definitions { get; set; }
         public List<BpmnProcess>? Processes { get; set; }
+        public ScriptProvider ScriptProvider { get; set; } = new();
     }
 }

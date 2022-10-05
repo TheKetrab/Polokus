@@ -14,6 +14,7 @@ namespace Polokus.Lib.Factories
 
         private ProcessInstance _process;
         private Dictionary<Type, Type> _nodeHandlers = new();
+        private Dictionary<string, Type> _serviceTasksHandlers = new();
 
         public NodeHandlersDictionary(ProcessInstance process)
         {
@@ -28,6 +29,10 @@ namespace Polokus.Lib.Factories
             SetNodeHandler<tExclusiveGateway, ExclusiveGatewayHandler>();
             //SetNodeHandler<tInclusiveGateway, ExclusiveGatewayHandler>(); // TODO!
             SetNodeHandler<tParallelGateway, ParallelGatewayNodeHandler>();
+            SetNodeHandler<tServiceTask, ServiceTaskNodeHandler>();
+            SetNodeHandler<tScriptTask, ScriptTaskNodeHandler>();
+            SetNodeHandler<tManualTask, ManualTaskNodeHandler>();
+            SetNodeHandler<tUserTask, UserTaskNodeHandler>();
         }
 
         private Tuple<Type, Type> NH<TXml, TNodeHandler>()
@@ -46,6 +51,13 @@ namespace Polokus.Lib.Factories
                 return new EmptyNodeHandler();
             }
 
+            if (xmlType == typeof(tServiceTask))
+            {
+                Type t = _serviceTasksHandlers[node.Name];
+                INodeHandler? nh = Activator.CreateInstance(t, new[] { node }) as INodeHandler;
+                return nh;
+            }
+
             Type nodeHandlerType = _nodeHandlers[xmlType];
 
 
@@ -59,6 +71,12 @@ namespace Polokus.Lib.Factories
             where TXml : tFlowNode where TNodeHandler : class, INodeHandler
         {
             _nodeHandlers[typeof(TXml)] = typeof(TNodeHandler);
+        }
+
+        public void SetNodeHandlerForServiceTask<TNodeHandler>(string serviceTask)
+            where TNodeHandler : class, INodeHandler
+        {
+            _serviceTasksHandlers[serviceTask] = typeof(TNodeHandler);
         }
 
     }

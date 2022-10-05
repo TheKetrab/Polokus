@@ -14,7 +14,7 @@ namespace Polokus.Lib.Hooks
         OnFinished = 2,
         OnSuspension = 4,
         OnFailure = 8,
-
+        IgnoreScriptTaskNames = 16,
     }
 
     public class VisitorHooks : EmptyHooksProvider
@@ -35,6 +35,12 @@ namespace Polokus.Lib.Hooks
 
         private void LogAction(IFlowNode node, VisitTime visitTime)
         {
+            if ((_visitMask & (uint)VisitTime.IgnoreScriptTaskNames) != 0
+                && node.XmlType == typeof(tScriptTask))
+            {
+                return;
+            }
+
             if (!FitWithMask(visitTime))
             {
                 return;

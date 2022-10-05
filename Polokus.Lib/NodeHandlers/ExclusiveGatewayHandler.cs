@@ -19,17 +19,8 @@ namespace Polokus.Lib.NodeHandlers
 
         async Task<bool> IsValidSequence(Sequence sequence)
         {
-            string condition = WebUtility.HtmlDecode(sequence.Name);
-
-            var test = new ScriptProvider();
-            test.globals.x = 2;
-
-            var start = DateTime.Now;
-            bool res = await test.EvalCSharpScriptAsync<bool>(condition);
-            var end = DateTime.Now;
-            Console.WriteLine($"Evaling condition: {condition} in {(start - end)}");
-
-            return res;
+            string condition = ScriptProvider.Decode(sequence.Name);
+            return await ScriptProvider.EvalCSharpScriptAsync<bool>(condition);
         }
 
         public async override Task<ProcessResultInfo> Execute(IFlowNode? caller)

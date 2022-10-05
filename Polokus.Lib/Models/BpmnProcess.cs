@@ -12,7 +12,7 @@ namespace Polokus.Lib.Models
 {
     public class BpmnProcess
     {
-
+        public BpmnContext? Context { get; set; }
         public tDefinitions? SourceDefinitions { get; set; }
 
         public IFlowNode? StartNode { get; set; }

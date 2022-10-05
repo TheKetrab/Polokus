@@ -37,6 +37,8 @@ namespace Polokus.Lib
                 Processes = processes
             };
 
+            context.Processes.ForEach(p => p.Context = context);
+
             return context;
         }
 

@@ -12,19 +12,27 @@ namespace Polokus.Lib.Factories
     {
         public static IFlowNode CreateFlowNode(BpmnProcess process, tFlowNode xmlElement)
         {
+            return CreateConcrete<tEndEvent>(process, xmlElement)
+                ?? CreateConcrete<tExclusiveGateway>(process, xmlElement)
+                ?? CreateConcrete<tInclusiveGateway>(process, xmlElement)
+                ?? CreateConcrete<tParallelGateway>(process, xmlElement)
+                ?? CreateConcrete<tStartEvent>(process, xmlElement)
+                ?? CreateConcrete<tTask>(process, xmlElement)
+                ?? CreateConcrete<tServiceTask>(process, xmlElement)
+                ?? CreateConcrete<tScriptTask>(process, xmlElement)
+                ?? CreateConcrete<tUserTask>(process, xmlElement)
+                ?? CreateConcrete<tManualTask>(process, xmlElement)
+                ?? throw new Exception("!!!");
 
-            switch (xmlElement)
-            {
-                case tEndEvent t: return new FlowNode<tEndEvent>(process, t);
-                case tExclusiveGateway t: return new FlowNode<tExclusiveGateway>(process, t);
-                case tInclusiveGateway t: return new FlowNode<tInclusiveGateway>(process, t);
-                case tParallelGateway t: return new FlowNode<tParallelGateway>(process, t);
-                case tStartEvent t: return new FlowNode<tStartEvent>(process, t);
-                case tTask t: return new FlowNode<tTask>(process, t);
-            }
 
-            throw new Exception();
+        }
 
+        private static IFlowNode CreateConcrete<T>(BpmnProcess process, tFlowNode xmlElement)
+            where T : tFlowNode
+        {
+            if (xmlElement.GetType() == typeof(T))
+                return new FlowNode<T>(process, (T)xmlElement);
+            return null;
         }
     }
 }

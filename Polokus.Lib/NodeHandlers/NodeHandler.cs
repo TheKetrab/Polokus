@@ -27,6 +27,7 @@ namespace Polokus.Lib.NodeHandlers
 
         // nodehandler przetwarza to co ma zrobic i wybiera kolejne node'y do potencjalnego wywolania
 
+        public ScriptProvider ScriptProvider => Node.Process.Context.ScriptProvider;
         public IFlowNode Node => TypedNode;
         public FlowNode<T> TypedNode { get; set; }
 
@@ -35,21 +36,23 @@ namespace Polokus.Lib.NodeHandlers
             TypedNode = typedNode;
         }
 
+        protected virtual async Task Process(IFlowNode? caller)
+        {
+            await Task.Delay(200);
+        }
 
         public virtual async Task<ProcessResultInfo> Execute(IFlowNode? caller)
         {
             try
             {
-                await Task.Delay(300);
+                await Process(caller);
                 var nextSequences = Node.Outgoing.ToList();
-                Console.WriteLine($"Processing: {Node.Id,30} ({typeof(T).Name}) ({Node.Name}) ... DONE");
                 return new ProcessResultInfo(ProcessResultState.Success, nextSequences);
             }
             catch (Exception)
             {
                 return new ProcessResultInfo(ProcessResultState.Failure);
             }
-
 
 
         }
