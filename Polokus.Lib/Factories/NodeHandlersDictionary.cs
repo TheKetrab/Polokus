@@ -27,7 +27,7 @@ namespace Polokus.Lib.Factories
             SetNodeHandler<tTask, TaskNodeHandler>();
             SetNodeHandler<tEndEvent, EndEventHandler>();
             SetNodeHandler<tExclusiveGateway, ExclusiveGatewayHandler>();
-            //SetNodeHandler<tInclusiveGateway, ExclusiveGatewayHandler>(); // TODO!
+            SetNodeHandler<tInclusiveGateway, InclusiveGatewayHandler>();
             SetNodeHandler<tParallelGateway, ParallelGatewayNodeHandler>();
             SetNodeHandler<tServiceTask, ServiceTaskNodeHandler>();
             SetNodeHandler<tScriptTask, ScriptTaskNodeHandler>();

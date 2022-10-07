@@ -1,5 +1,6 @@
 ﻿using Polokus.Lib.Models;
 using Polokus.Lib.Models.BpmnObjects.Xsd;
+using Polokus.Lib.NodeHandlers.Abstract;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,34 +9,58 @@ using System.Threading.Tasks;
 
 namespace Polokus.Lib.NodeHandlers
 {
-    /*
-    public class InclusiveGatewayHandler : NodeHandler<tInclusiveGateway>
+    
+    public class InclusiveGatewayHandler : JoiningNodeHandler<tInclusiveGateway>
     {
-        public InclusiveGatewayHandler(ProcessInstance process) : base(process)
+        public InclusiveGatewayHandler(FlowNode<tInclusiveGateway> typedNode) : base(typedNode)
         {
         }
 
-        private List<string> invokedBy = new();
-        public override Task<int> ProcessNode(FlowNode node, string? predecessorId)
+        async Task<bool> IsValidSequence(Sequence sequence)
         {
-            Console.WriteLine("trying invoke inclusive");
-
-            if (predecessorId != null)
+            if (string.Equals(sequence.Id,this.TypedNode.XmlElement.@default))
             {
-                invokedBy.Add(predecessorId);
+                return false;
             }
 
-            bool canRunFurther = node.Incoming.All(x => invokedBy.Contains(x.Id));
-
-            if (canRunFurther)
+            string condition = ScriptProvider.Decode(sequence.Name);
+            if (string.IsNullOrEmpty(condition))
             {
-                nextFlowNodes = node.Outgoing.ToList();
+                return true; // accept by default
+            }
+            return await ScriptProvider.EvalCSharpScriptAsync<bool>(condition);
+        }
+
+        protected override async Task<ProcessResultInfo> Process(IFlowNode? caller)
+        {
+            var valid = new List<Sequence>();
+            foreach (var sequence in Node.Outgoing)
+            {
+                if (await IsValidSequence(sequence))
+                {
+                    valid.Add(sequence);
+                }
             }
 
-            int result = canRunFurther ? 1 : 0;
-            return Task.FromResult(result);
+            if (valid.Count > 0)
+            {
+                return new ProcessResultInfo(ProcessResultState.Success, valid);
+            }
+
+            if (!string.IsNullOrEmpty(this.TypedNode.XmlElement.@default))
+            {
+                var defaultSequenceId = this.TypedNode.XmlElement.@default;
+                var defaultSequence = Node.Outgoing.FirstOrDefault(x => x.Id == defaultSequenceId);
+                if (defaultSequence != null)
+                {
+                    return new ProcessResultInfo(ProcessResultState.Success, defaultSequence);
+                }
+            }
+
+            return new ProcessResultInfo(ProcessResultState.Failure);
+
         }
 
     }
-        */
+        
 }

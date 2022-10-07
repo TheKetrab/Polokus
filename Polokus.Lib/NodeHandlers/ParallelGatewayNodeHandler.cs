@@ -1,5 +1,6 @@
 ﻿using Polokus.Lib.Models;
 using Polokus.Lib.Models.BpmnObjects.Xsd;
+using Polokus.Lib.NodeHandlers.Abstract;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,8 +29,6 @@ namespace Polokus.Lib.NodeHandlers
             {
                 lock (mutex)
                 {
-                    Console.WriteLine("Invoked Parallel JOIN");
-
                     if (caller != null)
                     {
                         invokedBy.Add(caller);

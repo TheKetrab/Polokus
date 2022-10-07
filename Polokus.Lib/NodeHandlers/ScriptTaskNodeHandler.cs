@@ -1,5 +1,6 @@
 ﻿using Polokus.Lib.Models;
 using Polokus.Lib.Models.BpmnObjects.Xsd;
+using Polokus.Lib.NodeHandlers.Abstract;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,10 +15,11 @@ namespace Polokus.Lib.NodeHandlers
         {
         }
 
-        protected override async Task Process(IFlowNode? caller)
+        protected override async Task Action(IFlowNode? caller)
         {
             string script = ScriptProvider.Decode(Node.Name);
             await ScriptProvider.EvalCSharpScriptAsync(script);
         }
+
     }
 }

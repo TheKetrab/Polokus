@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Polokus.Lib.NodeHandlers.Abstract;
 
 namespace Polokus.Lib.NodeHandlers
 {
@@ -14,7 +15,7 @@ namespace Polokus.Lib.NodeHandlers
         {
         }
 
-        protected override Task Process(IFlowNode? caller)
+        protected override Task Action(IFlowNode? caller)
         {
             Console.WriteLine($"Waiting for user task: {Node.Name}. Press enter.");
             Console.ReadLine();

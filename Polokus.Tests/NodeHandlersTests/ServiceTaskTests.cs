@@ -21,7 +21,7 @@ namespace Polokus.Tests.NodeHandlersTests
             {
             }
 
-            protected override async Task Process(IFlowNode? caller)
+            protected override async Task Action(IFlowNode? caller)
             {
                 int x1 = await ScriptProvider.EvalCSharpScriptAsync<int>("$x = -1; return (int)$x;");
                 int x2 = await ScriptProvider.EvalCSharpScriptAsync<int>("int y; y=(42+58) * (int)$x; $y = y; return y;");

@@ -35,13 +35,13 @@ namespace Polokus.Lib.Hooks
 
         private void LogAction(IFlowNode node, VisitTime visitTime)
         {
-            if ((_visitMask & (uint)VisitTime.IgnoreScriptTaskNames) != 0
-                && node.XmlType == typeof(tScriptTask))
+            if (!FitWithMask(visitTime))
             {
                 return;
             }
 
-            if (!FitWithMask(visitTime))
+            if ((_visitMask & (uint)VisitTime.IgnoreScriptTaskNames) != 0
+                && node.XmlType == typeof(tScriptTask))
             {
                 return;
             }

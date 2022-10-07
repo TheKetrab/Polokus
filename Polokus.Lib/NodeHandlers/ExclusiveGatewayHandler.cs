@@ -1,5 +1,6 @@
 ﻿using Polokus.Lib.Models;
 using Polokus.Lib.Models.BpmnObjects.Xsd;
+using Polokus.Lib.NodeHandlers.Abstract;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,14 +17,17 @@ namespace Polokus.Lib.NodeHandlers
             
         }
 
-
         async Task<bool> IsValidSequence(Sequence sequence)
         {
             string condition = ScriptProvider.Decode(sequence.Name);
+            if (string.IsNullOrEmpty(condition))
+            {
+                return true; // accept by default
+            }
             return await ScriptProvider.EvalCSharpScriptAsync<bool>(condition);
         }
 
-        public async override Task<ProcessResultInfo> Execute(IFlowNode? caller)
+        protected override async Task<ProcessResultInfo> Process(IFlowNode? caller)
         {
             foreach (var sequence in Node.Outgoing)
             {
