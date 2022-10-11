@@ -13,8 +13,6 @@ namespace Polokus.Tests
     public class ScriptProviderTests
     {
 
-
-
         [Test]
         public async Task EvalCSharpScript_SimpleScript()
         {
@@ -28,33 +26,6 @@ namespace Polokus.Tests
             Assert.AreEqual(1, x);
         }
 
-        [Test]
-        public async Task EvalCSharpScript_ImplicitCasting()
-        {
-            // Arrange
-            var scriptProvider = new BpmnContext().ScriptProvider;
-
-            // Act
-            await scriptProvider.EvalCSharpScriptAsync("$x = 1");
-            string markedScript = scriptProvider.MarkVariables("$x");
-
-            // Assert
-            Assert.AreEqual("(int)globals[\"x\"]", markedScript);
-
-        }
-
-        [Test]
-        public async Task EvalCSharpScript_CastingFailedBeforeInitialized()
-        {
-            // Arrange
-            var scriptProvider = new BpmnContext().ScriptProvider;
-
-            // Assert
-            var exc = Assert.ThrowsAsync<CompilationErrorException>(async () =>
-                await scriptProvider.EvalCSharpScriptAsync<int>("$x = 1; return $x > 1;"));
-
-            Assert.IsTrue(exc.Message.Contains(">"));
-        }
 
     }
 }
