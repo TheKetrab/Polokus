@@ -15,11 +15,13 @@ namespace Polokus.Lib.NodeHandlers
         /// </summary>
         /// <param name="caller">Node which invoked execution of this node handler</param>
         /// <returns>Info about state how processing finished and what to do with node</returns>
-        Task<ProcessResultInfo> Execute(IFlowNode? caller);
+        Task<ProcessResultInfo> Execute(IFlowNode? caller, int taskId);
 
         /// <summary>
         /// FlowNode which is processed by this node handler
         /// </summary>
         IFlowNode Node { get; }
+
+        ProcessInstance? ProcessInstance { get; set; }
     }
 }

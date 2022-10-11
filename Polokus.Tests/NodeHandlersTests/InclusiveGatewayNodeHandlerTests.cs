@@ -14,7 +14,7 @@ namespace Polokus.Tests.NodeHandlersTests
         public async Task InclusiveGatewayNodeHandler_BaseBehaviour_1()
         {
             // Arrange
-            var visitor = new VisitorHooks(VisitTime.OnFinished | VisitTime.IgnoreScriptTaskNames);
+            var visitor = new VisitorHooks(VisitTime.OnFinished | VisitTime.IgnoreScriptTaskNames | VisitTime.NoteScriptTaskNamesAsScript);
             var process = Utils.GetSingleProcessFromFile("inclusive1.bpmn");
             ProcessInstance pi = new ProcessInstance(process, visitor);
 
@@ -22,7 +22,9 @@ namespace Polokus.Tests.NodeHandlersTests
             await pi.RunProcess();
 
             // Assert
-            CustomAsserts.MatchRegex(visitor.GetResult(), "start;;;(.*)");
+            CustomAsserts.MatchAnyRegex(visitor.GetResult(),
+                "start;script;;positive;odd;;end",
+                "start;script;;odd;positive;;end");
 
         }
     }

@@ -15,6 +15,7 @@ namespace Polokus.Lib.Hooks
         OnSuspension = 4,
         OnFailure = 8,
         IgnoreScriptTaskNames = 16,
+        NoteScriptTaskNamesAsScript = 32,
     }
 
     public class VisitorHooks : EmptyHooksProvider
@@ -33,8 +34,16 @@ namespace Polokus.Lib.Hooks
             return (_visitMask & (uint)visitTime) != 0;
         }
 
-        private void LogAction(IFlowNode node, VisitTime visitTime)
+        private void LogActionSafe(IFlowNode node, VisitTime visitTime)
         {
+            lock(sb)
+            {
+                LogAction(node, visitTime);
+            }
+        }
+
+        private void LogAction(IFlowNode node, VisitTime visitTime)
+        {            
             if (!FitWithMask(visitTime))
             {
                 return;
@@ -43,6 +52,11 @@ namespace Polokus.Lib.Hooks
             if ((_visitMask & (uint)VisitTime.IgnoreScriptTaskNames) != 0
                 && node.XmlType == typeof(tScriptTask))
             {
+                if ((_visitMask & (uint)VisitTime.NoteScriptTaskNamesAsScript) != 0)
+                {
+                    sb.Append((sb.Length != 0) ? $"{separator}script" : "script");
+                }
+
                 return;
             }
 
@@ -57,22 +71,22 @@ namespace Polokus.Lib.Hooks
 
         public override void OnExecute(IFlowNode node, int taskId, string? predecessor)
         {
-            LogAction(node, VisitTime.OnExecute);
+            LogActionSafe(node, VisitTime.OnExecute);
         }
 
         public override void OnFinished(IFlowNode node, int taskId)
         {
-            LogAction(node, VisitTime.OnFinished);
+            LogActionSafe(node, VisitTime.OnFinished);
         }
 
         public override void OnFailure(IFlowNode node, int taskId)
         {
-            LogAction(node, VisitTime.OnFailure);
+            LogActionSafe(node, VisitTime.OnFailure);
         }
 
         public override void OnSuspension(IFlowNode node, int taskId)
         {
-            LogAction(node, VisitTime.OnSuspension);
+            LogActionSafe(node, VisitTime.OnSuspension);
         }
 
         public string GetResult()

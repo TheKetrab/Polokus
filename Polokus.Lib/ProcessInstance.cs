@@ -11,6 +11,7 @@ using Polokus.Lib.Hooks;
 using Polokus.Lib.Models;
 using Polokus.Lib.Models.BpmnObjects.Xsd;
 using Polokus.Lib.NodeHandlers;
+using Polokus.Lib.NodeHandlers.Abstract;
 
 namespace Polokus.Lib
 {
@@ -18,7 +19,7 @@ namespace Polokus.Lib
 
     public class ProcessInstance
     {
-
+        public object TasksMutex { get; } = new object();
 
         public readonly BpmnProcess BpmnProcess;
         public bool IsRunning { get; private set; }
@@ -26,27 +27,79 @@ namespace Polokus.Lib
         public NodeHandlersDictionary NodeHandlersDictionary { get; private set; }
         public Dictionary<string, INodeHandler> AvailableNodeHandlers { get; set; } = new();
 
-        public ActiveTasksManager ActiveTasksManager { get; private set; } = new();
+        public ActiveTasksManager ActiveTasksManager { get; private set; }
 
 
-        protected IHooksProvider? hooksProvider;
+        public IHooksProvider? hooksProvider;
 
 
         public ProcessInstance(BpmnProcess bpmnProcess, IHooksProvider? hooksProvider = null)
         {
             NodeHandlersDictionary = new NodeHandlersDictionary(this);
             NodeHandlersDictionary.SetDefaultNodeHandlers();
+            ActiveTasksManager = new ActiveTasksManager(this);
 
             BpmnProcess = bpmnProcess;
             this.hooksProvider = hooksProvider;
         }
 
-        public void StartNewSequence(IFlowNode firstNode, IFlowNode? caller)
+        
+        public bool IsReachable(IFlowNode src, IFlowNode dest)
         {
-            hooksProvider?.OnNewSequence();
-            int taskId = ActiveTasksManager.AddNewTask();
-            Task task = new Task(() => ExecuteNode(firstNode, taskId, caller));            
-            task.Start();
+            return IsReachableDFS(src, dest, new HashSet<IFlowNode>());
+        }
+
+        private bool IsReachableDFS(IFlowNode src, IFlowNode dest, HashSet<IFlowNode> visited)
+        {
+            if (src == dest)
+            {
+                return true;
+            }
+
+            if (visited.Contains(src))
+            {
+                return false;
+            }
+
+            foreach (var x in src.Outgoing)
+            {
+                var newHashSet = new HashSet<IFlowNode>(visited);
+                newHashSet.Add(src);
+                bool res = IsReachableDFS(x.Target, dest, newHashSet);
+                if (res == true)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="callers">Callers are nodes that already called target</param>
+        /// <returns></returns>
+        public bool SomebodyWhoDidntCallTheNodeCanCallItInTheFuture(IFlowNode target, List<string> callers)
+        {
+            foreach (var t in ActiveTasksManager.ActiveTasks)
+            {
+                if (t.Value is INodeHandler nh)
+                {
+                    if (callers.Contains(nh.Node.Id))
+                    {
+                        continue;
+                    }
+                    if (IsReachable(nh.Node, target))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+            
         }
 
         INodeHandler GetNodeHandlerForNode(IFlowNode node)
@@ -59,6 +112,7 @@ namespace Polokus.Lib
                 }
 
                 INodeHandler nodeHandler = NodeHandlersDictionary.CreateNodeHandlerFor(node);
+                nodeHandler.ProcessInstance = this;
                 AvailableNodeHandlers.Add(node.Id, nodeHandler);
                 return nodeHandler;
 
@@ -68,10 +122,14 @@ namespace Polokus.Lib
         public async void ExecuteNode(IFlowNode node, int taskId, IFlowNode? caller)
         {
             INodeHandler nodeHandler = GetNodeHandlerForNode(node);
+            //ActiveTasksManager.ActiveTasks[taskId] = nodeHandler;
 
             hooksProvider?.OnExecute(node, taskId, caller?.Id);
-            var executionResult = await nodeHandler.Execute(caller);
-            HandleExecutionResult(node, executionResult, taskId);
+            var executionResult = await nodeHandler.Execute(caller,taskId);
+            lock (TasksMutex)
+            {
+                HandleExecutionResult(node, executionResult, taskId);
+            }
         }
 
         public void HandleExecutionResult(IFlowNode node, ProcessResultInfo resultInfo, int taskId)
@@ -80,6 +138,7 @@ namespace Polokus.Lib
             {
                 case ProcessResultState.Success:
                     hooksProvider?.OnFinished(node, taskId);
+                    AvailableNodeHandlers.Remove(node.Id);
                     RunFurtherNodes(node, taskId, resultInfo.SequencesToInvoke.ToArray());
                     break;
                 case ProcessResultState.Failure:
@@ -91,10 +150,34 @@ namespace Polokus.Lib
                     hooksProvider?.OnSuspension(node, taskId);
                     ActiveTasksManager.RemoveRunningTask(taskId);
                     break;
-                // case ProcessResultState. invoke self?????
+                    // case ProcessResultState. invoke self?????
 
             }
         }
+
+        public void StartNewSequence(IFlowNode firstNode, IFlowNode? caller)
+        {
+            //hooksProvider?.OnNewSequence();
+            int taskId = ActiveTasksManager.AddNewTask(GetNodeHandlerForNode(firstNode));
+            Task task = new Task(() => ExecuteNode(firstNode, taskId, caller));
+            task.Start();
+        }
+
+        //public void StartNewSelfTrigger(INodeHandler nodeHandler)
+        //{
+        //    // hooksProvider?.OnNewSelfTrigger(); // TODO
+        //    int taskId = ActiveTasksManager.AddNewTask();
+        //    Task task = new Task(() =>
+        //    {
+        //        while (nodeHandler != null)
+        //        {
+        //            Task.Delay(100);
+        //            ExecuteNode(nodeHandler.Node, taskId, null);
+        //            // todo: czy nie trzeba recznie ustawiac nodeHandler = null ???
+        //        }
+        //    });
+        //    task.Start();
+        //}
 
         private void RunFurtherNodes(IFlowNode node, int taskId, Sequence[] sequences)
         {
@@ -104,6 +187,7 @@ namespace Polokus.Lib
                 return;
             }
 
+            
             for (int i = 1; i < sequences.Length; i++)
             {
                 var nextNode = sequences[i]?.Target;
@@ -147,17 +231,6 @@ namespace Polokus.Lib
                 }
             }
             return true;
-        }
-
-        public void Execution()
-        {
-            // stan
-            // watki
-            // to gdzie jestesmy (wiele miejsc - tyle ile watkow???)
-            // jesli jakis skonczy to mamy event, czyli lecimy do nastepnika
-
-            // proces przetrzymuje tylko stan i odpala kolejne wezly
-            // wezly zarzadzaja stanem, lacza watki itp
         }
 
 

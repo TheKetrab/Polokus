@@ -16,7 +16,7 @@ namespace Polokus.Lib.NodeHandlers.Abstract
     {
         private object _mutex = new object();
 
-        protected List<IFlowNode> invokedBy = new();
+        protected List<string> invokedBy = new();
 
         protected JoiningNodeHandler(FlowNode<T> typedNode) : base(typedNode)
         {
@@ -33,10 +33,10 @@ namespace Polokus.Lib.NodeHandlers.Abstract
             {
                 if (caller != null)
                 {
-                    invokedBy.Add(caller);
+                    invokedBy.Add(caller.Id);
                 }
 
-                bool everybodyInvoked = Node.Incoming.All(x => invokedBy.Contains(x.Source));
+                bool everybodyInvoked = !ProcessInstance?.SomebodyWhoDidntCallTheNodeCanCallItInTheFuture(this.Node, invokedBy) ?? false;
 
                 if (everybodyInvoked)
                 {

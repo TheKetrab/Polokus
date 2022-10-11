@@ -9,51 +9,10 @@ using System.Threading.Tasks;
 
 namespace Polokus.Lib.NodeHandlers
 {
-    public class ParallelGatewayNodeHandler : NodeHandler<tParallelGateway>
+    public class ParallelGatewayNodeHandler : JoiningNodeHandler<tParallelGateway>
     {
-        object mutex = new object();
-
         public ParallelGatewayNodeHandler(FlowNode<tParallelGateway> node) : base(node)
         {
-
-        }
-
-        public bool IsJoinGateway => Node.Incoming.Count > 1;
-        public bool IsForkGateway => Node.Outgoing.Count > 1;
-
-
-        private List<IFlowNode> invokedBy = new();
-        public override Task<ProcessResultInfo> Execute(IFlowNode? caller)
-        {
-            if (IsJoinGateway)
-            {
-                lock (mutex)
-                {
-                    if (caller != null)
-                    {
-                        invokedBy.Add(caller);
-                    }
-
-                    bool canRunFurther = Node.Incoming.All(x => invokedBy.Contains(x.Source));
-
-                    if (canRunFurther)
-                    {
-                        return Task.FromResult(
-                            new ProcessResultInfo(ProcessResultState.Success, Node.Outgoing.ToList()));
-                    }
-                    else
-                    {
-                        return Task.FromResult(new ProcessResultInfo(ProcessResultState.Suspension));
-                    }
-
-                }
-            }
-            else
-            {
-                return Task.FromResult(
-                    new ProcessResultInfo(ProcessResultState.Success, Node.Outgoing.ToList()));
-            }
-
 
         }
     }

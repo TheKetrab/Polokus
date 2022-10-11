@@ -1,4 +1,5 @@
-﻿using Polokus.Lib.Models;
+﻿using Polokus.Lib.Hooks;
+using Polokus.Lib.Models;
 using Polokus.Lib.Models.BpmnObjects.Xsd;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ namespace Polokus.Lib.NodeHandlers.Abstract
         public IFlowNode Node => TypedNode;
         public FlowNode<T> TypedNode { get; }
         public bool IsJoining => Node.Incoming.Count > 1;
+        public ProcessInstance? ProcessInstance { get; set; }
 
         public NodeHandler(FlowNode<T> typedNode)
         {
@@ -50,8 +52,9 @@ namespace Polokus.Lib.NodeHandlers.Abstract
 
         /// <summary>
         /// Main execution of nodehandler. It provides mechanism to handle exceptions.
+        /// Note that JUST BEFORE real execution (after 'can process') active task manager switch worker for concrete taskId.
         /// </summary>
-        public virtual async Task<ProcessResultInfo> Execute(IFlowNode? caller)
+        public async Task<ProcessResultInfo> Execute(IFlowNode? caller, int taskId)
         {
             try
             {
@@ -60,6 +63,8 @@ namespace Polokus.Lib.NodeHandlers.Abstract
                 {
                     return new ProcessResultInfo(ProcessResultState.Suspension);
                 }
+
+                this.ProcessInstance.ActiveTasksManager.ActiveTasks[taskId] = this;
 
                 var resultInfo = await Process(caller);
                 return resultInfo;

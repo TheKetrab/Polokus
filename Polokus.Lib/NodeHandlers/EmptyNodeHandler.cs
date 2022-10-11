@@ -12,7 +12,9 @@ namespace Polokus.Lib.NodeHandlers
     {
         public IFlowNode Node => throw new NotImplementedException();
 
-        public Task<ProcessResultInfo> Execute(IFlowNode? caller)
+        public ProcessInstance? ProcessInstance { get; set; }
+
+        public Task<ProcessResultInfo> Execute(IFlowNode? caller, int taskId)
         {
             return Task.FromResult(new ProcessResultInfo(ProcessResultState.Failure));
         }

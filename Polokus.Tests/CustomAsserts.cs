@@ -11,7 +11,14 @@ namespace Polokus.Tests
     {
         public static void MatchRegex(string str, string regex)
         {
-            Assert.IsTrue(Regex.IsMatch(str, regex));
+            if (!Regex.IsMatch(str, regex))
+                throw new Exception(str);
+        }
+
+        public static void MatchAnyRegex(string str, params string[] regexes)
+        {
+            if (!regexes.Any(r => Regex.IsMatch(str, r)))
+                throw new Exception(str);
         }
 
         public static void GoodOrder(string str, params string[] orderants)
