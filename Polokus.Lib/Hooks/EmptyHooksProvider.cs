@@ -25,6 +25,7 @@ namespace Polokus.Lib.Hooks
 
 
         public virtual void OnTimeOut() { }
-        
+
+        public virtual void OnCanExecute(IFlowNode node, int taskId, string? caller) { }
     }
 }

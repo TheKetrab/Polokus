@@ -19,6 +19,7 @@ namespace Polokus.Lib.Hooks
 
 
         // ----- nowe
+        void OnCanExecute(IFlowNode node, int taskId, string? caller);
         void OnExecute(IFlowNode node, int taskId, string? caller);
         void OnFailure(IFlowNode node, int taskId);
         void OnSuspension(IFlowNode node, int taskId);

@@ -70,6 +70,11 @@ namespace Polokus.Tests.NodeHandlersTests
         {
             throw new NotImplementedException();
         }
+
+        public void OnCanExecute(IFlowNode node, int taskId, string? caller)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }

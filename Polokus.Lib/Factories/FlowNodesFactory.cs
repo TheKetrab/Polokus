@@ -22,6 +22,7 @@ namespace Polokus.Lib.Factories
                 ?? CreateConcrete<tScriptTask>(process, xmlElement)
                 ?? CreateConcrete<tUserTask>(process, xmlElement)
                 ?? CreateConcrete<tManualTask>(process, xmlElement)
+                ?? CreateConcrete<tIntermediateCatchEvent>(process, xmlElement)
                 ?? throw new Exception("!!!");
 
 

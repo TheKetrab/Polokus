@@ -54,7 +54,7 @@ namespace Polokus.Lib.NodeHandlers.Abstract
         /// Main execution of nodehandler. It provides mechanism to handle exceptions.
         /// Note that JUST BEFORE real execution (after 'can process') active task manager switch worker for concrete taskId.
         /// </summary>
-        public async Task<ProcessResultInfo> Execute(IFlowNode? caller, int taskId)
+        public virtual async Task<ProcessResultInfo> Execute(IFlowNode? caller, int taskId)
         {
             try
             {

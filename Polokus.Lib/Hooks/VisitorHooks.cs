@@ -14,8 +14,9 @@ namespace Polokus.Lib.Hooks
         OnFinished = 2,
         OnSuspension = 4,
         OnFailure = 8,
-        IgnoreScriptTaskNames = 16,
-        NoteScriptTaskNamesAsScript = 32,
+        MarkNameForSpecialNodes = 16,
+        PutNameInParenthesis = 32,
+        OnCanExecute = 64,
     }
 
     public class VisitorHooks : EmptyHooksProvider
@@ -42,6 +43,18 @@ namespace Polokus.Lib.Hooks
             }
         }
 
+        private void LogMarked(IFlowNode node, bool withDetails)
+        {
+            if (sb.Length != 0) sb.Append(separator);
+
+            sb.Append(node.XmlType.Name);
+
+            if (withDetails)
+            {
+                sb.Append($"({node.Name})");
+            }
+        }
+
         private void LogAction(IFlowNode node, VisitTime visitTime)
         {            
             if (!FitWithMask(visitTime))
@@ -49,13 +62,14 @@ namespace Polokus.Lib.Hooks
                 return;
             }
 
-            if ((_visitMask & (uint)VisitTime.IgnoreScriptTaskNames) != 0
-                && node.XmlType == typeof(tScriptTask))
+            if (((_visitMask & (uint)VisitTime.MarkNameForSpecialNodes) != 0)
+                &&
+                 (node.XmlType == typeof(tScriptTask)
+                 || node.XmlType == typeof(tIntermediateCatchEvent)))
             {
-                if ((_visitMask & (uint)VisitTime.NoteScriptTaskNamesAsScript) != 0)
-                {
-                    sb.Append((sb.Length != 0) ? $"{separator}script" : "script");
-                }
+                bool withDetails = (_visitMask & (uint)VisitTime.PutNameInParenthesis) != 0;
+
+                LogMarked(node, withDetails);
 
                 return;
             }
@@ -87,6 +101,11 @@ namespace Polokus.Lib.Hooks
         public override void OnSuspension(IFlowNode node, int taskId)
         {
             LogActionSafe(node, VisitTime.OnSuspension);
+        }
+
+        public override void OnCanExecute(IFlowNode node, int taskId, string? caller)
+        {
+            LogActionSafe(node, VisitTime.OnCanExecute);
         }
 
         public string GetResult()

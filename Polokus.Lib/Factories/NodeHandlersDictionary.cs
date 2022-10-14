@@ -33,6 +33,7 @@ namespace Polokus.Lib.Factories
             SetNodeHandler<tScriptTask, ScriptTaskNodeHandler>();
             SetNodeHandler<tManualTask, ManualTaskNodeHandler>();
             SetNodeHandler<tUserTask, UserTaskNodeHandler>();
+            SetNodeHandler<tIntermediateCatchEvent, IntermediateCatchEventNodeHandler>();
         }
 
         private Tuple<Type, Type> NH<TXml, TNodeHandler>()

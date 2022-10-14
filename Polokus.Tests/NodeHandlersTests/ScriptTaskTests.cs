@@ -14,7 +14,7 @@ namespace Polokus.Tests.NodeHandlersTests
         public async Task ScriptTaskNodeHandler_1()
         {
             // Arrange
-            var visitor = new VisitorHooks(VisitTime.OnExecute | VisitTime.IgnoreScriptTaskNames);
+            var visitor = new VisitorHooks(VisitTime.OnExecute | VisitTime.MarkNameForSpecialNodes);
             var process = Utils.GetSingleProcessFromFile("scriptTask1.bpmn");
             ProcessInstance pi = new ProcessInstance(process, visitor);
 
@@ -23,7 +23,7 @@ namespace Polokus.Tests.NodeHandlersTests
 
             // Assert
             Assert.AreEqual(720 + 222, pi.BpmnProcess.Context.ScriptProvider.Globals.globals["a"]);
-            Assert.AreEqual("start;exclusive;end1",visitor.GetResult());
+            Assert.AreEqual("start;tScriptTask;tScriptTask;exclusive;end1", visitor.GetResult());
 
         }
     }
