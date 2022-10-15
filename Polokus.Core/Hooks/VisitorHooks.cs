@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Polokus.Core.Hooks
 {
@@ -17,6 +18,8 @@ namespace Polokus.Core.Hooks
         
         MarkNameForSpecialNodes = 1 << 4,
         PutNameInParenthesis = 1 << 5,
+
+        StartNewSequence = 1 << 6,
     }
 
     public class VisitorHooks : EmptyHooksProvider
@@ -55,6 +58,14 @@ namespace Polokus.Core.Hooks
             }
         }
 
+        private void LogStringSafe(string str)
+        {
+            lock (sb)
+            {
+                sb.Append(sb.Length == 0 ? str : $"{separator}{str}");
+            }
+        }
+
         private void LogAction(IFlowNode node, VisitTime visitTime)
         {            
             if (!FitWithMask(visitTime))
@@ -83,7 +94,7 @@ namespace Polokus.Core.Hooks
         }
 
 
-        public override void BeforeExecuteNode(IFlowNode node, int taskId, IFlowNode? caller)
+        public override void BeforeExecuteNode(IFlowNode node, int taskId, INodeCaller? caller)
         {
             LogActionSafe(node, VisitTime.BeforeExecute);
         }
@@ -101,6 +112,14 @@ namespace Polokus.Core.Hooks
         public override void AfterExecuteNodeSuspension(IFlowNode node, int taskId)
         {
             LogActionSafe(node, VisitTime.AfterExecuteSuspension);
+        }
+
+        public override void BeforeStartNewSequence(IFlowNode firstNode, INodeCaller? caller)
+        {
+            if (FitWithMask(VisitTime.StartNewSequence))
+            {
+                LogStringSafe(caller?.Id ?? "null");
+            }
         }
 
         public string GetResult()

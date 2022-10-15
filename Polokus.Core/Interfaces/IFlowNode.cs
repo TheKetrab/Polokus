@@ -8,10 +8,9 @@ using System.Threading.Tasks;
 
 namespace Polokus.Core.Interfaces
 {
-    public interface IFlowNode
+    public interface IFlowNode : INodeCaller
     {
         string Name { get; }
-        string Id { get; }
 
         ICollection<ISequence> Incoming { get; }
         ICollection<ISequence> Outgoing { get; }

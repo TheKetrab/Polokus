@@ -17,7 +17,7 @@ namespace Polokus.Core.NodeHandlers
         {
         }
 
-        protected override Task Action(IFlowNode? caller)
+        protected override Task Action(INodeCaller? caller)
         {
             Console.WriteLine($"Waiting for manual task: {Node.Name}. Press enter.");
             Console.ReadLine();

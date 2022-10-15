@@ -19,12 +19,11 @@ namespace Polokus.Core.NodeHandlers
         }
 
 
-        INodeHandler subhandler;
-        public override Task<ProcessResultInfo> Execute(IFlowNode? caller, int taskId)
+        NodeHandler<tIntermediateCatchEvent> subhandler;
+        public override Task<bool> CanProcess(INodeCaller? caller)
         {
             if (subhandler == null)
             {
-
                 if (this.TypedNode.XmlElement.Items.Length > 0)
                 {
                     var eventDefinition = TypedNode.XmlElement.Items[0];
@@ -37,17 +36,11 @@ namespace Polokus.Core.NodeHandlers
                 }
                 else
                 {
-                    return base.Execute(caller, taskId);
+                    return base.CanProcess(caller);
                 }
             }
 
-            return subhandler.Execute(caller, taskId);
-        }
-
-        protected override Task<bool> CanProcess(IFlowNode? caller)
-        {
-            var xx = this.TypedNode.XmlElement.Items;
-            return base.CanProcess(caller);
+            return subhandler.CanProcess(caller);
         }
     }
 }

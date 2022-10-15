@@ -29,7 +29,7 @@ namespace Polokus.Core.NodeHandlers
             return await ScriptProvider.EvalCSharpScriptAsync<bool>(condition);
         }
 
-        protected override async Task<ProcessResultInfo> Process(IFlowNode? caller)
+        protected override async Task<ProcessResultInfo> Process(INodeCaller? caller)
         {
             foreach (var sequence in Node.Outgoing)
             {

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_1h9874g" targetNamespace="http://bpmn.io/schema/bpmn" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="10.2.0">
+  <bpmn:process id="Process_0ez9rd5" isExecutable="false">
+    <bpmn:startEvent id="Event_0bocgn2">
+      <bpmn:outgoing>Flow_0olt6kt</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0olt6kt" sourceRef="Event_0bocgn2" targetRef="Event_0sy3nhf" />
+    <bpmn:endEvent id="Event_0og17an">
+      <bpmn:incoming>Flow_1ek6daq</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1ek6daq" sourceRef="Event_0sy3nhf" targetRef="Event_0og17an" />
+    <bpmn:intermediateCatchEvent id="Event_0sy3nhf" name="0/10/20/30/40/50 * * * * ? *">
+      <bpmn:incoming>Flow_0olt6kt</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ek6daq</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_1gp91yf" />
+    </bpmn:intermediateCatchEvent>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_0ez9rd5">
+      <bpmndi:BPMNShape id="Event_0bocgn2_di" bpmnElement="Event_0bocgn2">
+        <dc:Bounds x="152" y="82" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0og17an_di" bpmnElement="Event_0og17an">
+        <dc:Bounds x="332" y="82" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0hrjbxw_di" bpmnElement="Event_0sy3nhf">
+        <dc:Bounds x="242" y="82" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="219" y="125" width="83" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0olt6kt_di" bpmnElement="Flow_0olt6kt">
+        <di:waypoint x="188" y="100" />
+        <di:waypoint x="242" y="100" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ek6daq_di" bpmnElement="Flow_1ek6daq">
+        <di:waypoint x="278" y="100" />
+        <di:waypoint x="332" y="100" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

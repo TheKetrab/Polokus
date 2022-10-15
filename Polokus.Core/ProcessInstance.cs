@@ -44,6 +44,8 @@ namespace Polokus.Core
 
         public bool IsFinished { get; private set; }
 
+        public ICollection<INodeHandlerWaiter> Waiters { get; } = new List<INodeHandlerWaiter>();
+
         public IHooksProvider? hooksProvider;
 
 
@@ -66,6 +68,11 @@ namespace Polokus.Core
         /// <returns></returns>
         public bool ExistsAnotherTaskAbleToCallTarget(IFlowNode target, List<string> callers)
         {
+            foreach (var w in Waiters)
+            {
+                // TODO: zrobic odpowiednia logike i testy
+            }
+
             foreach (var t in ActiveTasksManager.ActiveTasks)
             {
                 if (t.Value is INodeHandler nh)
@@ -101,7 +108,7 @@ namespace Polokus.Core
             }
         }
 
-        public async void ExecuteNode(IFlowNode node, int taskId, IFlowNode? caller)
+        public async void ExecuteNode(IFlowNode node, int taskId, INodeCaller? caller)
         {
             INodeHandler nodeHandler = GetNodeHandlerForNode(node);
             //ActiveTasksManager.ActiveTasks[taskId] = nodeHandler;
@@ -137,7 +144,7 @@ namespace Polokus.Core
             }
         }
 
-        public void StartNewSequence(IFlowNode firstNode, IFlowNode? caller)
+        public void StartNewSequence(IFlowNode firstNode, INodeCaller? caller)
         {
             hooksProvider?.BeforeStartNewSequence(firstNode, caller);
             int taskId = ActiveTasksManager.AddNewTask(GetNodeHandlerForNode(firstNode));
@@ -205,7 +212,7 @@ namespace Polokus.Core
 
         public bool IsRunning()
         {
-            return IsActive && ActiveTasksManager.AnyRunning();
+            return IsActive && (ActiveTasksManager.AnyRunning() || Waiters.Any());
         }
 
         public void Begin(IFlowNode startNode)

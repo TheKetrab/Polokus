@@ -11,8 +11,8 @@ namespace Polokus.Core.Interfaces
         void AfterExecuteNodeSuccess(IFlowNode node, int taskId);
         void AfterExecuteNodeFailure(IFlowNode node, int taskId);
         void AfterExecuteNodeSuspension(IFlowNode node, int taskId);
-        void BeforeStartNewSequence(IFlowNode firstNode, IFlowNode? caller);
-        void BeforeExecuteNode(IFlowNode node, int taskId, IFlowNode? caller);
+        void BeforeStartNewSequence(IFlowNode firstNode, INodeCaller? caller);
+        void BeforeExecuteNode(IFlowNode node, int taskId, INodeCaller? caller);
         void OnTimeout();
     }
 }

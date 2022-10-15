@@ -47,5 +47,22 @@ namespace Polokus.Tests.NodeHandlersTests
 
         }
 
+        [Test]
+        public async Task TimerEventNodeHandler_Cron()
+        {
+            // Arrange
+            var visitor = new VisitorHooks(VisitTime.StartNewSequence);
+            var pi = BpmnLoader.LoadBpmnXmlIntoSimpleProcessInstance("timerEvent3.bpmn");
+
+            // Act
+            await pi.RunSimple(visitor);
+
+            // Assert
+            Assert.IsTrue(DateTime.Now.Second % 10 == 0);
+            Assert.AreEqual("null;Waiter_Event_0sy3nhf", visitor.GetResult());
+
+        }
+
+
     }
 }

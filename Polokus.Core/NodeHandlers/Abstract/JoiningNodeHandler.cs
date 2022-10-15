@@ -24,7 +24,7 @@ namespace Polokus.Core.NodeHandlers.Abstract
         {
         }
 
-        protected override Task<bool> CanProcess(IFlowNode? caller)
+        public override Task<bool> CanProcess(INodeCaller? caller)
         {
             if (!IsJoining)
             {

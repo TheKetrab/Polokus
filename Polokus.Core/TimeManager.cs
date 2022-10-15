@@ -12,41 +12,47 @@ namespace Polokus.Core
 {
     public class TimeManager : ITimeManager
     {
+        StdSchedulerFactory factory = new StdSchedulerFactory();
+
+
+
         public IContextsManager ContextsManager { get; }
 
         public TimeManager(ContextsManager contextsManager)
         {
             ContextsManager = contextsManager;
         }
-
-
-        public async void method()
+        
+        public async void RegisterWaiter(string timeString, INodeHandlerWaiter waiter, bool oneTime)
         {
-            //// construct a scheduler factory using defaults
-            //StdSchedulerFactory factory = new StdSchedulerFactory();
+            IScheduler scheduler = await factory.GetScheduler();
 
-            //// get a scheduler
-            //IScheduler scheduler = await factory.GetScheduler();
-            //await scheduler.Start();
+            IJobDetail job = JobBuilder.Create<MyJob>().Build();
+            job.JobDataMap.Add("OneTime", oneTime);
+            job.JobDataMap.Add("Waiter", waiter);
 
-            //// define the job and tie it to our HelloJob class
-            //IJobDetail job = JobBuilder.Create<HelloJob>()
-            //    .WithIdentity("myJob", "group1")
-            //    .Build();
+            ITrigger trigger = TriggerBuilder.Create().WithCronSchedule(timeString).Build();
 
-            //// Trigger the job to run now, and then every 40 seconds
-            //ITrigger trigger = TriggerBuilder.Create()
-            //    .WithIdentity("myTrigger", "group1")
-            //    .StartNow()
-            //    .WithSimpleSchedule(x => x
-            //        .WithIntervalInSeconds(40)
-            //    .RepeatForever())
-            //.Build();
+            await scheduler.ScheduleJob(job, trigger);
+            await scheduler.Start();
 
-            //await scheduler.ScheduleJob(job, trigger);
+            
+        }
+    }
 
-            //// You could also schedule multiple triggers for the same job with
-            //// await scheduler.ScheduleJob(job, new List<ITrigger>() { trigger1, trigger2 }, replace: true);
+    public class MyJob : IJob
+    {
+        public async Task Execute(IJobExecutionContext context)
+        {
+            bool oneTime = (bool)context.JobDetail.JobDataMap["OneTime"];
+            INodeHandlerWaiter waiter = (INodeHandlerWaiter)context.JobDetail.JobDataMap["Waiter"];
+
+            if (oneTime)
+            {
+                await context.Scheduler.DeleteJob(context.JobDetail.Key);
+            }            
+
+            waiter.Invoke();
         }
     }
 }

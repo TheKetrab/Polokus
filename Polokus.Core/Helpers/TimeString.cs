@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Quartz;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,11 +14,21 @@ namespace Polokus.Core.Helpers
         const int M = 60 * S;
         const int H = 60 * M;
 
+        const string timeRegex = @"^\w*(\d+\w*h)?\w*(\d+\w*m)?\w*(\d+\w*s)?\w*(\d+\w*ms)?\w*$";
+
+        public static bool IsTimeString(string str)
+        {
+            return Regex.IsMatch(str, timeRegex);
+        }
+
+        public static bool IsCroneString(string str)
+        {
+            return CronExpression.IsValidExpression(str);
+        }
 
         public static int ParseToMiliseconds(string timeString)
         {
-            string regex = @"^\w*(\d+\w*h)?\w*(\d+\w*m)?\w*(\d+\w*s)?\w*(\d+\w*ms)?\w*$";
-            Match match = Regex.Match(timeString, regex);
+            Match match = Regex.Match(timeString, timeRegex);
             if (!match.Success)
             {
                 throw new TimeStringException($"Given timeString ({timeString}) does not match to regex.");

@@ -12,10 +12,13 @@ namespace Polokus.Core.Interfaces
         IBpmnProcess BpmnProcess { get; }
         ActiveTasksManager ActiveTasksManager { get; }
         IDictionary<string,INodeHandler> AvailableNodeHandlers { get; }
+        ICollection<INodeHandlerWaiter> Waiters { get; }
         IEnumerable<ICatchingIntermediateEvent> CatchingIntermediateEvents { get; }
 
 
+
         bool ExistsAnotherTaskAbleToCallTarget(IFlowNode target, List<string> callers);
+        void StartNewSequence(IFlowNode firstNode, INodeCaller? caller);
 
 
         bool IsStarted { get; }

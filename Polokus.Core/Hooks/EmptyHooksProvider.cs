@@ -12,8 +12,8 @@ namespace Polokus.Core.Hooks
         public virtual void AfterExecuteNodeFailure(IFlowNode node, int taskId) { }
         public virtual void AfterExecuteNodeSuccess(IFlowNode node, int taskId) { }
         public virtual void AfterExecuteNodeSuspension(IFlowNode node, int taskId) { }
-        public virtual void BeforeExecuteNode(IFlowNode node, int taskId, IFlowNode? caller) { }
-        public virtual void BeforeStartNewSequence(IFlowNode firstNode, IFlowNode? caller) { }
+        public virtual void BeforeExecuteNode(IFlowNode node, int taskId, INodeCaller? caller) { }
+        public virtual void BeforeStartNewSequence(IFlowNode firstNode, INodeCaller? caller) { }
         public virtual void OnTimeout() { }
     }
 }
