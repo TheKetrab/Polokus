@@ -1,14 +1,16 @@
 ﻿using Moq;
-using Polokus.Lib.Hooks;
-using Polokus.Lib.Models;
-using Polokus.Lib;
+using Polokus.Core.Hooks;
+using Polokus.Core.Models;
+using Polokus.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Polokus.Lib.Models.BpmnObjects.Xsd;
-using Polokus.Lib.NodeHandlers;
+using Polokus.Core.Models.BpmnObjects.Xsd;
+using Polokus.Core.NodeHandlers;
+using Polokus.Core.Interfaces;
+using Polokus.Tests.Helpers;
 
 namespace Polokus.Tests.NodeHandlersTests
 {
@@ -16,8 +18,8 @@ namespace Polokus.Tests.NodeHandlersTests
     {
         private class CustomServiceTaskNodeHandler : ServiceTaskNodeHandler
         {
-
-            public CustomServiceTaskNodeHandler(FlowNode<tServiceTask> typedNode) : base(typedNode)
+            public CustomServiceTaskNodeHandler(ProcessInstance processInstance, FlowNode<tServiceTask> typedNode)
+                : base(processInstance, typedNode)
             {
             }
 
@@ -36,16 +38,15 @@ namespace Polokus.Tests.NodeHandlersTests
         {
             // Arrange
             VisitorHooks visitor = new VisitorHooks();
-            var process = Utils.GetSingleProcessFromFile("serviceTask1.bpmn");
-            ProcessInstance pi = new ProcessInstance(process, visitor);
-
-            pi.NodeHandlersDictionary.SetNodeHandlerForServiceTask<CustomServiceTaskNodeHandler>("CustomServiceTask");
+            var pi = BpmnLoader.LoadBpmnXmlIntoSimpleProcessInstance("serviceTask1.bpmn");
+            pi.ContextInstance.NodeHandlerFactory
+                .RegisterNodeHandlerForServiceTask<CustomServiceTaskNodeHandler>("CustomServiceTask");
 
             // Act
-            bool success = await pi.RunProcess();
+            await pi.RunSimple(visitor);
 
             // Assert
-            Assert.AreEqual(2, pi.BpmnProcess.Context.ScriptProvider.Globals.globals.Count);
+            Assert.AreEqual(2, pi.ContextInstance.ScriptProvider.Globals.globals.Count);
             Assert.AreEqual("start;CustomServiceTask;exclusive;end2", visitor.GetResult());
 
 

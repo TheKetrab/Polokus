@@ -1,6 +1,7 @@
 ﻿
-using Polokus.Lib;
-using Polokus.Lib.Hooks;
+using Polokus.Core;
+using Polokus.Core.Hooks;
+using Polokus.Tests.Helpers;
 
 namespace Polokus.Tests.NodeHandlersTests
 {
@@ -12,11 +13,10 @@ namespace Polokus.Tests.NodeHandlersTests
         {
             // Arrange
             var visitor = new VisitorHooks();
-            var process = Utils.GetSingleProcessFromFile("task1.bpmn");
-            ProcessInstance pi = new ProcessInstance(process,visitor);
+            var pi = BpmnLoader.LoadBpmnXmlIntoSimpleProcessInstance("task1.bpmn");
 
             // Act
-            await pi.RunProcess();
+            await pi.RunSimple(visitor);
 
             // Assert
             Assert.That(visitor.GetResult(), Is.EqualTo("start;task;end"));
@@ -28,11 +28,11 @@ namespace Polokus.Tests.NodeHandlersTests
         {
             // Arrange
             var visitor = new VisitorHooks();
-            var process = Utils.GetSingleProcessFromFile("task2.bpmn");
-            ProcessInstance pi = new ProcessInstance(process,visitor);
+            var pi = BpmnLoader.LoadBpmnXmlIntoSimpleProcessInstance("task2.bpmn");
 
             // Act
-            await pi.RunProcess();
+            await pi.RunSimple(visitor);
+
 
             // Assert
             Assert.That(visitor.GetResult(), Is.EqualTo($"start;task1;task2;task3;task4;end"));

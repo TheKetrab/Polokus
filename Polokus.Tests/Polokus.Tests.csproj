@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Polokus.Lib\Polokus.Lib.csproj" />
+    <ProjectReference Include="..\Polokus.Core\Polokus.Core.csproj" />
   </ItemGroup>
 
 </Project>

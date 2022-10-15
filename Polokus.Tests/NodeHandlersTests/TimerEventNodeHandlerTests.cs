@@ -1,10 +1,11 @@
-﻿using Polokus.Lib.Hooks;
-using Polokus.Lib;
+﻿using Polokus.Core.Hooks;
+using Polokus.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Polokus.Tests.Helpers;
 
 namespace Polokus.Tests.NodeHandlersTests
 {
@@ -15,20 +16,15 @@ namespace Polokus.Tests.NodeHandlersTests
         public async Task TimerEventNodeHandler_Wait3s()
         {
             // Arrange
-            var visitor = new VisitorHooks(VisitTime.OnExecute | VisitTime.PutNameInParenthesis | VisitTime.MarkNameForSpecialNodes);
-            var process = Utils.GetSingleProcessFromFile("timerEvent1.bpmn");
-            ProcessInstance pi = new ProcessInstance(process, visitor);
+            var visitor = new VisitorHooks(VisitTime.BeforeExecute | VisitTime.PutNameInParenthesis | VisitTime.MarkNameForSpecialNodes);
+            var pi = BpmnLoader.LoadBpmnXmlIntoSimpleProcessInstance("timerEvent1.bpmn");
 
             // Act
-            var start = DateTime.Now;
-            await pi.RunProcess();
-            var end = DateTime.Now;
-
-            var duration = end - start;
+            await pi.RunSimple(visitor);
 
             // Assert
             Assert.That(visitor.GetResult(), Is.EqualTo("start;taskA;tIntermediateCatchEvent(3s);taskB;end"));
-            Assert.IsTrue(duration > TimeSpan.FromSeconds(3) && duration < TimeSpan.FromSeconds(4));
+            Assert.IsTrue(pi.TotalTime > TimeSpan.FromSeconds(3) && pi.TotalTime < TimeSpan.FromSeconds(4));
 
         }
 
@@ -37,17 +33,17 @@ namespace Polokus.Tests.NodeHandlersTests
         public async Task TimerEventNodeHandler_OrderOfInvocation()
         {
             // Arrange
-            var visitor = new VisitorHooks(VisitTime.OnExecute | VisitTime.MarkNameForSpecialNodes);
-            var process = Utils.GetSingleProcessFromFile("timerEvent2.bpmn");
-            ProcessInstance pi = new ProcessInstance(process, visitor);
+            var visitor = new VisitorHooks(VisitTime.BeforeExecute | VisitTime.MarkNameForSpecialNodes);
+            var pi = BpmnLoader.LoadBpmnXmlIntoSimpleProcessInstance("timerEvent2.bpmn");
 
             // Act
-            await pi.RunProcess();
+            await pi.RunSimple(visitor);
 
             // Assert
             CustomAsserts.MatchAnyRegex(visitor.GetResult(),
                 "start;par1;taskA;par2;tIntermediateCatchEvent;taskB;par2;end",
-                "start;par1;tIntermediateCatchEvent;taskA;par2;taskB;par2;end");
+                "start;par1;tIntermediateCatchEvent;taskA;par2;taskB;par2;end",
+                "start;par1;taskA;tIntermediateCatchEvent;par2;taskB;par2;end");
 
         }
 

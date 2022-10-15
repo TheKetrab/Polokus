@@ -1,27 +1,15 @@
-﻿using Polokus.Lib;
+﻿using Polokus.Core;
 
+var contextsManager = new ContextsManager();
+contextsManager.LoadXmlFile(@"C:\Users\Bartlomiej.Grochowsk\Downloads\diagram (12).bpmn","CONTEXT");
 
-//var ctx = BpmnParser.ParseFile(@"C:\Custom\BPMN\Polokus\EXAMPLE\1\example1.bpmn");
-var ctx = BpmnParser.ParseFile(@"C:\Custom\BPMN\Polokus\Polokus.Tests\NodeHandlersTests\Bpmn\exclusive1.bpmn");
-
-Console.WriteLine(" ----- Process Graphs ----- ");
-foreach (var process in ctx?.Processes)
+if (await contextsManager.RunContextManually("CONTEXT"))
 {
-    Console.WriteLine(process.GetSimpleGraph());
+    Console.WriteLine("Process finished successfully");
 }
-
-Console.WriteLine(" ----- Process Run ----- ");
-foreach (var process in ctx.Processes)
+else
 {
-    ProcessInstance pi = new ProcessInstance(process);
-    if (await pi.RunProcess())
-    {
-        Console.WriteLine("Process finished successfully");
-    }
-    else
-    {
-        Console.WriteLine("Timeout...");
-    }
+    Console.WriteLine("Timeout...");
 }
 
 Console.WriteLine();

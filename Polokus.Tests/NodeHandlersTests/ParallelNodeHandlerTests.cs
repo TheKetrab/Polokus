@@ -1,7 +1,8 @@
 ﻿using Moq;
-using Polokus.Lib;
-using Polokus.Lib.Hooks;
-using Polokus.Lib.Models;
+using Polokus.Core;
+using Polokus.Core.Hooks;
+using Polokus.Core.Interfaces;
+using Polokus.Tests.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +19,13 @@ namespace Polokus.Tests.NodeHandlersTests
             // Arrange
             int cnt = 0;
             var hooksMock = new Mock<IHooksProvider>();
-            hooksMock.Setup(x => x.OnExecute(It.IsAny<IFlowNode>(),It.IsAny<int>(),It.IsAny<string>()))
-                .Callback((IFlowNode n, int i, string s) => { if (n.Name == "parallel2") cnt++; });
+            hooksMock.Setup(x => x.BeforeExecuteNode(It.IsAny<IFlowNode>(),It.IsAny<int>(),It.IsAny<IFlowNode?>()))
+                .Callback((IFlowNode n, int i, IFlowNode? c) => { if (n.Name == "parallel2") cnt++; });
 
-            var process = Utils.GetSingleProcessFromFile("parallel1.bpmn");
-            ProcessInstance pi = new ProcessInstance(process, hooksMock.Object);
+            var pi = BpmnLoader.LoadBpmnXmlIntoSimpleProcessInstance("parallel1.bpmn");
 
             // Act
-            bool success = await pi.RunProcess(10);
+            var success = await pi.RunSimple(hooksProvider: hooksMock.Object, timeout: 10);
 
             // Assert
             Assert.That(success, Is.EqualTo(true));
@@ -37,16 +37,15 @@ namespace Polokus.Tests.NodeHandlersTests
         public async Task ParallelNodeHandler_Multitenancy_CorrectOrder()
         {
             // Arrange
-            var visitor = new VisitorHooks(VisitTime.OnFinished);
-            var process = Utils.GetSingleProcessFromFile("parallel2.bpmn");
-            ProcessInstance pi = new ProcessInstance(process, visitor);
+            var visitor = new VisitorHooks(VisitTime.AfterExecuteSuccess);
+            var pi = BpmnLoader.LoadBpmnXmlIntoSimpleProcessInstance("parallel2.bpmn");
 
             // Act
-            await pi.RunProcess();
+            await pi.RunSimple(visitor);
 
             // Assert
             CustomAsserts.MatchRegex(visitor.GetResult(), "start;par1;(a;b|b;a);par2;(c|d|e|f|g|h|;)*;par3;end");
-            string innerPart = Utils.SubstringBetween(visitor.GetResult(),"par2;",";par3");
+            string innerPart = visitor.GetResult().SubstringBetween("par2;",";par3");
             CustomAsserts.GoodOrder(innerPart, "c", "f", "h");
             CustomAsserts.GoodOrder(innerPart, "d", "g");
 

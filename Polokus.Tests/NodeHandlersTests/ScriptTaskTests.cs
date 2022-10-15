@@ -1,10 +1,11 @@
-﻿using Polokus.Lib.Hooks;
-using Polokus.Lib;
+﻿using Polokus.Core.Hooks;
+using Polokus.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Polokus.Tests.Helpers;
 
 namespace Polokus.Tests.NodeHandlersTests
 {
@@ -14,15 +15,14 @@ namespace Polokus.Tests.NodeHandlersTests
         public async Task ScriptTaskNodeHandler_1()
         {
             // Arrange
-            var visitor = new VisitorHooks(VisitTime.OnExecute | VisitTime.MarkNameForSpecialNodes);
-            var process = Utils.GetSingleProcessFromFile("scriptTask1.bpmn");
-            ProcessInstance pi = new ProcessInstance(process, visitor);
+            var visitor = new VisitorHooks(VisitTime.BeforeExecute | VisitTime.MarkNameForSpecialNodes);
+            var pi = BpmnLoader.LoadBpmnXmlIntoSimpleProcessInstance("scriptTask1.bpmn");
 
             // Act
-            await pi.RunProcess();
+            await pi.RunSimple(visitor);
 
             // Assert
-            Assert.AreEqual(720 + 222, pi.BpmnProcess.Context.ScriptProvider.Globals.globals["a"]);
+            Assert.AreEqual(720 + 222, pi.ContextInstance.ScriptProvider.Globals.globals["a"]);
             Assert.AreEqual("start;tScriptTask;tScriptTask;exclusive;end1", visitor.GetResult());
 
         }
