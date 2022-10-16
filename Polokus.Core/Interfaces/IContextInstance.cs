@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Polokus.Core.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,11 +11,13 @@ namespace Polokus.Core.Interfaces
     {
         ICollection<IProcessInstance> ProcessInstances { get; }
         IScriptProvider ScriptProvider { get; }
-        IEnumerable<ICatchingStartEvent> CatchingStartEvents { get; }
+        IEnumerable<IProcessStarter> CatchingStartEvents { get; }
         IContextsManager ContextsManager { get; }
         IBpmnContext BpmnContext { get; }
         INodeHandlerFactory NodeHandlerFactory { get; }
         string Id { get; }
 
+        Task<bool> RunProcessAsync(IBpmnProcess bpmnProcess, IFlowNode startNode, int? timeout);
+        void StartProcessInstance(IBpmnProcess bpmnProcess, IFlowNode startNode, int? timeout);
     }
 }

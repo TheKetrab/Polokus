@@ -18,25 +18,38 @@ namespace Polokus.Core
         public TimeManager()
         {
         }
-        
+
+        public async void RegisterStarter(string timeString, IProcessStarter starter)
+        {
+            IScheduler scheduler = await factory.GetScheduler();
+
+            IJobDetail job = JobBuilder.Create<StarterJob>().Build();
+            job.JobDataMap.Add("Starter", starter);
+
+            ITrigger trigger = TriggerBuilder.Create().WithCronSchedule(timeString).Build();
+
+            await scheduler.ScheduleJob(job, trigger);
+            await scheduler.Start();
+        }
+
         public async void RegisterWaiter(string timeString, INodeHandlerWaiter waiter, bool oneTime)
         {
             IScheduler scheduler = await factory.GetScheduler();
 
-            IJobDetail job = JobBuilder.Create<MyJob>().Build();
+            IJobDetail job = JobBuilder.Create<WaiterJob>().Build();
             job.JobDataMap.Add("OneTime", oneTime);
             job.JobDataMap.Add("Waiter", waiter);
 
             ITrigger trigger = TriggerBuilder.Create().WithCronSchedule(timeString).Build();
 
             await scheduler.ScheduleJob(job, trigger);
-            await scheduler.Start();
-
-            
+            await scheduler.Start();            
         }
+
+
     }
 
-    public class MyJob : IJob
+    public class WaiterJob : IJob
     {
         public async Task Execute(IJobExecutionContext context)
         {
@@ -49,6 +62,16 @@ namespace Polokus.Core
             }            
 
             waiter.Invoke();
+        }
+    }
+
+    public class StarterJob : IJob
+    {
+        public async Task Execute(IJobExecutionContext context)
+        {
+            IProcessStarter starter = (IProcessStarter)context.JobDetail.JobDataMap["Waiter"];
+
+            starter.ContextInstance.StartProcessInstance(starter.BpmnProcess, starter.StartNode, null);
         }
     }
 }

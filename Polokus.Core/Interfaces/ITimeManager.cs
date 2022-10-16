@@ -10,5 +10,6 @@ namespace Polokus.Core.Interfaces
     public interface ITimeManager
     {
         void RegisterWaiter(string timeString, INodeHandlerWaiter waiter, bool oneTime);
+        void RegisterStarter(string timeString, IProcessStarter starter);
     }
 }
