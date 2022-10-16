@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_101w4i9" targetNamespace="http://bpmn.io/schema/bpmn" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="10.2.0">
+  <bpmn:process id="Process_0rrvqcp" isExecutable="false">
+    <bpmn:startEvent id="StartEvent_0zk2k11" name="start">
+      <bpmn:outgoing>Flow_1juxjp3</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1juxjp3" sourceRef="StartEvent_0zk2k11" targetRef="Event_15d655d" />
+    <bpmn:endEvent id="Event_0r7yijj" name="end">
+      <bpmn:incoming>Flow_01hekou</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_01hekou" sourceRef="Event_15d655d" targetRef="Event_0r7yijj" />
+    <bpmn:intermediateCatchEvent id="Event_15d655d" name="evt">
+      <bpmn:incoming>Flow_1juxjp3</bpmn:incoming>
+      <bpmn:outgoing>Flow_01hekou</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1r9w7ul" />
+    </bpmn:intermediateCatchEvent>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_0rrvqcp">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_0zk2k11">
+        <dc:Bounds x="156" y="81" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="163" y="124" width="23" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0r7yijj_di" bpmnElement="Event_0r7yijj">
+        <dc:Bounds x="332" y="81" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="341" y="124" width="19" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0hvk4rc_di" bpmnElement="Event_15d655d">
+        <dc:Bounds x="242" y="81" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="252" y="124" width="16" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1juxjp3_di" bpmnElement="Flow_1juxjp3">
+        <di:waypoint x="192" y="99" />
+        <di:waypoint x="242" y="99" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_01hekou_di" bpmnElement="Flow_01hekou">
+        <di:waypoint x="278" y="99" />
+        <di:waypoint x="332" y="99" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

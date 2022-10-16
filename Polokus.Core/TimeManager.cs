@@ -15,12 +15,8 @@ namespace Polokus.Core
         StdSchedulerFactory factory = new StdSchedulerFactory();
 
 
-
-        public IContextsManager ContextsManager { get; }
-
-        public TimeManager(ContextsManager contextsManager)
+        public TimeManager()
         {
-            ContextsManager = contextsManager;
         }
         
         public async void RegisterWaiter(string timeString, INodeHandlerWaiter waiter, bool oneTime)

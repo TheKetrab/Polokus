@@ -21,11 +21,13 @@ namespace Polokus.Core
         public IBpmnContext BpmnContext { get; }
 
         public INodeHandlerFactory NodeHandlerFactory { get; }
+        public string Id { get; }
 
-        public ContextInstance(IContextsManager contextsManager, IBpmnContext bpmnContext)
+        public ContextInstance(IContextsManager contextsManager, IBpmnContext bpmnContext, string id)
         {
             ContextsManager = contextsManager;
             BpmnContext = bpmnContext;
+            Id = id;
 
             var nhFactory = new NodeHandlerFactory();
             nhFactory.SetDefaultNodeHandlers();

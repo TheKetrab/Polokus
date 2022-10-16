@@ -10,5 +10,6 @@ namespace Polokus.Core.Interfaces
     {
         IDictionary<string,IContextInstance> ContextInstances { get; }
         ITimeManager TimeManager { get; }
+        IMessageManager MessageManager { get; }
     }
 }

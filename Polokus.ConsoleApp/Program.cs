@@ -1,19 +1,21 @@
-﻿using Polokus.Core;
+﻿using Polokus.ConsoleApp.ManualTests;
+using Polokus.Core;
 
-var contextsManager = new ContextsManager();
-contextsManager.LoadXmlFile(@"C:\Users\Bartlomiej.Grochowsk\Downloads\diagram (12).bpmn","CONTEXT");
 
-if (await contextsManager.RunContextManually("CONTEXT"))
+List<ManualTest> tests = new()
 {
-    Console.WriteLine("Process finished successfully");
-}
-else
+    new ManualTest("manualTask1.bpmn"),
+    new ManualTest("message1.bpmn","Use curl localhost:8080/Waiter_(Test)_(Process_0rrvqcp)_(Event_15d655d)"),
+
+};
+
+int successedTests = 0;
+for (int i=1; i<= tests.Count; i++)
 {
-    Console.WriteLine("Timeout...");
+    bool success = await tests[i-1].RunTest(i);
+    if (success) successedTests++;
 }
 
-Console.WriteLine();
-Console.WriteLine(" ----- LOG ----- ");
-Console.WriteLine(Logger.GetFullLog(true));
+Console.WriteLine($"Testing finished. Passed tests: {successedTests}/{tests.Count}");
 
 Console.ReadLine();

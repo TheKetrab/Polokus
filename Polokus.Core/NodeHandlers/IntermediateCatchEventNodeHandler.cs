@@ -32,6 +32,10 @@ namespace Polokus.Core.NodeHandlers
                         string timeDefinition = Node.Name;
                         subhandler = new TimerEventNodeHandler(ProcessInstance, TypedNode, timeDefinition);
                     }
+                    else if (eventDefinition is tMessageEventDefinition)
+                    {
+                        subhandler = new MessageEventNodeHandler(ProcessInstance, TypedNode);
+                    }
 
                 }
                 else

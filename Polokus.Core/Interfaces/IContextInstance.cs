@@ -14,6 +14,7 @@ namespace Polokus.Core.Interfaces
         IContextsManager ContextsManager { get; }
         IBpmnContext BpmnContext { get; }
         INodeHandlerFactory NodeHandlerFactory { get; }
+        string Id { get; }
 
     }
 }

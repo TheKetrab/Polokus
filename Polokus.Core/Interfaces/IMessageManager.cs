@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Polokus.Core.Interfaces
 {
-    public interface ITimeManager
+    public interface IMessageManager
     {
-        void RegisterWaiter(string timeString, INodeHandlerWaiter waiter, bool oneTime);
+        ICollection<string> ActiveListeners { get; }
+        void RegisterMessageListener(INodeHandlerWaiter waiter);
     }
 }

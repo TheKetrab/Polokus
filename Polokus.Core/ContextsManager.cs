@@ -13,8 +13,8 @@ namespace Polokus.Core
     {
         public IDictionary<string, IContextInstance> ContextInstances { get; } = new Dictionary<string, IContextInstance>();
 
-        public ITimeManager TimeManager => new TimeManager(this);
-
+        public ITimeManager TimeManager { get; } = new TimeManager();
+        public IMessageManager MessageManager { get; } = new MessageManager();
 
         public void LoadXmlFile(string xmlFilePath, string? bpmnContextName = null)
         {
@@ -23,7 +23,7 @@ namespace Polokus.Core
             BpmnParser parser = new BpmnParser();
             IBpmnContext bpmnContext = parser.ParseFile(xmlFilePath);
 
-            var contextInstance = new ContextInstance(this, bpmnContext);
+            var contextInstance = new ContextInstance(this, bpmnContext, bpmnContextName);
             ContextInstances.Add(bpmnContextName,contextInstance);
         }
 

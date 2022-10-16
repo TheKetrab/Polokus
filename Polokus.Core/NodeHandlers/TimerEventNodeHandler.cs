@@ -37,7 +37,7 @@ namespace Polokus.Core.NodeHandlers
             }
             else if (TimeString.IsCroneString(TimeDefinitions))
             {
-                var waiter = new NodeHandlerWaiter(ProcessInstance, this.Node, $"Waiter_{this.Node.Id}");
+                var waiter = new NodeHandlerWaiter(ProcessInstance, this.Node);
                 ProcessInstance.Waiters.Add(waiter);
                 ProcessInstance.ContextInstance.ContextsManager.TimeManager
                     .RegisterWaiter(TimeDefinitions, waiter, true);
