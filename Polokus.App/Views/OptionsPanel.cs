@@ -16,5 +16,10 @@ namespace Polokus.App.Views
         {
             InitializeComponent();
         }
+
+        private void OptionsPanel_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

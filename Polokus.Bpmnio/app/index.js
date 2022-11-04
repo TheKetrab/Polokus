@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import BpmnModeler from 'bpmn-js/lib/Modeler';
+import { getJpg } from './converter';
 
 import {
   BpmnPropertiesPanelModule,
@@ -142,6 +143,8 @@ $(function() {
 
     try {
 
+      debugger;
+      getJpg(bpmnModeler)
       const { svg } = await bpmnModeler.saveSVG();
 
       setEncoded(downloadSvgLink, 'diagram.svg', svg);
@@ -167,3 +170,9 @@ $(function() {
 
   bpmnModeler.on('commandStack.changed', exportArtifacts);
 });
+
+
+
+function myTestAction() {
+  return getJpg(bpmnModeler);
+}

@@ -65,7 +65,7 @@
 
 
       //var diagramUrl = 'https://cdn.staticaly.com/gh/bpmn-io/bpmn-js-examples/dfceecba/starter/diagram.bpmn';
-	var diagramUrl = 'C:\Custom\BPMN\Polokus\EXAMPLE\1\example1.bpmn';
+	var diagramUrl = 'https://raw.githubusercontent.com/TheKetrab/Polokus/main/EXAMPLE/0/example0.bpmn';
 
       // modeler instance
       var bpmnModeler = new BpmnJS({
@@ -108,7 +108,16 @@
           // access modeler components
           var canvas = bpmnModeler.get('canvas');
           var overlays = bpmnModeler.get('overlays');
+			var registry = bpmnModeler.get('elementRegistry');
+			var modeling = bpmnModeler.get('modeling');
+			debugger;
+			
+		var elementToColor = registry.get('Activity_0q5dqqq');
 
+      modeling.setColor([ elementToColor ], {
+        stroke: 'green',
+        fill: 'rgb(152, 203, 152)'
+      });
 
           // zoom to fit full viewport
           canvas.zoom('fit-viewport');
@@ -139,13 +148,7 @@
 	  
 	  
 	  
-	  var viewer = bpmnModeler;
-	  //viewer.importXML(diagramXML);
-
-var canvas = viewer.get('canvas');
-
-canvas.addMarker('UserTask_1', 'highlight');
-	  
+ 
 	  
 	  
 	  

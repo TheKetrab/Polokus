@@ -25,6 +25,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CefSharp.WinForms.NETCore" Version="104.4.240" />
+    <PackageReference Include="Svg" Version="3.4.4" />
   </ItemGroup>
   <ItemGroup>
     <None Update="bpmnio.html">
