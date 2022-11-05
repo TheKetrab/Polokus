@@ -18,7 +18,18 @@ namespace Polokus.App.Utils
             {
                 var svgDocument = SvgDocument.Open<SvgDocument>(stream);
                 var bitmap = svgDocument.Draw();
-                bitmap.Save("C:\\Users\\Bartlomiej.Grochowsk\\Desktop\\testf.1.png", ImageFormat.Png);
+                bitmap.Save("C:\\Users\\Bartlomiej.Grochowsk\\Desktop\\testf1.png", ImageFormat.Png);
+            }
+        }
+
+        public static Bitmap GetBitmapFromSvg(string svgString)
+        {
+            var byteArray = Encoding.ASCII.GetBytes(svgString);
+            using (var stream = new MemoryStream(byteArray))
+            {
+                var svgDocument = SvgDocument.Open<SvgDocument>(stream);
+                var bitmap = svgDocument.Draw();
+                return bitmap;
             }
         }
     }

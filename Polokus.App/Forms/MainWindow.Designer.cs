@@ -367,6 +367,8 @@ namespace Polokus.App.Forms
         private Panel panelSettings;
         private Panel panelService;
         private Panel panelHome;
+        private Views.XmlView xmlView1;
+        private Views.GraphView graphView1;
     }
 }
 

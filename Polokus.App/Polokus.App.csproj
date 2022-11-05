@@ -18,9 +18,6 @@
     <ProjectReference Include="..\Polokus.Core\Polokus.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Controls\" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Fonts\segmdl2.ttf" />
   </ItemGroup>
   <ItemGroup>

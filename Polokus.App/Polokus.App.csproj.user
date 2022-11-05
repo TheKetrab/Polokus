@@ -4,13 +4,22 @@
     <Compile Update="Controls\IconBtn.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Update="Controls\ReadOnlyRichTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Update="Forms\MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Views\ChromiumWindow.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Update="Views\GraphView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Update="Views\OptionsPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Views\XmlView.cs">
       <SubType>UserControl</SubType>
     </Compile>
   </ItemGroup>

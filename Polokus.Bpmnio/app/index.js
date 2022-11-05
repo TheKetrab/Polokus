@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import BpmnModeler from 'bpmn-js/lib/Modeler';
-import { getJpg } from './converter';
+import { getSvg } from './converter';
 
 import {
   BpmnPropertiesPanelModule,
@@ -172,7 +172,13 @@ $(function() {
 });
 
 
+async function xml2Svg(xml) {
 
-function myTestAction() {
-  return getJpg(bpmnModeler);
+  var modeler = bpmnModeler; //new BpmnModeler();
+  await modeler.importXML(xml);
+  let thesvg = await getSvg(modeler);
+
+  return thesvg;
 }
+
+window.xml2Svg = xml2Svg;

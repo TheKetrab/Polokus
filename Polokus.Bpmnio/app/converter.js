@@ -1,5 +1,5 @@
 
-export async function getJpg(bpmnModeler) {
+export async function getSvg(bpmnModeler) {
     
     debugger;
     const { svg } = await bpmnModeler.saveSVG();
@@ -17,4 +17,6 @@ function svg2jpg(svgString) {
     var base64 = btoa(decoded);
     return base64;
 }
+
+
 

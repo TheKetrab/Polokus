@@ -13,6 +13,15 @@ namespace Polokus.App.Forms
 {
     public partial class MainWindow : Form
     {
+        public static MainWindow? _instance = null;
+        public static MainWindow Instance
+        {
+            get {
+                return _instance;
+            }
+        }
+
+
         public enum PanelView
         {
             None,
@@ -26,6 +35,7 @@ namespace Polokus.App.Forms
         }
 
         private PanelView _activePanelView;
+        public PanelView ActivePanelView => _activePanelView;
         private bool _processPanelVisible = false;
 
 
@@ -35,19 +45,51 @@ namespace Polokus.App.Forms
         {
             var files = Directory.GetFiles(mainDirPath).Select(x => new FileInfo(x).Name);
             this.treeView1.Nodes.AddRange(files.Select(x => new TreeNode(x)).ToArray());
-            
+
+
+            this.treeView1.AfterSelect += (s, e) =>
+            {
+                var node = treeView1.SelectedNode;
+                TVIndexChanged?.Invoke(this, new TVIndexChangedEventArgs(Path.Combine(mainDirPath, node.Text)));
+            };
+
         }
 
+        public class TVIndexChangedEventArgs
+        {
+            public string FilePath { get; set; }
+
+            public TVIndexChangedEventArgs(string filePath)
+            {
+                FilePath = filePath;
+                
+            }
+        }
+        public event EventHandler<TVIndexChangedEventArgs> TVIndexChanged;
+
+
+        public ChromiumWindow BpmnioClient { get; }
         public MainWindow()
         {
+            _instance = this;
             InitializeComponent();
 
             ChromiumWindow editor = new ChromiumWindow();
+            BpmnioClient = editor;
             editor.Parent = this.panelEditor;
 
-            ChromiumWindow graphProcessView = new ChromiumWindow();
-            graphProcessView.Parent = this.panelProcessesGraph;
+            //ChromiumWindow graphProcessView = new ChromiumWindow();
+            //graphProcessView.Parent = this.panelProcessesGraph;
 
+            var processesGraphView = new GraphView();
+            processesGraphView.Dock = DockStyle.Fill;
+            processesGraphView.BackColor = Color.Yellow;
+            processesGraphView.Parent = this.panelProcessesGraph;
+
+            var processesXmlView = new XmlView();
+            processesXmlView.Dock = DockStyle.Fill;
+            processesXmlView.BackColor = Color.Green;
+            processesXmlView.Parent = this.panelProcessesXml;
 
             InitializeView();
         }
