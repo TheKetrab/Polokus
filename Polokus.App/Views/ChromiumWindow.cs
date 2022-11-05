@@ -35,28 +35,7 @@ namespace Polokus.App.Views
             this.Controls.Add(chromeBrowser);
         }
 
-        public async Task<string> GetBpmnSvg(string bpmnXml)
-        {
-            int i = 0;
-            while (!chromeBrowser.CanExecuteJavascriptInMainFrame)
-            {
-                await Task.Delay(100);
-                i++;
-                if (i >= 10)
-                {
-                    throw new Exception("Cannot prepare JS");
-                }
-            }
 
-            bpmnXml = bpmnXml.Replace('\n', ' ');
-
-            string fun = "window.xml2Svg";
-            string args = "\'" + bpmnXml + "\'";
-            string script = "return (async function() { const result = await " + $"{fun}({args})" + "; return result; })();";
-
-            var result = await chromeBrowser.EvaluateScriptAsPromiseAsync(script);
-            return result.Result.ToString();
-        }
 
 
         private void button1_Click(object sender, EventArgs e)

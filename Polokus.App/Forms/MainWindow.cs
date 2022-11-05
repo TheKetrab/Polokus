@@ -1,4 +1,5 @@
-﻿using Polokus.App.Views;
+﻿using Polokus.App.Utils;
+using Polokus.App.Views;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -69,7 +70,23 @@ namespace Polokus.App.Forms
 
         private GraphView processesGraphView;
         private ChromiumWindow editor;
-        public ChromiumWindow BpmnioClient { get; }
+
+
+        private IBpmnClient _client;
+        public IBpmnClient? BpmnClient
+        {
+            get
+            {
+                if (!editor.chromeBrowser.CanExecuteJavascriptInMainFrame)
+                {
+                    return null;
+                }
+                else
+                {
+                    return _client;
+                }
+            }
+        }
         public MainWindow()
         {
             _instance = this;
@@ -77,8 +94,8 @@ namespace Polokus.App.Forms
 
             editor = new ChromiumWindow();
             editor.Dock = DockStyle.Fill;
-            BpmnioClient = editor;
             editor.Parent = this.panelEditor;
+            _client = new BpmnioClient(editor);
 
             //ChromiumWindow graphProcessView = new ChromiumWindow();
             //graphProcessView.Parent = this.panelProcessesGraph;

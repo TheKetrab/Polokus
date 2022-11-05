@@ -54,7 +54,7 @@ namespace Polokus.App.Views
                     else
                     {
                         string bpmnContent = File.ReadAllText(file);
-                        string svg = await MainWindow.Instance.BpmnioClient.GetBpmnSvg(bpmnContent);
+                        string svg = await MainWindow.Instance.BpmnClient.GetBpmnSvg(bpmnContent);
                         bitmap = Utils.ImageConverter.GetBitmapFromSvg(svg);
                         _cache[file] = bitmap;
                     }
