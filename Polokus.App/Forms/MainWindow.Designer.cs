@@ -32,6 +32,7 @@ namespace Polokus.App.Forms
             this.components = new System.ComponentModel.Container();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.panel1 = new System.Windows.Forms.Panel();
+            this.labelInfo = new System.Windows.Forms.Label();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.panelSideMenu = new System.Windows.Forms.Panel();
             this.buttonSettings = new System.Windows.Forms.Button();
@@ -53,6 +54,7 @@ namespace Polokus.App.Forms
             this.panelProcessesCsharp = new System.Windows.Forms.Panel();
             this.panelProcessesXml = new System.Windows.Forms.Panel();
             this.panelProcessesGraph = new System.Windows.Forms.Panel();
+            this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -66,12 +68,22 @@ namespace Polokus.App.Forms
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.DimGray;
+            this.panel1.Controls.Add(this.labelInfo);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panel1.Location = new System.Drawing.Point(0, 615);
             this.panel1.Margin = new System.Windows.Forms.Padding(2);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(1184, 21);
             this.panel1.TabIndex = 0;
+            // 
+            // labelInfo
+            // 
+            this.labelInfo.AutoSize = true;
+            this.labelInfo.Location = new System.Drawing.Point(0, 0);
+            this.labelInfo.Name = "labelInfo";
+            this.labelInfo.Size = new System.Drawing.Size(38, 15);
+            this.labelInfo.TabIndex = 0;
+            this.labelInfo.Text = "label2";
             // 
             // splitContainer1
             // 
@@ -329,6 +341,8 @@ namespace Polokus.App.Forms
             this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.Name = "MainWindow";
             this.Text = "Form1";
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
@@ -369,6 +383,7 @@ namespace Polokus.App.Forms
         private Panel panelHome;
         private Views.XmlView xmlView1;
         private Views.GraphView graphView1;
+        private Label labelInfo;
     }
 }
 

@@ -1,5 +1,6 @@
 ﻿using Polokus.App.Controls;
 using Polokus.App.Forms;
+using Polokus.App.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,12 +17,15 @@ namespace Polokus.App.Views
     {
         public Dictionary<string, Bitmap> _cache = new();
 
-        Graphics _graphics;
+        Bitmap currentBmp;
 
+        string current = "";
 
         public GraphView()
         {
             InitializeComponent();
+
+            this.panelGraphic.Paint += Panel1_Paint;
 
             if (MainWindow.Instance != null)
             {
@@ -33,10 +37,15 @@ namespace Polokus.App.Views
                     }
 
 
-                    _graphics = this.panel1.CreateGraphics();
-                    _graphics.Clear(BackColor);
-
                     string file = e.FilePath;
+
+                    if (file == current)
+                    {
+                        return;
+                    }
+
+                    current = file;
+
                     Bitmap bitmap;
                     if (_cache.ContainsKey(file))
                     {
@@ -46,21 +55,27 @@ namespace Polokus.App.Views
                     {
                         string bpmnContent = File.ReadAllText(file);
                         string svg = await MainWindow.Instance.BpmnioClient.GetBpmnSvg(bpmnContent);
-                        //string svg = File.ReadAllText("C:\\Users\\Bartlomiej.Grochowsk\\Downloads\\diagram (5).svg");
-                        //Utils.ImageConverter.SavePngFromSvg(svg);
                         bitmap = Utils.ImageConverter.GetBitmapFromSvg(svg);
                         _cache[file] = bitmap;
                     }
 
-                    this.panel1.Width = bitmap.Width;
-                    this.panel1.Height = bitmap.Height;
-
-                    _graphics.DrawImage(bitmap, 0, 0, bitmap.Width, bitmap.Height);
-
+                    currentBmp = bitmap;
+                    this.panelGraphic.Width = bitmap.Width;
+                    this.panelGraphic.Height = bitmap.Height;
+                    this.panelGraphic.Invalidate();
                 };
             }
         }
 
-       
+        private void Panel1_Paint(object? sender, PaintEventArgs e)
+        {
+            e.Graphics.Clear(BackColor);
+            if (currentBmp != null)
+            {
+                MainWindow.Instance.SetInfo($"{this.DimString()}{30,' '}{this.panelMain.DimString()}{30,' '}{this.panelGraphic.DimString()}");
+                e.Graphics.DrawImage(currentBmp, 0, 0, currentBmp.Width, currentBmp.Height);
+            }
+
+        }
     }
 }

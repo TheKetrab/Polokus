@@ -29,11 +29,31 @@ namespace Polokus.App.Views
                     return;
                 }
 
-                string bpmnContent = File.ReadAllText(e.FilePath);
-                this.readOnlyRichTextBox1.Text = FormatXml(bpmnContent);
+                LoadBpmnXml(e.FilePath);
+
             };
 
 
+        }
+
+        public void LoadBpmnXml(string filepath)
+        {
+            string bpmnContent = File.ReadAllText(filepath);
+            this.readOnlyRichTextBox1.Text = FormatXml(bpmnContent);
+
+            string filename = Path.GetFileName(filepath);
+            int processesCnt = CountProcesses(bpmnContent);
+
+            this.labelFilename.Text = filename;
+            this.labelProcessesCount.Text = $"Processes: {processesCnt}";
+        }
+
+        public int CountProcesses(string bpmn)
+        {
+            XDocument doc = XDocument.Parse(bpmn);
+            int cnt = doc.Descendants().Where(x => x.Name.LocalName == "process").Count();
+
+            return cnt;
         }
 
         string FormatXml(string xml)
@@ -49,6 +69,9 @@ namespace Polokus.App.Views
             }
         }
 
+        private void readOnlyRichTextBox1_TextChanged(object sender, EventArgs e)
+        {
 
+        }
     }
 }

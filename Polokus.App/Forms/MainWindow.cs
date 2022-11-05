@@ -67,21 +67,23 @@ namespace Polokus.App.Forms
         }
         public event EventHandler<TVIndexChangedEventArgs> TVIndexChanged;
 
-
+        private GraphView processesGraphView;
+        private ChromiumWindow editor;
         public ChromiumWindow BpmnioClient { get; }
         public MainWindow()
         {
             _instance = this;
             InitializeComponent();
 
-            ChromiumWindow editor = new ChromiumWindow();
+            editor = new ChromiumWindow();
+            editor.Dock = DockStyle.Fill;
             BpmnioClient = editor;
             editor.Parent = this.panelEditor;
 
             //ChromiumWindow graphProcessView = new ChromiumWindow();
             //graphProcessView.Parent = this.panelProcessesGraph;
 
-            var processesGraphView = new GraphView();
+            processesGraphView = new GraphView();
             processesGraphView.Dock = DockStyle.Fill;
             processesGraphView.BackColor = Color.Yellow;
             processesGraphView.Parent = this.panelProcessesGraph;
@@ -92,8 +94,24 @@ namespace Polokus.App.Forms
             processesXmlView.Parent = this.panelProcessesXml;
 
             InitializeView();
+
+
+            SizeChanged += MainWindow_SizeChanged;
+            splitContainer1.SplitterMoved += MainWindow_SizeChanged;
         }
 
+        public void SetInfo(string info)
+        {
+            this.labelInfo.Text = info;
+        }
+
+        private void MainWindow_SizeChanged(object? sender, EventArgs e)
+        {
+            //this.labelInfo.Text = $"Window: {Width}x{Height} ; {30,' '} Left: {splitContainer1.Panel1.Width}x{splitContainer1.Panel1.Height} ; {30,' '} Right: {splitContainer1.Panel2.Width}x{splitContainer1.Panel2.Height}";
+
+            //processesGraphView.Width = splitContainer1.Panel2.Width;
+            //processesGraphView.Height = splitContainer1.Panel2.Height;
+        }
 
         async Task HideProcessesPanel()
         {
