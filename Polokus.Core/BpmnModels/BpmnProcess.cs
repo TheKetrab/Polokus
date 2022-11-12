@@ -115,5 +115,9 @@ namespace Polokus.Core.Models
             return false;
         }
 
+        public IFlowNode GetManualStartNode()
+        {
+            return nodesDictionary.Values.Single(x => BpmnXmlHelpers.IsManualStartNode(x));
+        }
     }
 }

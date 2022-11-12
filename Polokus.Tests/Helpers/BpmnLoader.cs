@@ -12,6 +12,7 @@ namespace Polokus.Tests.Helpers
     {
         public const string TestsDir = @"..\..\..\";
         public const string BpmnDir = TestsDir + @"NodeHandlersTests\Bpmn\";
+        private static int _cnt = 0;
 
         public static SimpleProcessInstance LoadBpmnXmlIntoSimpleProcessInstance(string bpmnFile)
         {
@@ -20,7 +21,7 @@ namespace Polokus.Tests.Helpers
             var contextInstance = contextsManager.ContextInstances.First().Value;
             var bpmnProcess = contextInstance.BpmnContext.BpmnProcesses.First();
 
-            return new SimpleProcessInstance(contextInstance, bpmnProcess);
+            return new SimpleProcessInstance($"pi{_cnt++}",contextInstance, bpmnProcess);
         }
 
         public static ContextsManager LoadBpmnXmlIntoContextsManager(string bpmnFile, IHooksProvider? hooksProvider = null)

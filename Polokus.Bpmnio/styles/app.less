@@ -79,7 +79,7 @@ a:link {
 }
 
 
-.buttons {
+.buttons-panel {
   position: fixed;
   bottom: 20px;
   left: 20px;
@@ -88,28 +88,22 @@ a:link {
   margin: 0;
   list-style: none;
 
-  > li {
-    display: inline-block;
-    margin-right: 10px;
-
-    > a {
-      background: #DDD;
-      border: solid 1px #666;
-      display: inline-block;
-      padding: 5px;
-    }
+  button {
+    border: solid rgba(42, 40, 40, 0.804) 2px;
+    border-radius: 5px;
+    padding: 5px;
+    opacity: 0.7;
   }
 
-  a {
-    opacity: 0.3;
+  button:hover {
+    opacity: 1;
+    cursor: pointer;
   }
 
-  a.active {
-    opacity: 1.0;
-  }
 }
 
 #js-properties-panel {
+  background-color: white;
   position: absolute;
   top: 0;
   bottom: 0;
@@ -125,4 +119,10 @@ a:link {
     padding-bottom: 70px;
     min-height:100%;
   }
+}
+
+.highlight-overlay {
+  background-color: green;
+  opacity: 0.4;
+  pointer-events: none;
 }

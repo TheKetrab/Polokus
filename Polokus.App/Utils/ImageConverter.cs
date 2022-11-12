@@ -18,7 +18,9 @@ namespace Polokus.App.Utils
             {
                 var svgDocument = SvgDocument.Open<SvgDocument>(stream);
                 var bitmap = svgDocument.Draw();
-                bitmap.Save("C:\\Users\\Bartlomiej.Grochowsk\\Desktop\\testf1.png", ImageFormat.Png);
+
+                string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                bitmap.Save(Path.Combine(desktopPath,"diagram.png"), ImageFormat.Png);
             }
         }
 

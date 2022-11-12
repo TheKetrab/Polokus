@@ -8,13 +8,15 @@ namespace Polokus.Core.Interfaces
 {
     public interface IProcessInstance
     {
+        public string Id { get; }
+        ProcessStatus Status { get; }
         IContextInstance ContextInstance { get; }
         IBpmnProcess BpmnProcess { get; }
         ActiveTasksManager ActiveTasksManager { get; }
         IDictionary<string,INodeHandler> AvailableNodeHandlers { get; }
         ICollection<INodeHandlerWaiter> Waiters { get; }
         IEnumerable<ICatchingIntermediateEvent> CatchingIntermediateEvents { get; }
-
+        ICollection<string> Logs { get; }
 
 
         bool ExistsAnotherTaskAbleToCallTarget(IFlowNode target, List<string> callers);

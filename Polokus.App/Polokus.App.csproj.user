@@ -19,6 +19,9 @@
     <Compile Update="Views\OptionsPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Update="Views\ServiceView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Update="Views\XmlView.cs">
       <SubType>UserControl</SubType>
     </Compile>

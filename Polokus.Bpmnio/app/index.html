@@ -11,12 +11,6 @@
 <body>
   <div class="content" id="js-drop-zone">
 
-    <div class="message intro">
-      <div class="note">
-        Drop BPMN diagram from your desktop or <a id="js-create-diagram" href>create a new diagram</a> to get started.
-      </div>
-    </div>
-
     <div class="message error">
       <div class="note">
         <p>Ooops, we could not display the BPMN 2.0 diagram.</p>
@@ -32,21 +26,22 @@
     <div id="js-properties-panel"></div>
   </div>
 
-  <ul class="buttons">
-    <li>
-      download
-    </li>
-    <li>
-      <a id="js-download-diagram" href title="download BPMN diagram">
-        BPMN diagram
-      </a>
-    </li>
-    <li>
-      <a id="js-download-svg" href title="download as SVG image">
-        SVG image
-      </a>
-    </li>
-  </ul>
+  <div class="buttons-panel">
+    <button id="js-download-diagram">
+      <span>BPMN diagram</span>
+    </button>
+    <button id="js-download-svg">
+      <span>SVG image</span>
+    </button>
+    <button id="js-download-png">
+      <span>PNG image</span>
+    </button>
+    <button id="js-open-file-btn" onclick="document.getElementById('js-open-file').click()">
+      <span>Open BPMN</span>
+    </button>
+  </div>
+
+  <input type="file" id="js-open-file" accept=".bpmn,.xml" />
 
   <script src="index.js"></script>
 </html>

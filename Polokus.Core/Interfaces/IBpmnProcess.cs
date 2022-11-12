@@ -16,6 +16,6 @@ namespace Polokus.Core.Interfaces
         void SetSequences(IEnumerable<ISequence> sequences);
         IEnumerable<IFlowNode> GetStartNodes();
         bool IsReachable(IFlowNode src, IFlowNode dest);
-
+        IFlowNode GetManualStartNode();
     }
 }

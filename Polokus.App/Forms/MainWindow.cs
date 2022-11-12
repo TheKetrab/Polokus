@@ -110,6 +110,11 @@ namespace Polokus.App.Forms
             processesXmlView.BackColor = Color.Green;
             processesXmlView.Parent = this.panelProcessesXml;
 
+            var serviceView = new ServiceView();
+            serviceView.Dock = DockStyle.Fill;
+            serviceView.BackColor = Color.Orange;
+            serviceView.Parent = this.panelService;
+
             InitializeView();
 
 
@@ -140,18 +145,22 @@ namespace Polokus.App.Forms
             this.panelProcesses.Visible = true;
             this.panelProcesses.Dock = DockStyle.Top;
 
-            int initHeight = this.panelProcesses.Height;
-            for (int i=initHeight; i >= 0; i-=40)
-            {
-                await Task.Delay(1);
-                this.panelProcesses.Height = i;
-            }
-
+            await AnimateProperty(this.panelProcesses,
+                (f) => { this.panelProcesses.Height = (int)f; },
+                ProcessPanelHeight, 0, 100);
 
             this.panelProcesses.Visible = false;
             this.buttonSettings.Dock = DockStyle.Top;
             _processPanelVisible = false;
         }
+
+        private int ProcessPanelHeight => this.panelSideMenu.Height
+                - panelLogo.Height
+                - buttonSettings.Height
+                - buttonEditor.Height
+                - buttonService.Height
+                - buttonProcesses.Height;
+
 
         async Task ShowProcessesPanel()
         {
@@ -160,28 +169,37 @@ namespace Polokus.App.Forms
                 return;
             }
 
-            this.panelProcesses.Height = 0;
             this.panelProcesses.Dock = DockStyle.Top;
             this.panelProcesses.Visible = true;
-
             this.buttonSettings.Dock = DockStyle.Top;
 
-            int destHeight = this.panelSideMenu.Height
-                - panelLogo.Height
-                - buttonSettings.Height
-                - buttonEditor.Height
-                - buttonService.Height
-                - buttonProcesses.Height;
-
-            for (int i=0; i <= destHeight; i+= 40)
-            {
-                await Task.Delay(1);
-                this.panelProcesses.Height = i;
-            }
+            await AnimateProperty(this.panelProcesses,
+                (f) => { this.panelProcesses.Height = (int)f; },
+                0, ProcessPanelHeight, 100);
 
             this.panelProcesses.Dock = DockStyle.Fill;
             this.buttonSettings.Dock = DockStyle.Bottom;
             _processPanelVisible = true;
+        }
+
+        private async Task AnimateProperty(Control control, Action<float> update, int from, int to, int ms)
+        {
+            const int timestep = 15; // depends on system tick time, Windows ~15ms
+            float step = timestep * (float)(to - from) / (float)ms;
+
+            update(from);
+
+            Func<float,int,bool> relation = from < to
+                ? (float f, int i) => f < i
+                : (float f, int i) => f > i;
+
+            for (float current = from; relation(current,to); current += step)
+            {
+                await Task.Delay(timestep);
+                update(current);
+            }
+            update(to);
+
         }
 
         void SetProcessesView(PanelView view)

@@ -1,5 +1,7 @@
 ﻿using Polokus.Core.Factories;
 using Polokus.Core.Interfaces;
+using Polokus.Core.Models.BpmnObjects.Xsd;
+using Polokus.Core.Models;
 using Polokus.Core.Scripting;
 using System;
 using System.Collections.Generic;
@@ -13,6 +15,18 @@ namespace Polokus.Core
 {
     public class ContextInstance : IContextInstance
     {
+        private int _counter = 0; // processInstanceId
+        private object _lock = new object();
+        public int GetAnotherProcessId()
+        {
+            lock (_lock)
+            {
+                return _counter++;
+            }
+        }
+
+
+        public ICollection<IProcessInstance> History { get; } = new List<IProcessInstance>();
         public ICollection<IProcessInstance> ProcessInstances { get; } = new List<IProcessInstance>();
 
         public IScriptProvider ScriptProvider { get; } = new ScriptProvider();
@@ -40,6 +54,13 @@ namespace Polokus.Core
             HooksProvider = hooksProvider;
         }
 
+        public event EventHandler<string> ProcessInstanceChanged;
+        public void NotifyProcessInstanceChanged(string id)
+        {
+            ProcessInstanceChanged?.Invoke(null, id);
+        }
+
+
         private bool IsTimeout(DateTime start, int? timeout)
         {
             return timeout != null && timeout >= 0
@@ -48,8 +69,10 @@ namespace Polokus.Core
 
         public async Task<bool> RunProcessAsync(IBpmnProcess bpmnProcess, IFlowNode startNode, int? timeout)
         {
-            ProcessInstance instance = new ProcessInstance(this, bpmnProcess, HooksProvider);
+            string processId = $"pi{GetAnotherProcessId()}_{bpmnProcess.Id}";
+            ProcessInstance instance = new ProcessInstance(processId, this, bpmnProcess, HooksProvider);
             ProcessInstances.Add(instance);
+            ProcessInstanceChanged?.Invoke(this,instance.Id);
 
             DateTime start = DateTime.Now;
             instance.Begin(startNode);
@@ -65,13 +88,25 @@ namespace Polokus.Core
             }
 
             Logger.Log($"Process finished. Time: {DateTime.Now - start}");
+            instance.Finish();
+            instance.Logs.Add($"Process finished. Time: {instance.TotalTime}");
             ProcessInstances.Remove(instance);
+            History.Add(instance);
+            ProcessInstanceChanged?.Invoke(this, instance.Id);
             return true;
         }
 
         public void StartProcessInstance(IBpmnProcess bpmnProcess, IFlowNode startNode, int? timeout)
         {
             Task.Run(async () => await RunProcessAsync(bpmnProcess, startNode, timeout));
+        }
+
+
+        public void StartProcessManually(string bpmnProcessId)
+        {
+            var bpmnProcess = BpmnContext.BpmnProcesses.Single(x => x.Id == bpmnProcessId);
+            var startNode = bpmnProcess.GetManualStartNode();
+            StartProcessInstance(bpmnProcess, startNode, -1);
         }
     }
 }

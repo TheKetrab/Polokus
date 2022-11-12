@@ -19,13 +19,16 @@ namespace Polokus.Core
 
     public class ProcessInstance : IProcessInstance
     {
+        public string Id { get; set; }
+
         private DateTime? _beginTime;
         private DateTime? _finishTime;
         public TimeSpan TotalTime =>
             (_beginTime == null) ? TimeSpan.Zero
                 : ((_finishTime == null) ? (DateTime.Now - _beginTime.Value)
                 : _finishTime.Value - _beginTime.Value);
-                        
+
+        public ProcessStatus Status { get; set; } = ProcessStatus.Initialized;
         public bool IsActive { get; private set; }
 
         public IContextInstance ContextInstance { get; }
@@ -47,10 +50,11 @@ namespace Polokus.Core
         public ICollection<INodeHandlerWaiter> Waiters { get; } = new List<INodeHandlerWaiter>();
 
         public IHooksProvider? hooksProvider;
+        public ICollection<string> Logs { get; set; } = new List<string>();
 
-
-        public ProcessInstance(IContextInstance contextInstance, IBpmnProcess bpmnProcess, IHooksProvider? hooksProvider = null)
+        public ProcessInstance(string id, IContextInstance contextInstance, IBpmnProcess bpmnProcess, IHooksProvider? hooksProvider = null)
         {
+            Id = id;
             ContextInstance = contextInstance;
             ActiveTasksManager = new ActiveTasksManager(this);
 
@@ -200,8 +204,9 @@ namespace Polokus.Core
         public void Stop()
         {
             IsActive = false;
+            Status = ProcessStatus.Stopped;
             // TODO: stop all tasks
-
+            this.ContextInstance.NotifyProcessInstanceChanged(Id);
         }
 
         public void Kill()
@@ -221,22 +226,28 @@ namespace Polokus.Core
             {
                 throw new InvalidOperationException("Not allowed to start process on node which is not 'StartNode'.");
             }
+            this.ContextInstance.NotifyProcessInstanceChanged(Id);
 
             _beginTime = DateTime.Now;
             IsActive = true;
+            Status = ProcessStatus.Running;
             StartNewSequence(startNode, null);
         }
 
         public void Run()
         {
+            this.ContextInstance.NotifyProcessInstanceChanged(Id);
             IsActive = true;
+            Status = ProcessStatus.Running;
             // TODO: rerun stopped tasks
         }
 
         public void Finish()
         {
+            this.ContextInstance.NotifyProcessInstanceChanged(Id);
             IsFinished = true;
             _finishTime = DateTime.Now;
+            Status = ProcessStatus.Finished;
         }
     }
 

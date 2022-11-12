@@ -20,15 +20,10 @@ namespace Polokus.Core
         public IMessageManager MessageManager { get; } = new MessageManager();
 
 
-        public void LoadXmlFile(string xmlFilePath, string? bpmnContextName = null, IHooksProvider? hooksProvider = null)
+
+        private void RegisterWaiters(ContextInstance contextInstance)
         {
-            bpmnContextName ??= new FileInfo(xmlFilePath).Name;
-
-            BpmnParser parser = new BpmnParser();
-            IBpmnContext bpmnContext = parser.ParseFile(xmlFilePath);
-
-            var contextInstance = new ContextInstance(this, bpmnContext, bpmnContextName, hooksProvider);
-            var allStartNodes = bpmnContext.BpmnProcesses.SelectMany(x => x.GetStartNodes());
+            var allStartNodes = contextInstance.BpmnContext.BpmnProcesses.SelectMany(x => x.GetStartNodes());
             foreach (var startNode in allStartNodes)
             {
                 if (startNode is FlowNode<tStartEvent> startFlowNode)
@@ -52,14 +47,28 @@ namespace Polokus.Core
                     }
 
                 }
-            }
 
+            }
+        }
+
+
+        public void LoadXmlFile(string xmlFilePath, string? bpmnContextName = null, IHooksProvider? hooksProvider = null)
+        {
+            bpmnContextName ??= new FileInfo(xmlFilePath).Name;
+
+            BpmnParser parser = new BpmnParser();
+            IBpmnContext bpmnContext = parser.ParseFile(xmlFilePath);
+
+            var contextInstance = new ContextInstance(this, bpmnContext, bpmnContextName, hooksProvider);
+            RegisterWaiters(contextInstance);
 
             ContextInstances.Add(bpmnContextName,contextInstance);
         }
 
         public async Task<bool> RunContextManually(string name, int secTimeout = -1, IHooksProvider hooksProvider = null)
         {
+            // TODO: ta metoda jest tylko w testach, trzeba ja dac gdzies indziej
+
             if (!ContextInstances.ContainsKey(name))
             {
                 throw new Exception("Cannot find a context with given name.");

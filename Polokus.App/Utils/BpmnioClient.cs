@@ -13,9 +13,15 @@ namespace Polokus.App.Utils
     public class BpmnioClient : IBpmnClient
     {
         ChromiumWebBrowser chromiumWebBrowser;
+        
         public BpmnioClient(ChromiumWindow chromiumWindow)
         {
             chromiumWebBrowser = chromiumWindow.chromeBrowser;
+
+            chromiumWebBrowser.JavascriptObjectRepository.Settings.LegacyBindingEnabled = true;
+            chromiumWebBrowser.JavascriptObjectRepository.Register("callbackObj", new CallbackObjectForJs(), options: BindingOptions.DefaultBinder);
+
+            //chromiumWebBrowser.RegisterAsyncJsObject("callbackObj", _callbackObjectForJs);
         }
 
         public async Task<string> GetBpmnSvg(string bpmnXml)

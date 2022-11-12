@@ -19,17 +19,22 @@ namespace Polokus.App.Views
     {
         private readonly string bpmnioPage = Path.Combine(Application.StartupPath,"public/index.html");
 
-        public ChromiumWindow()
+        public ChromiumWindow(string mode = "")
         {
             InitializeComponent();
-            InitializeChromium();
+            InitializeChromium(mode);
         }
 
         public ChromiumWebBrowser chromeBrowser;
 
-        public void InitializeChromium()
+        public void InitializeChromium(string mode)
         {
-            chromeBrowser = new ChromiumWebBrowser(bpmnioPage);
+            string opts = "";
+            if (mode == "viewer")
+            {
+                opts = "?mode=viewer";
+            }
+            chromeBrowser = new ChromiumWebBrowser(bpmnioPage + opts);
             chromeBrowser.Dock = DockStyle.Fill;
 
             this.Controls.Add(chromeBrowser);
