@@ -1,6 +1,7 @@
 using CefSharp.WinForms;
 using CefSharp;
 using Polokus.App.Forms;
+using Polokus.Core;
 
 namespace Polokus.App
 {
@@ -30,6 +31,19 @@ namespace Polokus.App
             Application.Run(new MainWindow());
 
 
+            // ----- EXIT -----
+            // TODO: if enable logs == true w app config
+            string logsPath = Path.Combine(Directory.GetCurrentDirectory(), "Logs");
+            if (!Directory.Exists(logsPath))
+            {
+                Directory.CreateDirectory(logsPath);
+            }
+            string filename = $"PolokusLog_{DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss")}.txt";
+            string logText = Logger.GetFullLog(true);
+            if (!string.IsNullOrEmpty(logText))
+            {
+                File.WriteAllText(Path.Combine(logsPath, filename), Logger.GetFullLog(true));
+            }
 
         }
 

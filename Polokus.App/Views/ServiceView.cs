@@ -37,7 +37,6 @@ namespace Polokus.App.Views
             ContextsManager.LoadXmlFile("C:\\Custom\\BPMN\\Polokus\\Polokus.Tests\\NodeHandlersTests\\Bpmn\\timerEvent1.bpmn");
             ContextsManager.LoadXmlFile("C:\\Custom\\BPMN\\Polokus\\Polokus.Tests\\NodeHandlersTests\\Bpmn\\exclusive1.bpmn");
             ContextsManager.LoadXmlFile("C:\\Custom\\BPMN\\Polokus\\Polokus.Tests\\NodeHandlersTests\\Bpmn\\msgStart.bpmn");
-            ContextsManager.LoadXmlFile("C:\\Custom\\BPMN\\Polokus\\Polokus.Tests\\NodeHandlersTests\\Bpmn\\REMOVEsimpletasks.bpmn");
 
             this.listViewProcesses.SizeChanged += (s, e) =>
             {
