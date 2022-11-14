@@ -17,5 +17,6 @@ namespace Polokus.Core.Interfaces
         IEnumerable<IFlowNode> GetStartNodes();
         bool IsReachable(IFlowNode src, IFlowNode dest);
         IFlowNode GetManualStartNode();
+        IEnumerable<string> GetNodesIds();
     }
 }

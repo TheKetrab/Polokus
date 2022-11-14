@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+﻿using CefSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Polokus.App.Utils;
 using Polokus.Core;
 using Polokus.Core.Interfaces;
@@ -19,15 +20,15 @@ namespace Polokus.App.Views
     public partial class ServiceView : UserControl
     {
         ContextsManager ContextsManager;
-
+        public ChromiumWindow chromiumWindow;
 
         public ServiceView()
         {
             InitializeComponent();
 
-            ChromiumWindow chw = new ChromiumWindow("viewer");
-            chw.Parent = panelBpmnio;
-            chw.Dock = DockStyle.Fill;
+            chromiumWindow = new ChromiumWindow("viewer");
+            chromiumWindow.Parent = panelBpmnio;
+            chromiumWindow.Dock = DockStyle.Fill;
 
             // TODO: powiazac to z waiterami konkretnego procesu?
             //this.dataGridView1.DataSource = contextsManager
@@ -53,11 +54,13 @@ namespace Polokus.App.Views
 
             this.listViewInstances.SelectedIndexChanged += (s, e) =>
             {
-                var item = this.listViewInstances.SelectedItems[0];
-                MessageBox.Show(item.SubItems[0].Text);
-                ActiveProcessInstance = item.SubItems[0].Text;
+                if (listViewInstances.SelectedItems.Count == 1)
+                {
+                    var item = this.listViewInstances.SelectedItems[0];
+                    ActiveProcessInstance = item.SubItems[0].Text;
 
-                ActiveProcessChanged();
+                    ActiveProcessChanged();
+                }
             };
 
 
@@ -98,7 +101,7 @@ namespace Polokus.App.Views
             string activeProcess = GetOpenedProcessInstanceGlobalId();
 
             LoadLogsForProcessInstance(activeProcess);
-            // TODO: show graph
+            LoadGraphForProcessInstance(activeProcess);
         }
 
         private void InitializeComboBoxContexts()
@@ -208,6 +211,29 @@ namespace Polokus.App.Views
             });
         }
 
+        
+        public void LoadGraphForProcessInstance(string globalProcessInstanceId)
+        {
+            int i = globalProcessInstanceId.IndexOf('/');
+            string contextInstanceId = globalProcessInstanceId.Substring(0, i);
+            string processInstanceId = globalProcessInstanceId.Substring(i + 1);
+
+            ContextInstance contextInstance = (ContextInstance)ContextsManager.ContextInstances[contextInstanceId];
+            ProcessInstance processInstance = (ProcessInstance)contextInstance.GetProcessInstanceById(processInstanceId);
+
+            string rawString = processInstance.BpmnProcess.BpmnContext.RawString;
+
+            this.chromiumWindow.chromeBrowser.ExecuteScriptAsync($"window.api.openInViewerAsync('{rawString}');");
+
+
+            HashSet<string> activeNodesIds = processInstance.AvailableNodeHandlers.Values.Select(nh => nh.Node.Id).ToHashSet();
+
+            var allNodesIds = processInstance.BpmnProcess.GetNodesIds();
+            var inactiveNodesIds = allNodesIds.Where(x => !activeNodesIds.Contains(x));
+
+            BpmnioClient.SetColours(chromiumWindow, activeNodesIds, inactiveNodesIds);
+
+        }
 
         public void LoadLogsForProcessInstance(string globalProcessInstanceId)
         {

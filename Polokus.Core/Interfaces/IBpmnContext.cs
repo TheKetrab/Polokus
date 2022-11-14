@@ -10,5 +10,6 @@ namespace Polokus.Core.Interfaces
     {
         IContextInstance? ContextInstance { get; }
         IEnumerable<IBpmnProcess> BpmnProcesses { get; }
+        string? RawString { get; }
     }
 }

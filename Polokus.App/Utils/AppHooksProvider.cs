@@ -42,8 +42,10 @@ namespace Polokus.App.Utils
 
         public void BeforeExecuteNode(string processInstanceId, IFlowNode node, int taskId, INodeCaller? caller)
         {
+            UpdateActiveNodesInGraph(processInstanceId);
             Log(processInstanceId, $"Executing: {node.Id} taskId = {taskId}");
             Thread.Sleep(300); // delay execution
+            Thread.Sleep(3000); // delay execution
         }
 
         public void BeforeStartNewSequence(string processInstanceId, IFlowNode firstNode, INodeCaller? caller)
@@ -84,5 +86,24 @@ namespace Polokus.App.Utils
                 _view.AppendLogLine(message);
             }
         }
+
+        private void UpdateActiveNodesInGraph(string processInstanceId)
+        {
+            string globalInstanceId = Helpers.GetGlobalProcessInstanceId(_contextInstance.Id, processInstanceId);
+            if (globalInstanceId != _view.GetOpenedProcessInstanceGlobalId())
+            {
+                return;
+            }
+
+            var instance = _contextInstance.ProcessInstances.FirstOrDefault(x => x.Id == processInstanceId);
+            HashSet<string> activeNodesIds = instance.AvailableNodeHandlers.Values.Select(nh => nh.Node.Id).ToHashSet();
+
+            var allNodesIds = instance.BpmnProcess.GetNodesIds();
+            var inactiveNodesIds = allNodesIds.Where(x => !activeNodesIds.Contains(x));
+
+            BpmnioClient.SetColours(_view.chromiumWindow, activeNodesIds, inactiveNodesIds);
+
+        }
+
     }
 }

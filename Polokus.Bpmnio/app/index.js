@@ -20,56 +20,19 @@ var bpmnViewer;
 
 
 
-async function openInViewer(bpmnXML) {
-
-  // import diagram
-  try {
-
-    await
-     bpmnViewer.importXML(bpmnXML);
-debugger;
-    // access viewer components
-    var canvas = bpmnViewer.get('canvas');
-    var overlays = bpmnViewer.get('overlays');
-
-
-    // zoom to fit full viewport
-    canvas.zoom('fit-viewport');
-
-    // // attach an overlay to a node
-    // overlays.add('SCAN_OK', 'note', {
-    //   position: {
-    //     bottom: 0,
-    //     right: 0
-    //   },
-    //   html: '<div class="diagram-note">Mixed up the labels?</div>'
-    // });
-
-    // add marker
-    //canvas.addMarker('SCAN_OK', 'needs-discussion');
-  } catch (err) {
-
-    console.error('could not import BPMN 2.0 diagram', err);
-  }
-}
-
 
 
 
 
 async function createNewDiagram() {
   await openDiagram(diagramXML);
-  return;
-  setInactiveNodes(['StartEvent_1']);
 }
 
 async function openDiagram(xml) {
 
   try {
 
-    await openInViewer(xml);
-    //await bpmnModeler.importXML(xml);
-    //await bpmnViewer.importXML(xml);
+    await bpmnModeler.importXML(xml);
 
     container
       .removeClass('with-error')
@@ -114,7 +77,7 @@ async function readFileAsync(file) {
 // ----- ----- ----- ----- -----
 window.api = {}
 
-async function xml2Svg(xml) {
+async function xml2SvgAsync(xml) {
 
   let modeler = bpmnModeler; //new BpmnModeler();
   await modeler.importXML(xml);
@@ -122,9 +85,9 @@ async function xml2Svg(xml) {
 
   return svg;
 }
-window.api.xml2Svg = xml2Svg;
+window.api.xml2SvgAsync = xml2SvgAsync;
 
-async function downloadSvgFile() {
+async function downloadSvgFileAsync() {
 
   const { svg } = await bpmnModeler.saveSVG();
 
@@ -132,9 +95,9 @@ async function downloadSvgFile() {
   download(encodedData,"diagram.svg");
 
 }
-window.api.downloadSvgFile = downloadSvgFile;
+window.api.downloadSvgFileAsync = downloadSvgFileAsync;
 
-async function downloadBpmnFile() {
+async function downloadBpmnFileAsync() {
 
   const { xml } = await bpmnModeler.saveXML({ format: true });
 
@@ -142,59 +105,117 @@ async function downloadBpmnFile() {
   download(encodedData,"diagram.bpmn");
 
 }
-window.api.downloadBpmnFile = downloadBpmnFile;
+window.api.downloadBpmnFileAsync = downloadBpmnFileAsync;
 
 function setActiveNodes(nodesIds) {
 
-  var modeling = bpmnModeler.get('modeling');
-  var elementRegistry = bpmnModeler.get('elementRegistry');
+  if (bpmnViewer) {
+    const canvas = bpmnViewer.get('canvas');
+    nodesIds.forEach(key => canvas.addMarker(key, 'highlight'))
+  }
 
-  var elements = nodesIds.map(x => elementRegistry.get(x));
+  else if (bpmnModeler) {
 
-  modeling.setColor(elements, {
-    stroke: 'green',
-    fill: 'green'
-  });
+    var modeling = bpmnModeler.get('modeling');
+    var elementRegistry = bpmnModeler.get('elementRegistry');
+  
+    var elements = nodesIds.map(x => elementRegistry.get(x));
+  
+    modeling.setColor(elements, {
+      stroke: 'green',
+      fill: 'green'
+    });
+      
+  }
+
+  else {
+    throw 'Unknown mode.';
+  }
 
 }
 window.api.setActiveNodes = setActiveNodes;
 
 function setInactiveNodes(nodesIds) {
 
-  var modeling = bpmnModeler.get('modeling');
-  var elementRegistry = bpmnModeler.get('elementRegistry');
+  debugger;
+  if (bpmnViewer) {
+    const canvas = bpmnViewer.get('canvas');
+    nodesIds.forEach(key => canvas.removeMarker(key, 'highlight'))
+  }
 
-  var elements = nodesIds.map(x => elementRegistry.get(x));
+  else if (bpmnModeler) {
 
-  modeling.setColor(elements, {
-    stroke: 'black',
-    fill: 'white'
-  });
+    var modeling = bpmnObj.get('modeling');
+    var elementRegistry = bpmnObj.get('elementRegistry');
 
+    var elements = nodesIds.map(x => elementRegistry.get(x));
+
+    modeling.setColor(elements, {
+      stroke: 'black',
+      fill: 'white'
+    });
+  }
+
+  else {
+    throw 'Unknown mode.';
+  }
 }
 window.api.setInactiveNodes = setInactiveNodes;
 
+function updateColoursForNodes(activeNodesIds,inactiveNodesIds) {
+  setInactiveNodes(inactiveNodesIds);
+  setActiveNodes(activeNodesIds);
+}
 
-async function loadBpmn(xml) {
+window.api.updateColoursForNodes = updateColoursForNodes;
+
+async function loadBpmnAsync(xml) {
 
   await bpmnModeler.importXML(xml);
 }
-window.api.loadBpmn = loadBpmn;
+window.api.loadBpmnAsync = loadBpmnAsync;
 
 
-async function getSvg() {
-  const {svg} = await bpmnModeler.getSvg();
+async function getSvgAsync() {
+  const {svg} = await bpmnModeler.saveSvg();
   return svg;
 }
-window.api.getSvg = getSvg;
+window.api.getSvgAsync = getSvgAsync;
 
+async function openInViewerAsync(bpmnXML) {
 
+  debugger;
+  try {
+    await bpmnViewer.importXML(bpmnXML);
+    var canvas = bpmnViewer.get('canvas');
+    canvas.zoom('fit-viewport');
+
+    container
+    .removeClass('with-error')
+    .addClass('with-diagram');
+  } catch (err) {
+
+  container
+    .removeClass('with-diagram')
+    .addClass('with-error');
+
+    container.find('.error pre').text(err.message);
+
+    console.error(err);
+  }
+
+}
+window.api.openInViewerAsync = openInViewerAsync;
+
+// ----- ----- ----- ----- -----
+//       ----- MAIN -----
+// ----- ----- ----- ----- -----
 
 function initialize(mode) {
 
-  if (mode == 'modeler') {
+    // ----- CREATE MODELER ----
+    if (mode == 'modeler') {
   
-    // CREATE MODELER
     bpmnModeler = new BpmnModeler({
       container: '#js-canvas',
       propertiesPanel: {
@@ -211,13 +232,13 @@ function initialize(mode) {
     });
 
     $('#js-download-diagram').on('click', function(e) {
-      downloadBpmnFile();
+      downloadBpmnFileAsync();
     });
     $('#js-download-svg').on('click', function(e) {
-      downloadSvgFile();
+      downloadSvgFileAsync();
     });
-    $('#js-download-png').on('click', function(e) {
-      var svg = window.api.getSvg();
+    $('#js-download-png').on('click', async function(e) {
+      var svg = await window.api.getSvgAsync();
       if (callbackObj) {
         callbackObj.downloadPng(svg);
       }    
@@ -226,7 +247,7 @@ function initialize(mode) {
   
       var file = this.files[0];
       var text = await readFileAsync(file);
-      await window.api.loadBpmn(text);
+      await window.api.loadBpmnAsync(text);
     });
   
 
@@ -234,22 +255,20 @@ function initialize(mode) {
 
   }
   
+  // ----- CREATE VIEWER -----
   else {
 
-    // CREATE VIEWER
     bpmnViewer = new BpmnViewer({ 
       container: '#js-canvas'
-    })
+    });
 
     $('.buttons-panel').css('display','none');
+    openInViewerAsync(diagramXML);
   
   }
 
 }
 
-// ----- ----- ----- ----- -----
-//       ----- MAIN -----
-// ----- ----- ----- ----- -----
 $(function() {
 
   const params = new Proxy(new URLSearchParams(window.location.search), {
@@ -263,8 +282,6 @@ $(function() {
   }
 
   initialize(mode);
-
-
 
 });
 // ----- ----- ----- ----- -----

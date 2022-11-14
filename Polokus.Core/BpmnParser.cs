@@ -35,6 +35,9 @@ namespace Polokus.Core
             var context = new BpmnContext();
             LoadDefinitions(context, definitions);
 
+            string rawString = File.ReadAllText(filename);
+            context.RawString = rawString.ReplaceLineEndings("");
+
             return context;
         }
 

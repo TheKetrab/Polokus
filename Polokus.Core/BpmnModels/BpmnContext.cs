@@ -30,6 +30,7 @@ namespace Polokus.Core.Models
             BpmnProcesses = bpmnProcesses;
         }
 
+        public string RawString { get; set; }
 
     }
 }

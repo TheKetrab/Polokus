@@ -32,7 +32,7 @@ namespace Polokus.App.Utils
             return result.Result?.ToString() ?? throw new Exception("Script evaluation failed.");
         }
 
-        private string GetPromisedScript(string function, params string[] args)
+        public static string GetPromisedScript(string function, params string[] args)
         {
             string arguments = string.Join(",", args);
 
@@ -42,6 +42,18 @@ namespace Polokus.App.Utils
             sb.Append($"({arguments})");
             sb.Append("; return result; })();");
             return sb.ToString();
+        }
+
+        public static void SetColours(ChromiumWindow chw, IEnumerable<string> activeNodesIds, IEnumerable<string> inactiveNodesIds)
+        {
+            if (chw.chromeBrowser != null)
+            {
+                string activeArguments = string.Join(',', activeNodesIds.Select(x => $"\'{x}\'"));
+                string inactiveArguments = string.Join(',', inactiveNodesIds.Select(x => $"\'{x}\'"));
+
+                string script = $"window.api.updateColoursForNodes([{activeArguments}],[{inactiveArguments}])";
+                chw.chromeBrowser.ExecuteScriptAsync(script);
+            }
         }
     }
 }

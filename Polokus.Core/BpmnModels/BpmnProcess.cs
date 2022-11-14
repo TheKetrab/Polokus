@@ -119,5 +119,10 @@ namespace Polokus.Core.Models
         {
             return nodesDictionary.Values.Single(x => BpmnXmlHelpers.IsManualStartNode(x));
         }
+
+        public IEnumerable<string> GetNodesIds()
+        {
+            return nodesDictionary.Values.Select(x => x.Id);
+        }
     }
 }
