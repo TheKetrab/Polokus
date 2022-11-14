@@ -21,7 +21,7 @@ namespace Polokus.Tests.Helpers
             startNode ??= BpmnProcess.GetStartNodes().First();
             if (hooksProvider != null)
             {
-                this.hooksProvider = hooksProvider;
+                this._hooksProvider = hooksProvider;
             }
 
             Begin(startNode);
@@ -33,7 +33,7 @@ namespace Polokus.Tests.Helpers
 
                 if (timeout.HasValue && DateTime.Now - start > TimeSpan.FromSeconds(timeout.Value))
                 {
-                    hooksProvider?.OnTimeout();
+                    _hooksProvider?.OnTimeout("");
                     return false;
                 }
             }

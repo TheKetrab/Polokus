@@ -25,7 +25,6 @@ namespace Polokus.Core
             }
         }
 
-
         public ICollection<IProcessInstance> History { get; } = new List<IProcessInstance>();
         public ICollection<IProcessInstance> ProcessInstances { get; } = new List<IProcessInstance>();
 
@@ -39,27 +38,24 @@ namespace Polokus.Core
         public INodeHandlerFactory NodeHandlerFactory { get; }
         public string Id { get; }
 
-        IHooksProvider? HooksProvider { get; }
+        protected IHooksProvider? _hooksProvider;
+        public void SetHooksProvider(IHooksProvider provider)
+        {
+            _hooksProvider = provider;
+        }
 
-        public ContextInstance(IContextsManager contextsManager, IBpmnContext bpmnContext, string id, IHooksProvider? hooksProvider = null)
+        public ContextInstance(IContextsManager contextsManager, IBpmnContext bpmnContext, string id, IHooksProvider hooksProvider = null)
         {
             ContextsManager = contextsManager;
             BpmnContext = bpmnContext;
             Id = id;
+            _hooksProvider = hooksProvider;
 
             var nhFactory = new NodeHandlerFactory();
             nhFactory.SetDefaultNodeHandlers();
 
             NodeHandlerFactory = nhFactory;
-            HooksProvider = hooksProvider;
         }
-
-        public event EventHandler<string> ProcessInstanceChanged;
-        public void NotifyProcessInstanceChanged(string id)
-        {
-            ProcessInstanceChanged?.Invoke(null, id);
-        }
-
 
         private bool IsTimeout(DateTime start, int? timeout)
         {
@@ -69,10 +65,11 @@ namespace Polokus.Core
 
         public async Task<bool> RunProcessAsync(IBpmnProcess bpmnProcess, IFlowNode startNode, int? timeout)
         {
-            string processId = $"pi{GetAnotherProcessId()}_{bpmnProcess.Id}";
-            ProcessInstance instance = new ProcessInstance(processId, this, bpmnProcess, HooksProvider);
+            string processId = $"pi{GetAnotherProcessId()}/{bpmnProcess.Id}";
+            
+            ProcessInstance instance = new ProcessInstance(processId, this, bpmnProcess, _hooksProvider);
             ProcessInstances.Add(instance);
-            ProcessInstanceChanged?.Invoke(this,instance.Id);
+            _hooksProvider?.OnStatusChanged(instance.Id);
 
             DateTime start = DateTime.Now;
             instance.Begin(startNode);
@@ -81,18 +78,17 @@ namespace Polokus.Core
                 await Task.Delay(100);
                 if (IsTimeout(start, timeout))
                 {
-                    HooksProvider?.OnTimeout();
+                    _hooksProvider?.OnTimeout(instance.Id);
                     ProcessInstances.Remove(instance);
                     return false;
                 }
             }
 
-            Logger.Log($"Process finished. Time: {DateTime.Now - start}");
+            Logger.Global.Log($"Process finished. Time: {DateTime.Now - start}");
             instance.Finish();
-            instance.Logs.Add($"Process finished. Time: {instance.TotalTime}");
             ProcessInstances.Remove(instance);
             History.Add(instance);
-            ProcessInstanceChanged?.Invoke(this, instance.Id);
+            _hooksProvider?.OnStatusChanged(instance.Id);
             return true;
         }
 
@@ -107,6 +103,22 @@ namespace Polokus.Core
             var bpmnProcess = BpmnContext.BpmnProcesses.Single(x => x.Id == bpmnProcessId);
             var startNode = bpmnProcess.GetManualStartNode();
             StartProcessInstance(bpmnProcess, startNode, -1);
+        }
+
+        public IProcessInstance GetProcessInstanceById(string processInstanceId)
+        {
+            var processes = ProcessInstances.Where(x => x.Id == processInstanceId);
+            if (processes.Count() > 2)
+            {
+                throw new Exception();
+            }
+
+            if (processes.Count() == 1)
+            {
+                return processes.First();
+            }
+
+            return History.Single(x => x.Id == processInstanceId);
         }
     }
 }

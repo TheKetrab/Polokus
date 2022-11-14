@@ -16,7 +16,6 @@ namespace Polokus.Core.Interfaces
         IDictionary<string,INodeHandler> AvailableNodeHandlers { get; }
         ICollection<INodeHandlerWaiter> Waiters { get; }
         IEnumerable<ICatchingIntermediateEvent> CatchingIntermediateEvents { get; }
-        ICollection<string> Logs { get; }
 
 
         bool ExistsAnotherTaskAbleToCallTarget(IFlowNode target, List<string> callers);

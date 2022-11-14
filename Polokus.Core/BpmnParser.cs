@@ -53,7 +53,7 @@ namespace Polokus.Core
                 ISequence? seq = process.GetSequenceById(x.id);
                 if (seq == null)
                 {
-                    Logger.LogError($"Unable to find object for {x.id} sequence.");
+                    Logger.Global.LogError($"Unable to find object for {x.id} sequence.");
                 }
 
                 IFlowNode? src = process.GetNodeById(x.sourceRef);
@@ -61,11 +61,11 @@ namespace Polokus.Core
 
                 if (src == null)
                 {
-                    Logger.LogWarning($"Not found sourceRef {x.sourceRef} node for {x.id} sequence.");
+                    Logger.Global.LogWarning($"Not found sourceRef {x.sourceRef} node for {x.id} sequence.");
                 }
                 if (dest == null)
                 {
-                    Logger.LogWarning($"Not found targetRef {x.targetRef} node for {x.id} sequence.");
+                    Logger.Global.LogWarning($"Not found targetRef {x.targetRef} node for {x.id} sequence.");
                 }
 
                 if (src != null && dest != null && seq != null)
@@ -78,7 +78,7 @@ namespace Polokus.Core
 
             if (!nodes.Any(x => x.IsStartNode()))
             {
-                Logger.LogWarning($"None start event found for process {process.Id}");
+                Logger.Global.LogWarning($"None start event found for process {process.Id}");
             }
             
         }

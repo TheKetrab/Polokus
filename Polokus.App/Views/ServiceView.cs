@@ -1,4 +1,5 @@
-﻿using Polokus.App.Utils;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Polokus.App.Utils;
 using Polokus.Core;
 using Polokus.Core.Interfaces;
 using System;
@@ -17,7 +18,7 @@ namespace Polokus.App.Views
 {
     public partial class ServiceView : UserControl
     {
-        ContextsManager ContextsManager = new ContextsManager();
+        ContextsManager ContextsManager;
 
 
         public ServiceView()
@@ -32,11 +33,14 @@ namespace Polokus.App.Views
             //this.dataGridView1.DataSource = contextsManager
 
 
+            ContextsManager = new ContextsManager();
+
             ContextsManager.LoadXmlFile("C:\\Custom\\BPMN\\Polokus\\Polokus.Tests\\NodeHandlersTests\\Bpmn\\inclusive1.bpmn");
             ContextsManager.LoadXmlFile("C:\\Custom\\BPMN\\Polokus\\Polokus.Tests\\NodeHandlersTests\\Bpmn\\serviceTask1.bpmn");
             ContextsManager.LoadXmlFile("C:\\Custom\\BPMN\\Polokus\\Polokus.Tests\\NodeHandlersTests\\Bpmn\\timerEvent1.bpmn");
             ContextsManager.LoadXmlFile("C:\\Custom\\BPMN\\Polokus\\Polokus.Tests\\NodeHandlersTests\\Bpmn\\exclusive1.bpmn");
             ContextsManager.LoadXmlFile("C:\\Custom\\BPMN\\Polokus\\Polokus.Tests\\NodeHandlersTests\\Bpmn\\msgStart.bpmn");
+
 
             this.listViewProcesses.SizeChanged += (s, e) =>
             {
@@ -47,9 +51,54 @@ namespace Polokus.App.Views
                 this.listViewInstances.Columns[0].Width = this.listViewInstances.Width - this.listViewInstances.Columns[1].Width - 25;
             };
 
+            this.listViewInstances.SelectedIndexChanged += (s, e) =>
+            {
+                var item = this.listViewInstances.SelectedItems[0];
+                MessageBox.Show(item.SubItems[0].Text);
+                ActiveProcessInstance = item.SubItems[0].Text;
+
+                ActiveProcessChanged();
+            };
+
+
             InitializeComboBoxContexts();
 
 
+        }
+
+
+        private Dictionary<string, Logger> _logs = new();
+
+        public Logger GetOrCreateLogger(string globalId)
+        {
+            if (_logs.ContainsKey(globalId))
+            {
+                return _logs[globalId];
+            }
+            else
+            {
+                var newLogger = new Logger();
+                _logs.Add(globalId, new Logger());
+                return newLogger;
+            }
+        }
+        public Logger? GetLoggerForOpenedInstance()
+        {
+            string? id = GetOpenedProcessInstanceGlobalId();
+            if (id == null)
+            {
+                return null;
+            }
+
+            return GetOrCreateLogger(id);
+        }
+
+        private void ActiveProcessChanged()
+        {
+            string activeProcess = GetOpenedProcessInstanceGlobalId();
+
+            LoadLogsForProcessInstance(activeProcess);
+            // TODO: show graph
         }
 
         private void InitializeComboBoxContexts()
@@ -61,11 +110,11 @@ namespace Polokus.App.Views
             comboBoxContexts.SelectedIndexChanged += (s, e) =>
             {
                 var context = GetActiveContextInstance();
-                context.ProcessInstanceChanged += (s, e) =>
+                if (comboBoxContexts.SelectedItem is KeyValuePair<string,IContextInstance> ci)
                 {
-                    this.BeginInvoke(new Action(() =>
-                        UpdateProcessInstancesList(context)));
-                };
+                    ActiveContextInstance = ci.Key;
+                }
+
                 LoadViewForContext(context);
             };
         }
@@ -82,7 +131,7 @@ namespace Polokus.App.Views
 
         }
 
-        private void UpdateProcessInstancesList(ContextInstance contextInstance)
+        public void UpdateProcessInstancesList(ContextInstance contextInstance)
         {
             listViewInstances.Items.Clear();
             foreach (var instance in contextInstance.ProcessInstances)
@@ -116,17 +165,72 @@ namespace Polokus.App.Views
 
         public ContextInstance? GetActiveContextInstance()
         {
-            return (ContextInstance)((KeyValuePair<string, IContextInstance>)comboBoxContexts.SelectedItem).Value;
+            object si;
+            if (comboBoxContexts.InvokeRequired)
+            {
+                si = comboBoxContexts.Invoke(() => comboBoxContexts.SelectedItem);
+            }
+            else
+            {
+                si = comboBoxContexts.SelectedItem;
+            }
+
+            if (si == null)
+            {
+                return null;
+            }
+
+            if (si is KeyValuePair<string, IContextInstance> kv)
+            {
+                return (ContextInstance)kv.Value;
+            }
+
+            return null;
         }
 
-        public string? GetSelectedProcessId()
+        private string? ActiveContextInstance { get; set; } = null;
+        private string? ActiveProcessInstance { get; set; } = null;
+        public string? GetOpenedProcessInstanceGlobalId()
         {
-            return GetSelectedSingleItem(listViewProcesses);
+            if (ActiveContextInstance == null || ActiveProcessInstance == null)
+            {
+                return null;
+            }
+
+            return Helpers.GetGlobalProcessInstanceId(ActiveContextInstance, ActiveProcessInstance);
         }
 
-        public string? GetSelectedInstanceId()
+        public void AppendLogLine(string line)
         {
-            return GetSelectedSingleItem(listViewInstances);
+            this.BeginInvoke(() =>
+            {
+                this.readOnlyRichTextBox1.AppendFormattedText(line, Color.Red, true);
+            });
+        }
+
+
+        public void LoadLogsForProcessInstance(string globalProcessInstanceId)
+        {
+            this.readOnlyRichTextBox1.Text = "";
+            
+            var messages = _logs[globalProcessInstanceId].GetMessages();
+            foreach (var message in messages)
+            {
+                switch (message.Item1) 
+                {
+                    case Logger.MsgType.Simple:
+                        readOnlyRichTextBox1.AppendText(message.Item2);
+                        break;
+                    case Logger.MsgType.Warning:
+                        readOnlyRichTextBox1.AppendFormattedText(message.Item2, Color.Orange, false);
+                        break;
+                    case Logger.MsgType.Error:
+                        readOnlyRichTextBox1.AppendFormattedText(message.Item2, Color.Red, true);
+                        break;
+
+                }
+
+            }
         }
 
         private void buttonAdd_Click(object sender, EventArgs e)
@@ -134,7 +238,16 @@ namespace Polokus.App.Views
             // add new process instance
 
             var contextInstance = GetActiveContextInstance();
-            var bpmnProcessId = GetSelectedProcessId();
+            var bpmnProcessId = GetSelectedSingleItem(listViewProcesses);
+
+            if (contextInstance == null || bpmnProcessId == null)
+            {
+                throw new Exception("failiure");
+            }
+
+            var appHooksProvider = new AppHooksProvider(contextInstance);
+            contextInstance.SetHooksProvider(appHooksProvider);
+
             contextInstance.StartProcessManually(bpmnProcessId);
         }
 

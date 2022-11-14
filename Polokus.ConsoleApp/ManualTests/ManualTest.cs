@@ -56,7 +56,7 @@ namespace Polokus.ConsoleApp.ManualTests
             Console.WriteLine();
 
             Console.WriteLine(" -> Log:");
-            Console.WriteLine(Logger.GetFullLog(true));
+            Console.WriteLine(Logger.Global.GetFullLog(true));
             Console.WriteLine(new string('-', 100));
             Console.ReadLine();
 

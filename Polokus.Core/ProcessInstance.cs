@@ -49,8 +49,7 @@ namespace Polokus.Core
 
         public ICollection<INodeHandlerWaiter> Waiters { get; } = new List<INodeHandlerWaiter>();
 
-        public IHooksProvider? hooksProvider;
-        public ICollection<string> Logs { get; set; } = new List<string>();
+        protected IHooksProvider? _hooksProvider;
 
         public ProcessInstance(string id, IContextInstance contextInstance, IBpmnProcess bpmnProcess, IHooksProvider? hooksProvider = null)
         {
@@ -59,7 +58,7 @@ namespace Polokus.Core
             ActiveTasksManager = new ActiveTasksManager(this);
 
             BpmnProcess = bpmnProcess;
-            this.hooksProvider = hooksProvider;
+            _hooksProvider = hooksProvider;
         }
 
         
@@ -117,7 +116,7 @@ namespace Polokus.Core
             INodeHandler nodeHandler = GetNodeHandlerForNode(node);
             //ActiveTasksManager.ActiveTasks[taskId] = nodeHandler;
 
-            hooksProvider?.BeforeExecuteNode(node, taskId, caller);
+            _hooksProvider?.BeforeExecuteNode(Id, node, taskId, caller);
             var executionResult = await nodeHandler.Execute(caller,taskId);
             lock (TasksMutex)
             {
@@ -130,17 +129,17 @@ namespace Polokus.Core
             switch (resultInfo.State)
             {
                 case ProcessResultState.Success:
-                    hooksProvider?.AfterExecuteNodeSuccess(node, taskId);
+                    _hooksProvider?.AfterExecuteNodeSuccess(Id, node, taskId);
                     AvailableNodeHandlers.Remove(node.Id);
                     RunFurtherNodes(node, taskId, resultInfo.SequencesToInvoke.ToArray());
                     break;
                 case ProcessResultState.Failure:
-                    hooksProvider?.AfterExecuteNodeFailure(node, taskId);
+                    _hooksProvider?.AfterExecuteNodeFailure(Id, node, taskId);
                     ActiveTasksManager.RemoveRunningTask(taskId);
                     AvailableNodeHandlers.Remove(node.Id);
                     break;
                 case ProcessResultState.Suspension:
-                    hooksProvider?.AfterExecuteNodeSuspension(node, taskId);
+                    _hooksProvider?.AfterExecuteNodeSuspension(Id, node, taskId);
                     ActiveTasksManager.RemoveRunningTask(taskId);
                     break;
                     // case ProcessResultState. invoke self?????
@@ -150,7 +149,7 @@ namespace Polokus.Core
 
         public void StartNewSequence(IFlowNode firstNode, INodeCaller? caller)
         {
-            hooksProvider?.BeforeStartNewSequence(firstNode, caller);
+            _hooksProvider?.BeforeStartNewSequence(Id,firstNode, caller);
             int taskId = ActiveTasksManager.AddNewTask(GetNodeHandlerForNode(firstNode));
             Task task = new Task(() => ExecuteNode(firstNode, taskId, caller));
             task.Start();
@@ -206,7 +205,7 @@ namespace Polokus.Core
             IsActive = false;
             Status = ProcessStatus.Stopped;
             // TODO: stop all tasks
-            this.ContextInstance.NotifyProcessInstanceChanged(Id);
+            _hooksProvider?.OnStatusChanged(Id);
         }
 
         public void Kill()
@@ -226,28 +225,28 @@ namespace Polokus.Core
             {
                 throw new InvalidOperationException("Not allowed to start process on node which is not 'StartNode'.");
             }
-            this.ContextInstance.NotifyProcessInstanceChanged(Id);
 
             _beginTime = DateTime.Now;
             IsActive = true;
             Status = ProcessStatus.Running;
+            _hooksProvider?.OnStatusChanged(Id);
             StartNewSequence(startNode, null);
         }
 
         public void Run()
         {
-            this.ContextInstance.NotifyProcessInstanceChanged(Id);
             IsActive = true;
             Status = ProcessStatus.Running;
+            _hooksProvider?.OnStatusChanged(Id);
             // TODO: rerun stopped tasks
         }
 
         public void Finish()
         {
-            this.ContextInstance.NotifyProcessInstanceChanged(Id);
             IsFinished = true;
             _finishTime = DateTime.Now;
             Status = ProcessStatus.Finished;
+            _hooksProvider?.OnStatusChanged(Id);
         }
     }
 

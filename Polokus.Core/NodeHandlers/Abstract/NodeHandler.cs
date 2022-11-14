@@ -73,7 +73,7 @@ namespace Polokus.Core.NodeHandlers.Abstract
             }
             catch (Exception exc)
             {
-                Logger.LogError(exc.Message);
+                Logger.Global.LogError(exc.Message);
                 return new ProcessResultInfo(ProcessResultState.Failure, exc.Message);
             }
         }

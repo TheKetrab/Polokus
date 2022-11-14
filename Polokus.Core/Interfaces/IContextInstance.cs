@@ -9,9 +9,6 @@ namespace Polokus.Core.Interfaces
 {
     public interface IContextInstance
     {
-        event EventHandler<string> ProcessInstanceChanged;
-        void NotifyProcessInstanceChanged(string id);
-
         ICollection<IProcessInstance> ProcessInstances { get; }
         ICollection<IProcessInstance> History { get; }
         IScriptProvider ScriptProvider { get; }
@@ -23,7 +20,6 @@ namespace Polokus.Core.Interfaces
 
         Task<bool> RunProcessAsync(IBpmnProcess bpmnProcess, IFlowNode startNode, int? timeout);
         void StartProcessInstance(IBpmnProcess bpmnProcess, IFlowNode startNode, int? timeout);
-
         void StartProcessManually(string bpmnProcessId);
 
     }

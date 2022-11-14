@@ -94,27 +94,27 @@ namespace Polokus.Core.Hooks
         }
 
 
-        public override void BeforeExecuteNode(IFlowNode node, int taskId, INodeCaller? caller)
+        public override void BeforeExecuteNode(string processInstanceId, IFlowNode node, int taskId, INodeCaller? caller)
         {
             LogActionSafe(node, VisitTime.BeforeExecute);
         }
 
-        public override void AfterExecuteNodeSuccess(IFlowNode node, int taskId)
+        public override void AfterExecuteNodeSuccess(string processInstanceId, IFlowNode node, int taskId)
         {
             LogActionSafe(node, VisitTime.AfterExecuteSuccess);
         }
 
-        public override void AfterExecuteNodeFailure(IFlowNode node, int taskId)
+        public override void AfterExecuteNodeFailure(string processInstanceId, IFlowNode node, int taskId)
         {
             LogActionSafe(node, VisitTime.AfterExecuteFailure);
         }
 
-        public override void AfterExecuteNodeSuspension(IFlowNode node, int taskId)
+        public override void AfterExecuteNodeSuspension(string processInstanceId, IFlowNode node, int taskId)
         {
             LogActionSafe(node, VisitTime.AfterExecuteSuspension);
         }
 
-        public override void BeforeStartNewSequence(IFlowNode firstNode, INodeCaller? caller)
+        public override void BeforeStartNewSequence(string processInstanceId, IFlowNode firstNode, INodeCaller? caller)
         {
             if (FitWithMask(VisitTime.StartNewSequence))
             {

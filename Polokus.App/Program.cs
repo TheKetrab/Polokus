@@ -39,10 +39,10 @@ namespace Polokus.App
                 Directory.CreateDirectory(logsPath);
             }
             string filename = $"PolokusLog_{DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss")}.txt";
-            string logText = Logger.GetFullLog(true);
+            string logText = Logger.Global.GetFullLog(true);
             if (!string.IsNullOrEmpty(logText))
             {
-                File.WriteAllText(Path.Combine(logsPath, filename), Logger.GetFullLog(true));
+                File.WriteAllText(Path.Combine(logsPath, filename), logText);
             }
 
         }

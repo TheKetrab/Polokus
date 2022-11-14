@@ -6,39 +6,42 @@ using System.Threading.Tasks;
 
 namespace Polokus.Core
 {
-    public static class Logger
+    public class Logger
     {
-        enum MsgType
+        private static Logger _global = new();
+        public static Logger Global => _global;
+
+        public enum MsgType
         {
             Simple,
             Warning,
             Error,
         }
 
-        private static List<Tuple<MsgType, string>> messages = new();
+        private List<Tuple<MsgType, string>> messages = new();
 
 
-        public static void Log(string msg)
+        public void Log(string msg)
         {
             Log(msg, MsgType.Simple);
         }
 
-        public static void LogWarning(string msg)
+        public void LogWarning(string msg)
         {
             Log(msg, MsgType.Warning);
         }
 
-        public static void LogError(string msg)
+        public void LogError(string msg)
         {
             Log(msg, MsgType.Error);
         }
 
-        private static void Log(string msg, MsgType type)
+        private void Log(string msg, MsgType type)
         {
             messages.Add(new(type, msg));
         }
 
-        public static string GetFullLog(bool prefixed = false)
+        public string GetFullLog(bool prefixed = false)
         {
             StringBuilder sb = new();
 
@@ -60,6 +63,11 @@ namespace Polokus.Core
                 MsgType.Error =>   "ERR ",
                 _ => throw new ArgumentException()
             };
+        }
+
+        public IEnumerable<Tuple<MsgType, string>> GetMessages()
+        {
+            return messages;
         }
 
 

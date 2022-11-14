@@ -8,11 +8,12 @@ namespace Polokus.Core.Interfaces
 {
     public interface IHooksProvider
     {
-        void AfterExecuteNodeSuccess(IFlowNode node, int taskId);
-        void AfterExecuteNodeFailure(IFlowNode node, int taskId);
-        void AfterExecuteNodeSuspension(IFlowNode node, int taskId);
-        void BeforeStartNewSequence(IFlowNode firstNode, INodeCaller? caller);
-        void BeforeExecuteNode(IFlowNode node, int taskId, INodeCaller? caller);
-        void OnTimeout();
+        void AfterExecuteNodeSuccess(string processInstanceId, IFlowNode node, int taskId);
+        void AfterExecuteNodeFailure(string processInstanceId, IFlowNode node, int taskId);
+        void AfterExecuteNodeSuspension(string processInstanceId, IFlowNode node, int taskId);
+        void BeforeStartNewSequence(string processInstanceId, IFlowNode firstNode, INodeCaller? caller);
+        void BeforeExecuteNode(string processInstanceId, IFlowNode node, int taskId, INodeCaller? caller);
+        void OnStatusChanged(string processInstanceId);
+        void OnTimeout(string processInstanceId);
     }
 }

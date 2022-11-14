@@ -22,6 +22,12 @@ namespace Polokus.App.Forms
             }
         }
 
+        private ServiceView _serviceView;
+        public ServiceView GetServiceView()
+        {
+            return _serviceView;
+        }
+
 
         public enum PanelView
         {
@@ -110,10 +116,10 @@ namespace Polokus.App.Forms
             processesXmlView.BackColor = Color.Green;
             processesXmlView.Parent = this.panelProcessesXml;
 
-            var serviceView = new ServiceView();
-            serviceView.Dock = DockStyle.Fill;
-            serviceView.BackColor = Color.Orange;
-            serviceView.Parent = this.panelService;
+            _serviceView = new ServiceView();
+            _serviceView.Dock = DockStyle.Fill;
+            _serviceView.BackColor = Color.Orange;
+            _serviceView.Parent = this.panelService;
 
             InitializeView();
 
