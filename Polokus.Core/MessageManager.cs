@@ -19,7 +19,9 @@ namespace Polokus.Core
             }
         }
 
-        public ICollection<string> ActiveListeners { get; } = new HashSet<string>();
+        Dictionary<string, IProcessStarter> _starters = new();
+        Dictionary<string, INodeHandlerWaiter> _waiters = new();
+        public event EventHandler CallersChanged;
 
         public void RegisterMessageListener(INodeHandlerWaiter waiter)
         {
@@ -38,12 +40,17 @@ namespace Polokus.Core
         {
             using (var listener = new HttpListener())
             {
-                ActiveListeners.Add(waiter.Id);
+                _waiters.Add(waiter.Id, waiter);
+                CallersChanged?.Invoke(null, EventArgs.Empty);
+
                 listener.Prefixes.Add($"http://localhost:8080/{waiter.Id}/");
                 listener.Start();
 
                 var context = await listener.GetContextAsync();
-                ActiveListeners.Remove(waiter.Id);
+
+                _waiters.Remove(waiter.Id);
+                CallersChanged?.Invoke(null, EventArgs.Empty);
+
                 waiter.Invoke();
             }
         }
@@ -52,12 +59,15 @@ namespace Polokus.Core
         {
             using (var listener = new HttpListener())
             {
-                ActiveListeners.Add(starter.Id);
+                _starters.Add(starter.Id, starter);
+                CallersChanged?.Invoke(null, EventArgs.Empty);
+
                 listener.Prefixes.Add($"http://localhost:8080/{starter.Id}/");
                 listener.Start();
 
                 var context = await listener.GetContextAsync();
-                ActiveListeners.Remove(starter.Id);
+                _starters.Remove(starter.Id);
+                CallersChanged?.Invoke(null, EventArgs.Empty);
 
                 // invoke
                 starter.ContextInstance.StartProcessInstance(starter.BpmnProcess, starter.StartNode, null);
@@ -84,6 +94,14 @@ namespace Polokus.Core
 
         }
 
+        public IEnumerable<IProcessStarter> GetStarters()
+        {
+            return _starters.Values;
+        }
 
+        public IEnumerable<INodeHandlerWaiter> GetWaiters()
+        {
+            return _waiters.Values;
+        }
     }
 }

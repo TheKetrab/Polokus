@@ -19,17 +19,36 @@ namespace Polokus.Core
         {
         }
 
+        public event EventHandler CallersChanged;
+
+        Dictionary<string, IProcessStarter> _starters = new();
+        Dictionary<string, INodeHandlerWaiter> _waiters = new();
+
+        public IEnumerable<IProcessStarter> GetStarters()
+        {
+            return _starters.Values;
+        }
+
+        public IEnumerable<INodeHandlerWaiter> GetWaiters()
+        {
+            return _waiters.Values;
+        }
+
         public async void RegisterStarter(string timeString, IProcessStarter starter)
         {
             IScheduler scheduler = await factory.GetScheduler();
 
             IJobDetail job = JobBuilder.Create<StarterJob>().Build();
             job.JobDataMap.Add("Starter", starter);
+            job.JobDataMap.Add("TimeManager", this);
 
             ITrigger trigger = TriggerBuilder.Create().WithCronSchedule(timeString).Build();
 
             await scheduler.ScheduleJob(job, trigger);
             await scheduler.Start();
+
+            _starters.Add(starter.Id, starter);
+            CallersChanged?.Invoke(null, EventArgs.Empty);
         }
 
         public async void RegisterWaiter(string timeString, INodeHandlerWaiter waiter, bool oneTime)
@@ -39,11 +58,21 @@ namespace Polokus.Core
             IJobDetail job = JobBuilder.Create<WaiterJob>().Build();
             job.JobDataMap.Add("OneTime", oneTime);
             job.JobDataMap.Add("Waiter", waiter);
+            job.JobDataMap.Add("TimeManager", this);
 
             ITrigger trigger = TriggerBuilder.Create().WithCronSchedule(timeString).Build();
 
             await scheduler.ScheduleJob(job, trigger);
-            await scheduler.Start();            
+            await scheduler.Start();
+
+            _waiters.Add(waiter.Id, waiter);
+            CallersChanged?.Invoke(null, EventArgs.Empty);
+        }
+
+        public void RemoveWaiter(INodeHandlerWaiter waiter)
+        {
+            _waiters.Remove(waiter.Id);
+            CallersChanged?.Invoke(null, EventArgs.Empty);
         }
 
 
@@ -55,10 +84,12 @@ namespace Polokus.Core
         {
             bool oneTime = (bool)context.JobDetail.JobDataMap["OneTime"];
             INodeHandlerWaiter waiter = (INodeHandlerWaiter)context.JobDetail.JobDataMap["Waiter"];
+            TimeManager timeManager = (TimeManager)context.JobDetail.JobDataMap["TimeManager"];
 
             if (oneTime)
             {
                 await context.Scheduler.DeleteJob(context.JobDetail.Key);
+                timeManager.RemoveWaiter(waiter);
             }            
 
             waiter.Invoke();

@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Polokus.App.Utils;
 using Polokus.Core;
+using Polokus.Core.Helpers;
 using Polokus.Core.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -41,7 +42,23 @@ namespace Polokus.App.Views
             ContextsManager.LoadXmlFile("C:\\Custom\\BPMN\\Polokus\\Polokus.Tests\\NodeHandlersTests\\Bpmn\\timerEvent1.bpmn");
             ContextsManager.LoadXmlFile("C:\\Custom\\BPMN\\Polokus\\Polokus.Tests\\NodeHandlersTests\\Bpmn\\exclusive1.bpmn");
             ContextsManager.LoadXmlFile("C:\\Custom\\BPMN\\Polokus\\Polokus.Tests\\NodeHandlersTests\\Bpmn\\msgStart.bpmn");
+            ContextsManager.LoadXmlFile("C:\\Custom\\BPMN\\Polokus\\Examples\\biggerprocess1.bpmn");
 
+            foreach (var contextInstance in ContextsManager.ContextInstances.Values)
+            {
+                ContextInstance ci = (ContextInstance)contextInstance;
+                ((TimeManager)(contextInstance.TimeManager)).CallersChanged += (s, e) =>
+                {
+                    listViewWaiters.BeginInvoke(() => UpdateNodeHandlerWaitersList(ci));
+                    listViewStarters.BeginInvoke(() => UpdateProcessStartersList(ci));
+                };
+                ((MessageManager)(contextInstance.MessageManager)).CallersChanged += (s, e) =>
+                {
+                    listViewWaiters.BeginInvoke(() => UpdateNodeHandlerWaitersList(ci));
+                    listViewStarters.BeginInvoke(() => UpdateProcessStartersList(ci));
+                };
+
+            }
 
             this.listViewProcesses.SizeChanged += (s, e) =>
             {
@@ -63,10 +80,13 @@ namespace Polokus.App.Views
                 }
             };
 
+            this.listViewWaiters.KeyUp += listViewWaiters_KeyUp;
+
+
 
             InitializeComboBoxContexts();
 
-
+            UpdateNodeHandlerWaitersList((ContextInstance)ContextsManager.ContextInstances.First().Value);
         }
 
 
@@ -132,6 +152,42 @@ namespace Polokus.App.Views
 
             UpdateProcessInstancesList(contextInstance);
 
+        }
+
+        private void UpdateProcessStartersList(ContextInstance contextInstance)
+        {
+            listViewStarters.Items.Clear();
+
+            List<Tuple<string,IProcessStarter>> starters = new();
+            starters.AddRange(contextInstance.TimeManager.GetStarters().Select(x => Tuple.Create("Time",x)));
+            starters.AddRange(contextInstance.MessageManager.GetStarters().Select(x => Tuple.Create("Message", x)));
+
+            foreach (var starter in starters)
+            {
+                var item = new ListViewItem(starter.Item2.Id);
+                item.SubItems.Add(starter.Item2.StartNode.Id);
+                item.SubItems.Add(starter.Item1);
+
+                this.listViewStarters.Items.Add(item);
+            }
+        }
+
+        private void UpdateNodeHandlerWaitersList(ContextInstance contextInstance)
+        {
+            listViewWaiters.Items.Clear();
+
+            List<Tuple<string,INodeHandlerWaiter>> waiters = new();
+            waiters.AddRange(contextInstance.TimeManager.GetWaiters().Select(x => Tuple.Create("Time",x)));
+            waiters.AddRange(contextInstance.MessageManager.GetWaiters().Select(x => Tuple.Create("Message", x)));
+
+            foreach (var waiter in waiters)
+            {
+                var item = new ListViewItem(waiter.Item2.Id);
+                item.SubItems.Add(waiter.Item2.NodeToCall.Id);
+                item.SubItems.Add(waiter.Item1);
+
+                this.listViewWaiters.Items.Add(item);
+            }
         }
 
         public void UpdateProcessInstancesList(ContextInstance contextInstance)
@@ -312,6 +368,37 @@ namespace Polokus.App.Views
         private void button4_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void buttonPingWaiter_Click(object sender, EventArgs e)
+        {
+            var ci = GetActiveContextInstance();
+            if (ci == null)
+            {
+                return;
+            }
+
+            string listenerId = this.textBoxPingWaiter.Text;
+            ci.MessageManager.PingListener(listenerId);
+        }
+
+        private void listViewWaiters_KeyUp(object? sender, KeyEventArgs e)
+        {
+            if (sender != listViewWaiters) return;
+
+            if (e.Control && e.KeyCode == Keys.C)
+                CopySelectedValuesToClipboard();
+        }
+
+        private void CopySelectedValuesToClipboard()
+        {
+            if (listViewWaiters.SelectedItems.Count != 1) 
+            {
+                return;
+            }
+
+
+            Clipboard.SetText(listViewWaiters.SelectedItems[0].Text);
         }
     }
 }

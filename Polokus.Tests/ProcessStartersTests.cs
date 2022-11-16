@@ -22,10 +22,10 @@ namespace Polokus.Tests
             var visitor = new VisitorHooks(VisitTime.AfterExecuteSuccess);
             var contextsManager = BpmnLoader.LoadBpmnXmlIntoContextsManager("msgStart.bpmn",visitor);
             await Task.Delay(1000);
-            string listenerId = contextsManager.MessageManager.ActiveListeners.First();
+            string listenerId = contextsManager.ContextInstances.First().Value.MessageManager.GetStarters().First().Id;
 
             // Act
-            await contextsManager.MessageManager.PingListener(listenerId);
+            await contextsManager.ContextInstances.First().Value.MessageManager.PingListener(listenerId);
             await Task.Delay(1000);
 
             while (true)

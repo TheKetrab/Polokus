@@ -16,7 +16,7 @@ namespace Polokus.Core
 
         public IFlowNode StartNode { get; }
 
-        public string Id => $"Starter_{ContextInstance.Id}_{StartNode.Id}";
+        public string Id => $"Starter_({ContextInstance.Id})_({BpmnProcess.Id})_({StartNode.Id})";
 
 
         public ProcessStarter(IContextInstance contextInstance, IBpmnProcess bpmnProcess, IFlowNode startNode)

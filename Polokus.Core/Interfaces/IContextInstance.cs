@@ -9,6 +9,10 @@ namespace Polokus.Core.Interfaces
 {
     public interface IContextInstance
     {
+        ITimeManager TimeManager { get; }
+        IMessageManager MessageManager { get; }
+
+
         ICollection<IProcessInstance> ProcessInstances { get; }
         ICollection<IProcessInstance> History { get; }
         IScriptProvider ScriptProvider { get; }

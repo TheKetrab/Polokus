@@ -39,7 +39,7 @@ namespace Polokus.Core.NodeHandlers
             {
                 var waiter = new NodeHandlerWaiter(ProcessInstance, this.Node);
                 ProcessInstance.Waiters.Add(waiter);
-                ProcessInstance.ContextInstance.ContextsManager.TimeManager
+                ProcessInstance.ContextInstance.TimeManager
                     .RegisterWaiter(TimeDefinitions, waiter, true);
 
                 return false;

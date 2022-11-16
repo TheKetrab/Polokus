@@ -25,6 +25,10 @@ namespace Polokus.Core
             }
         }
 
+        public ITimeManager TimeManager { get; } = new TimeManager();
+        public IMessageManager MessageManager { get; } = new MessageManager();
+
+
         public ICollection<IProcessInstance> History { get; } = new List<IProcessInstance>();
         public ICollection<IProcessInstance> ProcessInstances { get; } = new List<IProcessInstance>();
 

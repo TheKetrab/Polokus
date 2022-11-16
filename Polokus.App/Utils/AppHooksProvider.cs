@@ -45,7 +45,7 @@ namespace Polokus.App.Utils
             UpdateActiveNodesInGraph(processInstanceId);
             Log(processInstanceId, $"Executing: {node.Id} taskId = {taskId}");
             Thread.Sleep(300); // delay execution
-            Thread.Sleep(3000); // delay execution
+            //Thread.Sleep(3000); // delay execution
         }
 
         public void BeforeStartNewSequence(string processInstanceId, IFlowNode firstNode, INodeCaller? caller)
@@ -83,7 +83,7 @@ namespace Polokus.App.Utils
 
             if (globalInstanceId == _view.GetOpenedProcessInstanceGlobalId())
             {
-                _view.AppendLogLine(message);
+                _view.AppendLogLine('\n' + message);
             }
         }
 

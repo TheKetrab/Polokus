@@ -16,8 +16,6 @@ namespace Polokus.Core
     {
         public IDictionary<string, IContextInstance> ContextInstances { get; } = new Dictionary<string, IContextInstance>();
 
-        public ITimeManager TimeManager { get; } = new TimeManager();
-        public IMessageManager MessageManager { get; } = new MessageManager();
 
 
 
@@ -36,12 +34,12 @@ namespace Polokus.Core
                         {
                             string timeDefinition = startFlowNode.Name;
                             var processStarter = new ProcessStarter(contextInstance, startFlowNode.BpmnProcess, startNode);
-                            TimeManager.RegisterStarter(timeDefinition, processStarter);
+                            contextInstance.TimeManager.RegisterStarter(timeDefinition, processStarter);
                         }
                         else if (eventDefinition is tMessageEventDefinition)
                         {
                             var processStarter = new ProcessStarter(contextInstance, startFlowNode.BpmnProcess, startNode);
-                            MessageManager.RegisterMessageListener(processStarter);
+                            contextInstance.MessageManager.RegisterMessageListener(processStarter);
                         }
 
                     }

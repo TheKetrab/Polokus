@@ -8,10 +8,14 @@ namespace Polokus.Core.Interfaces
 {
     public interface IMessageManager
     {
-        ICollection<string> ActiveListeners { get; }
+        IEnumerable<IProcessStarter> GetStarters();
+        IEnumerable<INodeHandlerWaiter> GetWaiters();
+
+
         void RegisterMessageListener(INodeHandlerWaiter waiter);
         void RegisterMessageListener(IProcessStarter starter);
         Task PingListener(string listenerId);
+
 
     }
 }
