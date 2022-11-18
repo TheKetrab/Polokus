@@ -1,4 +1,5 @@
-﻿using Polokus.App.Controls;
+﻿
+using Polokus.App.Controls;
 using Polokus.App.Fonts;
 using Polokus.App.Utils;
 using Polokus.App.Views;
@@ -25,16 +26,213 @@ namespace Polokus.App.Forms
             }
         }
 
-        private ServiceView _serviceView;
-        public ServiceView GetServiceView()
+        public readonly MainWindowViewModel ViewModel;
+
+        public ServiceView ServiceView { get; }
+        public ChromiumWindow EditorView { get; }
+        public GraphView GraphView { get; }
+        public XmlView XmlView { get; }
+
+
+        private bool _processPanelVisible = false;
+
+
+        void InitializeTreeView()
         {
-            return _serviceView;
+            var files = Directory.GetFiles(ViewModel.MainDirPath).Select(x => new FileInfo(x).Name);
+            this.treeView1.Nodes.AddRange(files.Select(x => new TreeNode(x)).ToArray());
+
+            this.treeView1.AfterSelect += (s, e) =>
+            {
+                var node = treeView1.SelectedNode;
+                TVIndexChanged?.Invoke(this, new TVIndexChangedEventArgs(Path.Combine(ViewModel.MainDirPath, node.Text)));
+            };
+
+        }
+
+        public class TVIndexChangedEventArgs
+        {
+            public string FilePath { get; set; }
+
+            public TVIndexChangedEventArgs(string filePath)
+            {
+                FilePath = filePath;
+                
+            }
+        }
+        public event EventHandler<TVIndexChangedEventArgs> TVIndexChanged;
+
+
+        private IBpmnClient _client;
+        public IBpmnClient? BpmnClient
+        {
+            get
+            {
+                if (!EditorView.chromeBrowser.CanExecuteJavascriptInMainFrame)
+                {
+                    return null;
+                }
+                else
+                {
+                    return _client;
+                }
+            }
         }
 
 
-        Size formSize;
-        int borderSize = 2;
-        //Overridden methods
+
+
+        private void InitializeSubViews()
+        {
+            EditorView.Dock = DockStyle.Fill;
+            EditorView.Parent = this.panelEditor;
+ 
+            GraphView.Dock = DockStyle.Fill;
+            GraphView.BackColor = PolokusStyle.DefaultViewColor;
+            GraphView.Parent = this.panelProcessesGraph;
+
+            XmlView.Dock = DockStyle.Fill;
+            XmlView.BackColor = PolokusStyle.DefaultViewColor;
+            XmlView.Parent = this.panelProcessesXml;
+
+            ServiceView.Dock = DockStyle.Fill;
+            ServiceView.BackColor = PolokusStyle.DefaultViewColor;
+            ServiceView.Parent = this.panelService;
+        }
+
+        private void InitializeView()
+        {
+
+            this.panelProcesses.Visible = false;
+            this.buttonSettings.Dock = DockStyle.Top;
+            _processPanelVisible = false;
+
+            ViewModel.ActivePanelView = MainWindowViewModel.PanelView.Home;
+            InitializeTreeView();
+
+            this.DoubleBuffered = true;
+        }
+
+        public Panel PanelProcessesGraph => this.panelProcessesGraph;
+        public Panel PanelProcessesXml => this.panelProcessesXml;
+        public Panel PanelProcessesCSharp => this.panelProcessesCsharp;
+        public Panel PanelEditor => this.panelEditor;
+        public Panel PanelService => this.panelService;
+        public Panel PanelSettings => this.panelSettings;
+        public Panel PanelHome => this.panelHome;
+
+        public MainWindow()
+        {
+            //this.MaximizedBounds = Screen.FromHandle(this.Handle).WorkingArea;
+
+            _instance = this;
+
+            ServiceView = new ServiceView();
+            EditorView = new ChromiumWindow();
+            GraphView = new GraphView();
+            XmlView = new XmlView();
+
+
+            InitializeComponent();
+            InitializeSubViews();
+
+            ViewModel = new MainWindowViewModel(this);
+            InitializeView();
+
+
+            _client = new BpmnioClient(EditorView);
+
+            SizeChanged += MainWindow_SizeChanged;
+            splitContainer1.SplitterMoved += MainWindow_SizeChanged;
+
+            AdjustIconBtn();
+        }
+
+
+
+        private void AdjustIconBtn()
+        {
+            this.iconBtnSize.FontChar =
+                (this.WindowState == FormWindowState.Maximized)
+                ? FontsManager.SegMDL2.Restore
+                : FontsManager.SegMDL2.Maximize;
+        }
+
+        public void SetInfo(string info)
+        {
+            this.labelInfo.Text = info;
+        }
+
+
+
+
+        async Task HideProcessesPanel()
+        {
+            if (!_processPanelVisible)
+            {
+                return;
+            }
+
+            this.panelProcesses.Visible = true;
+            this.panelProcesses.Dock = DockStyle.Top;
+
+            await this.panelProcesses.AnimateProperty(
+                (f) => { this.panelProcesses.Height = (int)f; },
+                ProcessPanelHeight, 0, 100);
+
+            this.panelProcesses.Visible = false;
+            this.buttonSettings.Dock = DockStyle.Top;
+            _processPanelVisible = false;
+        }
+
+        private int ProcessPanelHeight => this.panelSideMenu.Height
+                - panelLogo.Height
+                - buttonSettings.Height
+                - buttonEditor.Height
+                - buttonService.Height
+                - buttonProcesses.Height;
+
+
+        async Task ShowProcessesPanel()
+        {
+            if (_processPanelVisible)
+            {
+                return;
+            }
+
+            this.panelProcesses.Dock = DockStyle.Top;
+            this.panelProcesses.Visible = true;
+            this.buttonSettings.Dock = DockStyle.Top;
+
+            await this.panelProcesses.AnimateProperty(
+                (f) => { this.panelProcesses.Height = (int)f; },
+                0, ProcessPanelHeight, 100);
+
+            this.panelProcesses.Dock = DockStyle.Fill;
+            this.buttonSettings.Dock = DockStyle.Bottom;
+            _processPanelVisible = true;
+        }
+
+
+
+
+        private void AdjustForm()
+        {
+            switch (this.WindowState)
+            {
+                case FormWindowState.Maximized: // Maximized form (After)
+                    this.Padding = new Padding(8, 8, 8, 0);
+                    break;
+                case FormWindowState.Normal: // Restored form (After)
+                    if (this.Padding.Top != ViewModel.BorderSize)
+                        this.Padding = new Padding(ViewModel.BorderSize);
+                    break;
+            }
+        }
+
+
+
+
         protected override void WndProc(ref Message m)
         {
             const int WM_NCCALCSIZE = 0x0083;//Standar Title Bar - Snap Window
@@ -43,7 +241,7 @@ namespace Polokus.App.Forms
             const int SC_RESTORE = 0xF120; //Restore form (Before)
             const int WM_NCHITTEST = 0x0084;//Win32, Mouse Input Notification: Determine what part of the window corresponds to a point, allows to resize the form.
             const int resizeAreaSize = 10;
-            #region Form Resize
+
             // Resize/WM_NCHITTEST values
             const int HTCLIENT = 1; //Represents the client area of the window
             const int HTLEFT = 10;  //Left border of a window, allows resize horizontally to the left
@@ -93,7 +291,7 @@ namespace Polokus.App.Forms
                 }
                 return;
             }
-            #endregion
+
             //Remove border and keep snap window
             if (m.Msg == WM_NCCALCSIZE && m.WParam.ToInt32() == 1)
             {
@@ -110,343 +308,17 @@ namespace Polokus.App.Forms
                 /// wParam value by using the bitwise AND operator.
                 int wParam = (m.WParam.ToInt32() & 0xFFF0);
                 if (wParam == SC_MINIMIZE)  //Before
-                    formSize = this.ClientSize;
+                    ViewModel.FormSize = this.ClientSize;
                 if (wParam == SC_RESTORE)// Restored form(Before)
-                    this.Size = formSize;
+                    this.Size = ViewModel.FormSize;
             }
             base.WndProc(ref m);
         }
 
-        
-
-
-  
-
-
-        public enum PanelView
-        {
-            None,
-            ProcessesGraph,
-            ProcessesXml,
-            ProcessesScript,
-            Editor,
-            Settings,
-            Service,
-            Home
-        }
-
-        private PanelView _activePanelView;
-        public PanelView ActivePanelView => _activePanelView;
-        private bool _processPanelVisible = false;
-
-
-        private string mainDirPath = @"C:\Custom\BPMN\Polokus\Polokus.Tests\NodeHandlersTests\Bpmn";
-
-        void InitializeTreeView()
-        {
-            var files = Directory.GetFiles(mainDirPath).Select(x => new FileInfo(x).Name);
-            this.treeView1.Nodes.AddRange(files.Select(x => new TreeNode(x)).ToArray());
-
-
-            this.treeView1.AfterSelect += (s, e) =>
-            {
-                var node = treeView1.SelectedNode;
-                TVIndexChanged?.Invoke(this, new TVIndexChangedEventArgs(Path.Combine(mainDirPath, node.Text)));
-            };
-
-        }
-
-        public class TVIndexChangedEventArgs
-        {
-            public string FilePath { get; set; }
-
-            public TVIndexChangedEventArgs(string filePath)
-            {
-                FilePath = filePath;
-                
-            }
-        }
-        public event EventHandler<TVIndexChangedEventArgs> TVIndexChanged;
-
-        private GraphView processesGraphView;
-        private ChromiumWindow editor;
-
-
-        private IBpmnClient _client;
-        public IBpmnClient? BpmnClient
-        {
-            get
-            {
-                if (!editor.chromeBrowser.CanExecuteJavascriptInMainFrame)
-                {
-                    return null;
-                }
-                else
-                {
-                    return _client;
-                }
-            }
-        }
-
-
-        //Drag Form
-        [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
-        private extern static void ReleaseCapture();
-        [DllImport("user32.DLL", EntryPoint = "SendMessage")]
-        private extern static void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
-        private void panelTitleBar_MouseDown(object sender, MouseEventArgs e)
-        {
-            ReleaseCapture();
-            SendMessage(this.Handle, 0x112, 0xf012, 0);
-        }
-
-        public MainWindow()
-        {
-
-            this.MaximizedBounds = Screen.FromHandle(this.Handle).WorkingArea;
-
-
-
-            _instance = this;
-            InitializeComponent();
-
-            editor = new ChromiumWindow();
-            editor.Dock = DockStyle.Fill;
-            editor.Parent = this.panelEditor;
-            _client = new BpmnioClient(editor);
-
-            //ChromiumWindow graphProcessView = new ChromiumWindow();
-            //graphProcessView.Parent = this.panelProcessesGraph;
-
-            processesGraphView = new GraphView();
-            processesGraphView.Dock = DockStyle.Fill;
-            processesGraphView.BackColor = PolokusStyle.DefaultViewColor;
-            processesGraphView.Parent = this.panelProcessesGraph;
-
-            var processesXmlView = new XmlView();
-            processesXmlView.Dock = DockStyle.Fill;
-            processesXmlView.BackColor = PolokusStyle.DefaultViewColor;
-            processesXmlView.Parent = this.panelProcessesXml;
-
-            _serviceView = new ServiceView();
-            _serviceView.Dock = DockStyle.Fill;
-            _serviceView.BackColor = PolokusStyle.DefaultViewColor;
-            _serviceView.Parent = this.panelService;
-
-            InitializeView();
-
-
-            SizeChanged += MainWindow_SizeChanged;
-            splitContainer1.SplitterMoved += MainWindow_SizeChanged;
-
-
-            //this.FormBorderStyle = FormBorderStyle.None;
-            this.DoubleBuffered = true;
-            //this.SetStyle(ControlStyles.ResizeRedraw, true);
-
-            AdjustIconBtn();
-        }
-
-
-
-        private void AdjustIconBtn()
-        {
-            this.iconBtnSize.FontChar =
-                (this.WindowState == FormWindowState.Maximized)
-                ? FontsManager.SegMDL2.Restore
-                : FontsManager.SegMDL2.Maximize;
-        }
-
-        public void SetInfo(string info)
-        {
-            this.labelInfo.Text = info;
-        }
-
-
-        private void MainWindow_SizeChanged(object? sender, EventArgs e)
-        {
-            panelPolokusHeader.Invalidate();
-
-            //this.labelInfo.Text = $"Window: {Width}x{Height} ; {30,' '} Left: {splitContainer1.Panel1.Width}x{splitContainer1.Panel1.Height} ; {30,' '} Right: {splitContainer1.Panel2.Width}x{splitContainer1.Panel2.Height}";
-
-            //processesGraphView.Width = splitContainer1.Panel2.Width;
-            //processesGraphView.Height = splitContainer1.Panel2.Height;
-        }
-
-        async Task HideProcessesPanel()
-        {
-            if (!_processPanelVisible)
-            {
-                return;
-            }
-
-            this.panelProcesses.Visible = true;
-            this.panelProcesses.Dock = DockStyle.Top;
-
-            await AnimateProperty(this.panelProcesses,
-                (f) => { this.panelProcesses.Height = (int)f; },
-                ProcessPanelHeight, 0, 100);
-
-            this.panelProcesses.Visible = false;
-            this.buttonSettings.Dock = DockStyle.Top;
-            _processPanelVisible = false;
-        }
-
-        private int ProcessPanelHeight => this.panelSideMenu.Height
-                - panelLogo.Height
-                - buttonSettings.Height
-                - buttonEditor.Height
-                - buttonService.Height
-                - buttonProcesses.Height;
-
-
-        async Task ShowProcessesPanel()
-        {
-            if (_processPanelVisible)
-            {
-                return;
-            }
-
-            this.panelProcesses.Dock = DockStyle.Top;
-            this.panelProcesses.Visible = true;
-            this.buttonSettings.Dock = DockStyle.Top;
-
-            await AnimateProperty(this.panelProcesses,
-                (f) => { this.panelProcesses.Height = (int)f; },
-                0, ProcessPanelHeight, 100);
-
-            this.panelProcesses.Dock = DockStyle.Fill;
-            this.buttonSettings.Dock = DockStyle.Bottom;
-            _processPanelVisible = true;
-        }
-
-        private async Task AnimateProperty(Control control, Action<float> update, int from, int to, int ms)
-        {
-            const int timestep = 15; // depends on system tick time, Windows ~15ms
-            float step = timestep * (float)(to - from) / (float)ms;
-
-            update(from);
-
-            Func<float,int,bool> relation = from < to
-                ? (float f, int i) => f < i
-                : (float f, int i) => f > i;
-
-            for (float current = from; relation(current,to); current += step)
-            {
-                await Task.Delay(timestep);
-                update(current);
-            }
-            update(to);
-
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            formSize = this.ClientSize;
-        }
-
-        void SetProcessesView(PanelView view)
-        {
-
-            switch (view)
-            {
-                case PanelView.ProcessesXml:
-                    panelProcessesCsharp.Visible = false;
-                    panelProcessesXml.Visible = true;
-                    panelProcessesGraph.Visible = false;
-                    panelEditor.Visible = false;
-                    panelService.Visible = false;
-                    panelSettings.Visible = false;
-                    panelHome.Visible = false;
-                    break;
-
-                case PanelView.ProcessesScript:
-                    panelProcessesCsharp.Visible = true;
-                    panelProcessesXml.Visible = false;
-                    panelProcessesGraph.Visible = false;
-                    panelEditor.Visible = false;
-                    panelService.Visible = false;
-                    panelSettings.Visible = false;
-                    panelHome.Visible = false;
-                    break;
-
-                case PanelView.ProcessesGraph:
-                    panelProcessesCsharp.Visible = false;
-                    panelProcessesXml.Visible = false;
-                    panelProcessesGraph.Visible = true;
-                    panelEditor.Visible = false;
-                    panelService.Visible = false;
-                    panelSettings.Visible = false;
-                    panelHome.Visible = false;
-                    break;
-
-                case PanelView.None:
-                    panelProcessesCsharp.Visible = false;
-                    panelProcessesXml.Visible = false;
-                    panelProcessesGraph.Visible = false;
-                    panelEditor.Visible = false;
-                    panelService.Visible = false;
-                    panelSettings.Visible = false;
-                    panelHome.Visible = false;
-                    break;
-
-                case PanelView.Editor:
-                    panelProcessesCsharp.Visible = false;
-                    panelProcessesXml.Visible = false;
-                    panelProcessesGraph.Visible = false;
-                    panelEditor.Visible = true;
-                    panelService.Visible = false;
-                    panelSettings.Visible = false;
-                    panelHome.Visible = false;
-                    break;
-
-                case PanelView.Service:
-                    panelProcessesCsharp.Visible = false;
-                    panelProcessesXml.Visible = false;
-                    panelProcessesGraph.Visible = false;
-                    panelEditor.Visible = false;
-                    panelService.Visible = true;
-                    panelSettings.Visible = false;
-                    panelHome.Visible = false;
-                    break;
-
-                case PanelView.Settings:
-                    panelProcessesCsharp.Visible = false;
-                    panelProcessesXml.Visible = false;
-                    panelProcessesGraph.Visible = false;
-                    panelEditor.Visible = false;
-                    panelService.Visible = false;
-                    panelSettings.Visible = true;
-                    panelHome.Visible = false;
-                    break;
-
-                case PanelView.Home:
-                    panelProcessesCsharp.Visible = false;
-                    panelProcessesXml.Visible = false;
-                    panelProcessesGraph.Visible = false;
-                    panelEditor.Visible = false;
-                    panelService.Visible = false;
-                    panelSettings.Visible = false;
-                    panelHome.Visible = true;
-                    break;
-            }
-
-            _activePanelView = view;
-        }
-
-        void InitializeView()
-        {
-            this.panelProcesses.Visible = false;
-            this.buttonSettings.Dock = DockStyle.Top;
-            _processPanelVisible = false;
-
-            SetProcessesView(PanelView.Home);
-            InitializeTreeView();
-        }
-
+        #region Events Functions
         private async void buttonService_Click(object sender, EventArgs e)
         {
-            SetProcessesView(PanelView.Service);
+            ViewModel.ActivePanelView = MainWindowViewModel.PanelView.Service;
             await HideProcessesPanel();
         }
 
@@ -457,34 +329,34 @@ namespace Polokus.App.Forms
 
         private async void buttonSettings_Click(object sender, EventArgs e)
         {
-            SetProcessesView(PanelView.Settings);
+            ViewModel.ActivePanelView = MainWindowViewModel.PanelView.Settings;
             await HideProcessesPanel();
         }
 
         private void buttonGraphView_Click(object sender, EventArgs e)
         {
-            SetProcessesView(PanelView.ProcessesGraph);
+            ViewModel.ActivePanelView = MainWindowViewModel.PanelView.ProcessesGraph;
         }
 
         private void buttonXmlView_Click(object sender, EventArgs e)
         {
-            SetProcessesView(PanelView.ProcessesXml);
+            ViewModel.ActivePanelView = MainWindowViewModel.PanelView.ProcessesXml;
         }
 
         private void buttonScriptView_Click(object sender, EventArgs e)
         {
-            SetProcessesView(PanelView.ProcessesScript);
+            ViewModel.ActivePanelView = MainWindowViewModel.PanelView.ProcessesScript;
         }
 
         private async void buttonEditor_Click(object sender, EventArgs e)
         {
-            SetProcessesView(PanelView.Editor);
+            ViewModel.ActivePanelView = MainWindowViewModel.PanelView.Editor;
             await HideProcessesPanel();
         }
 
         private void panelLogo_Click(object sender, EventArgs e)
         {
-            SetProcessesView(PanelView.Home);
+            ViewModel.ActivePanelView = MainWindowViewModel.PanelView.Home;
         }
 
         private void MainWindow_Resize(object sender, EventArgs e)
@@ -492,46 +364,59 @@ namespace Polokus.App.Forms
             AdjustForm();
             AdjustIconBtn();
         }
-        //Private methods
-        private void AdjustForm()
-        {
-            switch (this.WindowState)
-            {
-                case FormWindowState.Maximized: //Maximized form (After)
-                    this.Padding = new Padding(8, 8, 8, 0);
-                    break;
-                case FormWindowState.Normal: //Restored form (After)
-                    if (this.Padding.Top != borderSize)
-                        this.Padding = new Padding(borderSize);
-                    break;
-            }
-        }
 
-        private void iconBtn3_Click(object sender, EventArgs e)
+        private void iconBtnMinimize_Click(object sender, EventArgs e)
         {
             this.WindowState = FormWindowState.Minimized;
         }
 
-        private void iconBtn2_Click(object sender, EventArgs e)
+        private void iconBtnSize_Click(object sender, EventArgs e)
         {
             if (this.WindowState == FormWindowState.Normal)
             {
-                formSize = this.ClientSize;
+                ViewModel.FormSize = this.ClientSize;
                 this.WindowState = FormWindowState.Maximized;
             }
             else
             {
                 this.WindowState = FormWindowState.Normal;
-                this.Size = formSize;
+                this.Size = ViewModel.FormSize;
             }
 
             AdjustIconBtn();
 
         }
 
-        private void iconBtn1_Click(object sender, EventArgs e)
+        private void iconBtnExit_Click(object sender, EventArgs e)
         {
             Application.Exit();
         }
+
+        private void MainWindow_Load(object sender, EventArgs e)
+        {
+            ViewModel.FormSize = this.ClientSize;
+        }
+
+        private void MainWindow_SizeChanged(object? sender, EventArgs e)
+        {
+            panelPolokusHeader.Invalidate();
+        }
+
+        private void splitContainer1_SplitterMoved(object? sender, SplitterEventArgs e)
+        {
+            panelPolokusHeader.Invalidate();
+        }
+
+        [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
+        private extern static void ReleaseCapture();
+        [DllImport("user32.DLL", EntryPoint = "SendMessage")]
+        private extern static void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
+        private void panelTitleBar_MouseDown(object sender, MouseEventArgs e)
+        {
+            ReleaseCapture();
+            SendMessage(this.Handle, 0x112, 0xf012, 0);
+        }
+        #endregion
+
     }
 }

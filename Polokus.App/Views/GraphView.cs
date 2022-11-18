@@ -31,7 +31,7 @@ namespace Polokus.App.Views
             {
                 MainWindow.Instance.TVIndexChanged += async (s, e) =>
                 {
-                    if (MainWindow.Instance?.ActivePanelView != MainWindow.PanelView.ProcessesGraph)
+                    if (MainWindow.Instance?.ViewModel.ActivePanelView != MainWindowViewModel.PanelView.ProcessesGraph)
                     {
                         return;
                     }

@@ -118,6 +118,7 @@ namespace Polokus.App.Forms
             this.splitContainer1.SplitterWidth = 1;
             this.splitContainer1.TabIndex = 1;
             this.splitContainer1.TabStop = false;
+            this.splitContainer1.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer1_SplitterMoved);
             // 
             // panelSideMenu
             // 
@@ -404,7 +405,7 @@ namespace Polokus.App.Forms
             this.iconBtnMinimize.Size = new System.Drawing.Size(35, 22);
             this.iconBtnMinimize.TabIndex = 5;
             this.iconBtnMinimize.UseVisualStyleBackColor = true;
-            this.iconBtnMinimize.Click += new System.EventHandler(this.iconBtn3_Click);
+            this.iconBtnMinimize.Click += new System.EventHandler(this.iconBtnMinimize_Click);
             // 
             // iconBtnSize
             // 
@@ -420,7 +421,7 @@ namespace Polokus.App.Forms
             this.iconBtnSize.Size = new System.Drawing.Size(35, 22);
             this.iconBtnSize.TabIndex = 4;
             this.iconBtnSize.UseVisualStyleBackColor = true;
-            this.iconBtnSize.Click += new System.EventHandler(this.iconBtn2_Click);
+            this.iconBtnSize.Click += new System.EventHandler(this.iconBtnSize_Click);
             // 
             // iconBtnExit
             // 
@@ -436,7 +437,7 @@ namespace Polokus.App.Forms
             this.iconBtnExit.Size = new System.Drawing.Size(35, 22);
             this.iconBtnExit.TabIndex = 3;
             this.iconBtnExit.UseVisualStyleBackColor = true;
-            this.iconBtnExit.Click += new System.EventHandler(this.iconBtn1_Click);
+            this.iconBtnExit.Click += new System.EventHandler(this.iconBtnExit_Click);
             // 
             // MainWindow
             // 
@@ -450,7 +451,8 @@ namespace Polokus.App.Forms
             this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.Name = "MainWindow";
             this.Text = "Polokus BPMN Engine";
-            this.Load += new System.EventHandler(this.Form1_Load);
+            this.Load += new System.EventHandler(this.MainWindow_Load);
+            this.SizeChanged += new System.EventHandler(this.MainWindow_SizeChanged);
             this.Resize += new System.EventHandler(this.MainWindow_Resize);
             this.panelBottom.ResumeLayout(false);
             this.panelBottom.PerformLayout();

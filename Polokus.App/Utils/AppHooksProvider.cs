@@ -18,7 +18,7 @@ namespace Polokus.App.Utils
         public AppHooksProvider(ContextInstance contextInstance)
         {
             _contextInstance = contextInstance;
-            _view = MainWindow.Instance.GetServiceView();
+            _view = MainWindow.Instance.ServiceView;
 
 
         }

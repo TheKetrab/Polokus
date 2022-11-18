@@ -24,7 +24,7 @@ namespace Polokus.App.Views
 
             MainWindow.Instance.TVIndexChanged += (s, e) =>
             {
-                if (MainWindow.Instance.ActivePanelView != MainWindow.PanelView.ProcessesXml)
+                if (MainWindow.Instance.ViewModel.ActivePanelView != MainWindowViewModel.PanelView.ProcessesXml)
                 {
                     return;
                 }
