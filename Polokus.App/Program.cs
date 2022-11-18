@@ -49,12 +49,15 @@ namespace Polokus.App
 
         static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
         {
-            MessageBox.Show(e.Exception.Message, "Unhandled Thread Exception");
+            var dialog = new ErrorDialog(e.Exception);
+            dialog.ShowDialog(MainWindow.Instance);
         }
 
         static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            MessageBox.Show((e.ExceptionObject as Exception).Message, "Unhandled UI Exception");
+            var dialog = new ErrorDialog((Exception)e.ExceptionObject);
+            dialog.ShowDialog(MainWindow.Instance);
+
         }
     }
 }

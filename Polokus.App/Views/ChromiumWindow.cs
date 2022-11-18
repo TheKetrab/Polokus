@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using CefSharp;
 using CefSharp.SchemeHandler;
 using CefSharp.WinForms;
+using Polokus.App.Utils;
 
 namespace Polokus.App.Views
 {
@@ -36,6 +37,11 @@ namespace Polokus.App.Views
             }
             chromeBrowser = new ChromiumWebBrowser(bpmnioPage + opts);
             chromeBrowser.Dock = DockStyle.Fill;
+
+            DownloadHandler downloadHandler = new DownloadHandler();
+            chromeBrowser.DownloadHandler = downloadHandler;
+
+
 
             this.Controls.Add(chromeBrowser);
         }

@@ -4,8 +4,32 @@
     <Compile Update="Controls\IconBtn.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Update="Controls\PolokusGradientPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Controls\PolokusHeader.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Controls\PolokusIconButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Controls\PolokusLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Controls\PolokusMenuButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Controls\PolokusNarrowListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Controls\PolokusSplitContainer.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Update="Controls\ReadOnlyRichTextBox.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Forms\DownloadedDialog.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Update="Forms\MainWindow.cs">
       <SubType>Form</SubType>

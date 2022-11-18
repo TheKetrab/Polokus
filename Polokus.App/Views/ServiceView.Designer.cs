@@ -1,4 +1,6 @@
-﻿namespace Polokus.App.Views
+﻿using Polokus.App.Controls;
+
+namespace Polokus.App.Views
 {
     partial class ServiceView
     {
@@ -28,6 +30,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ServiceView));
             this.panel1 = new System.Windows.Forms.Panel();
             this.readOnlyRichTextBox1 = new Polokus.App.Controls.ReadOnlyRichTextBox();
             this.panelBpmnio = new System.Windows.Forms.Panel();
@@ -40,32 +43,32 @@
             this.textBoxPingWaiter = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.panel6 = new System.Windows.Forms.Panel();
-            this.listViewWaiters = new System.Windows.Forms.ListView();
+            this.listViewWaiters = new Polokus.App.Controls.PolokusNarrowListView();
             this.columnHeader6 = new System.Windows.Forms.ColumnHeader();
             this.columnHeader7 = new System.Windows.Forms.ColumnHeader();
             this.columnHeader9 = new System.Windows.Forms.ColumnHeader();
             this.label3 = new System.Windows.Forms.Label();
             this.panel10 = new System.Windows.Forms.Panel();
-            this.listViewStarters = new System.Windows.Forms.ListView();
+            this.listViewStarters = new Polokus.App.Controls.PolokusNarrowListView();
             this.columnHeader4 = new System.Windows.Forms.ColumnHeader();
             this.columnHeader5 = new System.Windows.Forms.ColumnHeader();
             this.columnHeader8 = new System.Windows.Forms.ColumnHeader();
             this.label8 = new System.Windows.Forms.Label();
             this.panel9 = new System.Windows.Forms.Panel();
-            this.listViewInstances = new System.Windows.Forms.ListView();
+            this.listViewInstances = new Polokus.App.Controls.PolokusNarrowListView();
             this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
             this.columnHeader3 = new System.Windows.Forms.ColumnHeader();
             this.label6 = new System.Windows.Forms.Label();
             this.panel8 = new System.Windows.Forms.Panel();
-            this.listViewProcesses = new System.Windows.Forms.ListView();
+            this.listViewProcesses = new Polokus.App.Controls.PolokusNarrowListView();
             this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
             this.label7 = new System.Windows.Forms.Label();
             this.panel3 = new System.Windows.Forms.Panel();
-            this.buttonDelete = new System.Windows.Forms.Button();
-            this.buttonStart = new System.Windows.Forms.Button();
-            this.buttonStop = new System.Windows.Forms.Button();
-            this.buttonRestart = new System.Windows.Forms.Button();
-            this.buttonAdd = new System.Windows.Forms.Button();
+            this.buttonDelete = new Polokus.App.Controls.PolokusIconButton();
+            this.buttonStart = new Polokus.App.Controls.PolokusIconButton();
+            this.buttonStop = new Polokus.App.Controls.PolokusIconButton();
+            this.buttonRestart = new Polokus.App.Controls.PolokusIconButton();
+            this.buttonAdd = new Polokus.App.Controls.PolokusIconButton();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.panelWorkspace = new System.Windows.Forms.Panel();
             this.splitContainerWorkspace1 = new System.Windows.Forms.SplitContainer();
@@ -413,65 +416,70 @@
             // buttonDelete
             // 
             this.buttonDelete.Dock = System.Windows.Forms.DockStyle.Left;
+            this.buttonDelete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonDelete.Image = ((System.Drawing.Image)(resources.GetObject("buttonDelete.Image")));
             this.buttonDelete.Location = new System.Drawing.Point(131, 2);
             this.buttonDelete.Margin = new System.Windows.Forms.Padding(4);
             this.buttonDelete.Name = "buttonDelete";
             this.buttonDelete.Padding = new System.Windows.Forms.Padding(4);
             this.buttonDelete.Size = new System.Drawing.Size(32, 28);
             this.buttonDelete.TabIndex = 4;
-            this.buttonDelete.Text = "🗑";
             this.buttonDelete.UseVisualStyleBackColor = true;
             this.buttonDelete.Click += new System.EventHandler(this.button4_Click);
             // 
             // buttonStart
             // 
             this.buttonStart.Dock = System.Windows.Forms.DockStyle.Left;
+            this.buttonStart.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonStart.Image = ((System.Drawing.Image)(resources.GetObject("buttonStart.Image")));
             this.buttonStart.Location = new System.Drawing.Point(99, 2);
             this.buttonStart.Margin = new System.Windows.Forms.Padding(4);
             this.buttonStart.Name = "buttonStart";
             this.buttonStart.Padding = new System.Windows.Forms.Padding(4);
             this.buttonStart.Size = new System.Drawing.Size(32, 28);
             this.buttonStart.TabIndex = 3;
-            this.buttonStart.Text = "▶";
             this.buttonStart.UseVisualStyleBackColor = true;
             this.buttonStart.Click += new System.EventHandler(this.buttonStart_Click);
             // 
             // buttonStop
             // 
             this.buttonStop.Dock = System.Windows.Forms.DockStyle.Left;
+            this.buttonStop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonStop.Image = ((System.Drawing.Image)(resources.GetObject("buttonStop.Image")));
             this.buttonStop.Location = new System.Drawing.Point(67, 2);
             this.buttonStop.Margin = new System.Windows.Forms.Padding(4);
             this.buttonStop.Name = "buttonStop";
             this.buttonStop.Padding = new System.Windows.Forms.Padding(4);
             this.buttonStop.Size = new System.Drawing.Size(32, 28);
             this.buttonStop.TabIndex = 2;
-            this.buttonStop.Text = "■";
             this.buttonStop.UseVisualStyleBackColor = true;
             this.buttonStop.Click += new System.EventHandler(this.buttonStop_Click);
             // 
             // buttonRestart
             // 
             this.buttonRestart.Dock = System.Windows.Forms.DockStyle.Left;
+            this.buttonRestart.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonRestart.Image = ((System.Drawing.Image)(resources.GetObject("buttonRestart.Image")));
             this.buttonRestart.Location = new System.Drawing.Point(35, 2);
             this.buttonRestart.Margin = new System.Windows.Forms.Padding(4);
             this.buttonRestart.Name = "buttonRestart";
             this.buttonRestart.Padding = new System.Windows.Forms.Padding(4);
             this.buttonRestart.Size = new System.Drawing.Size(32, 28);
             this.buttonRestart.TabIndex = 1;
-            this.buttonRestart.Text = "↺";
             this.buttonRestart.UseVisualStyleBackColor = true;
             this.buttonRestart.Click += new System.EventHandler(this.buttonRestart_Click);
             // 
             // buttonAdd
             // 
             this.buttonAdd.Dock = System.Windows.Forms.DockStyle.Left;
+            this.buttonAdd.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonAdd.Image = ((System.Drawing.Image)(resources.GetObject("buttonAdd.Image")));
             this.buttonAdd.Location = new System.Drawing.Point(3, 2);
             this.buttonAdd.Margin = new System.Windows.Forms.Padding(4);
             this.buttonAdd.Name = "buttonAdd";
             this.buttonAdd.Padding = new System.Windows.Forms.Padding(4);
             this.buttonAdd.Size = new System.Drawing.Size(32, 28);
             this.buttonAdd.TabIndex = 0;
-            this.buttonAdd.Text = "+";
             this.buttonAdd.UseVisualStyleBackColor = true;
             this.buttonAdd.Click += new System.EventHandler(this.buttonAdd_Click);
             // 
@@ -610,11 +618,11 @@
         private Panel panel2;
         private SplitContainer splitContainer1;
         private Panel panel3;
-        private Button buttonDelete;
-        private Button buttonStart;
-        private Button buttonStop;
-        private Button buttonRestart;
-        private Button buttonAdd;
+        private PolokusIconButton buttonDelete;
+        private PolokusIconButton buttonStart;
+        private PolokusIconButton buttonStop;
+        private PolokusIconButton buttonRestart;
+        private PolokusIconButton buttonAdd;
         private Panel panel5;
         private TextBox textBox2;
         private Label label2;
@@ -622,7 +630,7 @@
         private TextBox textBoxPingWaiter;
         private Label label1;
         private Panel panel8;
-        private ListView listViewProcesses;
+        private PolokusNarrowListView listViewProcesses;
         private Panel panelWorkspace;
         private Panel panelContextSelect;
         private Button buttonLoadContext;
@@ -630,19 +638,19 @@
         private ComboBox comboBoxContexts;
         private SplitContainer splitContainerWorkspace1;
         private Panel panel9;
-        private ListView listViewInstances;
+        private PolokusNarrowListView listViewInstances;
         private ColumnHeader columnHeader1;
         private ColumnHeader columnHeader2;
         private ColumnHeader columnHeader3;
         private Label label7;
         private Label label6;
         private Panel panel10;
-        private ListView listViewStarters;
+        private PolokusNarrowListView listViewStarters;
         private ColumnHeader columnHeader4;
         private ColumnHeader columnHeader5;
         private Label label8;
         private Panel panel6;
-        private ListView listViewWaiters;
+        private PolokusNarrowListView listViewWaiters;
         private ColumnHeader columnHeader6;
         private ColumnHeader columnHeader7;
         private Label label3;

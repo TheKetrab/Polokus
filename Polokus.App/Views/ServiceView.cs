@@ -49,13 +49,19 @@ namespace Polokus.App.Views
                 ContextInstance ci = (ContextInstance)contextInstance;
                 ((TimeManager)(contextInstance.TimeManager)).CallersChanged += (s, e) =>
                 {
-                    listViewWaiters.BeginInvoke(() => UpdateNodeHandlerWaitersList(ci));
-                    listViewStarters.BeginInvoke(() => UpdateProcessStartersList(ci));
+                    if (listViewWaiters.IsHandleCreated && listViewStarters.IsHandleCreated)
+                    {
+                        listViewWaiters.BeginInvoke(() => UpdateNodeHandlerWaitersList(ci));
+                        listViewStarters.BeginInvoke(() => UpdateProcessStartersList(ci));
+                    }
                 };
                 ((MessageManager)(contextInstance.MessageManager)).CallersChanged += (s, e) =>
                 {
-                    listViewWaiters.BeginInvoke(() => UpdateNodeHandlerWaitersList(ci));
-                    listViewStarters.BeginInvoke(() => UpdateProcessStartersList(ci));
+                    if (listViewWaiters.IsHandleCreated && listViewStarters.IsHandleCreated)
+                    {
+                        listViewWaiters.BeginInvoke(() => UpdateNodeHandlerWaitersList(ci));
+                        listViewStarters.BeginInvoke(() => UpdateProcessStartersList(ci));
+                    }
                 };
 
             }
@@ -79,9 +85,6 @@ namespace Polokus.App.Views
                     ActiveProcessChanged();
                 }
             };
-
-            this.listViewWaiters.KeyUp += listViewWaiters_KeyUp;
-
 
 
             InitializeComboBoxContexts();
@@ -301,13 +304,13 @@ namespace Polokus.App.Views
                 switch (message.Item1) 
                 {
                     case Logger.MsgType.Simple:
-                        readOnlyRichTextBox1.AppendText(message.Item2);
+                        readOnlyRichTextBox1.AppendText('\n' + message.Item2);
                         break;
                     case Logger.MsgType.Warning:
-                        readOnlyRichTextBox1.AppendFormattedText(message.Item2, Color.Orange, false);
+                        readOnlyRichTextBox1.AppendFormattedText('\n' + message.Item2, Color.Orange, false);
                         break;
                     case Logger.MsgType.Error:
-                        readOnlyRichTextBox1.AppendFormattedText(message.Item2, Color.Red, true);
+                        readOnlyRichTextBox1.AppendFormattedText('\n' + message.Item2, Color.Red, true);
                         break;
 
                 }
@@ -382,23 +385,8 @@ namespace Polokus.App.Views
             ci.MessageManager.PingListener(listenerId);
         }
 
-        private void listViewWaiters_KeyUp(object? sender, KeyEventArgs e)
-        {
-            if (sender != listViewWaiters) return;
-
-            if (e.Control && e.KeyCode == Keys.C)
-                CopySelectedValuesToClipboard();
-        }
-
-        private void CopySelectedValuesToClipboard()
-        {
-            if (listViewWaiters.SelectedItems.Count != 1) 
-            {
-                return;
-            }
 
 
-            Clipboard.SetText(listViewWaiters.SelectedItems[0].Text);
-        }
+
     }
 }
