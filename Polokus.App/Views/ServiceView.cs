@@ -304,7 +304,8 @@ namespace Polokus.App.Views
         {
             this.BeginInvoke(() =>
             {
-                this.readOnlyRichTextBox1.AppendText(line);
+                string br = string.IsNullOrEmpty(this.readOnlyRichTextBox1.Text) ? "" : "\n";
+                this.readOnlyRichTextBox1.AppendText(br + line);
             });
         }
 
@@ -339,19 +340,22 @@ namespace Polokus.App.Views
             var messages = _logs[globalProcessInstanceId].GetMessages();
             foreach (var message in messages)
             {
+                string br = string.IsNullOrEmpty(this.readOnlyRichTextBox1.Text) ? "" : "\n";
+
                 switch (message.Item1) 
                 {
                     case Logger.MsgType.Simple:
-                        readOnlyRichTextBox1.AppendText('\n' + message.Item2);
+                        readOnlyRichTextBox1.AppendText(br + message.Item2);
                         break;
                     case Logger.MsgType.Warning:
-                        readOnlyRichTextBox1.AppendFormattedText('\n' + message.Item2, Color.Orange, false);
+                        readOnlyRichTextBox1.AppendFormattedText(br + message.Item2, Color.Orange, false);
                         break;
                     case Logger.MsgType.Error:
-                        readOnlyRichTextBox1.AppendFormattedText('\n' + message.Item2, Color.Red, true);
+                        readOnlyRichTextBox1.AppendFormattedText(br + message.Item2, Color.Red, true);
                         break;
 
                 }
+
 
             }
         }

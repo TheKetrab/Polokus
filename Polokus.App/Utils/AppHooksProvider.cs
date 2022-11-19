@@ -101,7 +101,7 @@ namespace Polokus.App.Utils
 
             if (globalInstanceId == _view.GetOpenedProcessInstanceGlobalId())
             {
-                _view.AppendLogLine('\n' + message);
+                _view.AppendLogLine(message);
             }
         }
 
