@@ -1,20 +1,9 @@
 ﻿using CefSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Polokus.App.Utils;
 using Polokus.Core;
-using Polokus.Core.Helpers;
 using Polokus.Core.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Polokus.App.Views
 {
@@ -31,18 +20,8 @@ namespace Polokus.App.Views
             chromiumWindow.Parent = panelBpmnio;
             chromiumWindow.Dock = DockStyle.Fill;
 
-            // TODO: powiazac to z waiterami konkretnego procesu?
-            //this.dataGridView1.DataSource = contextsManager
-
-
             ContextsManager = new ContextsManager();
-
-            ContextsManager.LoadXmlFile("C:\\Custom\\BPMN\\Polokus\\Polokus.Tests\\NodeHandlersTests\\Bpmn\\inclusive1.bpmn");
-            ContextsManager.LoadXmlFile("C:\\Custom\\BPMN\\Polokus\\Polokus.Tests\\NodeHandlersTests\\Bpmn\\serviceTask1.bpmn");
-            ContextsManager.LoadXmlFile("C:\\Custom\\BPMN\\Polokus\\Polokus.Tests\\NodeHandlersTests\\Bpmn\\timerEvent1.bpmn");
-            ContextsManager.LoadXmlFile("C:\\Custom\\BPMN\\Polokus\\Polokus.Tests\\NodeHandlersTests\\Bpmn\\exclusive1.bpmn");
-            ContextsManager.LoadXmlFile("C:\\Custom\\BPMN\\Polokus\\Polokus.Tests\\NodeHandlersTests\\Bpmn\\msgStart.bpmn");
-            ContextsManager.LoadXmlFile("C:\\Custom\\BPMN\\Polokus\\Examples\\biggerprocess1.bpmn");
+            LoadBpmnFiles();
 
             foreach (var contextInstance in ContextsManager.ContextInstances.Values)
             {
@@ -89,7 +68,40 @@ namespace Polokus.App.Views
 
             InitializeComboBoxContexts();
 
-            UpdateNodeHandlerWaitersList((ContextInstance)ContextsManager.ContextInstances.First().Value);
+            UpdateNodeHandlerWaitersList((ContextInstance?)ContextsManager.ContextInstances.Values.FirstOrDefault());
+        }
+
+        private void LoadBpmnFiles()
+        {
+            string bpmnDir = Properties.Settings.Default.BpmnPath;
+            if (!Directory.Exists(bpmnDir))
+            {
+                if (MessageBox.Show($"BpmnPath {bpmnDir} does not exists. Do you want to create this directory?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    Directory.CreateDirectory(bpmnDir);
+                }
+                else
+                {
+                    return;
+                }
+            }
+
+            var files = Directory.GetFiles(Properties.Settings.Default.BpmnPath);
+            foreach (var file in files)
+            {
+                LoadXmlFile(file);
+            }
+
+        }
+
+        private void LoadXmlFile(string file)
+        {
+            ContextsManager.LoadXmlFile(file);
+            if (!_comboBoxContextsInitialized)
+            {
+                InitializeComboBoxContexts();
+            }
+
         }
 
 
@@ -127,22 +139,33 @@ namespace Polokus.App.Views
             LoadGraphForProcessInstance(activeProcess);
         }
 
+        private bool _comboBoxContextsInitialized = false;
         private void InitializeComboBoxContexts()
         {
+            if (!ContextsManager.ContextInstances.Values.Any())
+            {
+                return;
+            }
+
             comboBoxContexts.DataSource = new BindingSource(ContextsManager.ContextInstances, null);
             comboBoxContexts.DisplayMember = "Key";
             comboBoxContexts.ValueMember = "Value";
 
-            comboBoxContexts.SelectedIndexChanged += (s, e) =>
-            {
-                var context = GetActiveContextInstance();
-                if (comboBoxContexts.SelectedItem is KeyValuePair<string,IContextInstance> ci)
-                {
-                    ActiveContextInstance = ci.Key;
-                }
+            comboBoxContexts.SelectedIndexChanged += comboBoxContexts_SelectedIndexChanged;
 
-                LoadViewForContext(context);
-            };
+            comboBoxContexts_SelectedIndexChanged(null, EventArgs.Empty);
+            _comboBoxContextsInitialized = true;
+        }
+
+        private void comboBoxContexts_SelectedIndexChanged(object? sender, EventArgs e)
+        {
+            var context = GetActiveContextInstance();
+            if (comboBoxContexts.SelectedItem is KeyValuePair<string, IContextInstance> ci)
+            {
+                ActiveContextInstance = ci.Key;
+            }
+
+            LoadViewForContext(context);
         }
 
         private void LoadViewForContext(ContextInstance contextInstance)
@@ -157,9 +180,13 @@ namespace Polokus.App.Views
 
         }
 
-        private void UpdateProcessStartersList(ContextInstance contextInstance)
+        private void UpdateProcessStartersList(ContextInstance? contextInstance)
         {
             listViewStarters.Items.Clear();
+            if (contextInstance == null)
+            {
+                return;
+            }
 
             List<Tuple<string,IProcessStarter>> starters = new();
             starters.AddRange(contextInstance.TimeManager.GetStarters().Select(x => Tuple.Create("Time",x)));
@@ -175,9 +202,13 @@ namespace Polokus.App.Views
             }
         }
 
-        private void UpdateNodeHandlerWaitersList(ContextInstance contextInstance)
+        private void UpdateNodeHandlerWaitersList(ContextInstance? contextInstance)
         {
             listViewWaiters.Items.Clear();
+            if (contextInstance == null)
+            {
+                return;
+            }
 
             List<Tuple<string,INodeHandlerWaiter>> waiters = new();
             waiters.AddRange(contextInstance.TimeManager.GetWaiters().Select(x => Tuple.Create("Time",x)));
@@ -193,9 +224,14 @@ namespace Polokus.App.Views
             }
         }
 
-        public void UpdateProcessInstancesList(ContextInstance contextInstance)
+        public void UpdateProcessInstancesList(ContextInstance? contextInstance)
         {
             listViewInstances.Items.Clear();
+            if (contextInstance == null)
+            {
+                return;
+            }
+
             foreach (var instance in contextInstance.ProcessInstances)
             {
                 var item = new ListViewItem(instance.Id);
@@ -268,7 +304,7 @@ namespace Polokus.App.Views
         {
             this.BeginInvoke(() =>
             {
-                this.readOnlyRichTextBox1.AppendFormattedText(line, Color.Red, true);
+                this.readOnlyRichTextBox1.AppendText(line);
             });
         }
 
@@ -329,13 +365,27 @@ namespace Polokus.App.Views
 
             if (contextInstance == null || bpmnProcessId == null)
             {
-                throw new Exception("failiure");
+                throw new Exception("None BPMN process is selected.");
             }
 
             var appHooksProvider = new AppHooksProvider(contextInstance);
             contextInstance.SetHooksProvider(appHooksProvider);
 
-            contextInstance.StartProcessManually(bpmnProcessId);
+            string processInstanceId = contextInstance.StartProcessManually(bpmnProcessId);
+            Task.Run(async () => // TODO: usunac to brzydkie rozwiazanie! musi byc to robione od razu jak sie item doda przez hooks providera
+            {
+                await Task.Delay(500);
+                listViewInstances.BeginInvoke(() =>
+                {
+                    var item = this.listViewInstances.FindItemWithText(processInstanceId);
+                    int idx = this.listViewInstances.Items.IndexOf(item);
+                    if (idx != -1)
+                    {
+                        this.listViewInstances.Items[idx].Focused = true;
+                        this.listViewInstances.Items[idx].Selected = true;
+                    }
+                });
+            });
         }
 
         private void buttonLoadContext_Click(object sender, EventArgs e)
@@ -350,7 +400,10 @@ namespace Polokus.App.Views
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     string filePath = openFileDialog.FileName;
-                    ContextsManager.LoadXmlFile(filePath);
+                    string name = Path.GetFileName(filePath);
+                    string newFilePath = Path.Combine(Properties.Settings.Default.BpmnPath, name);
+                    File.Copy(filePath, newFilePath);
+                    LoadXmlFile(newFilePath);
                 }
             }
         }

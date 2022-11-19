@@ -67,11 +67,9 @@ namespace Polokus.Core
                 && DateTime.Now - start >= TimeSpan.FromSeconds(timeout.Value);
         }
 
-        public async Task<bool> RunProcessAsync(IBpmnProcess bpmnProcess, IFlowNode startNode, int? timeout)
-        {
-            string processId = $"pi{GetAnotherProcessId()}/{bpmnProcess.Id}";
-            
-            ProcessInstance instance = new ProcessInstance(processId, this, bpmnProcess, _hooksProvider);
+        public async Task<bool> RunProcessAsync(string processInstanceId, IBpmnProcess bpmnProcess, IFlowNode startNode, int? timeout)
+        {            
+            ProcessInstance instance = new ProcessInstance(processInstanceId, this, bpmnProcess, _hooksProvider);
             ProcessInstances.Add(instance);
             _hooksProvider?.OnStatusChanged(instance.Id);
 
@@ -96,17 +94,20 @@ namespace Polokus.Core
             return true;
         }
 
-        public void StartProcessInstance(IBpmnProcess bpmnProcess, IFlowNode startNode, int? timeout)
+        public string StartProcessInstance(IBpmnProcess bpmnProcess, IFlowNode startNode, int? timeout)
         {
-            Task.Run(async () => await RunProcessAsync(bpmnProcess, startNode, timeout));
+            string processId = $"pi{GetAnotherProcessId()}/{bpmnProcess.Id}";
+
+            Task.Run(async () => await RunProcessAsync(processId, bpmnProcess, startNode, timeout));
+            return processId;
         }
 
 
-        public void StartProcessManually(string bpmnProcessId)
+        public string StartProcessManually(string bpmnProcessId)
         {
             var bpmnProcess = BpmnContext.BpmnProcesses.Single(x => x.Id == bpmnProcessId);
             var startNode = bpmnProcess.GetManualStartNode();
-            StartProcessInstance(bpmnProcess, startNode, -1);
+            return StartProcessInstance(bpmnProcess, startNode, -1);
         }
 
         public IProcessInstance GetProcessInstanceById(string processInstanceId)

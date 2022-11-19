@@ -22,5 +22,29 @@ namespace Polokus.App.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string BpmnPath {
+            get {
+                return ((string)(this["BpmnPath"]));
+            }
+            set {
+                this["BpmnPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool EnableLogs {
+            get {
+                return ((bool)(this["EnableLogs"]));
+            }
+            set {
+                this["EnableLogs"] = value;
+            }
+        }
     }
 }

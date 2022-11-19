@@ -22,7 +22,7 @@ namespace Polokus.App.Forms
         public static MainWindow Instance
         {
             get {
-                return _instance;
+                return _instance ?? throw new Exception("Main window is not initialized yet.");
             }
         }
 
@@ -32,6 +32,7 @@ namespace Polokus.App.Forms
         public ChromiumWindow EditorView { get; }
         public GraphView GraphView { get; }
         public XmlView XmlView { get; }
+        public SettingsView SettingsView { get; }
 
 
         private bool _processPanelVisible = false;
@@ -80,8 +81,6 @@ namespace Polokus.App.Forms
         }
 
 
-
-
         private void InitializeSubViews()
         {
             EditorView.Dock = DockStyle.Fill;
@@ -98,6 +97,10 @@ namespace Polokus.App.Forms
             ServiceView.Dock = DockStyle.Fill;
             ServiceView.BackColor = PolokusStyle.DefaultViewColor;
             ServiceView.Parent = this.panelService;
+
+            SettingsView.Dock = DockStyle.Fill;
+            SettingsView.BackColor = PolokusStyle.DefaultViewColor;
+            SettingsView.Parent = this.panelSettings;
         }
 
         private void InitializeView()
@@ -131,7 +134,7 @@ namespace Polokus.App.Forms
             EditorView = new ChromiumWindow();
             GraphView = new GraphView();
             XmlView = new XmlView();
-
+            SettingsView = new SettingsView();
 
             InitializeComponent();
             InitializeSubViews();

@@ -23,6 +23,15 @@ namespace Polokus.App
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
+            // Load Settings
+            
+            if (string.IsNullOrEmpty(Properties.Settings.Default.BpmnPath))
+            {
+                Properties.Settings.Default.BpmnPath = Path.Combine(
+                    Directory.GetCurrentDirectory(), "BPMN");
+                
+                Properties.Settings.Default.Save();
+            }
 
             // CefSharp init
             CefSettings settings = new CefSettings();
@@ -32,17 +41,9 @@ namespace Polokus.App
 
 
             // ----- EXIT -----
-            // TODO: if enable logs == true w app config
-            string logsPath = Path.Combine(Directory.GetCurrentDirectory(), "Logs");
-            if (!Directory.Exists(logsPath))
+            if (Properties.Settings.Default.EnableLogs)
             {
-                Directory.CreateDirectory(logsPath);
-            }
-            string filename = $"PolokusLog_{DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss")}.txt";
-            string logText = Logger.Global.GetFullLog(true);
-            if (!string.IsNullOrEmpty(logText))
-            {
-                File.WriteAllText(Path.Combine(logsPath, filename), logText);
+                PrintLogs();
             }
 
         }
@@ -58,6 +59,21 @@ namespace Polokus.App
             var dialog = new ErrorDialog((Exception)e.ExceptionObject);
             dialog.ShowDialog(MainWindow.Instance);
 
+        }
+
+        static void PrintLogs()
+        {
+            string logsPath = Path.Combine(Directory.GetCurrentDirectory(), "Logs");
+            if (!Directory.Exists(logsPath))
+            {
+                Directory.CreateDirectory(logsPath);
+            }
+            string filename = $"PolokusLog_{DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss")}.txt";
+            string logText = Logger.Global.GetFullLog(true);
+            if (!string.IsNullOrEmpty(logText))
+            {
+                File.WriteAllText(Path.Combine(logsPath, filename), logText);
+            }
         }
     }
 }

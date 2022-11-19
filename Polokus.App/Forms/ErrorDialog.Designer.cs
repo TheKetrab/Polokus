@@ -53,7 +53,7 @@
             // 
             this.polokusLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.polokusLabel1.Font = new System.Drawing.Font("Montserrat", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.polokusLabel1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.polokusLabel1.Location = new System.Drawing.Point(12, 9);
             this.polokusLabel1.Name = "polokusLabel1";
             this.polokusLabel1.Size = new System.Drawing.Size(411, 23);
@@ -64,10 +64,10 @@
             // polokusLabelExceptionType
             // 
             this.polokusLabelExceptionType.AutoSize = true;
-            this.polokusLabelExceptionType.Font = new System.Drawing.Font("Montserrat", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.polokusLabelExceptionType.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.polokusLabelExceptionType.Location = new System.Drawing.Point(12, 45);
             this.polokusLabelExceptionType.Name = "polokusLabelExceptionType";
-            this.polokusLabelExceptionType.Size = new System.Drawing.Size(88, 15);
+            this.polokusLabelExceptionType.Size = new System.Drawing.Size(89, 15);
             this.polokusLabelExceptionType.TabIndex = 4;
             this.polokusLabelExceptionType.Text = "Exception type:";
             // 
@@ -91,14 +91,15 @@
             this.readOnlyRichTextBoxCallstack.Size = new System.Drawing.Size(411, 104);
             this.readOnlyRichTextBoxCallstack.TabIndex = 6;
             this.readOnlyRichTextBoxCallstack.Text = "";
+            this.readOnlyRichTextBoxCallstack.WordWrap = false;
             // 
             // polokusLabelExceptionMessage
             // 
             this.polokusLabelExceptionMessage.AutoSize = true;
-            this.polokusLabelExceptionMessage.Font = new System.Drawing.Font("Montserrat", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.polokusLabelExceptionMessage.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.polokusLabelExceptionMessage.Location = new System.Drawing.Point(12, 71);
             this.polokusLabelExceptionMessage.Name = "polokusLabelExceptionMessage";
-            this.polokusLabelExceptionMessage.Size = new System.Drawing.Size(119, 15);
+            this.polokusLabelExceptionMessage.Size = new System.Drawing.Size(118, 15);
             this.polokusLabelExceptionMessage.TabIndex = 7;
             this.polokusLabelExceptionMessage.Text = "Exception message:";
             // 
@@ -108,9 +109,11 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.readOnlyRichTextBoxMsg.Location = new System.Drawing.Point(137, 68);
             this.readOnlyRichTextBoxMsg.Name = "readOnlyRichTextBoxMsg";
+            this.readOnlyRichTextBoxMsg.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
             this.readOnlyRichTextBoxMsg.Size = new System.Drawing.Size(286, 23);
             this.readOnlyRichTextBoxMsg.TabIndex = 8;
             this.readOnlyRichTextBoxMsg.Text = "";
+            this.readOnlyRichTextBoxMsg.WordWrap = false;
             // 
             // ErrorDialog
             // 

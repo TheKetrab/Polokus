@@ -86,7 +86,8 @@ namespace Polokus.Core
             var bpmnProcess = contextInstance.BpmnContext.BpmnProcesses.First();
             var startNode = bpmnProcess.GetStartNodes().First();
 
-            return await contextInstance.RunProcessAsync(bpmnProcess, startNode, secTimeout);
+            string processInstanceId = "processInstanceId";
+            return await contextInstance.RunProcessAsync(processInstanceId, bpmnProcess, startNode, secTimeout);
         }
 
 

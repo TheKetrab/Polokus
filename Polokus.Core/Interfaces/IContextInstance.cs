@@ -22,9 +22,9 @@ namespace Polokus.Core.Interfaces
         INodeHandlerFactory NodeHandlerFactory { get; }
         string Id { get; }
 
-        Task<bool> RunProcessAsync(IBpmnProcess bpmnProcess, IFlowNode startNode, int? timeout);
-        void StartProcessInstance(IBpmnProcess bpmnProcess, IFlowNode startNode, int? timeout);
-        void StartProcessManually(string bpmnProcessId);
+        Task<bool> RunProcessAsync(string processInstanceId, IBpmnProcess bpmnProcess, IFlowNode startNode, int? timeout);
+        string StartProcessInstance(IBpmnProcess bpmnProcess, IFlowNode startNode, int? timeout);
+        string StartProcessManually(string bpmnProcessId);
 
     }
 }
