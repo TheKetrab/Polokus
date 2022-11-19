@@ -15,6 +15,7 @@ namespace Polokus.Core.Hooks
         public virtual void BeforeExecuteNode(string processInstanceId, IFlowNode node, int taskId, INodeCaller? caller) { }
         public virtual void BeforeStartNewSequence(string processInstanceId, IFlowNode firstNode, INodeCaller? caller) { }
         public virtual void OnStatusChanged(string processInstanceId) { }
+        public virtual void OnTasksChanged(string processInstanceId) { }
         public virtual void OnTimeout(string processInstanceId) { }
     }
 }

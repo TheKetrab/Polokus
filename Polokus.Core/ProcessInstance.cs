@@ -49,7 +49,7 @@ namespace Polokus.Core
 
         public ICollection<INodeHandlerWaiter> Waiters { get; } = new List<INodeHandlerWaiter>();
 
-        protected IHooksProvider? _hooksProvider;
+        public IHooksProvider? HooksProvider;
 
         public ProcessInstance(string id, IContextInstance contextInstance, IBpmnProcess bpmnProcess, IHooksProvider? hooksProvider = null)
         {
@@ -58,7 +58,7 @@ namespace Polokus.Core
             ActiveTasksManager = new ActiveTasksManager(this);
 
             BpmnProcess = bpmnProcess;
-            _hooksProvider = hooksProvider;
+            HooksProvider = hooksProvider;
         }
 
         
@@ -116,7 +116,7 @@ namespace Polokus.Core
             INodeHandler nodeHandler = GetNodeHandlerForNode(node);
             //ActiveTasksManager.ActiveTasks[taskId] = nodeHandler;
 
-            _hooksProvider?.BeforeExecuteNode(Id, node, taskId, caller);
+            HooksProvider?.BeforeExecuteNode(Id, node, taskId, caller);
             var executionResult = await nodeHandler.Execute(caller,taskId);
             lock (TasksMutex)
             {
@@ -129,17 +129,17 @@ namespace Polokus.Core
             switch (resultInfo.State)
             {
                 case ProcessResultState.Success:
-                    _hooksProvider?.AfterExecuteNodeSuccess(Id, node, taskId);
+                    HooksProvider?.AfterExecuteNodeSuccess(Id, node, taskId);
                     AvailableNodeHandlers.Remove(node.Id);
                     RunFurtherNodes(node, taskId, resultInfo.SequencesToInvoke.ToArray());
                     break;
                 case ProcessResultState.Failure:
-                    _hooksProvider?.AfterExecuteNodeFailure(Id, node, taskId);
+                    HooksProvider?.AfterExecuteNodeFailure(Id, node, taskId);
                     ActiveTasksManager.RemoveRunningTask(taskId);
                     AvailableNodeHandlers.Remove(node.Id);
                     break;
                 case ProcessResultState.Suspension:
-                    _hooksProvider?.AfterExecuteNodeSuspension(Id, node, taskId);
+                    HooksProvider?.AfterExecuteNodeSuspension(Id, node, taskId);
                     ActiveTasksManager.RemoveRunningTask(taskId);
                     break;
                     // case ProcessResultState. invoke self?????
@@ -149,7 +149,7 @@ namespace Polokus.Core
 
         public void StartNewSequence(IFlowNode firstNode, INodeCaller? caller)
         {
-            _hooksProvider?.BeforeStartNewSequence(Id,firstNode, caller);
+            HooksProvider?.BeforeStartNewSequence(Id,firstNode, caller);
             int taskId = ActiveTasksManager.AddNewTask(GetNodeHandlerForNode(firstNode));
             Task task = new Task(() => ExecuteNode(firstNode, taskId, caller));
             task.Start();
@@ -205,7 +205,7 @@ namespace Polokus.Core
             IsActive = false;
             Status = ProcessStatus.Stopped;
             // TODO: stop all tasks
-            _hooksProvider?.OnStatusChanged(Id);
+            HooksProvider?.OnStatusChanged(Id);
         }
 
         public void Kill()
@@ -229,7 +229,7 @@ namespace Polokus.Core
             _beginTime = DateTime.Now;
             IsActive = true;
             Status = ProcessStatus.Running;
-            _hooksProvider?.OnStatusChanged(Id);
+            HooksProvider?.OnStatusChanged(Id);
             StartNewSequence(startNode, null);
         }
 
@@ -237,7 +237,7 @@ namespace Polokus.Core
         {
             IsActive = true;
             Status = ProcessStatus.Running;
-            _hooksProvider?.OnStatusChanged(Id);
+            HooksProvider?.OnStatusChanged(Id);
             // TODO: rerun stopped tasks
         }
 
@@ -246,7 +246,7 @@ namespace Polokus.Core
             IsFinished = true;
             _finishTime = DateTime.Now;
             Status = ProcessStatus.Finished;
-            _hooksProvider?.OnStatusChanged(Id);
+            HooksProvider?.OnStatusChanged(Id);
         }
     }
 

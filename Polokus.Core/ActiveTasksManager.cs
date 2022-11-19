@@ -33,12 +33,14 @@ namespace Polokus.Core
         {
             int taskId = _cnt++;
             ActiveTasks.Add(taskId, o); // TODO to bardzo wazne zeby to nie byl null
+            ProcessInstance.HooksProvider?.OnTasksChanged(ProcessInstance.Id);
             return taskId;
         }
 
         public void RemoveRunningTask(int taskId)
         {
             ActiveTasks.Remove(taskId);
+            ProcessInstance.HooksProvider?.OnTasksChanged(ProcessInstance.Id);
         }
 
 

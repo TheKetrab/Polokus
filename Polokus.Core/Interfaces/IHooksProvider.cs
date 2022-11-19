@@ -14,6 +14,7 @@ namespace Polokus.Core.Interfaces
         void BeforeStartNewSequence(string processInstanceId, IFlowNode firstNode, INodeCaller? caller);
         void BeforeExecuteNode(string processInstanceId, IFlowNode node, int taskId, INodeCaller? caller);
         void OnStatusChanged(string processInstanceId);
+        void OnTasksChanged(string processInstanceId);
         void OnTimeout(string processInstanceId);
     }
 }

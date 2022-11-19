@@ -58,6 +58,7 @@ namespace Polokus.App.Views
             this.listViewInstances = new Polokus.App.Controls.PolokusNarrowListView();
             this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
             this.columnHeader3 = new System.Windows.Forms.ColumnHeader();
+            this.columnHeader10 = new System.Windows.Forms.ColumnHeader();
             this.label6 = new System.Windows.Forms.Label();
             this.panel8 = new System.Windows.Forms.Panel();
             this.listViewProcesses = new Polokus.App.Controls.PolokusNarrowListView();
@@ -248,7 +249,7 @@ namespace Polokus.App.Views
             // columnHeader7
             // 
             this.columnHeader7.Text = "Node to call Id";
-            this.columnHeader7.Width = 120;
+            this.columnHeader7.Width = 80;
             // 
             // columnHeader9
             // 
@@ -298,7 +299,7 @@ namespace Polokus.App.Views
             // columnHeader5
             // 
             this.columnHeader5.Text = "Start node";
-            this.columnHeader5.Width = 120;
+            this.columnHeader5.Width = 80;
             // 
             // columnHeader8
             // 
@@ -329,7 +330,8 @@ namespace Polokus.App.Views
             // 
             this.listViewInstances.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader2,
-            this.columnHeader3});
+            this.columnHeader3,
+            this.columnHeader10});
             this.listViewInstances.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listViewInstances.Location = new System.Drawing.Point(0, 15);
             this.listViewInstances.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -342,11 +344,15 @@ namespace Polokus.App.Views
             // columnHeader2
             // 
             this.columnHeader2.Text = "Instances Ids";
-            this.columnHeader2.Width = 200;
+            this.columnHeader2.Width = 120;
             // 
             // columnHeader3
             // 
             this.columnHeader3.Text = "Status";
+            // 
+            // columnHeader10
+            // 
+            this.columnHeader10.Text = "Tasks";
             // 
             // label6
             // 
@@ -657,5 +663,6 @@ namespace Polokus.App.Views
         private ColumnHeader columnHeader9;
         private ColumnHeader columnHeader8;
         private Button buttonPingWaiter;
+        private ColumnHeader columnHeader10;
     }
 }

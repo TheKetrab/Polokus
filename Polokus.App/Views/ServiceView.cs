@@ -200,6 +200,7 @@ namespace Polokus.App.Views
             {
                 var item = new ListViewItem(instance.Id);
                 item.SubItems.Add(instance.Status.ToStringExt());
+                item.SubItems.Add(instance.ActiveTasksManager.ActiveTasks.Count.ToString());
 
                 this.listViewInstances.Items.Add(item);
             }
@@ -208,6 +209,7 @@ namespace Polokus.App.Views
             {
                 var item = new ListViewItem(instance.Id);
                 item.SubItems.Add(instance.Status.ToStringExt());
+                item.SubItems.Add(instance.ActiveTasksManager.ActiveTasks.Count.ToString());
 
                 this.listViewInstances.Items.Add(item);
             }

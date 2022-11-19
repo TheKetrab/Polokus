@@ -45,7 +45,6 @@ namespace Polokus.App.Utils
             UpdateActiveNodesInGraph(processInstanceId);
             Log(processInstanceId, $"Executing: {node.Id} taskId = {taskId}");
             Thread.Sleep(300); // delay execution
-            //Thread.Sleep(3000); // delay execution
         }
 
         public void BeforeStartNewSequence(string processInstanceId, IFlowNode firstNode, INodeCaller? caller)
@@ -62,6 +61,14 @@ namespace Polokus.App.Utils
             }
 
             _view.BeginInvoke(new Action(() => _view.UpdateProcessInstancesList(_contextInstance)));
+        }
+
+        public void OnTasksChanged(string processInstanceId)
+        {
+            if (_view.GetActiveContextInstance() == _contextInstance)
+            {
+                _view.BeginInvoke(new Action(() => _view.UpdateProcessInstancesList(_contextInstance)));
+            }
         }
 
         public void OnTimeout(string processInstanceId)
