@@ -2,6 +2,7 @@
 using Polokus.App.Views;
 using Polokus.Core;
 using Polokus.Core.Interfaces;
+using Polokus.Core.Models.BpmnObjects.Xsd;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,6 +46,16 @@ namespace Polokus.App.Utils
             UpdateActiveNodesInGraph(processInstanceId);
             Log(processInstanceId, $"Executing: {node.Id} taskId = {taskId}");
             Thread.Sleep(300); // delay execution
+
+            if (node.XmlType == typeof(tManualTask))
+            {
+                MessageBox.Show($"Waiting for manual task: {node.Name}");
+            }
+            else if (node.XmlType == typeof(tUserTask))
+            {
+                MessageBox.Show($"Waiting for user task: {node.Name}");
+            }
+
         }
 
         public void BeforeStartNewSequence(string processInstanceId, IFlowNode firstNode, INodeCaller? caller)
