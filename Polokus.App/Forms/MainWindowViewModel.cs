@@ -5,6 +5,7 @@ using System.Drawing.Printing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Polokus.App.Forms
 {
@@ -16,14 +17,19 @@ namespace Polokus.App.Forms
         {
             View = view;
 
-            _map.Add(PanelView.None, view.PanelHome);
-            _map.Add(PanelView.ProcessesGraph, view.PanelProcessesGraph);
-            _map.Add(PanelView.ProcessesXml, view.PanelProcessesXml);
-            _map.Add(PanelView.ProcessesScript, view.PanelProcessesCSharp);
-            _map.Add(PanelView.Editor, view.PanelEditor);
-            _map.Add(PanelView.Settings, view.PanelSettings);
-            _map.Add(PanelView.Service, view.PanelService);
-            _map.Add(PanelView.Home, view.PanelHome);
+        }
+
+        public void InitializeMap()
+        {
+            _map.Add(PanelView.None, View.PanelHome);
+            _map.Add(PanelView.ProcessesGraph, View.PanelProcessesGraph);
+            _map.Add(PanelView.ProcessesXml, View.PanelProcessesXml);
+            _map.Add(PanelView.ProcessesScript, View.PanelProcessesCSharp);
+            _map.Add(PanelView.Editor, View.PanelEditor);
+            _map.Add(PanelView.Settings, View.PanelSettings);
+            _map.Add(PanelView.Service, View.PanelService);
+            _map.Add(PanelView.Home, View.PanelHome);
+
         }
 
         public Size FormSize;
@@ -53,6 +59,8 @@ namespace Polokus.App.Forms
             {
                 _activePanelView = value;
                 _map.Where(x => x.Key != value && x.Value != null).ForEach(x => x.Value.Visible = false);
+                if (!_map.ContainsKey(value))
+                    return;
                 var view = _map[value];
                 if (view != null)
                 {

@@ -136,11 +136,12 @@ namespace Polokus.App.Forms
             XmlView = new XmlView();
             SettingsView = new SettingsView();
 
+            ViewModel = new MainWindowViewModel(this);
             InitializeComponent();
             InitializeSubViews();
 
-            ViewModel = new MainWindowViewModel(this);
             InitializeView();
+            ViewModel.InitializeMap();
 
 
             _client = new BpmnioClient(EditorView);
