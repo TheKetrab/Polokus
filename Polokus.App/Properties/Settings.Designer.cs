@@ -46,5 +46,17 @@ namespace Polokus.App.Properties {
                 this["EnableLogs"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("8085")]
+        public int MessageListenerPort {
+            get {
+                return ((int)(this["MessageListenerPort"]));
+            }
+            set {
+                this["MessageListenerPort"] = value;
+            }
+        }
     }
 }

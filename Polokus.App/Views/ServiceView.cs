@@ -9,7 +9,7 @@ namespace Polokus.App.Views
 {
     public partial class ServiceView : UserControl
     {
-        ContextsManager ContextsManager;
+        public ContextsManager ContextsManager;
         public ChromiumWindow chromiumWindow;
 
         public ServiceView()

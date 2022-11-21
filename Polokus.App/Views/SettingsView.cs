@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Polokus.App.Forms;
+using Polokus.App.Utils;
+using Polokus.Core;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -16,12 +19,30 @@ namespace Polokus.App.Views
         {
             InitializeComponent();
             InitBindings();
+
+            this.numericUpDownMessageListenerPort.ValueChanged += NumericUpDownMessageListenerPort_ValueChanged;
         }
+
+        private void NumericUpDownMessageListenerPort_ValueChanged(object? sender, EventArgs e)
+        {
+            var messageManagers = MainWindow.Instance.ServiceView.ContextsManager
+                .ContextInstances.Select(x => x.Value.MessageManager);
+
+            if (messageManagers.Any(x => x.IsAnyWaiting()))
+            {
+                MessageBox.Show("Warning! You changed app port, but there are some waiters. You won't be able to perform ping with Polokus, you will have to ping them manually.");
+            }
+                
+                    
+        }
+
+
 
         public void InitBindings()
         {
             textBoxBpmnPath.DataBindings.Add("Text", Properties.Settings.Default, "BpmnPath");
             checkBoxEnableLogs.DataBindings.Add("Checked", Properties.Settings.Default, "EnableLogs");
+            numericUpDownMessageListenerPort.DataBindings.Add("Value", Properties.Settings.Default, "MessageListenerPort");
         }
 
         private void buttonBrowseBpmnPath_Click(object sender, EventArgs e)

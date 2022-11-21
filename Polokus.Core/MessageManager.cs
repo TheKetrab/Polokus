@@ -11,17 +11,22 @@ namespace Polokus.Core
 {
     public class MessageManager : IMessageManager
     {
-        public MessageManager()
+        public MessageManager(int port)
         {
             if (!HttpListener.IsSupported)
             {
                 throw new Exception("HttpListener is not supported");
             }
+
+            ListeningPort = port;
         }
+
+        public int ListeningPort { get; }
+
 
         Dictionary<string, IProcessStarter> _starters = new();
         Dictionary<string, INodeHandlerWaiter> _waiters = new();
-        public event EventHandler CallersChanged;
+        public event EventHandler? CallersChanged;
 
         public void RegisterMessageListener(INodeHandlerWaiter waiter)
         {
@@ -43,7 +48,7 @@ namespace Polokus.Core
                 _waiters.Add(waiter.Id, waiter);
                 CallersChanged?.Invoke(null, EventArgs.Empty);
 
-                listener.Prefixes.Add($"http://localhost:8080/{waiter.Id}/");
+                listener.Prefixes.Add($"http://localhost:{ListeningPort}/{waiter.Id}/");
                 listener.Start();
 
                 var context = await listener.GetContextAsync();
@@ -62,7 +67,7 @@ namespace Polokus.Core
                 _starters.Add(starter.Id, starter);
                 CallersChanged?.Invoke(null, EventArgs.Empty);
 
-                listener.Prefixes.Add($"http://localhost:8080/{starter.Id}/");
+                listener.Prefixes.Add($"http://localhost:{ListeningPort}/{starter.Id}/");
                 listener.Start();
 
                 var context = await listener.GetContextAsync();
@@ -77,7 +82,7 @@ namespace Polokus.Core
         public async Task PingListener(string listenerId)
         {
             HttpClient client = new HttpClient();
-            string uri = $"http://localhost:8080/{listenerId}";
+            string uri = $"http://localhost:{ListeningPort}/{listenerId}";
             var msg = new HttpRequestMessage(new HttpMethod("GET"), uri);
 
             try
@@ -102,6 +107,11 @@ namespace Polokus.Core
         public IEnumerable<INodeHandlerWaiter> GetWaiters()
         {
             return _waiters.Values;
+        }
+
+        public bool IsAnyWaiting()
+        {
+            return _waiters.Any() || _starters.Any();
         }
     }
 }

@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Quartz;
 
 namespace Polokus.Core
 {
@@ -25,8 +26,10 @@ namespace Polokus.Core
             }
         }
 
+        public ISettingsProvider SettingsProvider { get; }
+
         public ITimeManager TimeManager { get; } = new TimeManager();
-        public IMessageManager MessageManager { get; } = new MessageManager();
+        public IMessageManager MessageManager { get; }
 
 
         public ICollection<IProcessInstance> History { get; } = new List<IProcessInstance>();
@@ -48,8 +51,17 @@ namespace Polokus.Core
             _hooksProvider = provider;
         }
 
-        public ContextInstance(IContextsManager contextsManager, IBpmnContext bpmnContext, string id, IHooksProvider hooksProvider = null)
+        public ContextInstance(IContextsManager contextsManager, IBpmnContext bpmnContext, string id, IHooksProvider hooksProvider = null, ISettingsProvider settingsProvider = null)
         {
+            if (settingsProvider == null)
+            {
+                settingsProvider = new DefaultSettingsProvider();
+            }
+
+            SettingsProvider = settingsProvider;
+            MessageManager = new MessageManager(SettingsProvider.MessageListenerPort);
+
+
             ContextsManager = contextsManager;
             BpmnContext = bpmnContext;
             Id = id;

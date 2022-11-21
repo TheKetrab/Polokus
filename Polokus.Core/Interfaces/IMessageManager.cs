@@ -10,6 +10,7 @@ namespace Polokus.Core.Interfaces
     {
         IEnumerable<IProcessStarter> GetStarters();
         IEnumerable<INodeHandlerWaiter> GetWaiters();
+        bool IsAnyWaiting();
 
 
         void RegisterMessageListener(INodeHandlerWaiter waiter);

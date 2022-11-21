@@ -12,6 +12,7 @@ namespace Polokus.Core.Interfaces
         ITimeManager TimeManager { get; }
         IMessageManager MessageManager { get; }
 
+        ISettingsProvider SettingsProvider { get; }
 
         ICollection<IProcessInstance> ProcessInstances { get; }
         ICollection<IProcessInstance> History { get; }

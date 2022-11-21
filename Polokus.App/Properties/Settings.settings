@@ -8,5 +8,8 @@
     <Setting Name="EnableLogs" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="MessageListenerPort" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">8085</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
