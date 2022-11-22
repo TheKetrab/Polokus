@@ -50,14 +50,14 @@ namespace Polokus.Core
         }
 
 
-        public void LoadXmlFile(string xmlFilePath, string? bpmnContextName = null, IHooksProvider? hooksProvider = null)
+        public void LoadXmlFile(string xmlFilePath, string? bpmnContextName = null, IHooksProvider? hooksProvider = null, ISettingsProvider? settingsProvider = null)
         {
             bpmnContextName ??= new FileInfo(xmlFilePath).Name;
 
             BpmnParser parser = new BpmnParser();
             IBpmnContext bpmnContext = parser.ParseFile(xmlFilePath);
 
-            var contextInstance = new ContextInstance(this, bpmnContext, bpmnContextName);
+            var contextInstance = new ContextInstance(this, bpmnContext, bpmnContextName, settingsProvider: settingsProvider);
             contextInstance.SetHooksProvider(hooksProvider);
             RegisterWaiters(contextInstance);
 

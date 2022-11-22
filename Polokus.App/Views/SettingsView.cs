@@ -1,4 +1,5 @@
-﻿using Polokus.App.Forms;
+﻿using CefSharp.DevTools.Page;
+using Polokus.App.Forms;
 using Polokus.App.Utils;
 using Polokus.Core;
 using System;
@@ -21,6 +22,13 @@ namespace Polokus.App.Views
             InitBindings();
 
             this.numericUpDownMessageListenerPort.ValueChanged += NumericUpDownMessageListenerPort_ValueChanged;
+
+            textBoxBpmnPath.TextChanged += TextBoxBpmnPath_TextChanged;
+        }
+
+        private void TextBoxBpmnPath_TextChanged(object? sender, EventArgs e)
+        {
+            // TODO: reload context instances
         }
 
         private void NumericUpDownMessageListenerPort_ValueChanged(object? sender, EventArgs e)
@@ -43,6 +51,7 @@ namespace Polokus.App.Views
             textBoxBpmnPath.DataBindings.Add("Text", Properties.Settings.Default, "BpmnPath");
             checkBoxEnableLogs.DataBindings.Add("Checked", Properties.Settings.Default, "EnableLogs");
             numericUpDownMessageListenerPort.DataBindings.Add("Value", Properties.Settings.Default, "MessageListenerPort");
+            textBoxBpmnServiceNodeHandlers.DataBindings.Add("Text", Properties.Settings.Default, "ServiceTasksExternals");            
         }
 
         private void buttonBrowseBpmnPath_Click(object sender, EventArgs e)
@@ -65,13 +74,16 @@ namespace Polokus.App.Views
 
         private void buttonServiceNodeHandlers_Click(object sender, EventArgs e)
         {
-            using (var fbd = new FolderBrowserDialog())
+            using (var ofd = new OpenFileDialog())
             {
-                DialogResult result = fbd.ShowDialog();
+                ofd.Filter = "json files (*.json)|*.json|All files (*.*)|*.*";
 
-                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                DialogResult result = ofd.ShowDialog();
+
+                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(ofd.FileName))
                 {
-                    this.textBoxBpmnServiceNodeHandlers.Text = fbd.SelectedPath;
+                    this.textBoxBpmnServiceNodeHandlers.Text = ofd.FileName;
+                    this.textBoxBpmnServiceNodeHandlers.DataBindings["Text"].BindingManagerBase.EndCurrentEdit();
                 }
             }
         }

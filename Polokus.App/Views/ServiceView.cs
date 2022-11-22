@@ -96,7 +96,7 @@ namespace Polokus.App.Views
 
         private void LoadXmlFile(string file)
         {
-            ContextsManager.LoadXmlFile(file);
+            ContextsManager.LoadXmlFile(file, settingsProvider: new AppSettingsProvider());
             if (!_comboBoxContextsInitialized)
             {
                 InitializeComboBoxContexts();

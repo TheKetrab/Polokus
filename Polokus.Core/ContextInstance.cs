@@ -29,7 +29,7 @@ namespace Polokus.Core
             }
         }
 
-        public ISettingsProvider SettingsProvider { get; }
+        public ISettingsProvider SettingsProvider { get; set;  }
 
         public ITimeManager TimeManager { get; } = new TimeManager();
         public IMessageManager MessageManager { get; }
@@ -52,6 +52,11 @@ namespace Polokus.Core
         public void SetHooksProvider(IHooksProvider provider)
         {
             _hooksProvider = provider;
+        }
+
+        public void SetSettingsProvider(ISettingsProvider provider)
+        {
+            SettingsProvider = provider;
         }
 
         public ContextInstance(IContextsManager contextsManager, IBpmnContext bpmnContext, string id, IHooksProvider hooksProvider = null, ISettingsProvider settingsProvider = null)
