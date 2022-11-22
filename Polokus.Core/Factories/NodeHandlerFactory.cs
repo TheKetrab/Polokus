@@ -20,6 +20,12 @@ namespace Polokus.Core.Factories
             _serviceTasksHandlers[serviceTask] = typeof(TNodeHandler);
         }
 
+        public void RegisterNodeHandlerForServiceTask(Type nhType, string serviceTask)
+        {
+            _serviceTasksHandlers[serviceTask] = nhType;
+        }
+
+
         public void RegisterNodeHandlerType<TXml, TNodeHandler>()
             where TXml : tFlowNode where TNodeHandler : class, INodeHandler
         {
@@ -81,6 +87,11 @@ namespace Polokus.Core.Factories
             }
             
             return nodeHandler ?? throw new Exception("Unable to create nodehandler.", activatorException);
+        }
+
+        public bool IsNodeHandlerForServiceTaskRegistered(string serviceTask)
+        {
+            return _serviceTasksHandlers.ContainsKey(serviceTask);
         }
 
 

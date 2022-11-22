@@ -11,5 +11,8 @@
     <Setting Name="MessageListenerPort" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">8085</Value>
     </Setting>
+    <Setting Name="ServiceTasksExternals" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -62,5 +62,18 @@ namespace Polokus.App.Views
         {
             Properties.Settings.Default.Save();
         }
+
+        private void buttonServiceNodeHandlers_Click(object sender, EventArgs e)
+        {
+            using (var fbd = new FolderBrowserDialog())
+            {
+                DialogResult result = fbd.ShowDialog();
+
+                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                {
+                    this.textBoxBpmnServiceNodeHandlers.Text = fbd.SelectedPath;
+                }
+            }
+        }
     }
 }

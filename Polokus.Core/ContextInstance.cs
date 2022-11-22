@@ -11,6 +11,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Quartz;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using System.Net.Http.Json;
 
 namespace Polokus.Core
 {
@@ -109,9 +112,29 @@ namespace Polokus.Core
         public string StartProcessInstance(IBpmnProcess bpmnProcess, IFlowNode startNode, int? timeout)
         {
             string processId = $"pi{GetAnotherProcessId()}/{bpmnProcess.Id}";
+            LoadServiceTasksNodeHandlers(bpmnProcess);
 
             Task.Run(async () => await RunProcessAsync(processId, bpmnProcess, startNode, timeout));
             return processId;
+        }
+
+        private void LoadServiceTasksNodeHandlers(IBpmnProcess bpmnProcess)
+        {
+            var serviceTasks = bpmnProcess.GetServiceTasksNames();
+            if (!serviceTasks.Any())
+            {
+                return;
+            }
+
+            var registrator = new DynamicServiceTaskRegistrator(this);
+            foreach (var task in serviceTasks)
+            {
+                if (!NodeHandlerFactory.IsNodeHandlerForServiceTaskRegistered(task))
+                {
+                    registrator.RegisterServiceTask(task);
+                }
+
+            }
         }
 
 

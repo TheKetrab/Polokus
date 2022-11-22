@@ -10,5 +10,7 @@ namespace Polokus.Core
     public class DefaultSettingsProvider : ISettingsProvider
     {
         public int MessageListenerPort => 8080;
+
+        public string ServiceTasksExternals => "";
     }
 }

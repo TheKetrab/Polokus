@@ -124,5 +124,12 @@ namespace Polokus.Core.Models
         {
             return nodesDictionary.Values.Select(x => x.Id);
         }
+
+        public IEnumerable<string> GetServiceTasksNames()
+        {
+            return nodesDictionary.Values
+                .Where(x => x.XmlType == typeof(tServiceTask))
+                .Select(x => x.Name);
+        }
     }
 }

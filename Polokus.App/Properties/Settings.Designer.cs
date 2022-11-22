@@ -58,5 +58,17 @@ namespace Polokus.App.Properties {
                 this["MessageListenerPort"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ServiceTasksExternals {
+            get {
+                return ((string)(this["ServiceTasksExternals"]));
+            }
+            set {
+                this["ServiceTasksExternals"] = value;
+            }
+        }
     }
 }

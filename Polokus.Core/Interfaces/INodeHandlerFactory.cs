@@ -18,6 +18,10 @@ namespace Polokus.Core.Interfaces
 
         void RegisterNodeHandlerForServiceTask<TNodeHandler>(string serviceTask)
             where TNodeHandler : class, INodeHandler;
-        
+
+        void RegisterNodeHandlerForServiceTask(Type nhType, string serviceTask);
+
+        bool IsNodeHandlerForServiceTaskRegistered(string serviceTask);
+
     }
 }

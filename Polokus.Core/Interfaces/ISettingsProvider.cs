@@ -9,5 +9,6 @@ namespace Polokus.Core.Interfaces
     public interface ISettingsProvider
     {
         int MessageListenerPort { get; }
+        string ServiceTasksExternals { get; }
     }
 }
