@@ -19,6 +19,8 @@ namespace Polokus.Core.NodeHandlers.Abstract
         public bool IsJoining => Node.Incoming.Count > 1;
         public IProcessInstance ProcessInstance { get; set; }
 
+        public CancellationToken CancellationToken { get; set; }
+
         public NodeHandler(IProcessInstance processInstance, FlowNode<T> typedNode)
         {
             ProcessInstance = processInstance;
@@ -66,10 +68,14 @@ namespace Polokus.Core.NodeHandlers.Abstract
                     return new ProcessResultInfo(ProcessResultState.Suspension);
                 }
 
-                this.ProcessInstance.ActiveTasksManager.ActiveTasks[taskId] = this;
-
+                CancellationToken.ThrowIfCancellationRequested();
                 var resultInfo = await Process(caller);
+                CancellationToken.ThrowIfCancellationRequested();
                 return resultInfo;
+            }
+            catch (OperationCanceledException)
+            {
+                return new ProcessResultInfo(ProcessResultState.Cancellation);
             }
             catch (Exception exc)
             {
@@ -77,6 +83,7 @@ namespace Polokus.Core.NodeHandlers.Abstract
                 return new ProcessResultInfo(ProcessResultState.Failure, exc.Message);
             }
         }
+
 
     }
 }

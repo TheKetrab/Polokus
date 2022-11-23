@@ -1,4 +1,6 @@
-﻿using Polokus.Core.Hooks;
+﻿using Polokus.Core.Helpers;
+using Polokus.Core.Hooks;
+using Polokus.Core.Interfaces;
 using Polokus.Core.Models;
 using Polokus.Core.NodeHandlers;
 using System;
@@ -16,7 +18,8 @@ namespace Polokus.Core
     public class ActiveTasksManager
     {
         private int _cnt = 0;
-        public Dictionary<int,object> ActiveTasks = new(); // taskId;worker
+        private Dictionary<int,Tuple<CancellationTokenSource, INodeHandler>> ActiveTasks = new(); // taskId;<cts,worker>
+        private List<INodeHandler> PausedNodeHandlers = new();
         public ProcessInstance ProcessInstance { get; }
 
         public ActiveTasksManager(ProcessInstance processInstance)
@@ -29,12 +32,22 @@ namespace Polokus.Core
             return ActiveTasks.Any();
         }
 
-        public int AddNewTask(object o)
+        public Tuple<int,CancellationToken> AddNewTask(INodeHandler nh)
         {
             int taskId = _cnt++;
-            ActiveTasks.Add(taskId, o); // TODO to bardzo wazne zeby to nie byl null
+            CancellationTokenSource cts = new CancellationTokenSource();
+
+            ActiveTasks.Add(taskId, Tuple.Create(cts,nh)); // TODO to bardzo wazne zeby to nie byl null
             ProcessInstance.HooksProvider?.OnTasksChanged(ProcessInstance.Id);
-            return taskId;
+            return Tuple.Create(taskId, cts.Token);
+        }
+
+        public void AssignTaskToAnotherNodeHandler(int taskId, INodeHandler nh)
+        {
+            var ctoken = ActiveTasks[taskId].Item1;
+            ActiveTasks[taskId] = Tuple.Create(ctoken, nh);
+            nh.CancellationToken = ctoken.Token;
+            
         }
 
         public void RemoveRunningTask(int taskId)
@@ -43,6 +56,31 @@ namespace Polokus.Core
             ProcessInstance.HooksProvider?.OnTasksChanged(ProcessInstance.Id);
         }
 
+        
+        public void Pause()
+        {
+            PausedNodeHandlers = ActiveTasks.Values.Select(x => x.Item2).ToList();
+            ActiveTasks.Values.ForEach(x => x.Item1.Cancel());            
+            ProcessInstance.HooksProvider?.OnTasksChanged(ProcessInstance.Id);
+        }
+        public void Stop()
+        {
+            ActiveTasks.Values.ForEach(x => x.Item1.Cancel(true));
+            ActiveTasks.Clear();
+            ProcessInstance.HooksProvider?.OnTasksChanged(ProcessInstance.Id);
+        }
+        public void Resume()
+        {
+            foreach (var x in PausedNodeHandlers)
+            {
+                // TODO
+            }
+        }
+
+        public IEnumerable<INodeHandler> GetNodeHandlers()
+        {
+            return ActiveTasks.Values.Select(x => x.Item2);
+        }
 
 
     }

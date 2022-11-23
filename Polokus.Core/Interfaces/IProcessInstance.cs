@@ -29,8 +29,8 @@ namespace Polokus.Core.Interfaces
 
         void Begin(IFlowNode startNode);
         void Stop();
-        void Run();
-        void Kill();
+        void Resume();
+        void Pause();
         void Finish();
         bool IsRunning();
 

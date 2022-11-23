@@ -23,5 +23,7 @@ namespace Polokus.Core.Interfaces
 
         IProcessInstance ProcessInstance { get; }
 
+        CancellationToken CancellationToken { get; set; }
+
     }
 }

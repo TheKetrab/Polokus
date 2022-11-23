@@ -76,18 +76,15 @@ namespace Polokus.Core
                 // TODO: zrobic odpowiednia logike i testy
             }
 
-            foreach (var t in ActiveTasksManager.ActiveTasks)
+            foreach (var nh in ActiveTasksManager.GetNodeHandlers())
             {
-                if (t.Value is INodeHandler nh)
+                if (callers.Contains(nh.Node.Id))
                 {
-                    if (callers.Contains(nh.Node.Id))
-                    {
-                        continue;
-                    }
-                    if (BpmnProcess.IsReachable(nh.Node, target))
-                    {
-                        return true;
-                    }
+                    continue;
+                }
+                if (BpmnProcess.IsReachable(nh.Node, target))
+                {
+                    return true;
                 }
             }
 
@@ -114,7 +111,7 @@ namespace Polokus.Core
         public async void ExecuteNode(IFlowNode node, int taskId, INodeCaller? caller)
         {
             INodeHandler nodeHandler = GetNodeHandlerForNode(node);
-            //ActiveTasksManager.ActiveTasks[taskId] = nodeHandler;
+            ActiveTasksManager.AssignTaskToAnotherNodeHandler(taskId, nodeHandler);
 
             HooksProvider?.BeforeExecuteNode(Id, node, taskId, caller);
             var executionResult = await nodeHandler.Execute(caller,taskId);
@@ -142,7 +139,10 @@ namespace Polokus.Core
                     HooksProvider?.AfterExecuteNodeSuspension(Id, node, taskId);
                     ActiveTasksManager.RemoveRunningTask(taskId);
                     break;
-                    // case ProcessResultState. invoke self?????
+                case ProcessResultState.Cancellation:
+                    break; // do nothing, action will be handled by ActiveTasksManager
+                default:
+                    throw new Exception($"Unhandled state of resultInfo: {resultInfo.State}");
 
             }
         }
@@ -150,8 +150,10 @@ namespace Polokus.Core
         public void StartNewSequence(IFlowNode firstNode, INodeCaller? caller)
         {
             HooksProvider?.BeforeStartNewSequence(Id,firstNode, caller);
-            int taskId = ActiveTasksManager.AddNewTask(GetNodeHandlerForNode(firstNode));
-            Task task = new Task(() => ExecuteNode(firstNode, taskId, caller));
+            var newTask = ActiveTasksManager.AddNewTask(GetNodeHandlerForNode(firstNode));
+            int taskId = newTask.Item1;
+            CancellationToken ctoken = newTask.Item2;
+            Task task = new Task(() => ExecuteNode(firstNode, taskId, caller), ctoken);
             task.Start();
         }
 
@@ -200,18 +202,17 @@ namespace Polokus.Core
 
 
 
-        public void Stop()
+        public void Pause()
         {
-            IsActive = false;
-            Status = ProcessStatus.Stopped;
-            // TODO: stop all tasks
+            ActiveTasksManager.Pause();
+            Status = ProcessStatus.Paused;
             HooksProvider?.OnStatusChanged(Id);
         }
 
-        public void Kill()
+        public void Stop()
         {
-            Finish();
-            // TODO: kill all tasks
+            ActiveTasksManager.Stop();
+            IsActive = false;
         }
 
         public bool IsRunning()
@@ -233,16 +234,20 @@ namespace Polokus.Core
             StartNewSequence(startNode, null);
         }
 
-        public void Run()
+        public void Resume()
         {
-            IsActive = true;
+            ActiveTasksManager.Resume();
             Status = ProcessStatus.Running;
             HooksProvider?.OnStatusChanged(Id);
-            // TODO: rerun stopped tasks
         }
 
         public void Finish()
         {
+            if (IsRunning())
+            {
+                throw new Exception("Unable to finish running process.");
+            }
+
             IsFinished = true;
             _finishTime = DateTime.Now;
             Status = ProcessStatus.Finished;

@@ -10,7 +10,7 @@ namespace Polokus.Core
     {
         Initialized,
         Running,
-        Stopped,
+        Paused,
         Finished
     }
 
