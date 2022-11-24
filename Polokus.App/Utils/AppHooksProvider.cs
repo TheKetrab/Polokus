@@ -51,7 +51,13 @@ namespace Polokus.App.Utils
             }
             else if (node.XmlType == typeof(tUserTask))
             {
-                MessageBox.Show($"Waiting for user task: {node.Name}");
+                var dialog = new UserTaskDialog(node.Name);
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    string answer = dialog.Answer;
+                    MessageBox.Show(answer);
+                }
+
             }
 
         }

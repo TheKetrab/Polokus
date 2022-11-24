@@ -25,6 +25,9 @@
     <PackageReference Include="Svg" Version="3.4.4" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="Forms\UserTaskDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Forms\ErrorDialog.cs">
       <SubType>Form</SubType>
     </Compile>
