@@ -16,5 +16,6 @@ namespace Polokus.Core.Interfaces
         void OnStatusChanged(string processInstanceId);
         void OnTasksChanged(string processInstanceId);
         void OnTimeout(string processInstanceId);
+        void OnProcessFinished(string processInstanceId, string result);
     }
 }

@@ -39,6 +39,13 @@ namespace Polokus.App.Utils
 
         }
 
+        public void OnProcessFinished(string processInstanceId, string result)
+        {
+            var instance = _contextInstance.GetProcessInstanceById(processInstanceId);
+            string time = instance.TotalTime.ToString(@"hh\:mm\:ss\.ff");
+            Log(processInstanceId, $"Process finished with result: {result}. Time: {time}");
+        }
+
         public void BeforeExecuteNode(string processInstanceId, IFlowNode node, int taskId, INodeCaller? caller)
         {
             UpdateActiveNodesInGraph(processInstanceId);
@@ -70,10 +77,6 @@ namespace Polokus.App.Utils
         public void OnStatusChanged(string processInstanceId)
         {
             var instance = _contextInstance.GetProcessInstanceById(processInstanceId);
-            if (instance.Status == ProcessStatus.Finished)
-            {
-                Log(processInstanceId, $"Process finished. Time: {instance.TotalTime}");
-            }
 
             View?.BeginInvoke(new Action(() => View.UpdateProcessInstancesList(_contextInstance)));
         }

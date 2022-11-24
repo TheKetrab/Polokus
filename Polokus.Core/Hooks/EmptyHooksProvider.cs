@@ -17,5 +17,6 @@ namespace Polokus.Core.Hooks
         public virtual void OnStatusChanged(string processInstanceId) { }
         public virtual void OnTasksChanged(string processInstanceId) { }
         public virtual void OnTimeout(string processInstanceId) { }
+        public virtual void OnProcessFinished(string processInstanceId, string result) { }
     }
 }

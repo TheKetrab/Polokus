@@ -110,7 +110,7 @@ namespace Polokus.Core
             instance.Finish();
             ProcessInstances.Remove(instance);
             History.Add(instance);
-            _hooksProvider?.OnStatusChanged(instance.Id);
+            _hooksProvider?.OnProcessFinished(instance.Id, "success");
             return true;
         }
 
