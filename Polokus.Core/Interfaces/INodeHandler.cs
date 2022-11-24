@@ -25,5 +25,11 @@ namespace Polokus.Core.Interfaces
 
         CancellationToken CancellationToken { get; set; }
 
+        /// <summary>
+        /// Creates copy of object. It is necessary because of CancellationTokens
+        /// </summary>
+        /// <returns></returns>
+        INodeHandler Clone();
+
     }
 }

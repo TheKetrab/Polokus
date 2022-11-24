@@ -4,7 +4,10 @@ using Polokus.Core.Models;
 using Polokus.Core.Models.BpmnObjects.Xsd;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -84,6 +87,13 @@ namespace Polokus.Core.NodeHandlers.Abstract
             }
         }
 
+        public virtual INodeHandler Clone()
+        {
+            INodeHandler copy = (INodeHandler)this.MemberwiseClone();
+            copy.CancellationToken = new CancellationToken();
 
+            return copy;
+        }
     }
 }
+

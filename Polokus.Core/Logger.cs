@@ -70,6 +70,11 @@ namespace Polokus.Core
             return messages;
         }
 
+        public void ClearLog()
+        {
+            messages.Clear();
+        }
+
 
     }
 }
