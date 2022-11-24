@@ -100,7 +100,7 @@ namespace Polokus.Core
     {
         public async Task Execute(IJobExecutionContext context)
         {
-            IProcessStarter starter = (IProcessStarter)context.JobDetail.JobDataMap["Waiter"];
+            IProcessStarter starter = (IProcessStarter)context.JobDetail.JobDataMap["Starter"];
 
             starter.ContextInstance.StartProcessInstance(starter.BpmnProcess, starter.StartNode, null);
         }

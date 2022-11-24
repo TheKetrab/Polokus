@@ -96,7 +96,10 @@ namespace Polokus.App.Views
 
         private void LoadXmlFile(string file)
         {
-            ContextsManager.LoadXmlFile(file, settingsProvider: new AppSettingsProvider());
+            ContextsManager.LoadXmlFile(file, 
+                settingsProvider: new AppSettingsProvider(),
+                createHooksProviderFunc: (ci) => new AppHooksProvider(ci));
+
             if (!_comboBoxContextsInitialized)
             {
                 InitializeComboBoxContexts();
@@ -372,8 +375,6 @@ namespace Polokus.App.Views
                 throw new Exception("None BPMN process is selected.");
             }
 
-            var appHooksProvider = new AppHooksProvider(contextInstance);
-            contextInstance.SetHooksProvider(appHooksProvider);
 
             string processInstanceId = contextInstance.StartProcessManually(bpmnProcessId);
             Task.Run(async () => // TODO: usunac to brzydkie rozwiazanie! musi byc to robione od razu jak sie item doda przez hooks providera

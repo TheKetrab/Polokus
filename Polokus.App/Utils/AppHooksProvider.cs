@@ -14,14 +14,12 @@ namespace Polokus.App.Utils
     public class AppHooksProvider : IHooksProvider
     {
         private ContextInstance _contextInstance;
-        private ServiceView _view;
+        private ServiceView? _view;
+        private ServiceView? View => _view ??= MainWindow.Instance.ServiceView;
 
         public AppHooksProvider(ContextInstance contextInstance)
         {
             _contextInstance = contextInstance;
-            _view = MainWindow.Instance.ServiceView;
-
-
         }
 
         
@@ -71,14 +69,14 @@ namespace Polokus.App.Utils
                 Log(processInstanceId, $"Process finished. Time: {instance.TotalTime}");
             }
 
-            _view.BeginInvoke(new Action(() => _view.UpdateProcessInstancesList(_contextInstance)));
+            View?.BeginInvoke(new Action(() => View.UpdateProcessInstancesList(_contextInstance)));
         }
 
         public void OnTasksChanged(string processInstanceId)
         {
-            if (_view.GetActiveContextInstance() == _contextInstance)
+            if (View?.GetActiveContextInstance() == _contextInstance)
             {
-                _view.BeginInvoke(new Action(() => _view.UpdateProcessInstancesList(_contextInstance)));
+                View.BeginInvoke(new Action(() => View.UpdateProcessInstancesList(_contextInstance)));
             }
         }
 
@@ -91,7 +89,7 @@ namespace Polokus.App.Utils
         {
             string globalInstanceId = Helpers.GetGlobalProcessInstanceId(_contextInstance.Id, processInstanceId);
 
-            var logger = _view.GetOrCreateLogger(globalInstanceId);
+            var logger = View?.GetOrCreateLogger(globalInstanceId);
             if (logger == null)
             {
                 return;
@@ -99,16 +97,16 @@ namespace Polokus.App.Utils
 
             logger.Log(message);
 
-            if (globalInstanceId == _view.GetOpenedProcessInstanceGlobalId())
+            if (globalInstanceId == View?.GetOpenedProcessInstanceGlobalId())
             {
-                _view.AppendLogLine(message);
+                View?.AppendLogLine(message);
             }
         }
 
         private void UpdateActiveNodesInGraph(string processInstanceId)
         {
             string globalInstanceId = Helpers.GetGlobalProcessInstanceId(_contextInstance.Id, processInstanceId);
-            if (globalInstanceId != _view.GetOpenedProcessInstanceGlobalId())
+            if (globalInstanceId != View?.GetOpenedProcessInstanceGlobalId())
             {
                 return;
             }
@@ -119,7 +117,7 @@ namespace Polokus.App.Utils
             var allNodesIds = instance.BpmnProcess.GetNodesIds();
             var inactiveNodesIds = allNodesIds.Where(x => !activeNodesIds.Contains(x));
 
-            BpmnioClient.SetColours(_view.chromiumWindow, activeNodesIds, inactiveNodesIds);
+            BpmnioClient.SetColours(View.chromiumWindow, activeNodesIds, inactiveNodesIds);
 
         }
 
