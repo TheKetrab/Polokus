@@ -3,6 +3,7 @@ using Polokus.App.Views;
 using Polokus.Core;
 using Polokus.Core.Interfaces;
 using Polokus.Core.Models.BpmnObjects.Xsd;
+using Polokus.Core.NodeHandlers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,7 +63,13 @@ namespace Polokus.App.Utils
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
                     string answer = dialog.Answer;
-                    MessageBox.Show(answer);
+                    var instance = (ProcessInstance)_contextInstance.GetProcessInstanceById(processInstanceId);
+                    var nodeHandler = instance.GetNodeHandlerForNodeIfExists(node);
+
+                    if (nodeHandler is UserTaskNodeHandler nh)
+                    {
+                        nh.SetUserDecision(answer);
+                    }
                 }
 
             }

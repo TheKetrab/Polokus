@@ -92,7 +92,20 @@ namespace Polokus.Core
             
         }
 
-        INodeHandler GetNodeHandlerForNode(IFlowNode node)
+
+        public INodeHandler? GetNodeHandlerForNodeIfExists(IFlowNode node)
+        {
+            lock (AvailableNodeHandlers)
+            {
+                if (AvailableNodeHandlers.ContainsKey(node.Id))
+                {
+                    return AvailableNodeHandlers[node.Id];
+                }
+                return null;
+            }
+        }
+
+        private INodeHandler GetNodeHandlerForNode(IFlowNode node)
         {
             lock (AvailableNodeHandlers)
             {
