@@ -28,15 +28,14 @@ namespace Polokus.Core.Scripting
 
         public string MarkVariables(string script)
         {
-            string pattern = @".*\$(.).*";
+            string pattern = @"^.*\$([a-zA-Z0-9_]*)(\s+.*|$)";
 
             string result = script;
             while (Regex.IsMatch(result, pattern))
             {
-                Match m = Regex.Match(result, pattern);
-                string replacement = $"globals[\"$1\"]";
-                Regex rgx = new Regex(@"\$(.)");
-                result = rgx.Replace(result, replacement, 1);
+                Match m = Regex.Match(result, pattern, RegexOptions.RightToLeft);
+                string var = m.Groups[1].Value;
+                result = Regex.Replace(result, $@"\${var}", $@"globals[""{var}""]");
             }
             return result;
         }

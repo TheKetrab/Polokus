@@ -27,6 +27,28 @@ namespace Polokus.Tests
             Assert.AreEqual(1, x);
         }
 
+        [Test]
+        [TestCase("$a","globals[\"a\"]")]
+        [TestCase("$variable", "globals[\"variable\"]")]
+        [TestCase("$vaRIable abc", "globals[\"vaRIable\"] abc")]
+        [TestCase("$vari77able + 5", "globals[\"vari77able\"] + 5")]
+        [TestCase("3 + $variable = 4", "3 + globals[\"variable\"] = 4")]
+        [TestCase("$var_underscore + 1", "globals[\"var_underscore\"] + 1")]
+        [TestCase("$a $b $c", "globals[\"a\"] globals[\"b\"] globals[\"c\"]")]
+        [TestCase("$aa + 1 = $bx and $aa - $bx = $c", "globals[\"aa\"] + 1 = globals[\"bx\"] and globals[\"aa\"] - globals[\"bx\"] = globals[\"c\"]")]
+        public void EvalCSharpScript_MarkVariables(string input, string output)
+        {
+            // Arrange
+            var scriptProvider = new ScriptProvider();
+
+            // Act
+            string marked = scriptProvider.MarkVariables(input);
+
+            // Assert
+            Assert.AreEqual(output, marked);
+        }
+
+
 
     }
 }
