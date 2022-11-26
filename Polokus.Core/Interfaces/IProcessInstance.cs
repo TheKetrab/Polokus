@@ -8,6 +8,9 @@ namespace Polokus.Core.Interfaces
 {
     public interface IProcessInstance
     {
+        IProcessInstance? ParentProcessInstance { get; }
+        ICollection<IProcessInstance> ChildrenProcessInstances { get; }
+
         public string Id { get; }
         ProcessStatus Status { get; }
         IContextInstance ContextInstance { get; }
@@ -21,6 +24,7 @@ namespace Polokus.Core.Interfaces
         bool ExistsAnotherTaskAbleToCallTarget(IFlowNode target, List<string> callers);
         void StartNewSequence(IFlowNode firstNode, INodeCaller? caller);
 
+        IProcessInstance StartSubProcessInstance(IBpmnProcess bpmnProcess, IFlowNode startNode);
 
         bool IsStarted { get; }
         bool IsFinished { get; }

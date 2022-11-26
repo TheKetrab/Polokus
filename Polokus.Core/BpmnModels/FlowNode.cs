@@ -10,7 +10,7 @@ using System.Xml;
 
 namespace Polokus.Core.Models
 {
-    public class FlowNode<T> : IFlowNode where T : tFlowNode
+    public class FlowNode<T> : IFlowNode, IMessageFlowNode where T : tFlowNode
     {
         public T XmlElement { get; set; }
 
@@ -21,7 +21,10 @@ namespace Polokus.Core.Models
         public ICollection<ISequence> Outgoing { get; set; } = new List<ISequence>();
         public Type XmlType { get => typeof(T); }
         public IBpmnProcess BpmnProcess { get;set; }
- 
+
+        public ICollection<IMessageFlow> OutgoingMessages { get; set; } = new List<IMessageFlow>();
+        public ICollection<IMessageFlow> IncommingMessages { get; set; } = new List<IMessageFlow>();
+
         public FlowNode(BpmnProcess bpmnProcess, T xmlElement) 
         {
             XmlElement = xmlElement;
@@ -29,7 +32,6 @@ namespace Polokus.Core.Models
             Id = xmlElement.id;
             BpmnProcess = bpmnProcess;
         }
-
 
     }
 

@@ -71,18 +71,31 @@ namespace Polokus.Core
                 listener.Start();
 
                 var context = await listener.GetContextAsync();
-                _starters.Remove(starter.Id);
                 CallersChanged?.Invoke(null, EventArgs.Empty);
 
-                // invoke
-                starter.ContextInstance.StartProcessInstance(starter.BpmnProcess, starter.StartNode, null);
+                string? parentProcessId = context.Request.QueryString["parent"];
+                if (parentProcessId != null)
+                {
+                    var processInstance = starter.ContextInstance.GetProcessInstanceById(parentProcessId);
+                    processInstance.StartSubProcessInstance(starter.BpmnProcess, starter.StartNode);
+                }
+                else
+                {
+                    starter.ContextInstance.StartProcessInstance(starter.BpmnProcess, starter.StartNode, null);
+
+                }
+
             }
         }
 
-        public async Task PingListener(string listenerId)
+        public async Task PingListener(string listenerId, string? queryString = null)
         {
             HttpClient client = new HttpClient();
             string uri = $"http://localhost:{ListeningPort}/{listenerId}";
+            if (!string.IsNullOrEmpty(queryString))
+            {
+                uri += $"?{queryString}";
+            }
             var msg = new HttpRequestMessage(new HttpMethod("GET"), uri);
 
             try

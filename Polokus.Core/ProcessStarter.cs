@@ -1,4 +1,5 @@
-﻿using Polokus.Core.Interfaces;
+﻿using Polokus.Core.Helpers;
+using Polokus.Core.Interfaces;
 using Polokus.Core.Models;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ namespace Polokus.Core
 
         public IFlowNode StartNode { get; }
 
-        public string Id => $"Starter_({ContextInstance.Id})_({BpmnProcess.Id})_({StartNode.Id})";
+        public string Id { get; }
 
 
         public ProcessStarter(IContextInstance contextInstance, IBpmnProcess bpmnProcess, IFlowNode startNode)
@@ -24,6 +25,7 @@ namespace Polokus.Core
             ContextInstance = contextInstance;
             BpmnProcess = bpmnProcess;
             StartNode = startNode;
+            Id = Utils.GetStarterName(ContextInstance.Id, BpmnProcess.Id, StartNode.Id);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Polokus.Core.Interfaces;
+﻿using Polokus.Core.Helpers;
+using Polokus.Core.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace Polokus.Core
         public IFlowNode NodeToCall { get; }
         public IProcessInstance ProcessInstance { get; }
 
-        public string Id => $"Waiter_({ProcessInstance.ContextInstance.Id})_({ProcessInstance.Id})_({ProcessInstance.BpmnProcess.Id})_({NodeToCall.Id})";
+        public string Id { get; }
 
         public void Invoke()
         {
@@ -23,6 +24,10 @@ namespace Polokus.Core
         {
             ProcessInstance = processInstance;
             NodeToCall = nodeToCall;
+            Id =  Utils.GetWaiterName(
+                ProcessInstance.ContextInstance.Id, ProcessInstance.Id,
+                ProcessInstance.BpmnProcess.Id, NodeToCall.Id);
+
         }
 
     }

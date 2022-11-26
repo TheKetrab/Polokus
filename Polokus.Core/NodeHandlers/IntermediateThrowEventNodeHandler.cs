@@ -11,34 +11,13 @@ using System.Threading.Tasks;
 
 namespace Polokus.Core.NodeHandlers
 {
-    public class EndEventHandler : NodeHandler<tEndEvent>
+    public class IntermediateThrowEventNodeHandler : NodeHandler<tIntermediateThrowEvent>
     {
-        public EndEventHandler(ProcessInstance processInstance, FlowNode<tEndEvent> node)
-            : base(processInstance, node)
+        public IntermediateThrowEventNodeHandler(IProcessInstance processInstance, FlowNode<tIntermediateThrowEvent> typedNode) : base(processInstance, typedNode)
         {
         }
 
-        protected override Task Action(INodeCaller? caller)
-        {
-            var endFlowNode = (FlowNode<tEndEvent>)Node;
-            if (endFlowNode.XmlElement.Items?.Any() ?? false)
-            {
-                var eventDefinition = endFlowNode.XmlElement.Items[0];
-                if (eventDefinition is tMessageEventDefinition)
-                {
-                    SEND();
-                    //var processStarter = new ProcessStarter(contextInstance, startFlowNode.BpmnProcess, startNode);
-                    //contextInstance.MessageManager.RegisterMessageListener(processStarter);
-                }
-
-            }
-            return base.Action(caller);
-        }
-
-        /// <summary>
-        /// TODO: usunac to, zjednolicic z tym co sie dzieje w intermediate throw event
-        /// </summary>
-        private async Task SEND()
+        protected async override Task Action(INodeCaller? caller)
         {
             var callerNode = (IMessageCallerNode)Node;
             foreach (var outgoing in callerNode.OutgoingMessages)
@@ -54,13 +33,13 @@ namespace Polokus.Core.NodeHandlers
 
                     listenerToPing = starterToPing;
 
-                    await ProcessInstance.ContextInstance.MessageManager.PingListener(listenerToPing, $"parent={ProcessInstance.Id}");
+                    await ProcessInstance.ContextInstance.MessageManager.PingListener(listenerToPing,$"parent={ProcessInstance.Id}");
                 }
                 else
                 {
                     // NOTE: there is existing process to call. here is very naive solution:
                     // find process instance that contains given node
-
+                    
                     IProcessInstance? piToCall = null;
 
                     var allWaiters = ProcessInstance.ContextInstance.MessageManager.GetWaiters();
@@ -93,6 +72,7 @@ namespace Polokus.Core.NodeHandlers
 
                     await ProcessInstance.ContextInstance.MessageManager.PingListener(listenerToPing);
                 }
+
             }
         }
     }

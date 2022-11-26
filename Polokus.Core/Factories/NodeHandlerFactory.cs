@@ -45,6 +45,7 @@ namespace Polokus.Core.Factories
             RegisterNodeHandlerType<tManualTask, ManualTaskNodeHandler>();
             RegisterNodeHandlerType<tUserTask, UserTaskNodeHandler>();
             RegisterNodeHandlerType<tIntermediateCatchEvent, IntermediateCatchEventNodeHandler>();
+            RegisterNodeHandlerType<tIntermediateThrowEvent, IntermediateThrowEventNodeHandler>();
         }
 
         private Type GetTypeForNodeHandler(IFlowNode node)

@@ -131,5 +131,25 @@ namespace Polokus.Core.Models
                 .Where(x => x.XmlType == typeof(tServiceTask))
                 .Select(x => x.Name);
         }
+
+        public bool ContainsNode(string id)
+        {
+            return nodesDictionary.ContainsKey(id);
+        }
+
+        public IMessageCallerNode GetMessageCallerNode(string id)
+        {
+            var node = GetNodeById(id);
+            // TODO validation, if type on tNode is message
+            return node as IMessageCallerNode;
+        }
+        
+        public IMessageReceiverNode GetMessageReceiverNode(string id)
+        {
+            var node = GetNodeById(id);
+            // TODO validation, if type on tNode is message
+            return node as IMessageReceiverNode;
+        }
+
     }
 }

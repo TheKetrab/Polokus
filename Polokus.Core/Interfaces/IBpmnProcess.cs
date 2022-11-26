@@ -19,5 +19,9 @@ namespace Polokus.Core.Interfaces
         IFlowNode GetManualStartNode();
         IEnumerable<string> GetNodesIds();
         IEnumerable<string> GetServiceTasksNames();
+        bool ContainsNode(string id);
+
+        IMessageCallerNode GetMessageCallerNode(string id);
+        IMessageReceiverNode GetMessageReceiverNode(string id);
     }
 }

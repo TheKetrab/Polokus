@@ -19,6 +19,10 @@ namespace Polokus.Core.Helpers
             }
         }
 
+        public static bool In<T>(this T item, params T[] items)
+        {
+            return items.Contains(item);
+        }
 
         public static bool IsSameOrSubclass(this Type type, Type superType)
         {

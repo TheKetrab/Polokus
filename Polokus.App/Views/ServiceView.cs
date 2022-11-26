@@ -376,7 +376,8 @@ namespace Polokus.App.Views
             }
 
 
-            string processInstanceId = contextInstance.StartProcessManually(bpmnProcessId);
+            var processInstance = contextInstance.StartProcessManually(bpmnProcessId);
+            string processInstanceId = processInstance.Id;
             Task.Run(async () => // TODO: usunac to brzydkie rozwiazanie! musi byc to robione od razu jak sie item doda przez hooks providera
             {
                 await Task.Delay(500);

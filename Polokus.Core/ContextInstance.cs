@@ -87,12 +87,8 @@ namespace Polokus.Core
                 && DateTime.Now - start >= TimeSpan.FromSeconds(timeout.Value);
         }
 
-        public async Task<bool> RunProcessAsync(string processInstanceId, IBpmnProcess bpmnProcess, IFlowNode startNode, int? timeout)
-        {            
-            ProcessInstance instance = new ProcessInstance(processInstanceId, this, bpmnProcess, _hooksProvider);
-            ProcessInstances.Add(instance);
-            _hooksProvider?.OnStatusChanged(instance.Id);
-
+        public async Task<bool> RunProcessAsync(IProcessInstance instance, IFlowNode startNode, int? timeout)
+        {
             DateTime start = DateTime.Now;
             instance.Begin(startNode);
             while (instance.IsRunning())
@@ -114,13 +110,32 @@ namespace Polokus.Core
             return true;
         }
 
-        public string StartProcessInstance(IBpmnProcess bpmnProcess, IFlowNode startNode, int? timeout)
+        public IProcessInstance CreateProcessInstance(IBpmnProcess bpmnProcess)
         {
             string processId = $"pi{GetAnotherProcessId()}/{bpmnProcess.Id}";
-            LoadServiceTasksNodeHandlers(bpmnProcess);
+            var instance = new ProcessInstance(processId, this, bpmnProcess, _hooksProvider);
+            ProcessInstances.Add(instance);
+            _hooksProvider?.OnStatusChanged(instance.Id);
+            return instance;
+        }
 
-            Task.Run(async () => await RunProcessAsync(processId, bpmnProcess, startNode, timeout));
-            return processId;
+        public IProcessInstance? GetProcessInstanceById(string processInstanceId)
+        {
+            return ProcessInstances.FirstOrDefault(x => x.Id == processInstanceId)
+                ?? History.FirstOrDefault(x => x.Id == processInstanceId);
+        }
+
+        public void StartProcessInstance(IProcessInstance processInstance, IFlowNode startNode, int? timeout)
+        {
+            LoadServiceTasksNodeHandlers(processInstance.BpmnProcess);
+            Task.Run(async () => await RunProcessAsync(processInstance, startNode, timeout));
+        }
+
+        public IProcessInstance StartProcessInstance(IBpmnProcess bpmnProcess, IFlowNode startNode, int? timeout)
+        {
+            var processInstance = CreateProcessInstance(bpmnProcess);
+            StartProcessInstance(processInstance, startNode, timeout);
+            return processInstance;
         }
 
         private void LoadServiceTasksNodeHandlers(IBpmnProcess bpmnProcess)
@@ -143,27 +158,12 @@ namespace Polokus.Core
         }
 
 
-        public string StartProcessManually(string bpmnProcessId)
+        public IProcessInstance StartProcessManually(string bpmnProcessId)
         {
             var bpmnProcess = BpmnContext.BpmnProcesses.Single(x => x.Id == bpmnProcessId);
             var startNode = bpmnProcess.GetManualStartNode();
             return StartProcessInstance(bpmnProcess, startNode, -1);
         }
 
-        public IProcessInstance GetProcessInstanceById(string processInstanceId)
-        {
-            var processes = ProcessInstances.Where(x => x.Id == processInstanceId);
-            if (processes.Count() > 2)
-            {
-                throw new Exception();
-            }
-
-            if (processes.Count() == 1)
-            {
-                return processes.First();
-            }
-
-            return History.Single(x => x.Id == processInstanceId);
-        }
     }
 }

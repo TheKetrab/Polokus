@@ -13,6 +13,7 @@ using System.Runtime.CompilerServices;
 using Polokus.Core.Factories;
 using Polokus.Core.Interfaces;
 using Polokus.Core.Helpers;
+using Polokus.Core.BpmnModels;
 
 namespace Polokus.Core
 {
@@ -88,8 +89,8 @@ namespace Polokus.Core
 
         private void LoadDefinitions(BpmnContext context, tDefinitions definitions)
         {
+            // Read processes
             List<IBpmnProcess> processes = new();
-
             foreach (var item in definitions.Items)
             {
                 if (item is tProcess xmlProcess)
@@ -103,7 +104,41 @@ namespace Polokus.Core
 
                     processes.Add(process);
                 }
+                
             }
+
+            // Read messages
+            foreach (var item in definitions.Items)
+            {
+                if (item is tCollaboration collaboration)
+                {
+                    foreach (var mf in collaboration.messageFlow)
+                    {
+                        string sourceId = mf.sourceRef.Name;
+                        string targetId = mf.targetRef.Name;
+
+                        var sourceProcess = processes.FirstOrDefault(x => x.ContainsNode(sourceId))
+                            ?? throw new Exception($"Unable to find process that contains node with id {sourceId}");
+
+                        var targetProcess = processes.FirstOrDefault(x => x.ContainsNode(targetId))
+                            ?? throw new Exception($"Unable to find process that contains node with id {targetId}");
+
+                        var msgFlow = new MessageFlow(sourceProcess, targetProcess, mf);
+
+                        var sourceNode = sourceProcess.GetMessageCallerNode(mf.sourceRef.Name)
+                            ?? throw new Exception($"$Unable to find callerNode (process: {sourceProcess.Id} nodeId: {sourceId}");
+
+                        var targetNode = targetProcess.GetMessageReceiverNode(mf.targetRef.Name)
+                            ?? throw new Exception($"$Unable to find receiverNode (process: {targetProcess.Id} nodeId: {targetId}");
+
+                        sourceNode.OutgoingMessages.Add(msgFlow);
+                        targetNode.IncommingMessages.Add(msgFlow);
+
+                    }
+                }
+
+            }
+
 
             context.SetBpmnProcesses(processes);
         }

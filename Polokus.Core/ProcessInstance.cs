@@ -62,6 +62,17 @@ namespace Polokus.Core
         }
 
         
+        public IProcessInstance? ParentProcessInstance { get; private set; }
+        public ICollection<IProcessInstance> ChildrenProcessInstances { get; } = new List<IProcessInstance>();
+
+        public IProcessInstance StartSubProcessInstance(IBpmnProcess bpmnProcess, IFlowNode startNode)
+        {
+            ProcessInstance processInstance = (ProcessInstance)ContextInstance.CreateProcessInstance(bpmnProcess);
+            processInstance.ParentProcessInstance = this;
+            this.ChildrenProcessInstances.Add(processInstance);
+            ContextInstance.StartProcessInstance(processInstance, startNode, -1);
+            return processInstance;
+        }
         
         /// <summary>
         /// 
@@ -266,6 +277,7 @@ namespace Polokus.Core
             Status = ProcessStatus.Finished;
             HooksProvider?.OnStatusChanged(Id);
         }
+
     }
 
 }

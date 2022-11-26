@@ -15,7 +15,7 @@ namespace Polokus.Core.Interfaces
 
         void RegisterMessageListener(INodeHandlerWaiter waiter);
         void RegisterMessageListener(IProcessStarter starter);
-        Task PingListener(string listenerId);
+        Task PingListener(string listenerId, string? queryString = null);
 
 
     }

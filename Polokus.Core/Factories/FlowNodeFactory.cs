@@ -24,6 +24,8 @@ namespace Polokus.Core.Factories
                 ?? CreateTypedFlowNode<tUserTask>(process, xmlElement)
                 ?? CreateTypedFlowNode<tManualTask>(process, xmlElement)
                 ?? CreateTypedFlowNode<tIntermediateCatchEvent>(process, xmlElement)
+                ?? CreateTypedFlowNode<tIntermediateThrowEvent>(process, xmlElement)
+                ?? CreateTypedFlowNode<tReceiveTask>(process, xmlElement)
                 ?? throw new Exception($"Not known type of Flow Node element: {xmlElement.GetType()}");
 
 
