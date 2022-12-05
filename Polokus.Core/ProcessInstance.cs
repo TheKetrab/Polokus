@@ -93,6 +93,10 @@ namespace Polokus.Core
                 {
                     continue;
                 }
+                if (nh.Node.Id == target.Id)
+                {
+                    continue;
+                }
                 if (BpmnProcess.IsReachable(nh.Node, target))
                 {
                     return true;

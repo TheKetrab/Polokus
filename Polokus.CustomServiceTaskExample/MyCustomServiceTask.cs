@@ -13,7 +13,7 @@ namespace Polokus.CustomServiceTaskExample
         {
         }
 
-        protected override Task Action(INodeCaller? caller)
+        public override Task Action(INodeCaller? caller)
         {
             const string path = @"C:\Custom\BPMN\Polokus\Examples\mycustomservice.txt";
             using (var fs = File.OpenWrite(path))

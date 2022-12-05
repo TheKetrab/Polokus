@@ -1,6 +1,7 @@
 ﻿using Polokus.Core.Interfaces;
 using Polokus.Core.Models.BpmnObjects.Xsd;
 using Polokus.Core.NodeHandlers;
+using Polokus.Core.NodeHandlers.Special;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,6 +47,8 @@ namespace Polokus.Core.Factories
             RegisterNodeHandlerType<tUserTask, UserTaskNodeHandler>();
             RegisterNodeHandlerType<tIntermediateCatchEvent, IntermediateCatchEventNodeHandler>();
             RegisterNodeHandlerType<tIntermediateThrowEvent, IntermediateThrowEventNodeHandler>();
+            RegisterNodeHandlerType<tReceiveTask, ReceiveTaskNodeHandler>();
+            RegisterNodeHandlerType<tSendTask, SendTaskNodeHandler>();
         }
 
         private Type GetTypeForNodeHandler(IFlowNode node)

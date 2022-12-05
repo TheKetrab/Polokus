@@ -2,6 +2,7 @@
 using Polokus.Core.Models;
 using Polokus.Core.Models.BpmnObjects.Xsd;
 using Polokus.Core.NodeHandlers.Abstract;
+using Polokus.Core.NodeHandlers.Special;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,18 +11,11 @@ using System.Threading.Tasks;
 
 namespace Polokus.Core.NodeHandlers
 {
-    public class ScriptTaskNodeHandler : NodeHandler<tScriptTask>
+    public class ReceiveTaskNodeHandler : MessageCatchingNodeHandler<tReceiveTask>
     {
-        public ScriptTaskNodeHandler(ProcessInstance processInstance, FlowNode<tScriptTask> typedNode) 
+        public ReceiveTaskNodeHandler(IProcessInstance processInstance, FlowNode<tReceiveTask> typedNode)
             : base(processInstance, typedNode)
         {
         }
-
-        public override async Task Action(INodeCaller? caller)
-        {
-            string script = ScriptProvider.Decode(Node.Name);
-            await ScriptProvider.EvalCSharpScriptAsync(script);
-        }
-
     }
 }

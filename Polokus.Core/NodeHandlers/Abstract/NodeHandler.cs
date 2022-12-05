@@ -33,7 +33,7 @@ namespace Polokus.Core.NodeHandlers.Abstract
         /// <summary>
         /// Action that is invoked during processing the node.
         /// </summary>
-        protected virtual async Task Action(INodeCaller? caller)
+        public virtual async Task Action(INodeCaller? caller)
         {
             await Task.CompletedTask;
         }

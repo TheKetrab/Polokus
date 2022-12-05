@@ -29,7 +29,7 @@ namespace Polokus.Tests
             {
             }
 
-            protected override async Task Action(INodeCaller? caller)
+            public override async Task Action(INodeCaller? caller)
             {
                 await Task.Delay(2000); // 2s
                 CancellationToken.ThrowIfCancellationRequested(); // cancell further action
@@ -74,7 +74,7 @@ namespace Polokus.Tests
             {
             }
 
-            protected override async Task Action(INodeCaller? caller)
+            public override async Task Action(INodeCaller? caller)
             {
                 if (State == 1)
                 {

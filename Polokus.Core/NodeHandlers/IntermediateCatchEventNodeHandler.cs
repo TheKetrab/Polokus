@@ -2,6 +2,7 @@
 using Polokus.Core.Models;
 using Polokus.Core.Models.BpmnObjects.Xsd;
 using Polokus.Core.NodeHandlers.Abstract;
+using Polokus.Core.NodeHandlers.Special;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,40 +12,38 @@ using System.Threading.Tasks;
 
 namespace Polokus.Core.NodeHandlers
 {
-    internal class IntermediateCatchEventNodeHandler : NodeHandler<tIntermediateCatchEvent>
+    public class IntermediateCatchEventNodeHandler : NodeHandler<tIntermediateCatchEvent>
     {
-        public IntermediateCatchEventNodeHandler(ProcessInstance processInstance, FlowNode<tIntermediateCatchEvent> typedNode)
+        private NodeHandler<tIntermediateCatchEvent> _subhandler;
+
+        public IntermediateCatchEventNodeHandler(
+            ProcessInstance processInstance, FlowNode<tIntermediateCatchEvent> typedNode)
             : base(processInstance, typedNode)
         {
-        }
-
-
-        NodeHandler<tIntermediateCatchEvent> subhandler;
-        public override Task<bool> CanProcess(INodeCaller? caller)
-        {
-            if (subhandler == null)
+            if (this.TypedNode.XmlElement.Items.Length == 0)
             {
-                if (this.TypedNode.XmlElement.Items.Length > 0)
-                {
-                    var eventDefinition = TypedNode.XmlElement.Items[0];
-                    if (eventDefinition is tTimerEventDefinition)
-                    {
-                        string timeDefinition = Node.Name;
-                        subhandler = new TimerEventNodeHandler(ProcessInstance, TypedNode, timeDefinition);
-                    }
-                    else if (eventDefinition is tMessageEventDefinition)
-                    {
-                        subhandler = new MessageEventNodeHandler(ProcessInstance, TypedNode);
-                    }
-
-                }
-                else
-                {
-                    return base.CanProcess(caller);
-                }
+                throw new Exception($"Unknown definition of node {this.Node.Name}");
             }
 
-            return subhandler.CanProcess(caller);
+            var eventDefinition = TypedNode.XmlElement.Items[0];
+            if (eventDefinition is tTimerEventDefinition)
+            {
+                string timeDefinition = Node.Name;
+                _subhandler = new TimerEventNodeHandler(ProcessInstance, TypedNode, timeDefinition);
+            }
+            else if (eventDefinition is tMessageEventDefinition)
+            {
+                _subhandler = new MessageCatchingNodeHandler<tIntermediateCatchEvent>(ProcessInstance, TypedNode);
+            }
+            else
+            {
+                throw new Exception($"Unknown definition of node {this.Node.Name}: {eventDefinition.id}");
+            }
+        }
+
+        public override Task<bool> CanProcess(INodeCaller? caller)
+        {
+            return _subhandler.CanProcess(caller);
         }
     }
 }

@@ -18,19 +18,23 @@ namespace Polokus.Core.NodeHandlers
         {
         }
 
-        protected async override Task Action(INodeCaller? caller)
+        public async override Task Action(INodeCaller? caller)
         {
             if (_userDecision != null)
             {
                 var outgoing = this.Node.Outgoing.SingleOrDefault();
                 if (outgoing != null)
                 {
-                    // it can be int, if something else it will be treated as a string
+                    // it can be int or bool, if something else it will be treated as a string
 
                     string userDecision = string.Empty;
                     if (int.TryParse(_userDecision, out int i))
                     {
                         userDecision = i.ToString();
+                    }
+                    else if (bool.TryParse(_userDecision, out bool b))
+                    {
+                        userDecision = b ? "true" : "false";
                     }
                     else
                     {
