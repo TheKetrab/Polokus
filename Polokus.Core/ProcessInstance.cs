@@ -65,12 +65,12 @@ namespace Polokus.Core
         public IProcessInstance? ParentProcessInstance { get; private set; }
         public ICollection<IProcessInstance> ChildrenProcessInstances { get; } = new List<IProcessInstance>();
 
-        public IProcessInstance StartSubProcessInstance(IBpmnProcess bpmnProcess, IFlowNode startNode)
+        public IProcessInstance CreateSubProcessInstance(IBpmnProcess bpmnProcess)
         {
             ProcessInstance processInstance = (ProcessInstance)ContextInstance.CreateProcessInstance(bpmnProcess);
             processInstance.ParentProcessInstance = this;
             this.ChildrenProcessInstances.Add(processInstance);
-            ContextInstance.StartProcessInstance(processInstance, startNode, -1);
+            processInstance.HooksProvider = this.HooksProvider;
             return processInstance;
         }
         

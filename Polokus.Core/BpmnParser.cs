@@ -87,6 +87,24 @@ namespace Polokus.Core
             
         }
 
+        private void ReadFlowElementsInProcess(BpmnContext context, tDefinitions definitions, tFlowElement[] items, string processId, List<IBpmnProcess> processes)
+        {
+            var sequences = items.Where(x => x is tSequenceFlow).Cast<tSequenceFlow>();
+            var flowNodes = items.Where(x => x is tFlowNode).Cast<tFlowNode>();
+
+            var process = new BpmnProcess(context, processId);
+            process.SourceDefinitions = definitions;
+            FillProcessConnections(process, sequences, flowNodes);
+
+            processes.Add(process);
+
+            var subProcesses = items.Where(x => x is tSubProcess).Cast<tSubProcess>();
+            foreach (var sp in subProcesses)
+            {
+                ReadFlowElementsInProcess(context, definitions, sp.Items1, sp.id, processes);
+            }
+        }
+
         private void LoadDefinitions(BpmnContext context, tDefinitions definitions)
         {
             // Read processes
@@ -95,14 +113,7 @@ namespace Polokus.Core
             {
                 if (item is tProcess xmlProcess)
                 {
-                    var sequences = xmlProcess.Items.Where(x => x is tSequenceFlow).Cast<tSequenceFlow>();
-                    var flowNodes = xmlProcess.Items.Where(x => x is tFlowNode).Cast<tFlowNode>();
-
-                    var process = new BpmnProcess(context, item.id);
-                    process.SourceDefinitions = definitions;
-                    FillProcessConnections(process, sequences, flowNodes);
-
-                    processes.Add(process);
+                    ReadFlowElementsInProcess(context, definitions, xmlProcess.Items, xmlProcess.id, processes);
                 }
                 
             }

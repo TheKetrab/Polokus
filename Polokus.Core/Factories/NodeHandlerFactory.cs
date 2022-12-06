@@ -49,6 +49,7 @@ namespace Polokus.Core.Factories
             RegisterNodeHandlerType<tIntermediateThrowEvent, IntermediateThrowEventNodeHandler>();
             RegisterNodeHandlerType<tReceiveTask, ReceiveTaskNodeHandler>();
             RegisterNodeHandlerType<tSendTask, SendTaskNodeHandler>();
+            RegisterNodeHandlerType<tSubProcess, SubProcessNodeHandler>();
         }
 
         private Type GetTypeForNodeHandler(IFlowNode node)

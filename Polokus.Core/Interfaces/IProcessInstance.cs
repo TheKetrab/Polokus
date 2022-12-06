@@ -24,7 +24,7 @@ namespace Polokus.Core.Interfaces
         bool ExistsAnotherTaskAbleToCallTarget(IFlowNode target, List<string> callers);
         void StartNewSequence(IFlowNode firstNode, INodeCaller? caller);
 
-        IProcessInstance StartSubProcessInstance(IBpmnProcess bpmnProcess, IFlowNode startNode);
+        IProcessInstance CreateSubProcessInstance(IBpmnProcess bpmnProcess);
 
         bool IsStarted { get; }
         bool IsFinished { get; }

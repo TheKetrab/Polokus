@@ -77,7 +77,8 @@ namespace Polokus.Core
                 if (parentProcessId != null)
                 {
                     var processInstance = starter.ContextInstance.GetProcessInstanceById(parentProcessId);
-                    processInstance.StartSubProcessInstance(starter.BpmnProcess, starter.StartNode);
+                    var subProcessInstance = processInstance.CreateSubProcessInstance(starter.BpmnProcess);
+                    starter.ContextInstance.StartProcessInstance(subProcessInstance, starter.StartNode, null);
                 }
                 else
                 {
