@@ -18,7 +18,7 @@ namespace Polokus.App.Views
 {
     public partial class ChromiumWindow : UserControl
     {
-        private readonly string bpmnioPage = Path.Combine(Application.StartupPath,"public/index.html");
+        private readonly string bpmnioPage = Path.Combine(Application.StartupPath,"editor/index.html");
 
         public ChromiumWindow(string mode = "")
         {

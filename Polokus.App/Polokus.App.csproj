@@ -57,5 +57,8 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="echo xcopy &quot;$(SolutionDir)Polokus.Bpmnio\public&quot; &quot;$(ProjectDir)$(OutDir)editor&quot; /E/I/Y&#xD;&#xA;xcopy &quot;$(SolutionDir)Polokus.Bpmnio\public&quot; &quot;$(ProjectDir)$(OutDir)editor&quot; /E/I/Y&#xD;&#xA;" />
+  </Target>
 
 </Project>
