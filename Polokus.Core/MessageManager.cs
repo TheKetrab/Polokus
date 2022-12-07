@@ -93,6 +93,12 @@ namespace Polokus.Core
         {
             HttpClient client = new HttpClient();
             string uri = $"http://localhost:{ListeningPort}/{listenerId}";
+
+            while (!IsWaiting(listenerId))
+            {
+                await Task.Delay(100);
+            }
+
             if (!string.IsNullOrEmpty(queryString))
             {
                 uri += $"?{queryString}";
@@ -126,6 +132,12 @@ namespace Polokus.Core
         public bool IsAnyWaiting()
         {
             return _waiters.Any() || _starters.Any();
+        }
+
+        public bool IsWaiting(string listenerId)
+        {
+            return _waiters.Where(x => string.Equals(listenerId, x.Key)).Any()
+                || _starters.Where(x => string.Equals(listenerId, x.Key)).Any();
         }
     }
 }

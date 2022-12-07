@@ -42,16 +42,25 @@ namespace Polokus.Core.NodeHandlers.Special
 
                     IProcessInstance? piToCall = null;
 
-                    var allWaiters = ProcessInstance.ContextInstance.MessageManager.GetWaiters();
-                    foreach (var waiter in allWaiters)
+                    while (piToCall == null)
                     {
-                        if (Utils.GetBpmnProcessIdFromWaiter(waiter.Id) == outgoing.TargetProcess.Id
-                            && Utils.GetNodeIdFromWaiter(waiter.Id) == outgoing.Target.Id)
+                        var allWaiters = ProcessInstance.ContextInstance.MessageManager.GetWaiters();
+                        foreach (var waiter in allWaiters)
                         {
-                            string pid = Utils.GetProcessInstanceIdFromWaiter(waiter.Id);
-                            IProcessInstance p = ProcessInstance.ContextInstance.GetProcessInstanceById(pid);
-                            piToCall = p;
-                            break;
+                            if (Utils.GetBpmnProcessIdFromWaiter(waiter.Id) == outgoing.TargetProcess.Id
+                                && Utils.GetNodeIdFromWaiter(waiter.Id) == outgoing.Target.Id)
+                            {
+                                string pid = Utils.GetProcessInstanceIdFromWaiter(waiter.Id);
+                                IProcessInstance p = ProcessInstance.ContextInstance.GetProcessInstanceById(pid);
+                                piToCall = p;
+                                break;
+                            }
+
+                        }
+
+                        if (piToCall == null)
+                        {
+                            await Task.Delay(100);
                         }
 
                     }
