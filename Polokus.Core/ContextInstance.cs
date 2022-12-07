@@ -98,6 +98,8 @@ namespace Polokus.Core
                 {
                     _hooksProvider?.OnTimeout(instance.Id);
                     ProcessInstances.Remove(instance);
+                    History.Add(instance);
+
                     return false;
                 }
             }

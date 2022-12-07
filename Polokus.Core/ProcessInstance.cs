@@ -240,6 +240,8 @@ namespace Polokus.Core
         public void Stop()
         {
             ActiveTasksManager.Stop();
+            Status = ProcessStatus.Stopped;
+            HooksProvider?.OnStatusChanged(Id);
             IsActive = false;
         }
 

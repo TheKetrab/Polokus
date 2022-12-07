@@ -11,7 +11,8 @@ namespace Polokus.Core
         Initialized,
         Running,
         Paused,
-        Finished
+        Finished,
+        Stopped
     }
 
     public static class ProcessStatusExtensions
