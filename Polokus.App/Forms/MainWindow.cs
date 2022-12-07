@@ -143,7 +143,6 @@ namespace Polokus.App.Forms
             InitializeView();
             ViewModel.InitializeMap();
 
-
             _client = new BpmnioClient(EditorView);
 
             SizeChanged += MainWindow_SizeChanged;
@@ -153,6 +152,53 @@ namespace Polokus.App.Forms
         }
 
 
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == (Keys.Control | Keys.Tab))
+            {
+                ShowHideInfoLabel();
+                return true;
+            }
+
+            if (keyData == (Keys.Control | Keys.D1))
+            {
+                ToggleLeftPanelOff();
+            }
+
+            if (keyData == (Keys.Control | Keys.D2))
+            {
+                ToggleLeftPanelOnLittle();
+            }
+
+            if (keyData == (Keys.Control | Keys.D3))
+            {
+                ToggleLeftPanelOnBig();
+            }
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        private void ShowHideInfoLabel()
+        {
+            this.panelBottom.Visible = !panelBottom.Visible;
+        }
+
+        private void ToggleLeftPanelOff()
+        {
+            this.splitContainer1.Panel1Collapsed = true;
+        }
+
+        private void ToggleLeftPanelOnLittle()
+        {
+            this.splitContainer1.Panel1Collapsed = false;
+            this.splitContainer1.SplitterDistance = 100;
+        }
+
+        private void ToggleLeftPanelOnBig()
+        {
+            this.splitContainer1.Panel1Collapsed = false;
+            this.splitContainer1.SplitterDistance = 250;
+        }
 
         private void AdjustIconBtn()
         {
