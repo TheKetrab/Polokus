@@ -149,6 +149,17 @@ namespace Polokus.App.Forms
             splitContainer1.SplitterMoved += MainWindow_SizeChanged;
 
             AdjustIconBtn();
+
+
+            // panelSService kills performance while resizing, therefore its live-resizing is disabled
+            this.ResizeBegin += (s, e) => {
+                this.panelService.SuspendLayout();
+            };
+            this.ResizeEnd += (s, e) => { 
+                this.panelService.ResumeLayout(true);
+            };
+
+
         }
 
 
@@ -212,8 +223,6 @@ namespace Polokus.App.Forms
         {
             this.labelInfo.Text = info;
         }
-
-
 
 
         async Task HideProcessesPanel()
@@ -449,7 +458,7 @@ namespace Polokus.App.Forms
 
         private void MainWindow_SizeChanged(object? sender, EventArgs e)
         {
-            panelPolokusHeader.Invalidate();
+
         }
 
         private void splitContainer1_SplitterMoved(object? sender, SplitterEventArgs e)

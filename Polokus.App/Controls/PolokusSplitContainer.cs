@@ -13,7 +13,7 @@ namespace Polokus.App.Controls
         public PolokusSplitContainer()
         {
             this.BorderStyle = BorderStyle.FixedSingle;
-            this.SplitterWidth = 2;
+            this.SplitterWidth = 4;
         }
 
     }

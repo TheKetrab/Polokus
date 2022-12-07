@@ -87,6 +87,7 @@ namespace Polokus.App.Forms
             this.panelBottom.Name = "panelBottom";
             this.panelBottom.Size = new System.Drawing.Size(1184, 21);
             this.panelBottom.TabIndex = 0;
+            this.panelBottom.Visible = false;
             // 
             // labelInfo
             // 
@@ -94,7 +95,7 @@ namespace Polokus.App.Forms
             this.labelInfo.Font = new System.Drawing.Font("Montserrat", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.labelInfo.Location = new System.Drawing.Point(0, 0);
             this.labelInfo.Name = "labelInfo";
-            this.labelInfo.Size = new System.Drawing.Size(41, 15);
+            this.labelInfo.Size = new System.Drawing.Size(42, 16);
             this.labelInfo.TabIndex = 0;
             this.labelInfo.Text = "label2";
             // 
@@ -386,57 +387,74 @@ namespace Polokus.App.Forms
             this.panelTaskBar.GradientEndColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(92)))));
             this.panelTaskBar.Location = new System.Drawing.Point(0, 0);
             this.panelTaskBar.Name = "panelTaskBar";
-            this.panelTaskBar.Padding = new System.Windows.Forms.Padding(5);
             this.panelTaskBar.Size = new System.Drawing.Size(938, 32);
             this.panelTaskBar.TabIndex = 2;
             this.panelTaskBar.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panelTitleBar_MouseDown);
             // 
             // iconBtnMinimize
             // 
+            this.iconBtnMinimize.BackColor = System.Drawing.Color.Transparent;
             this.iconBtnMinimize.Dock = System.Windows.Forms.DockStyle.Right;
+            this.iconBtnMinimize.FlatAppearance.BorderSize = 0;
+            this.iconBtnMinimize.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Gray;
+            this.iconBtnMinimize.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.iconBtnMinimize.FontChar = Polokus.App.Fonts.FontsManager.SegMDL2.Minimize;
             this.iconBtnMinimize.FontCharCustom = 0;
             this.iconBtnMinimize.FontSize = 18.5F;
-            this.iconBtnMinimize.FontStyle = System.Drawing.FontStyle.Bold;
-            this.iconBtnMinimize.Location = new System.Drawing.Point(828, 5);
+            this.iconBtnMinimize.FontStyle = System.Drawing.FontStyle.Regular;
+            this.iconBtnMinimize.ForeColor = System.Drawing.Color.White;
+            this.iconBtnMinimize.Location = new System.Drawing.Point(833, 0);
             this.iconBtnMinimize.Margin = new System.Windows.Forms.Padding(0);
             this.iconBtnMinimize.Name = "iconBtnMinimize";
-            this.iconBtnMinimize.Padding = new System.Windows.Forms.Padding(5);
-            this.iconBtnMinimize.Size = new System.Drawing.Size(35, 22);
+            this.iconBtnMinimize.Padding = new System.Windows.Forms.Padding(10);
+            this.iconBtnMinimize.Size = new System.Drawing.Size(35, 32);
             this.iconBtnMinimize.TabIndex = 5;
-            this.iconBtnMinimize.UseVisualStyleBackColor = true;
+            this.iconBtnMinimize.TabStop = false;
+            this.iconBtnMinimize.UseVisualStyleBackColor = false;
             this.iconBtnMinimize.Click += new System.EventHandler(this.iconBtnMinimize_Click);
             // 
             // iconBtnSize
             // 
+            this.iconBtnSize.BackColor = System.Drawing.Color.Transparent;
             this.iconBtnSize.Dock = System.Windows.Forms.DockStyle.Right;
+            this.iconBtnSize.FlatAppearance.BorderSize = 0;
+            this.iconBtnSize.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Gray;
+            this.iconBtnSize.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.iconBtnSize.FontChar = Polokus.App.Fonts.FontsManager.SegMDL2.Restore;
             this.iconBtnSize.FontCharCustom = 0;
             this.iconBtnSize.FontSize = 18.5F;
-            this.iconBtnSize.FontStyle = System.Drawing.FontStyle.Bold;
-            this.iconBtnSize.Location = new System.Drawing.Point(863, 5);
+            this.iconBtnSize.FontStyle = System.Drawing.FontStyle.Regular;
+            this.iconBtnSize.ForeColor = System.Drawing.Color.White;
+            this.iconBtnSize.Location = new System.Drawing.Point(868, 0);
             this.iconBtnSize.Margin = new System.Windows.Forms.Padding(10);
             this.iconBtnSize.Name = "iconBtnSize";
-            this.iconBtnSize.Padding = new System.Windows.Forms.Padding(5);
-            this.iconBtnSize.Size = new System.Drawing.Size(35, 22);
+            this.iconBtnSize.Padding = new System.Windows.Forms.Padding(10);
+            this.iconBtnSize.Size = new System.Drawing.Size(35, 32);
             this.iconBtnSize.TabIndex = 4;
-            this.iconBtnSize.UseVisualStyleBackColor = true;
+            this.iconBtnSize.TabStop = false;
+            this.iconBtnSize.UseVisualStyleBackColor = false;
             this.iconBtnSize.Click += new System.EventHandler(this.iconBtnSize_Click);
             // 
             // iconBtnExit
             // 
+            this.iconBtnExit.BackColor = System.Drawing.Color.Transparent;
             this.iconBtnExit.Dock = System.Windows.Forms.DockStyle.Right;
+            this.iconBtnExit.FlatAppearance.BorderSize = 0;
+            this.iconBtnExit.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Gray;
+            this.iconBtnExit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.iconBtnExit.FontChar = Polokus.App.Fonts.FontsManager.SegMDL2.Close;
             this.iconBtnExit.FontCharCustom = 0;
             this.iconBtnExit.FontSize = 18.5F;
-            this.iconBtnExit.FontStyle = System.Drawing.FontStyle.Bold;
-            this.iconBtnExit.Location = new System.Drawing.Point(898, 5);
+            this.iconBtnExit.FontStyle = System.Drawing.FontStyle.Regular;
+            this.iconBtnExit.ForeColor = System.Drawing.Color.White;
+            this.iconBtnExit.Location = new System.Drawing.Point(903, 0);
             this.iconBtnExit.Margin = new System.Windows.Forms.Padding(10);
             this.iconBtnExit.Name = "iconBtnExit";
-            this.iconBtnExit.Padding = new System.Windows.Forms.Padding(5);
-            this.iconBtnExit.Size = new System.Drawing.Size(35, 22);
+            this.iconBtnExit.Padding = new System.Windows.Forms.Padding(10);
+            this.iconBtnExit.Size = new System.Drawing.Size(35, 32);
             this.iconBtnExit.TabIndex = 3;
-            this.iconBtnExit.UseVisualStyleBackColor = true;
+            this.iconBtnExit.TabStop = false;
+            this.iconBtnExit.UseVisualStyleBackColor = false;
             this.iconBtnExit.Click += new System.EventHandler(this.iconBtnExit_Click);
             // 
             // MainWindow
