@@ -24,6 +24,8 @@ namespace Polokus.App.Views
             this.numericUpDownMessageListenerPort.ValueChanged += NumericUpDownMessageListenerPort_ValueChanged;
 
             textBoxBpmnPath.TextChanged += TextBoxBpmnPath_TextChanged;
+
+            
         }
 
         private void TextBoxBpmnPath_TextChanged(object? sender, EventArgs e)
@@ -51,7 +53,15 @@ namespace Polokus.App.Views
             textBoxBpmnPath.DataBindings.Add("Text", Properties.Settings.Default, "BpmnPath");
             checkBoxEnableLogs.DataBindings.Add("Checked", Properties.Settings.Default, "EnableLogs");
             numericUpDownMessageListenerPort.DataBindings.Add("Value", Properties.Settings.Default, "MessageListenerPort");
-            textBoxBpmnServiceNodeHandlers.DataBindings.Add("Text", Properties.Settings.Default, "ServiceTasksExternals");            
+            textBoxBpmnServiceNodeHandlers.DataBindings.Add("Text", Properties.Settings.Default, "ServiceTasksExternals");
+
+            numericUpDownDelayPerNodeHandler.DataBindings.Add("Value", Properties.Settings.Default, "DelayPerNodeHandlerMs", true, DataSourceUpdateMode.OnPropertyChanged);
+            trackBarDelayPerNodeHandler.DataBindings.Add("Value", Properties.Settings.Default, "DelayPerNodeHandlerMs", true, DataSourceUpdateMode.OnPropertyChanged);
+
+            numericUpDownTimeoutForManualProcesses.DataBindings.Add("Value", Properties.Settings.Default, "TimeoutForProcessSec", true, DataSourceUpdateMode.OnPropertyChanged);
+            trackBarTimeOutForManualProcesses.DataBindings.Add("Value", Properties.Settings.Default, "TimeoutForProcessSec", true, DataSourceUpdateMode.OnPropertyChanged);
+               
+
         }
 
         private void buttonBrowseBpmnPath_Click(object sender, EventArgs e)
@@ -86,6 +96,11 @@ namespace Polokus.App.Views
                     this.textBoxBpmnServiceNodeHandlers.DataBindings["Text"].BindingManagerBase.EndCurrentEdit();
                 }
             }
+        }
+
+        private void groupBox1_Enter(object sender, EventArgs e)
+        {
+
         }
     }
 }

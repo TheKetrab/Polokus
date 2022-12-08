@@ -51,7 +51,7 @@ namespace Polokus.App.Utils
         {
             UpdateActiveNodesInGraph(processInstanceId);
             Log(processInstanceId, $"Executing: {node.Id} taskId = {taskId}");
-            Thread.Sleep(300); // delay execution
+            Thread.Sleep(_contextInstance.SettingsProvider.DelayForNodeHandlerMs); // delay execution
 
             if (node.XmlType == typeof(tManualTask))
             {

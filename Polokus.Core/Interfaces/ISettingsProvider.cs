@@ -10,5 +10,8 @@ namespace Polokus.Core.Interfaces
     {
         int MessageListenerPort { get; }
         string ServiceTasksExternals { get; }
+        int TimeOutForProcessSec { get; }
+        int DelayForNodeHandlerMs { get; }
+
     }
 }

@@ -4,6 +4,9 @@
     <Compile Update="Controls\IconBtn.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Update="Controls\PolokusButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Update="Controls\PolokusGradientPanel.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -23,6 +26,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Update="Controls\PolokusSplitContainer.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Controls\PolokusTrackBar.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Update="Controls\ReadOnlyRichTextBox.cs">

@@ -70,5 +70,41 @@ namespace Polokus.App.Properties {
                 this["ServiceTasksExternals"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("-1")]
+        public int TimeoutForProcessSec {
+            get {
+                return ((int)(this["TimeoutForProcessSec"]));
+            }
+            set {
+                this["TimeoutForProcessSec"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("300")]
+        public int DelayPerNodeHandlerMs {
+            get {
+                return ((int)(this["DelayPerNodeHandlerMs"]));
+            }
+            set {
+                this["DelayPerNodeHandlerMs"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Setting {
+            get {
+                return ((string)(this["Setting"]));
+            }
+            set {
+                this["Setting"] = value;
+            }
+        }
     }
 }

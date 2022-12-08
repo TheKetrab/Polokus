@@ -7,6 +7,8 @@ namespace Polokus.App.Utils
     {
         public int MessageListenerPort => Properties.Settings.Default.MessageListenerPort;
         public string ServiceTasksExternals => Properties.Settings.Default.ServiceTasksExternals;
+        public int TimeOutForProcessSec => Properties.Settings.Default.TimeoutForProcessSec;
+        public int DelayForNodeHandlerMs => Properties.Settings.Default.DelayPerNodeHandlerMs;
     }
 
 }
