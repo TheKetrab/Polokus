@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Polokus.Core.Interfaces
+﻿namespace Polokus.Core.Interfaces
 {
+    /// <summary>
+    /// Starter is an object that is responsible for starting new process instance, when an event occures.
+    /// </summary>
     public interface IProcessStarter
     {
-        IContextInstance ContextInstance { get; }
-        IBpmnProcess BpmnProcess { get; }
-        IFlowNode StartNode { get; }
         string Id { get; }
+        IFlowNode StartNode { get; }
+        IBpmnProcess BpmnProcess { get; }
+        IContextInstance ContextInstance { get; }
     }
 }

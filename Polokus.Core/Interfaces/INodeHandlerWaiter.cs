@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Polokus.Core.Interfaces
+﻿namespace Polokus.Core.Interfaces
 {
+    /// <summary>
+    /// Waiter is an object that is responsible for calling FlowNode, when an event occures.
+    /// </summary>
     public interface INodeHandlerWaiter : INodeCaller
     {
         IFlowNode NodeToCall { get; }

@@ -1,13 +1,8 @@
-﻿using Polokus.Core.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
-
-namespace Polokus.Core.Interfaces
+﻿namespace Polokus.Core.Interfaces
 {
+    /// <summary>
+    /// Sequence is a Polokus representation of tSequence element, which describes a connection between nodes.
+    /// </summary>
     public interface ISequence
     {
         public string Name { get; }

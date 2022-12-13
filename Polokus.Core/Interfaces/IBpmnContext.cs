@@ -1,15 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Polokus.Core.Interfaces
+﻿namespace Polokus.Core.Interfaces
 {
+    /// <summary>
+    /// BpmnContext is an object that represents parsed XML definitions file.
+    /// </summary>
     public interface IBpmnContext
     {
-        IContextInstance? ContextInstance { get; }
-        IEnumerable<IBpmnProcess> BpmnProcesses { get; }
+        /// <summary>
+        /// XML string where context is parsed from.
+        /// </summary>
         string? RawString { get; }
+
+        /// <summary>
+        /// Instance of context.
+        /// </summary>
+        IContextInstance? ContextInstance { get; }
+
+        /// <summary>
+        /// List of BPMN processes defined within context.
+        /// </summary>
+        IEnumerable<IBpmnProcess> BpmnProcesses { get; }
     }
 }

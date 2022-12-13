@@ -1,29 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Polokus.Core.Interfaces
+﻿namespace Polokus.Core.Interfaces
 {
+    /// <summary>
+    /// ProcessInstance is an object that is responsible for managing life of process defined via BpmnProcess.
+    /// </summary>
     public interface IProcessInstance
     {
-        IProcessInstance? ParentProcessInstance { get; }
-        ICollection<IProcessInstance> ChildrenProcessInstances { get; }
-
         public string Id { get; }
         ProcessStatus Status { get; }
         IContextInstance ContextInstance { get; }
         IBpmnProcess BpmnProcess { get; }
         ActiveTasksManager ActiveTasksManager { get; }
-        IDictionary<string,INodeHandler> AvailableNodeHandlers { get; }
+        IProcessInstance? ParentProcessInstance { get; }
+
+
+
+        ICollection<IProcessInstance> ChildrenProcessInstances { get; }
         ICollection<INodeHandlerWaiter> Waiters { get; }
-        IEnumerable<ICatchingIntermediateEvent> CatchingIntermediateEvents { get; }
+        IDictionary<string,INodeHandler> AvailableNodeHandlers { get; }
 
 
         bool ExistsAnotherTaskAbleToCallTarget(IFlowNode target, List<string> callers);
         void StartNewSequence(IFlowNode firstNode, INodeCaller? caller);
-
         IProcessInstance CreateSubProcessInstance(IBpmnProcess bpmnProcess);
 
         bool IsStarted { get; }

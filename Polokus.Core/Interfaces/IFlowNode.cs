@@ -1,23 +1,20 @@
-﻿using Polokus.Core.Models;
-using Polokus.Core.Models.BpmnObjects.Xsd;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Polokus.Core.Interfaces
+﻿namespace Polokus.Core.Interfaces
 {
+    /// <summary>
+    /// FlowNode is a Polokus's representation of tNode stored in XML.
+    /// </summary>
     public interface IFlowNode : INodeCaller
     {
         string Name { get; }
+        IBpmnProcess BpmnProcess { get; }
+
+        /// <summary>
+        /// Type of base node that correspond to this FlowNode in XML definition file.
+        /// </summary>
+        Type XmlType { get; }
 
         ICollection<ISequence> Incoming { get; }
         ICollection<ISequence> Outgoing { get; }
-
-        IBpmnProcess BpmnProcess { get; }
-
-        Type XmlType { get; }
     }
 
 

@@ -1,19 +1,15 @@
-﻿using Polokus.Core.Models.BpmnObjects.Xsd;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Polokus.Core.Interfaces
+﻿namespace Polokus.Core.Interfaces
 {
+    /// <summary>
+    /// NodeHandler is an object that provides methods to invoke during processing concrete FlowNode.
+    /// </summary>
     public interface INodeHandler
     {
         /// <summary>
-        /// Handle request to be processed by some node
+        /// Handle request to be processed by some node. Returns info about
+        /// state how processing finished and what to do with node.
         /// </summary>
-        /// <param name="caller">Node which invoked execution of this node handler</param>
-        /// <returns>Info about state how processing finished and what to do with node</returns>
+        /// <param name="caller">Node which invoked execution of this node handler.</param>
         Task<ProcessResultInfo> Execute(INodeCaller? caller, int taskId);
 
         /// <summary>
@@ -28,7 +24,6 @@ namespace Polokus.Core.Interfaces
         /// <summary>
         /// Creates copy of object. It is necessary because of CancellationTokens
         /// </summary>
-        /// <returns></returns>
         INodeHandler Clone();
 
     }

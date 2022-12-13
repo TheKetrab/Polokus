@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Polokus.Core.Interfaces
+﻿namespace Polokus.Core.Interfaces
 {
+    /// <summary>
+    /// HooksProvider is an object that allows to inject hooks for some actions during processing a BPMN process.
+    /// </summary>
     public interface IHooksProvider
     {
         void AfterExecuteNodeSuccess(string processInstanceId, IFlowNode node, int taskId);
