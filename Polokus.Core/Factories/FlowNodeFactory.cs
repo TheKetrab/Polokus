@@ -27,12 +27,11 @@ namespace Polokus.Core.Factories
                 ?? CreateTypedFlowNode<tIntermediateThrowEvent>(process, xmlElement)
                 ?? CreateTypedFlowNode<tReceiveTask>(process, xmlElement)
                 ?? CreateTypedFlowNode<tSubProcess>(process, xmlElement)
-                ?? throw new Exception($"Not known type of Flow Node element: {xmlElement.GetType()}");
-
+                ?? throw new Exception($"Unable to create FlowNode for type: {xmlElement.GetType().Name}.");
 
         }
 
-        private IFlowNode CreateTypedFlowNode<T>(BpmnProcess process, tFlowNode xmlElement)
+        private IFlowNode? CreateTypedFlowNode<T>(BpmnProcess process, tFlowNode xmlElement)
             where T : tFlowNode
         {
             if (xmlElement.GetType() == typeof(T))

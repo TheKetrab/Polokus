@@ -40,7 +40,12 @@ namespace Polokus.Core.Helpers
             int ms = 0;
             foreach (var group in match.Groups)
             {
-                string val = group.ToString();
+                string? val = group?.ToString();
+                if (val == null)
+                {
+                    continue;
+                }
+
                 if (val.Contains('h'))
                 {
                     h = ConvertWithoutLetter(val, "h");
@@ -58,7 +63,6 @@ namespace Polokus.Core.Helpers
                     ms = ConvertWithoutLetter(val, "ms");
                 }
             }
-
 
             return H * h + M * m + S * s + ms;
 

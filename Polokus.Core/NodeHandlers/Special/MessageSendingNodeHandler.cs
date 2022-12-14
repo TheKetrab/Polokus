@@ -17,69 +17,76 @@ namespace Polokus.Core.NodeHandlers.Special
         {
         }
 
+        private async Task PingStarter(IMessageFlow outgoing)
+        {
+            var starterToPing = Utils.GetStarterName(
+                ProcessInstance.ContextInstance.Id,
+                outgoing.TargetProcess.Id,
+                outgoing.Target!.Id);
+
+            await ProcessInstance.ContextInstance.MessageManager
+                .PingListener(starterToPing, $"parent={ProcessInstance.Id}");
+        }
+
+        private async Task PingWaiter(IMessageFlow outgoing)
+        {
+            // NOTE: there is existing process to call. here is very naive solution:
+            // find process instance that contains given node
+
+            IProcessInstance piToCall = await GetProcessInstanceToCall(outgoing);
+
+            var waiterToPing = Utils.GetWaiterName(
+                ProcessInstance.ContextInstance.Id,
+                piToCall.Id,
+                outgoing.TargetProcess.Id,
+                outgoing.Target!.Id);
+
+            await ProcessInstance.ContextInstance.MessageManager
+                .PingListener(waiterToPing);
+
+        }
+
+        private async Task<IProcessInstance> GetProcessInstanceToCall(IMessageFlow outgoing)
+        {
+            do
+            {
+                var allWaiters = ProcessInstance.ContextInstance.MessageManager.GetWaiters();
+                foreach (var waiter in allWaiters)
+                {
+                    if (Utils.GetBpmnProcessIdFromWaiter(waiter.Id) == outgoing.TargetProcess.Id
+                        && Utils.GetNodeIdFromWaiter(waiter.Id) == outgoing.Target!.Id)
+                    {
+                        string pid = Utils.GetProcessInstanceIdFromWaiter(waiter.Id);
+                        IProcessInstance? p = ProcessInstance.ContextInstance.GetProcessInstanceById(pid);
+                        if (p != null)
+                        {
+                            return p;
+                        }
+                    }
+                }
+
+                await Task.Delay(100);
+
+            } while (true);
+        }
+
         public async override Task Action(INodeCaller? caller)
         {
             var callerNode = (IMessageCallerNode)Node;
             foreach (var outgoing in callerNode.OutgoingMessages)
             {
-                string listenerToPing = string.Empty;
+                if (outgoing.Target == null)
+                {
+                    throw new Exception($"Target starter is null: {outgoing}");
+                }
 
                 if (outgoing.Target.IsStartNode())
                 {
-                    var starterToPing = Utils.GetStarterName(
-                        ProcessInstance.ContextInstance.Id,
-                        outgoing.TargetProcess.Id,
-                        outgoing.Target.Id);
-
-                    listenerToPing = starterToPing;
-
-                    await ProcessInstance.ContextInstance.MessageManager.PingListener(listenerToPing, $"parent={ProcessInstance.Id}");
+                    await PingStarter(outgoing);
                 }
                 else
                 {
-                    // NOTE: there is existing process to call. here is very naive solution:
-                    // find process instance that contains given node
-
-                    IProcessInstance? piToCall = null;
-
-                    while (piToCall == null)
-                    {
-                        var allWaiters = ProcessInstance.ContextInstance.MessageManager.GetWaiters();
-                        foreach (var waiter in allWaiters)
-                        {
-                            if (Utils.GetBpmnProcessIdFromWaiter(waiter.Id) == outgoing.TargetProcess.Id
-                                && Utils.GetNodeIdFromWaiter(waiter.Id) == outgoing.Target.Id)
-                            {
-                                string pid = Utils.GetProcessInstanceIdFromWaiter(waiter.Id);
-                                IProcessInstance p = ProcessInstance.ContextInstance.GetProcessInstanceById(pid);
-                                piToCall = p;
-                                break;
-                            }
-
-                        }
-
-                        if (piToCall == null)
-                        {
-                            await Task.Delay(100);
-                        }
-
-                    }
-
-                    if (piToCall == null)
-                    {
-                        Logger.Global.Log("Nobody to call.");
-                        return;
-                    }
-
-                    var waiterToPing = Utils.GetWaiterName(
-                        ProcessInstance.ContextInstance.Id,
-                        piToCall.Id,
-                        outgoing.TargetProcess.Id,
-                        outgoing.Target.Id);
-
-                    listenerToPing = waiterToPing;
-
-                    await ProcessInstance.ContextInstance.MessageManager.PingListener(listenerToPing);
+                    await PingWaiter(outgoing);
                 }
 
             }

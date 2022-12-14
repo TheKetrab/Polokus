@@ -10,14 +10,14 @@ namespace Polokus.Core.Models
 {
     public class Sequence : ISequence
     {
-        public tSequenceFlow XmlElement { get; set; }
-        public string Name { get; set; }
-        public string Id { get; set; }
-
-        public IBpmnProcess BpmnProcess { get; }
-
         private IFlowNode? _source;
         private IFlowNode? _target;
+
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public tSequenceFlow XmlElement { get; set; }
+        public IBpmnProcess BpmnProcess { get; }
+
         public IFlowNode? Source => _source ??= BpmnProcess.GetNodeById(XmlElement.sourceRef);
         public IFlowNode? Target => _target ??= BpmnProcess.GetNodeById(XmlElement.targetRef);
 

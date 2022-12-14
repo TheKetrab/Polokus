@@ -16,13 +16,13 @@ namespace Polokus.Core.NodeHandlers.Abstract
     public abstract class NodeHandler<T> : INodeHandler
         where T : tFlowNode
     {
-        public IScriptProvider ScriptProvider => ProcessInstance.ContextInstance.ScriptProvider;
-        public IFlowNode Node => TypedNode;
-        public FlowNode<T> TypedNode { get; }
-        public bool IsJoining => Node.Incoming.Count > 1;
         public IProcessInstance ProcessInstance { get; set; }
-
+        public FlowNode<T> TypedNode { get; }
+        public IFlowNode Node => TypedNode;
         public CancellationToken CancellationToken { get; set; }
+        public bool IsJoining => Node.Incoming.Count > 1;
+        public IScriptProvider ScriptProvider => ProcessInstance.ContextInstance.ScriptProvider;
+
 
         public NodeHandler(IProcessInstance processInstance, FlowNode<T> typedNode)
         {

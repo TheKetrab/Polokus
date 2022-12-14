@@ -36,9 +36,6 @@ namespace Polokus.Core
         public IBpmnProcess BpmnProcess { get; }
         public IDictionary<string,INodeHandler> AvailableNodeHandlers { get; set; } = new Dictionary<string, INodeHandler>();
 
-        public IEnumerable<ICatchingIntermediateEvent> CatchingIntermediateEvents => throw new NotImplementedException();
-
-
 
         public object TasksMutex { get; } = new object();
         public ActiveTasksManager ActiveTasksManager { get; private set; }

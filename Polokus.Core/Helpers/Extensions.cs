@@ -10,7 +10,6 @@ namespace Polokus.Core.Helpers
 {
     public static class Extensions
     {
-
         public static void ForEach<T>(this IEnumerable<T> collection, Action<T> action)
         {
             foreach (var item in collection)
@@ -28,6 +27,7 @@ namespace Polokus.Core.Helpers
         {
             return type.IsSubclassOf(superType) || type == superType;
         }
+
     }
 
 }

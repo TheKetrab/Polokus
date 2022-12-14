@@ -1,19 +1,15 @@
 ﻿using Polokus.Core.Interfaces;
 using Polokus.Core.Models.BpmnObjects.Xsd;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Polokus.Core.Models
 {
     public class BpmnContext : IBpmnContext
     {
-        public tDefinitions? Definitions { get; set; }
+        public string? RawString { get; set; }
         public IContextInstance? ContextInstance { get; }
-
         public IEnumerable<IBpmnProcess> BpmnProcesses { get; private set; }
+
+        public tDefinitions? Definitions { get; set; }
 
         public BpmnContext()
         {
@@ -29,8 +25,6 @@ namespace Polokus.Core.Models
 
             BpmnProcesses = bpmnProcesses;
         }
-
-        public string RawString { get; set; }
 
     }
 }

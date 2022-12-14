@@ -12,18 +12,17 @@ namespace Polokus.Core.Models
 {
     public class FlowNode<T> : IFlowNode, IMessageFlowNode where T : tFlowNode
     {
-        public T XmlElement { get; set; }
-
-        public string Name { get; set; }
         public string Id { get; set; }
+        public string Name { get; set; }
+        public T XmlElement { get; set; }
+        public Type XmlType { get => typeof(T); }
+        public IBpmnProcess BpmnProcess { get; set; }
 
         public ICollection<ISequence> Incoming { get; set; } = new List<ISequence>();
         public ICollection<ISequence> Outgoing { get; set; } = new List<ISequence>();
-        public Type XmlType { get => typeof(T); }
-        public IBpmnProcess BpmnProcess { get;set; }
-
         public ICollection<IMessageFlow> OutgoingMessages { get; set; } = new List<IMessageFlow>();
         public ICollection<IMessageFlow> IncommingMessages { get; set; } = new List<IMessageFlow>();
+
 
         public FlowNode(BpmnProcess bpmnProcess, T xmlElement) 
         {
@@ -34,6 +33,5 @@ namespace Polokus.Core.Models
         }
 
     }
-
     
 }

@@ -38,20 +38,11 @@ namespace Polokus.Core.NodeHandlers.Abstract
                     invokedBy.Add(caller.Id);
                 }
 
-                bool everybodyInvoked = !ProcessInstance?.ExistsAnotherTaskAbleToCallTarget(this.Node, invokedBy) ?? false;
+                bool everybodyInvoked = ! ProcessInstance
+                    .ExistsAnotherTaskAbleToCallTarget(this.Node, invokedBy);
 
-                if (everybodyInvoked)
-                {
-                    return Task.FromResult(true);
-                }
-                else
-                {
-                    return Task.FromResult(false);
-                }
-
+                return Task.FromResult(everybodyInvoked);
             }
-
-
         }
     }
 }

@@ -1,30 +1,22 @@
 ﻿using Polokus.Core.Helpers;
 using Polokus.Core.Interfaces;
 using Polokus.Core.Models.BpmnObjects.Xsd;
-using Polokus.Core.NodeHandlers;
-using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace Polokus.Core.Models
 {
     public class BpmnProcess : IBpmnProcess
     {
+        public string Id { get; }
+        public IBpmnContext BpmnContext { get; set; }
         public tDefinitions? SourceDefinitions { get; set; }
 
-        public IBpmnContext BpmnContext { get; set; }
-
-        public string Id { get; }
 
         private Dictionary<string, IFlowNode> nodesDictionary
             = new Dictionary<string, IFlowNode>();
 
         private Dictionary<string, ISequence> sequencesDictionary
             = new Dictionary<string, ISequence>();
+
 
         public BpmnProcess(IBpmnContext bpmnContext, string id)
         {
@@ -139,16 +131,20 @@ namespace Polokus.Core.Models
 
         public IMessageCallerNode GetMessageCallerNode(string id)
         {
-            var node = GetNodeById(id);
-            // TODO validation, if type on tNode is message
-            return node as IMessageCallerNode;
+            IFlowNode node = GetNodeById(id)
+                ?? throw new Exception($"Node with id {id} not found.");
+
+            return node as IMessageCallerNode
+                ?? throw new Exception($"Node with id {id} is {node.GetType()}, not IMessageCaller.");
         }
         
         public IMessageReceiverNode GetMessageReceiverNode(string id)
         {
-            var node = GetNodeById(id);
-            // TODO validation, if type on tNode is message
-            return node as IMessageReceiverNode;
+            IFlowNode node = GetNodeById(id)
+                ?? throw new Exception($"Node with id {id} not found.");
+
+            return node as IMessageReceiverNode
+                ?? throw new Exception($"Node with id {id} is {node.GetType()}, not IMessageReceiver.");
         }
 
     }

@@ -26,7 +26,6 @@ namespace Polokus.Core.Factories
             _serviceTasksHandlers[serviceTask] = nhType;
         }
 
-
         public void RegisterNodeHandlerType<TXml, TNodeHandler>()
             where TXml : tFlowNode where TNodeHandler : class, INodeHandler
         {
@@ -67,7 +66,6 @@ namespace Polokus.Core.Factories
                 }
 
                 return _serviceTasksHandlers[node.Name];
-                
             }
 
             return _nodeHandlers[node.XmlType];

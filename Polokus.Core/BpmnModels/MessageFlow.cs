@@ -14,15 +14,15 @@ namespace Polokus.Core.BpmnModels
     /// </summary>
     public class MessageFlow : IMessageFlow
     {
-        public tMessageFlow XmlElement { get; set; }
-        public string Name { get; set; }
-        public string Id { get; set; }
+        private IFlowNode? _source;
+        private IFlowNode? _target;
 
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public tMessageFlow XmlElement { get; set; }
         public IBpmnProcess SourceProcess { get; }
         public IBpmnProcess TargetProcess { get; }
 
-        private IFlowNode? _source;
-        private IFlowNode? _target;
         public IFlowNode? Source => _source ??= SourceProcess.GetNodeById(XmlElement.sourceRef.Name);
         public IFlowNode? Target => _target ??= TargetProcess.GetNodeById(XmlElement.targetRef.Name);
 

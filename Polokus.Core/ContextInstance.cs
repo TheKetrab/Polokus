@@ -40,7 +40,6 @@ namespace Polokus.Core
 
         public IScriptProvider ScriptProvider { get; } = new ScriptProvider();
 
-        public IEnumerable<IProcessStarter> CatchingStartEvents { get; } = new List<IProcessStarter>();
 
         public IContextsManager ContextsManager { get; }
         public IBpmnContext BpmnContext { get; }

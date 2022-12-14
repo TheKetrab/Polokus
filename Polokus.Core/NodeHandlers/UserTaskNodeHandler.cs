@@ -14,7 +14,8 @@ namespace Polokus.Core.NodeHandlers
     {
         private string? _userDecision = null;
 
-        public UserTaskNodeHandler(ProcessInstance processInstance, FlowNode<tUserTask> typedNode) : base(processInstance, typedNode)
+        public UserTaskNodeHandler(ProcessInstance processInstance, FlowNode<tUserTask> typedNode)
+            : base(processInstance, typedNode)
         {
         }
 
