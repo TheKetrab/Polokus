@@ -11,13 +11,10 @@ namespace Polokus.Core
 {
     public class ProcessStarter : IProcessStarter
     {
-        public IContextInstance ContextInstance { get; }
-
-        public IBpmnProcess BpmnProcess { get; }
-
-        public IFlowNode StartNode { get; }
-
         public string Id { get; }
+        public IFlowNode StartNode { get; }
+        public IBpmnProcess BpmnProcess { get; }
+        public IContextInstance ContextInstance { get; }
 
 
         public ProcessStarter(IContextInstance contextInstance, IBpmnProcess bpmnProcess, IFlowNode startNode)

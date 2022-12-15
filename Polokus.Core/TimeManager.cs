@@ -103,6 +103,8 @@ namespace Polokus.Core
             IProcessStarter starter = (IProcessStarter)context.JobDetail.JobDataMap["Starter"];
 
             starter.ContextInstance.StartProcessInstance(starter.BpmnProcess, starter.StartNode, null);
+
+            await Task.CompletedTask;
         }
     }
 }

@@ -30,15 +30,14 @@ namespace Polokus.Core
         }
 
         public ISettingsProvider SettingsProvider { get; set;  }
-
-        public ITimeManager TimeManager { get; } = new TimeManager();
+        public ITimeManager TimeManager { get; }
         public IMessageManager MessageManager { get; }
+        public IScriptProvider ScriptProvider { get; }
 
 
         public ICollection<IProcessInstance> History { get; } = new List<IProcessInstance>();
         public ICollection<IProcessInstance> ProcessInstances { get; } = new List<IProcessInstance>();
 
-        public IScriptProvider ScriptProvider { get; } = new ScriptProvider();
 
 
         public IContextsManager ContextsManager { get; }
@@ -58,13 +57,16 @@ namespace Polokus.Core
             SettingsProvider = provider;
         }
 
-        public ContextInstance(IContextsManager contextsManager, IBpmnContext bpmnContext, string id, IHooksProvider hooksProvider = null, ISettingsProvider settingsProvider = null)
+        public ContextInstance(IContextsManager contextsManager, IBpmnContext bpmnContext, string id,
+            IHooksProvider? hooksProvider = null, ISettingsProvider? settingsProvider = null)
         {
             if (settingsProvider == null)
             {
                 settingsProvider = new DefaultSettingsProvider();
             }
 
+            TimeManager = new TimeManager();
+            ScriptProvider = new ScriptProvider();
             SettingsProvider = settingsProvider;
             MessageManager = new MessageManager(SettingsProvider.MessageListenerPort);
 
@@ -89,8 +91,8 @@ namespace Polokus.Core
         public async Task<bool> RunProcessAsync(IProcessInstance instance, IFlowNode startNode, int? timeout)
         {
             DateTime start = DateTime.Now;
-            instance.Begin(startNode);
-            while (instance.IsRunning())
+            instance.StatusManager.Begin(startNode);
+            while (instance.StatusManager.IsRunning())
             {
                 await Task.Delay(100);
                 if (IsTimeout(start, timeout))
@@ -104,7 +106,7 @@ namespace Polokus.Core
             }
 
             Logger.Global.Log($"Process finished. Time: {DateTime.Now - start}");
-            instance.Finish();
+            instance.StatusManager.Finish();
             ProcessInstances.Remove(instance);
             History.Add(instance);
             _hooksProvider?.OnProcessFinished(instance.Id, "success");

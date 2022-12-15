@@ -11,6 +11,12 @@ namespace Polokus.Core
 {
     public class MessageManager : IMessageManager
     {
+        public int ListeningPort { get; }
+        public event EventHandler? CallersChanged;
+
+        private Dictionary<string, IProcessStarter> _starters = new();
+        private Dictionary<string, INodeHandlerWaiter> _waiters = new();
+
         public MessageManager(int port)
         {
             if (!HttpListener.IsSupported)
@@ -20,13 +26,6 @@ namespace Polokus.Core
 
             ListeningPort = port;
         }
-
-        public int ListeningPort { get; }
-
-
-        Dictionary<string, IProcessStarter> _starters = new();
-        Dictionary<string, INodeHandlerWaiter> _waiters = new();
-        public event EventHandler? CallersChanged;
 
         public void RegisterMessageListener(INodeHandlerWaiter waiter)
         {
@@ -76,14 +75,14 @@ namespace Polokus.Core
                 string? parentProcessId = context.Request.QueryString["parent"];
                 if (parentProcessId != null)
                 {
-                    var processInstance = starter.ContextInstance.GetProcessInstanceById(parentProcessId);
+                    var processInstance = starter.ContextInstance.GetProcessInstanceById(parentProcessId)
+                        ?? throw new Exception($"Process instance with id {parentProcessId} doesn't exist.");
                     var subProcessInstance = processInstance.CreateSubProcessInstance(starter.BpmnProcess);
                     starter.ContextInstance.StartProcessInstance(subProcessInstance, starter.StartNode, null);
                 }
                 else
                 {
                     starter.ContextInstance.StartProcessInstance(starter.BpmnProcess, starter.StartNode, null);
-
                 }
 
             }

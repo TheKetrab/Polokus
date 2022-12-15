@@ -6,12 +6,11 @@
     public interface IProcessInstance
     {
         public string Id { get; }
-        ProcessStatus Status { get; }
         IContextInstance ContextInstance { get; }
         IBpmnProcess BpmnProcess { get; }
         ActiveTasksManager ActiveTasksManager { get; }
         IProcessInstance? ParentProcessInstance { get; }
-
+        IStatusManager StatusManager { get; }
 
 
         ICollection<IProcessInstance> ChildrenProcessInstances { get; }
@@ -23,17 +22,8 @@
         void StartNewSequence(IFlowNode firstNode, INodeCaller? caller);
         IProcessInstance CreateSubProcessInstance(IBpmnProcess bpmnProcess);
 
-        bool IsStarted { get; }
-        bool IsFinished { get; }
-        bool IsActive { get; }
-        TimeSpan TotalTime { get; }
-
-        void Begin(IFlowNode startNode);
-        void Stop();
-        void Resume();
-        void Pause();
-        void Finish();
-        bool IsRunning();
 
     }
+
+   
 }

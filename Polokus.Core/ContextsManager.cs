@@ -14,10 +14,35 @@ namespace Polokus.Core
 {
     public class ContextsManager : IContextsManager
     {
-        public IDictionary<string, IContextInstance> ContextInstances { get; } = new Dictionary<string, IContextInstance>();
+        public IDictionary<string, IContextInstance> ContextInstances { get; }
+            = new Dictionary<string, IContextInstance>();
 
+        public void LoadXmlFile(string xmlFilePath,
+            string? bpmnContextName = null,
+            IHooksProvider? hooksProvider = null,
+            ISettingsProvider? settingsProvider = null,
+            Func<ContextInstance,IHooksProvider>? createHooksProviderFunc = null)
+        {
+            bpmnContextName ??= new FileInfo(xmlFilePath).Name;
 
+            BpmnParser parser = new BpmnParser();
+            IBpmnContext bpmnContext = parser.ParseFile(xmlFilePath);
 
+            var contextInstance = new ContextInstance(this,
+                bpmnContext, bpmnContextName,
+                settingsProvider: settingsProvider,
+                hooksProvider: hooksProvider);
+
+            if (hooksProvider == null && createHooksProviderFunc != null)
+            {
+                hooksProvider = createHooksProviderFunc(contextInstance);
+                contextInstance.SetHooksProvider(hooksProvider);
+            }
+
+            RegisterWaiters(contextInstance);
+
+            ContextInstances.Add(bpmnContextName,contextInstance);
+        }
 
         private void RegisterWaiters(ContextInstance contextInstance)
         {
@@ -49,59 +74,6 @@ namespace Polokus.Core
             }
         }
 
-
-        public void LoadXmlFile(string xmlFilePath,
-            string? bpmnContextName = null,
-            IHooksProvider? hooksProvider = null,
-            ISettingsProvider? settingsProvider = null,
-            Func<ContextInstance,IHooksProvider>? createHooksProviderFunc = null)
-        {
-            bpmnContextName ??= new FileInfo(xmlFilePath).Name;
-
-            BpmnParser parser = new BpmnParser();
-            IBpmnContext bpmnContext = parser.ParseFile(xmlFilePath);
-
-            var contextInstance = new ContextInstance(this,
-                bpmnContext, bpmnContextName,
-                settingsProvider: settingsProvider,
-                hooksProvider: hooksProvider);
-
-            if (hooksProvider == null && createHooksProviderFunc != null)
-            {
-                hooksProvider = createHooksProviderFunc(contextInstance);
-                contextInstance.SetHooksProvider(hooksProvider);
-            }
-
-            RegisterWaiters(contextInstance);
-
-            ContextInstances.Add(bpmnContextName,contextInstance);
-        }
-
-        public async Task<bool> RunContextManually(string name, int secTimeout = -1, IHooksProvider? hooksProvider = null)
-        {
-            // TODO: ta metoda jest tylko w testach, trzeba ja dac gdzies indziej
-
-            if (!ContextInstances.ContainsKey(name))
-            {
-                throw new Exception("Cannot find a context with given name.");
-            }
-
-            var contextInstance = ContextInstances[name];
-            if (hooksProvider != null) 
-            {
-                if (contextInstance is ContextInstance ci)
-                {
-                    ci.SetHooksProvider(hooksProvider);
-                }
-
-            }
-
-            var bpmnProcess = contextInstance.BpmnContext.BpmnProcesses.First();
-            var startNode = bpmnProcess.GetStartNodes().First();
-
-            var processInstance = contextInstance.CreateProcessInstance(bpmnProcess);
-            return await contextInstance.RunProcessAsync(processInstance, startNode, secTimeout);
-        }
 
 
     }

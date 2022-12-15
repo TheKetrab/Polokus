@@ -1,67 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using System.Xml.Linq;
-using System.Xml.Serialization;
-using Polokus.Core.Factories;
-using Polokus.Core.Helpers;
+﻿using Polokus.Core.Helpers;
 using Polokus.Core.Interfaces;
-using Polokus.Core.Models;
-using Polokus.Core.Models.BpmnObjects.Xsd;
-using Polokus.Core.NodeHandlers.Abstract;
 
 namespace Polokus.Core
 {
-
-
     public class ProcessInstance : IProcessInstance
     {
         public string Id { get; set; }
-
-        private DateTime? _beginTime;
-        private DateTime? _finishTime;
-        public TimeSpan TotalTime =>
-            (_beginTime == null) ? TimeSpan.Zero
-                : ((_finishTime == null) ? (DateTime.Now - _beginTime.Value)
-                : _finishTime.Value - _beginTime.Value);
-
-        public ProcessStatus Status { get; set; } = ProcessStatus.Initialized;
-        public bool IsActive { get; private set; }
-
         public IContextInstance ContextInstance { get; }
-
         public IBpmnProcess BpmnProcess { get; }
-        public IDictionary<string,INodeHandler> AvailableNodeHandlers { get; set; } = new Dictionary<string, INodeHandler>();
-
-
         public object TasksMutex { get; } = new object();
         public ActiveTasksManager ActiveTasksManager { get; private set; }
-
-        public bool IsStarted { get; private set;  }
-
-        public bool IsFinished { get; private set; }
-
-        public ICollection<INodeHandlerWaiter> Waiters { get; } = new List<INodeHandlerWaiter>();
+        public IStatusManager StatusManager { get; private set; }
 
         public IHooksProvider? HooksProvider;
+        public IProcessInstance? ParentProcessInstance { get; private set; }
 
-        public ProcessInstance(string id, IContextInstance contextInstance, IBpmnProcess bpmnProcess, IHooksProvider? hooksProvider = null)
+        public ICollection<IProcessInstance> ChildrenProcessInstances { get; }
+            = new List<IProcessInstance>();
+
+        public ICollection<INodeHandlerWaiter> Waiters { get; }
+            = new List<INodeHandlerWaiter>();
+
+        public IDictionary<string, INodeHandler> AvailableNodeHandlers { get; set; }
+            = new Dictionary<string, INodeHandler>();
+
+
+
+        public ProcessInstance(string id, IContextInstance contextInstance,
+            IBpmnProcess bpmnProcess, IHooksProvider? hooksProvider = null)
         {
             Id = id;
             ContextInstance = contextInstance;
             ActiveTasksManager = new ActiveTasksManager(this);
+            StatusManager = new StatusManager(this);
 
             BpmnProcess = bpmnProcess;
             HooksProvider = hooksProvider;
         }
-
-        
-        public IProcessInstance? ParentProcessInstance { get; private set; }
-        public ICollection<IProcessInstance> ChildrenProcessInstances { get; } = new List<IProcessInstance>();
-
+ 
         public IProcessInstance CreateSubProcessInstance(IBpmnProcess bpmnProcess)
         {
             ProcessInstance processInstance = (ProcessInstance)ContextInstance.CreateProcessInstance(bpmnProcess);
@@ -72,11 +48,10 @@ namespace Polokus.Core
         }
         
         /// <summary>
-        /// 
+        /// This method checks if there is any task that can in the future call target node.
         /// </summary>
-        /// <param name="target"></param>
-        /// <param name="callers">Callers are nodes that already called target</param>
-        /// <returns></returns>
+        /// <param name="target">FlowNode to call.</param>
+        /// <param name="callers">Nodes that already called target.</param>
         public bool ExistsAnotherTaskAbleToCallTarget(IFlowNode target, List<string> callers)
         {
             foreach (var w in Waiters)
@@ -121,15 +96,12 @@ namespace Polokus.Core
         {
             lock (AvailableNodeHandlers)
             {
-                if (AvailableNodeHandlers.ContainsKey(node.Id))
-                {
-                    return AvailableNodeHandlers[node.Id];
-                }
+                INodeHandler? nodeHandler = GetNodeHandlerForNodeIfExists(node)
+                    ?? ContextInstance.NodeHandlerFactory.CreateNodeHandler(this,node);
 
-                INodeHandler nodeHandler = ContextInstance.NodeHandlerFactory.CreateNodeHandler(this,node);
                 AvailableNodeHandlers.Add(node.Id, nodeHandler);
-                return nodeHandler;
 
+                return nodeHandler;
             }
         }
 
@@ -153,7 +125,7 @@ namespace Polokus.Core
                 case ProcessResultState.Success:
                     HooksProvider?.AfterExecuteNodeSuccess(Id, node, taskId);
                     AvailableNodeHandlers.Remove(node.Id);
-                    RunFurtherNodes(node, taskId, resultInfo.SequencesToInvoke.ToArray());
+                    RunFurtherNodes(node, taskId, resultInfo.SequencesToInvoke!.ToArray());
                     break;
                 case ProcessResultState.Failure:
                     HooksProvider?.AfterExecuteNodeFailure(Id, node, taskId);
@@ -182,22 +154,6 @@ namespace Polokus.Core
             task.Start();
         }
 
-        //public void StartNewSelfTrigger(INodeHandler nodeHandler)
-        //{
-        //    // hooksProvider?.OnNewSelfTrigger(); // TODO
-        //    int taskId = ActiveTasksManager.AddNewTask();
-        //    Task task = new Task(() =>
-        //    {
-        //        while (nodeHandler != null)
-        //        {
-        //            Task.Delay(100);
-        //            ExecuteNode(nodeHandler.Node, taskId, null);
-        //            // todo: czy nie trzeba recznie ustawiac nodeHandler = null ???
-        //        }
-        //    });
-        //    task.Start();
-        //}
-
         private void RunFurtherNodes(IFlowNode node, int taskId, ISequence[] sequences)
         {
             if (sequences.Length == 0)
@@ -205,7 +161,6 @@ namespace Polokus.Core
                 ActiveTasksManager.RemoveRunningTask(taskId);
                 return;
             }
-
             
             for (int i = 1; i < sequences.Length; i++)
             {
@@ -224,62 +179,6 @@ namespace Polokus.Core
 
         }
         
-
-
-
-        public void Pause()
-        {
-            ActiveTasksManager.Pause();
-            Status = ProcessStatus.Paused;
-            HooksProvider?.OnStatusChanged(Id);
-        }
-
-        public void Stop()
-        {
-            ActiveTasksManager.Stop();
-            Status = ProcessStatus.Stopped;
-            HooksProvider?.OnStatusChanged(Id);
-            IsActive = false;
-        }
-
-        public bool IsRunning()
-        {
-            return IsActive && (ActiveTasksManager.AnyRunning() || Waiters.Any());
-        }
-
-        public void Begin(IFlowNode startNode)
-        {
-            if (!startNode.IsStartNode())
-            {
-                throw new InvalidOperationException("Not allowed to start process on node which is not 'StartNode'.");
-            }
-
-            _beginTime = DateTime.Now;
-            IsActive = true;
-            Status = ProcessStatus.Running;
-            HooksProvider?.OnStatusChanged(Id);
-            StartNewSequence(startNode, null);
-        }
-
-        public void Resume()
-        {
-            ActiveTasksManager.Resume();
-            Status = ProcessStatus.Running;
-            HooksProvider?.OnStatusChanged(Id);
-        }
-
-        public void Finish()
-        {
-            if (IsRunning())
-            {
-                throw new Exception("Unable to finish running process.");
-            }
-
-            IsFinished = true;
-            _finishTime = DateTime.Now;
-            Status = ProcessStatus.Finished;
-            HooksProvider?.OnStatusChanged(Id);
-        }
 
     }
 

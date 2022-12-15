@@ -46,10 +46,14 @@ namespace Polokus.ConsoleApp.ManualTests
             }
 
             contextsManager.LoadXmlFile(path, "Test");
+            var ci = contextsManager.ContextInstances.First().Value;
+            var bpmnProcess = ci.BpmnContext.BpmnProcesses.First();
+            var startNode = bpmnProcess.GetManualStartNode();
+            var pi = ci.CreateProcessInstance(bpmnProcess);
 
             InitTest(contextsManager);
 
-            bool success = await contextsManager.RunContextManually("Test");
+            bool success = await ci.RunProcessAsync(pi,startNode);
             Console.WriteLine(success ? " -> Process finished sucessfully" : " -> Timeout");
 
             Console.WriteLine();

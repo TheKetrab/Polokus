@@ -77,7 +77,7 @@ namespace Polokus.Tests.NodeHandlersTests
             // Assert
             for (int i = 0; i < permutation.Length; i++)
             {
-                Assert.AreEqual(ProcessStatus.Finished, processInstances[i].Status);
+                Assert.AreEqual(ProcessStatus.Finished, processInstances[i].StatusManager.Status);
             }
         }
 

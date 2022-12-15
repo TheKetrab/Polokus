@@ -17,9 +17,12 @@ using Polokus.Core.BpmnModels;
 
 namespace Polokus.Core
 {
+    /// <summary>
+    /// BpmnParser is an object that parses XML file of BPMN schema provided by OMG
+    /// and returns structure of nodes for Polokus system.
+    /// </summary>
     public class BpmnParser
     {
-
         public IBpmnContext ParseFile(string filename)
         {
             if (!File.Exists(filename))
@@ -42,7 +45,8 @@ namespace Polokus.Core
             return context;
         }
 
-        private void FillProcessConnections(BpmnProcess process, IEnumerable<tSequenceFlow> xmlSequences, IEnumerable<tFlowNode> xmlFlowNodes)
+        private void FillProcessConnections(BpmnProcess process,
+            IEnumerable<tSequenceFlow> xmlSequences, IEnumerable<tFlowNode> xmlFlowNodes)
         {
             var flowNodeFactory = new FlowNodeFactory();
             
@@ -87,7 +91,8 @@ namespace Polokus.Core
             
         }
 
-        private void ReadFlowElementsInProcess(BpmnContext context, tDefinitions definitions, tFlowElement[] items, string processId, List<IBpmnProcess> processes)
+        private void ReadFlowElementsInProcess(BpmnContext context, tDefinitions definitions,
+            tFlowElement[] items, string processId, List<IBpmnProcess> processes)
         {
             var sequences = items.Where(x => x is tSequenceFlow).Cast<tSequenceFlow>();
             var flowNodes = items.Where(x => x is tFlowNode).Cast<tFlowNode>();
@@ -114,8 +119,7 @@ namespace Polokus.Core
                 if (item is tProcess xmlProcess)
                 {
                     ReadFlowElementsInProcess(context, definitions, xmlProcess.Items, xmlProcess.id, processes);
-                }
-                
+                }                
             }
 
             // Read messages
@@ -149,7 +153,6 @@ namespace Polokus.Core
                 }
 
             }
-
 
             context.SetBpmnProcesses(processes);
         }
