@@ -1,0 +1,34 @@
+﻿{
+    "ContextInstances": [
+        {
+            "Name": "name1.bpmn",
+            "ServiceTasks": [
+                {
+                    "Assembly": "assembly1.dll",
+                    "ClassName": "className1",
+                    "ServiceTaskName": "serviceTaskName1"
+                },
+                {
+                    "Assembly": "assembly1.dll",
+                    "ClassName": "className2",
+                    "ServiceTaskName": "serviceTaskName2"
+                }
+            ]
+        },
+        {
+            "Name": "name2.bpmn",
+            "ServiceTasks": [
+                {
+                    "Assembly": "assembly2.dll",
+                    "ClassName": "className3",
+                    "ServiceTaskName": "serviceTaskName3"
+                },
+                {
+                    "Assembly": "assembly2.dll",
+                    "ClassName": "className4",
+                    "ServiceTaskName": "serviceTaskName4"
+                }
+            ]
+        }
+    ]
+}

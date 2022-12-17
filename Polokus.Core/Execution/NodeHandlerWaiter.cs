@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Polokus.Core
+namespace Polokus.Core.Execution
 {
     public class NodeHandlerWaiter : INodeHandlerWaiter
     {
@@ -24,7 +24,7 @@ namespace Polokus.Core
         {
             ProcessInstance = processInstance;
             NodeToCall = nodeToCall;
-            Id =  Utils.GetWaiterName(
+            Id = Utils.GetWaiterName(
                 ProcessInstance.ContextInstance.Id, ProcessInstance.Id,
                 ProcessInstance.BpmnProcess.Id, NodeToCall.Id);
 

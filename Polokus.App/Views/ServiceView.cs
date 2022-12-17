@@ -1,6 +1,8 @@
 ﻿using CefSharp;
 using Polokus.App.Utils;
 using Polokus.Core;
+using Polokus.Core.Execution;
+using Polokus.Core.Helpers;
 using Polokus.Core.Interfaces;
 using System.Data;
 using System.Reflection;
@@ -96,7 +98,9 @@ namespace Polokus.App.Views
 
         private void LoadXmlFile(string file)
         {
-            ContextsManager.LoadXmlFile(file, 
+            string str = File.ReadAllText(file);
+
+            ContextsManager.LoadXmlString(str, new FileInfo(file).Name,
                 settingsProvider: new AppSettingsProvider(),
                 createHooksProviderFunc: (ci) => new AppHooksProvider(ci));
 
@@ -238,7 +242,7 @@ namespace Polokus.App.Views
             foreach (var instance in contextInstance.ProcessInstances)
             {
                 var item = new ListViewItem(instance.Id);
-                item.SubItems.Add(instance.Status.ToStringExt());
+                item.SubItems.Add(instance.StatusManager.Status.ToStringExt());
                 item.SubItems.Add(instance.ActiveTasksManager.GetNodeHandlers().Count().ToString());
 
                 this.listViewInstances.Items.Add(item);
@@ -247,7 +251,7 @@ namespace Polokus.App.Views
             foreach (var instance in contextInstance.History)
             {
                 var item = new ListViewItem(instance.Id);
-                item.SubItems.Add(instance.Status.ToStringExt());
+                item.SubItems.Add(instance.StatusManager.Status.ToStringExt());
                 item.SubItems.Add(instance.ActiveTasksManager.GetNodeHandlers().Count().ToString());
 
                 this.listViewInstances.Items.Add(item);

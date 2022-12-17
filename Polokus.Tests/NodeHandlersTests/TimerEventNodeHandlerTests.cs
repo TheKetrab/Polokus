@@ -17,14 +17,14 @@ namespace Polokus.Tests.NodeHandlersTests
         {
             // Arrange
             var visitor = new VisitorHooks(VisitTime.BeforeExecute | VisitTime.PutNameInParenthesis | VisitTime.MarkNameForSpecialNodes);
-            var pi = BpmnLoader.LoadBpmnXmlIntoSimpleProcessInstance("timerEvent1.bpmn");
+            var pi = BpmnLoader.LoadBpmnXmlIntoSimpleProcessInstance(Resources.TimerEvent1);
 
             // Act
             await pi.RunSimple(visitor);
 
             // Assert
             Assert.That(visitor.GetResult(), Is.EqualTo("start;taskA;tIntermediateCatchEvent(3s);taskB;end"));
-            Assert.IsTrue(pi.TotalTime > TimeSpan.FromSeconds(3) && pi.TotalTime < TimeSpan.FromSeconds(4));
+            Assert.IsTrue(pi.StatusManager.TotalTime > TimeSpan.FromSeconds(3) && pi.StatusManager.TotalTime < TimeSpan.FromSeconds(4));
 
         }
 
@@ -34,7 +34,7 @@ namespace Polokus.Tests.NodeHandlersTests
         {
             // Arrange
             var visitor = new VisitorHooks(VisitTime.BeforeExecute | VisitTime.MarkNameForSpecialNodes);
-            var pi = BpmnLoader.LoadBpmnXmlIntoSimpleProcessInstance("timerEvent2.bpmn");
+            var pi = BpmnLoader.LoadBpmnXmlIntoSimpleProcessInstance(Resources.TimerEvent2);
 
             // Act
             await pi.RunSimple(visitor);
@@ -52,14 +52,14 @@ namespace Polokus.Tests.NodeHandlersTests
         {
             // Arrange
             var visitor = new VisitorHooks(VisitTime.StartNewSequence);
-            var pi = BpmnLoader.LoadBpmnXmlIntoSimpleProcessInstance("timerEvent3.bpmn");
+            var pi = BpmnLoader.LoadBpmnXmlIntoSimpleProcessInstance(Resources.TimerEvent3);
 
             // Act
             await pi.RunSimple(visitor);
 
             // Assert
             Assert.IsTrue(DateTime.Now.Second % 10 == 0);
-            Assert.AreEqual("null;Waiter_Event_0sy3nhf", visitor.GetResult());
+            Assert.AreEqual("null;Waiter_(pr)_(pi0)_(Process_0ez9rd5)_(Event_0sy3nhf)", visitor.GetResult());
 
         }
 

@@ -1,7 +1,7 @@
 using CefSharp.WinForms;
 using CefSharp;
 using Polokus.App.Forms;
-using Polokus.Core;
+using Polokus.Core.Helpers;
 
 namespace Polokus.App
 {

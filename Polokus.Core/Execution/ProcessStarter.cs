@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Polokus.Core
+namespace Polokus.Core.Execution
 {
     public class ProcessStarter : IProcessStarter
     {

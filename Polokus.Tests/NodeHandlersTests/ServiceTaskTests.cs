@@ -1,7 +1,6 @@
 ﻿using Moq;
 using Polokus.Core.Hooks;
 using Polokus.Core.Models;
-using Polokus.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +10,7 @@ using Polokus.Core.Models.BpmnObjects.Xsd;
 using Polokus.Core.NodeHandlers;
 using Polokus.Core.Interfaces;
 using Polokus.Tests.Helpers;
+using Polokus.Core.Execution;
 
 namespace Polokus.Tests.NodeHandlersTests
 {
@@ -38,7 +38,7 @@ namespace Polokus.Tests.NodeHandlersTests
         {
             // Arrange
             VisitorHooks visitor = new VisitorHooks();
-            var pi = BpmnLoader.LoadBpmnXmlIntoSimpleProcessInstance("serviceTask1.bpmn");
+            var pi = BpmnLoader.LoadBpmnXmlIntoSimpleProcessInstance(Resources.ServiceTask1);
             pi.ContextInstance.NodeHandlerFactory
                 .RegisterNodeHandlerForServiceTask<CustomServiceTaskNodeHandler>("CustomServiceTask");
 

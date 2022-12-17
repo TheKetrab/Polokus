@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Polokus.Core
+namespace Polokus.Core.Helpers
 {
     public class Logger
     {
@@ -54,13 +54,13 @@ namespace Polokus.Core
             return sb.ToString();
         }
 
-        private static string MsgPrefix(Tuple<MsgType,string> message)
+        private static string MsgPrefix(Tuple<MsgType, string> message)
         {
             return message.Item1 switch
             {
-                MsgType.Simple =>  "    ",
+                MsgType.Simple => "    ",
                 MsgType.Warning => "[!] ",
-                MsgType.Error =>   "ERR ",
+                MsgType.Error => "ERR ",
                 _ => throw new ArgumentException()
             };
         }

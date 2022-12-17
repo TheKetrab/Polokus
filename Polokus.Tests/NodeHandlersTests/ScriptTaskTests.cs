@@ -16,7 +16,7 @@ namespace Polokus.Tests.NodeHandlersTests
         {
             // Arrange
             var visitor = new VisitorHooks(VisitTime.BeforeExecute | VisitTime.MarkNameForSpecialNodes);
-            var pi = BpmnLoader.LoadBpmnXmlIntoSimpleProcessInstance("scriptTask1.bpmn");
+            var pi = BpmnLoader.LoadBpmnXmlIntoSimpleProcessInstance(Resources.ScriptTask1);
 
             // Act
             await pi.RunSimple(visitor);

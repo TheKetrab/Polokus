@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using static Quartz.Logging.OperationName;
 using Polokus.Core.Interfaces;
 
-namespace Polokus.Core
+namespace Polokus.Core.Execution
 {
     public class TimeManager : ITimeManager
     {
@@ -19,7 +19,7 @@ namespace Polokus.Core
         {
         }
 
-        public event EventHandler CallersChanged;
+        public event EventHandler? CallersChanged;
 
         Dictionary<string, IProcessStarter> _starters = new();
         Dictionary<string, INodeHandlerWaiter> _waiters = new();
@@ -90,7 +90,7 @@ namespace Polokus.Core
             {
                 await context.Scheduler.DeleteJob(context.JobDetail.Key);
                 timeManager.RemoveWaiter(waiter);
-            }            
+            }
 
             waiter.Invoke();
         }

@@ -1,8 +1,9 @@
-﻿using Polokus.Core;
+﻿using Polokus.Core.Execution;
 using Polokus.Core.Hooks;
 using Polokus.Core.Interfaces;
 using Polokus.Core.Models;
 using Polokus.Tests.Helpers;
+using Quartz;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace Polokus.Tests.NodeHandlersTests
         {
             // Arrange
             VisitorHooks visitor = new VisitorHooks(VisitTime.BeforeExecute);
-            var cm = BpmnLoader.LoadBpmnXmlIntoContextsManager("msgBetweenProcesses1.bpmn", visitor);
+            var cm = BpmnLoader.LoadBpmnXmlIntoContextsManager(Resources.MsgBetweenProcesses1, visitor);
             var ci = cm.ContextInstances.First().Value;
             var bpmnProcess = ci.BpmnContext.BpmnProcesses.First(x => x.Id == "Process_1fqg2b6");
             var startNode = bpmnProcess.GetManualStartNode();
@@ -33,25 +34,33 @@ namespace Polokus.Tests.NodeHandlersTests
         }
 
         [Test]
-        [TestCase("msgBetweenProcesses2.bpmn", new int[] { 0, 1, 2 })]
-        [TestCase("msgBetweenProcesses2.bpmn", new int[] { 0, 2, 1 })]
-        [TestCase("msgBetweenProcesses2.bpmn", new int[] { 1, 0, 2 })]
-        [TestCase("msgBetweenProcesses2.bpmn", new int[] { 1, 2, 0 })]
-        [TestCase("msgBetweenProcesses2.bpmn", new int[] { 2, 0, 1 })]
-        [TestCase("msgBetweenProcesses2.bpmn", new int[] { 2, 1, 0 })]
-        [TestCase("msgBetweenProcesses3.bpmn", new int[] { 0, 1, 2 })]
-        [TestCase("msgBetweenProcesses3.bpmn", new int[] { 0, 2, 1 })]
-        [TestCase("msgBetweenProcesses3.bpmn", new int[] { 1, 0, 2 })]
-        [TestCase("msgBetweenProcesses3.bpmn", new int[] { 1, 2, 0 })]
-        [TestCase("msgBetweenProcesses3.bpmn", new int[] { 2, 0, 1 })]
-        [TestCase("msgBetweenProcesses3.bpmn", new int[] { 2, 1, 0 })]
-        public async Task MessageBetweenProcesses_ThreeManualProcesses1_WaitingForEachOther(string processName, int[] permutation)
+        [TestCase(2, new int[] { 0, 1, 2 })]
+        [TestCase(2, new int[] { 0, 2, 1 })]
+        [TestCase(2, new int[] { 1, 0, 2 })]
+        [TestCase(2, new int[] { 1, 2, 0 })]
+        [TestCase(2, new int[] { 2, 0, 1 })]
+        [TestCase(2, new int[] { 2, 1, 0 })]
+        [TestCase(3, new int[] { 0, 1, 2 })]
+        [TestCase(3, new int[] { 0, 2, 1 })]
+        [TestCase(3, new int[] { 1, 0, 2 })]
+        [TestCase(3, new int[] { 1, 2, 0 })]
+        [TestCase(3, new int[] { 2, 0, 1 })]
+        [TestCase(3, new int[] { 2, 1, 0 })]
+        public async Task MessageBetweenProcesses_ThreeManualProcesses1_WaitingForEachOther(int bpmnTestFile, int[] permutation)
         {
             // NOTE: processes ids are the same in both files
 
             // Arrange
+
+            string bpmnString = bpmnTestFile switch
+            {
+                2 => Resources.MsgBetweenProcesses2,
+                3 => Resources.MsgBetweenProcesses3,
+                _ => throw new Exception("bpmn process undefined")
+            };
+
             VisitorHooks visitor = new VisitorHooks(VisitTime.BeforeExecute);
-            var cm = BpmnLoader.LoadBpmnXmlIntoContextsManager(processName, visitor);
+            var cm = BpmnLoader.LoadBpmnXmlIntoContextsManager(bpmnString, visitor);
             var ci = cm.ContextInstances.First().Value;
 
             string[] processIds = new string[3] { "Process_1pq1cix", "Process_0p4rtg3", "Process_1ylxybt" };
@@ -86,7 +95,7 @@ namespace Polokus.Tests.NodeHandlersTests
         public async Task MessageBetweenProcesses_SendingData_VariableSent()
         {
             // Arrange
-            var cm = BpmnLoader.LoadBpmnXmlIntoContextsManager("msgBetweenProcesses4.bpmn");
+            var cm = BpmnLoader.LoadBpmnXmlIntoContextsManager(Resources.MsgBetweenProcesses4);
             var ci = cm.ContextInstances.First().Value;
             var bpmnProcess = ci.BpmnContext.BpmnProcesses.First(x => x.Id == "Process_05l3o9f");
             var startNode = bpmnProcess.GetManualStartNode();

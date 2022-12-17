@@ -1,6 +1,6 @@
 ﻿using Polokus.App.Forms;
 using Polokus.App.Views;
-using Polokus.Core;
+using Polokus.Core.Execution;
 using Polokus.Core.Interfaces;
 using Polokus.Core.Models.BpmnObjects.Xsd;
 using Polokus.Core.NodeHandlers;
@@ -43,7 +43,7 @@ namespace Polokus.App.Utils
         public void OnProcessFinished(string processInstanceId, string result)
         {
             var instance = _contextInstance.GetProcessInstanceById(processInstanceId);
-            string time = instance.TotalTime.ToString(@"hh\:mm\:ss\.ff");
+            string time = instance.StatusManager.TotalTime.ToString(@"hh\:mm\:ss\.ff");
             Log(processInstanceId, $"Process finished with result: {result}. Time: {time}");
         }
 

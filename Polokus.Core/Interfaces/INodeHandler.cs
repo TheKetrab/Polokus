@@ -1,4 +1,6 @@
-﻿namespace Polokus.Core.Interfaces
+﻿using Polokus.Core.Execution;
+
+namespace Polokus.Core.Interfaces
 {
     /// <summary>
     /// NodeHandler is an object that provides methods to invoke during processing concrete FlowNode.

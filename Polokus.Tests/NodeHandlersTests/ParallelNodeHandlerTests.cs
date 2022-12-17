@@ -22,7 +22,7 @@ namespace Polokus.Tests.NodeHandlersTests
             hooksMock.Setup(x => x.BeforeExecuteNode(It.IsAny<string>(),It.IsAny<IFlowNode>(),It.IsAny<int>(),It.IsAny<INodeCaller?>()))
                 .Callback((string pi, IFlowNode n, int i, INodeCaller? c) => { if (n.Name == "parallel2") cnt++; });
 
-            var pi = BpmnLoader.LoadBpmnXmlIntoSimpleProcessInstance("parallel1.bpmn");
+            var pi = BpmnLoader.LoadBpmnXmlIntoSimpleProcessInstance(Resources.Parallel1);
 
             // Act
             var success = await pi.RunSimple(hooksProvider: hooksMock.Object, timeout: 10);
@@ -38,7 +38,7 @@ namespace Polokus.Tests.NodeHandlersTests
         {
             // Arrange
             var visitor = new VisitorHooks(VisitTime.AfterExecuteSuccess);
-            var pi = BpmnLoader.LoadBpmnXmlIntoSimpleProcessInstance("parallel2.bpmn");
+            var pi = BpmnLoader.LoadBpmnXmlIntoSimpleProcessInstance(Resources.Parallel2);
 
             // Act
             await pi.RunSimple(visitor);

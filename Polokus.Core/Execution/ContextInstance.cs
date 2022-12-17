@@ -1,21 +1,9 @@
 ﻿using Polokus.Core.Factories;
+using Polokus.Core.Helpers;
 using Polokus.Core.Interfaces;
-using Polokus.Core.Models.BpmnObjects.Xsd;
-using Polokus.Core.Models;
 using Polokus.Core.Scripting;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using Quartz;
-using System.Text.Json;
-using System.Text.Json.Nodes;
-using System.Net.Http.Json;
 
-namespace Polokus.Core
+namespace Polokus.Core.Execution
 {
     public class ContextInstance : IContextInstance
     {
@@ -29,7 +17,7 @@ namespace Polokus.Core
             }
         }
 
-        public ISettingsProvider SettingsProvider { get; set;  }
+        public ISettingsProvider SettingsProvider { get; set; }
         public ITimeManager TimeManager { get; }
         public IMessageManager MessageManager { get; }
         public IScriptProvider ScriptProvider { get; }

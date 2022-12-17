@@ -1,7 +1,7 @@
 ﻿using Polokus.Core.Helpers;
 using Polokus.Core.Interfaces;
 
-namespace Polokus.Core
+namespace Polokus.Core.Execution
 {
     public class ProcessInstance : IProcessInstance
     {
@@ -37,16 +37,16 @@ namespace Polokus.Core
             BpmnProcess = bpmnProcess;
             HooksProvider = hooksProvider;
         }
- 
+
         public IProcessInstance CreateSubProcessInstance(IBpmnProcess bpmnProcess)
         {
             ProcessInstance processInstance = (ProcessInstance)ContextInstance.CreateProcessInstance(bpmnProcess);
             processInstance.ParentProcessInstance = this;
-            this.ChildrenProcessInstances.Add(processInstance);
-            processInstance.HooksProvider = this.HooksProvider;
+            ChildrenProcessInstances.Add(processInstance);
+            processInstance.HooksProvider = HooksProvider;
             return processInstance;
         }
-        
+
         /// <summary>
         /// This method checks if there is any task that can in the future call target node.
         /// </summary>
@@ -76,7 +76,7 @@ namespace Polokus.Core
             }
 
             return false;
-            
+
         }
 
 
@@ -96,10 +96,13 @@ namespace Polokus.Core
         {
             lock (AvailableNodeHandlers)
             {
-                INodeHandler? nodeHandler = GetNodeHandlerForNodeIfExists(node)
-                    ?? ContextInstance.NodeHandlerFactory.CreateNodeHandler(this,node);
+                INodeHandler? nodeHandler = GetNodeHandlerForNodeIfExists(node);
 
-                AvailableNodeHandlers.Add(node.Id, nodeHandler);
+                if (nodeHandler == null)
+                {
+                    nodeHandler = ContextInstance.NodeHandlerFactory.CreateNodeHandler(this, node);
+                    AvailableNodeHandlers.Add(node.Id, nodeHandler);
+                }
 
                 return nodeHandler;
             }
@@ -111,7 +114,7 @@ namespace Polokus.Core
             ActiveTasksManager.AssignTaskToAnotherNodeHandler(taskId, nodeHandler);
 
             HooksProvider?.BeforeExecuteNode(Id, node, taskId, caller);
-            var executionResult = await nodeHandler.Execute(caller,taskId);
+            var executionResult = await nodeHandler.Execute(caller, taskId);
             lock (TasksMutex)
             {
                 HandleExecutionResult(node, executionResult, taskId);
@@ -146,7 +149,7 @@ namespace Polokus.Core
 
         public void StartNewSequence(IFlowNode firstNode, INodeCaller? caller)
         {
-            HooksProvider?.BeforeStartNewSequence(Id,firstNode, caller);
+            HooksProvider?.BeforeStartNewSequence(Id, firstNode, caller);
             var newTask = ActiveTasksManager.AddNewTask(GetNodeHandlerForNode(firstNode));
             int taskId = newTask.Item1;
             CancellationToken ctoken = newTask.Item2;
@@ -161,7 +164,7 @@ namespace Polokus.Core
                 ActiveTasksManager.RemoveRunningTask(taskId);
                 return;
             }
-            
+
             for (int i = 1; i < sequences.Length; i++)
             {
                 var nextNode = sequences[i]?.Target;
@@ -178,7 +181,7 @@ namespace Polokus.Core
             }
 
         }
-        
+
 
     }
 

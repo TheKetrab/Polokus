@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Polokus.Core
+namespace Polokus.Core.Execution
 {
     public class StatusManager : IStatusManager
     {
@@ -31,9 +31,9 @@ namespace Polokus.Core
         private DateTime? _beginTime;
         private DateTime? _finishTime;
         public TimeSpan TotalTime =>
-            (_beginTime == null) ? TimeSpan.Zero
-                : ((_finishTime == null) ? (DateTime.Now - _beginTime.Value)
-                : _finishTime.Value - _beginTime.Value);
+            _beginTime == null ? TimeSpan.Zero
+                : _finishTime == null ? DateTime.Now - _beginTime.Value
+                : _finishTime.Value - _beginTime.Value;
 
 
         public StatusManager(ProcessInstance processInstance)

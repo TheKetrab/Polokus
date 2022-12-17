@@ -18,29 +18,23 @@ using Polokus.Core.BpmnModels;
 namespace Polokus.Core
 {
     /// <summary>
-    /// BpmnParser is an object that parses XML file of BPMN schema provided by OMG
+    /// BpmnParser is an object that parses XML string of BPMN schema provided by OMG
     /// and returns structure of nodes for Polokus system.
     /// </summary>
     public class BpmnParser
     {
-        public IBpmnContext ParseFile(string filename)
+        public IBpmnContext ParseBpmnXml(string bpmnXml)
         {
-            if (!File.Exists(filename))
-            {
-                throw new FileNotFoundException(filename);
-            }
-
-            var definitions = DeserializeXml<tDefinitions>(filename);
+            var definitions = DeserializeXml<tDefinitions>(bpmnXml);
             if (definitions == null)
             {
-                throw new XmlException($"Failed to parse file {filename}");
+                throw new XmlException($"Failed to parse bpmn xml:\n{bpmnXml}");
             }
 
             var context = new BpmnContext();
             LoadDefinitions(context, definitions);
 
-            string rawString = File.ReadAllText(filename);
-            context.RawString = rawString.ReplaceLineEndings("");
+            context.RawString = bpmnXml;
 
             return context;
         }
@@ -157,18 +151,17 @@ namespace Polokus.Core
             context.SetBpmnProcesses(processes);
         }
 
-        public static T? DeserializeXml<T>(string filename) where T : class
+        public static T? DeserializeXml<T>(string xmlString) where T : class
         {
             var serializer = new XmlSerializer(typeof(T));
 
             T? obj;
-            using (Stream reader = new FileStream(filename, FileMode.Open))
+            using (TextReader reader = new StringReader(xmlString))
             {
                 obj = serializer.Deserialize(reader) as T;
             }
 
             return obj;
-
         }
 
     }

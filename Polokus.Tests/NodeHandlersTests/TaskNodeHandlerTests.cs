@@ -13,7 +13,7 @@ namespace Polokus.Tests.NodeHandlersTests
         {
             // Arrange
             var visitor = new VisitorHooks();
-            var pi = BpmnLoader.LoadBpmnXmlIntoSimpleProcessInstance("task1.bpmn");
+            var pi = BpmnLoader.LoadBpmnXmlIntoSimpleProcessInstance(Resources.Task1);
 
             // Act
             await pi.RunSimple(visitor);
@@ -28,7 +28,7 @@ namespace Polokus.Tests.NodeHandlersTests
         {
             // Arrange
             var visitor = new VisitorHooks();
-            var pi = BpmnLoader.LoadBpmnXmlIntoSimpleProcessInstance("task2.bpmn");
+            var pi = BpmnLoader.LoadBpmnXmlIntoSimpleProcessInstance(Resources.Task2);
 
             // Act
             await pi.RunSimple(visitor);

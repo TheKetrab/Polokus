@@ -1,4 +1,5 @@
 ﻿using Polokus.Core;
+using Polokus.Core.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,7 +46,8 @@ namespace Polokus.ConsoleApp.ManualTests
                 return false;
             }
 
-            contextsManager.LoadXmlFile(path, "Test");
+            string str = File.ReadAllText(path);
+            contextsManager.LoadXmlString(str, "Test");
             var ci = contextsManager.ContextInstances.First().Value;
             var bpmnProcess = ci.BpmnContext.BpmnProcesses.First();
             var startNode = bpmnProcess.GetManualStartNode();

@@ -1,4 +1,5 @@
-﻿using Polokus.Core.Interfaces;
+﻿using Polokus.Core.Execution;
+using Polokus.Core.Interfaces;
 using Polokus.Core.Models;
 using Polokus.Core.Models.BpmnObjects.Xsd;
 using Polokus.Core.NodeHandlers;
@@ -17,16 +18,14 @@ namespace Polokus.Core
         public IDictionary<string, IContextInstance> ContextInstances { get; }
             = new Dictionary<string, IContextInstance>();
 
-        public void LoadXmlFile(string xmlFilePath,
-            string? bpmnContextName = null,
+        public void LoadXmlString(string xmlString,
+            string bpmnContextName,
             IHooksProvider? hooksProvider = null,
             ISettingsProvider? settingsProvider = null,
-            Func<ContextInstance,IHooksProvider>? createHooksProviderFunc = null)
+            Func<ContextInstance, IHooksProvider>? createHooksProviderFunc = null)
         {
-            bpmnContextName ??= new FileInfo(xmlFilePath).Name;
-
             BpmnParser parser = new BpmnParser();
-            IBpmnContext bpmnContext = parser.ParseFile(xmlFilePath);
+            IBpmnContext bpmnContext = parser.ParseBpmnXml(xmlString);
 
             var contextInstance = new ContextInstance(this,
                 bpmnContext, bpmnContextName,
@@ -41,7 +40,7 @@ namespace Polokus.Core
 
             RegisterWaiters(contextInstance);
 
-            ContextInstances.Add(bpmnContextName,contextInstance);
+            ContextInstances.Add(bpmnContextName, contextInstance);
         }
 
         private void RegisterWaiters(ContextInstance contextInstance)

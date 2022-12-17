@@ -20,7 +20,7 @@ namespace Polokus.Tests
         {
             // Arrange
             var visitor = new VisitorHooks(VisitTime.AfterExecuteSuccess);
-            var contextsManager = BpmnLoader.LoadBpmnXmlIntoContextsManager("msgStart.bpmn",visitor);
+            var contextsManager = BpmnLoader.LoadBpmnXmlIntoContextsManager(Resources.MsgStart,visitor);
             await Task.Delay(1000);
             string listenerId = contextsManager.ContextInstances.First().Value.MessageManager.GetStarters().First().Id;
 

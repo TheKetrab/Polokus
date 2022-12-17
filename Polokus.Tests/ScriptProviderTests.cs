@@ -28,7 +28,7 @@ namespace Polokus.Tests
         }
 
         [Test]
-        [TestCase("$a","globals[\"a\"]")]
+        [TestCase("$a", "globals[\"a\"]")]
         [TestCase("$variable", "globals[\"variable\"]")]
         [TestCase("$vaRIable abc", "globals[\"vaRIable\"] abc")]
         [TestCase("$vari77able + 5", "globals[\"vari77able\"] + 5")]
@@ -36,6 +36,12 @@ namespace Polokus.Tests
         [TestCase("$var_underscore + 1", "globals[\"var_underscore\"] + 1")]
         [TestCase("$a $b $c", "globals[\"a\"] globals[\"b\"] globals[\"c\"]")]
         [TestCase("$aa + 1 = $bx and $aa - $bx = $c", "globals[\"aa\"] + 1 = globals[\"bx\"] and globals[\"aa\"] - globals[\"bx\"] = globals[\"c\"]")]
+        [TestCase(
+            "int y; y=(42+58) * (int)$x; $y = y; return y;",
+            "int y; y=(42+58) * (int)globals[\"x\"]; globals[\"y\"] = y; return y;")]
+        [TestCase("int x = 1;\r\n$a = x;", "int x = 1;\nglobals[\"a\"] = x;")]
+        [TestCase("int x = 1;\n$a = x;", "int x = 1;\nglobals[\"a\"] = x;")]
+
         public void EvalCSharpScript_MarkVariables(string input, string output)
         {
             // Arrange

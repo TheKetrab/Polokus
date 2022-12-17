@@ -1,4 +1,4 @@
-﻿using Polokus.Core;
+﻿using Polokus.Core.Execution;
 using Polokus.Core.Interfaces;
 using Polokus.Core.Models;
 using System;
@@ -24,10 +24,10 @@ namespace Polokus.Tests.Helpers
                 this.HooksProvider = hooksProvider;
             }
 
-            Begin(startNode);
+            StatusManager.Begin(startNode);
 
             var start = DateTime.Now;
-            while (IsRunning())
+            while (StatusManager.IsRunning())
             {
                 await Task.Delay(100);
 

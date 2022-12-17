@@ -10,13 +10,11 @@ namespace Polokus.Tests.Helpers
 {
     internal static class BpmnLoader
     {
-        public const string TestsDir = @"..\..\..\";
-        public const string BpmnDir = TestsDir + @"NodeHandlersTests\Bpmn\";
         private static int _cnt = 0;
 
-        public static SimpleProcessInstance LoadBpmnXmlIntoSimpleProcessInstance(string bpmnFile)
+        public static SimpleProcessInstance LoadBpmnXmlIntoSimpleProcessInstance(string bpmnString)
         {
-            var contextsManager = LoadBpmnXmlIntoContextsManager(bpmnFile);
+            var contextsManager = LoadBpmnXmlIntoContextsManager(bpmnString);
 
             var contextInstance = contextsManager.ContextInstances.First().Value;
             var bpmnProcess = contextInstance.BpmnContext.BpmnProcesses.First();
@@ -24,10 +22,10 @@ namespace Polokus.Tests.Helpers
             return new SimpleProcessInstance($"pi{_cnt++}",contextInstance, bpmnProcess);
         }
 
-        public static ContextsManager LoadBpmnXmlIntoContextsManager(string bpmnFile, IHooksProvider? hooksProvider = null)
+        public static ContextsManager LoadBpmnXmlIntoContextsManager(string bpmnString, IHooksProvider? hooksProvider = null)
         {
             var contextsManager = new ContextsManager();
-            contextsManager.LoadXmlFile($@"{BpmnDir}\{bpmnFile}",hooksProvider: hooksProvider);
+            contextsManager.LoadXmlString(bpmnString, "pr", hooksProvider: hooksProvider);
             return contextsManager;
         }
 

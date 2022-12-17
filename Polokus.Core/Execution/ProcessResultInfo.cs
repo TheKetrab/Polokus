@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Polokus.Core.Interfaces;
 using Polokus.Core.Models;
 
-namespace Polokus.Core
+namespace Polokus.Core.Execution
 {
     public enum ProcessResultState
     {
@@ -19,7 +19,7 @@ namespace Polokus.Core
     public class SuccessProcessResultInfo : ProcessResultInfo
     {
         public SuccessProcessResultInfo(IEnumerable<ISequence>? sequencesToInvoke = null, string? message = null)
-            : base(ProcessResultState.Success,message)
+            : base(ProcessResultState.Success, message)
         {
             SequencesToInvoke = sequencesToInvoke ?? Enumerable.Empty<ISequence>();
         }
@@ -36,7 +36,7 @@ namespace Polokus.Core
         public FailureProcessResultInfo(string? message = null)
             : base(ProcessResultState.Failure, message)
         {
-            
+
         }
     }
 

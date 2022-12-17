@@ -1,17 +1,11 @@
-﻿using Polokus.Core.Hooks;
+﻿using Polokus.Core.Execution;
+using Polokus.Core.Helpers;
+using Polokus.Core.Hooks;
 using Polokus.Core.Interfaces;
-using Polokus.Core.Models.BpmnObjects.Xsd;
 using Polokus.Core.Models;
+using Polokus.Core.Models.BpmnObjects.Xsd;
 using Polokus.Core.NodeHandlers;
-using Polokus.Core.Scripting;
-using Polokus.Core;
 using Polokus.Tests.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel.Client;
 
 namespace Polokus.Tests
 {
@@ -45,7 +39,7 @@ namespace Polokus.Tests
         {
             // Arrange
             Logger.Global.ClearLog();
-            var pi = BpmnLoader.LoadBpmnXmlIntoSimpleProcessInstance("delayTask.bpmn");
+            var pi = BpmnLoader.LoadBpmnXmlIntoSimpleProcessInstance(Resources.DelayTask);
             pi.ContextInstance.NodeHandlerFactory
                 .RegisterNodeHandlerForServiceTask<CustomServiceTaskNodeHandler>("DelayTask");
 
@@ -53,7 +47,7 @@ namespace Polokus.Tests
             new Thread(() => 
             {
                 Thread.Sleep(1000); // after 1 sec cancell running tasks
-                pi.Stop();
+                pi.StatusManager.Stop();
             }).Start();
 
             await pi.RunSimple();
@@ -69,7 +63,8 @@ namespace Polokus.Tests
         {
             public static int State { get; private set; } = 1;
 
-            public CustomServiceTaskNodeHandler2(ProcessInstance processInstance, FlowNode<tServiceTask> typedNode)
+            public CustomServiceTaskNodeHandler2(
+                ProcessInstance processInstance, FlowNode<tServiceTask> typedNode)
                 : base(processInstance, typedNode)
             {
             }
@@ -98,7 +93,7 @@ namespace Polokus.Tests
             // Arrange
             Logger.Global.ClearLog();
             var visitor = new VisitorHooks(VisitTime.BeforeExecute);
-            var pi = BpmnLoader.LoadBpmnXmlIntoSimpleProcessInstance("delayTask.bpmn");
+            var pi = BpmnLoader.LoadBpmnXmlIntoSimpleProcessInstance(Resources.DelayTask);
             pi.ContextInstance.NodeHandlerFactory
                 .RegisterNodeHandlerForServiceTask<CustomServiceTaskNodeHandler2>("DelayTask");
 
@@ -106,12 +101,12 @@ namespace Polokus.Tests
             new Thread(() =>
             {
                 Thread.Sleep(1000); // after 1 sec cancell running tasks
-                pi.Pause();
+                pi.StatusManager.Pause();
 
                 Assert.AreEqual(0, pi.ActiveTasksManager.GetNodeHandlers().Count());
                 Assert.AreEqual(1, pi.ActiveTasksManager.GetPausedNodeHandlers().Count());
 
-                pi.Resume();
+                pi.StatusManager.Resume();
 
             }).Start();
 

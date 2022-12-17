@@ -7,7 +7,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Polokus.Core
+namespace Polokus.Core.Execution
 {
     public class MessageManager : IMessageManager
     {

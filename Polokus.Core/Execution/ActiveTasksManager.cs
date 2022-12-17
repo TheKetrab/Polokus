@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Polokus.Core
+namespace Polokus.Core.Execution
 {
     /// <summary>
     /// Goal of this object is to manage currently working objects (eg. nodehandlers),
@@ -18,7 +18,7 @@ namespace Polokus.Core
     public class ActiveTasksManager
     {
         private int _cnt = 0;
-        private Dictionary<int,Tuple<CancellationTokenSource, INodeHandler>> ActiveTasks = new(); // taskId;<cts,worker>
+        private Dictionary<int, Tuple<CancellationTokenSource, INodeHandler>> ActiveTasks = new(); // taskId;<cts,worker>
         private List<INodeHandler> PausedNodeHandlers = new();
         public ProcessInstance ProcessInstance { get; }
 
@@ -32,12 +32,12 @@ namespace Polokus.Core
             return ActiveTasks.Any();
         }
 
-        public Tuple<int,CancellationToken> AddNewTask(INodeHandler nh)
+        public Tuple<int, CancellationToken> AddNewTask(INodeHandler nh)
         {
             int taskId = _cnt++;
             CancellationTokenSource cts = new CancellationTokenSource();
 
-            ActiveTasks.Add(taskId, Tuple.Create(cts,nh)); // TODO to bardzo wazne zeby to nie byl null
+            ActiveTasks.Add(taskId, Tuple.Create(cts, nh)); // TODO to bardzo wazne zeby to nie byl null
             ProcessInstance.HooksProvider?.OnTasksChanged(ProcessInstance.Id);
             return Tuple.Create(taskId, cts.Token);
         }
@@ -47,7 +47,7 @@ namespace Polokus.Core
             var ctoken = ActiveTasks[taskId].Item1;
             ActiveTasks[taskId] = Tuple.Create(ctoken, nh);
             nh.CancellationToken = ctoken.Token;
-            
+
         }
 
         public void RemoveRunningTask(int taskId)
@@ -56,7 +56,7 @@ namespace Polokus.Core
             ProcessInstance.HooksProvider?.OnTasksChanged(ProcessInstance.Id);
         }
 
-        
+
         public void Pause()
         {
             PausedNodeHandlers = ActiveTasks.Values.Select(x => x.Item2.Clone()).ToList();
