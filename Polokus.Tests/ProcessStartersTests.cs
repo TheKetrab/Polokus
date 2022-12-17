@@ -20,18 +20,18 @@ namespace Polokus.Tests
         {
             // Arrange
             var visitor = new VisitorHooks(VisitTime.AfterExecuteSuccess);
-            var contextsManager = BpmnLoader.LoadBpmnXmlIntoContextsManager(Resources.MsgStart,visitor);
+            var wfManager = BpmnLoader.LoadBpmnXmlIntoWorkflowsManager(Resources.MsgStart,visitor);
             await Task.Delay(1000);
-            string listenerId = contextsManager.ContextInstances.First().Value.MessageManager.GetStarters().First().Id;
+            string listenerId = wfManager.Workflows.First().Value.MessageManager.GetStarters().First().Id;
 
             // Act
-            await contextsManager.ContextInstances.First().Value.MessageManager.PingListener(listenerId);
+            await wfManager.Workflows.First().Value.MessageManager.PingListener(listenerId);
             await Task.Delay(1000);
 
             while (true)
             {
                 await Task.Delay(100);
-                var running = contextsManager.ContextInstances.SelectMany(x => x.Value.ProcessInstances);
+                var running = wfManager.Workflows.SelectMany(x => x.Value.ProcessInstances);
                 if (!running.Any())
                 {
                     break;

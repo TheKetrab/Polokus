@@ -11,9 +11,9 @@
         string Id { get; }
 
         /// <summary>
-        /// BpmnContext of this process - parsed representation of XML file.
+        /// BpmnWorkflow of this process - parsed representation of XML file.
         /// </summary>
-        IBpmnContext BpmnContext { get; }
+        IBpmnWorkflow BpmnWorkflow { get; }
 
         /// <summary>
         /// This method gets node of given <paramref name="id"/>. Returns null if node not found.

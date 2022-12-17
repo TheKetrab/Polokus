@@ -11,14 +11,14 @@ namespace Polokus.Core.Helpers
 {
     public static class Utils
     {
-        public static string GetStarterName(string contextInstanceId, string bpmnProcessId, string flowNodeId)
+        public static string GetStarterName(string WorkflowId, string bpmnProcessId, string flowNodeId)
         {
-            return $"Starter_({contextInstanceId})_({bpmnProcessId})_({flowNodeId})";
+            return $"Starter_({WorkflowId})_({bpmnProcessId})_({flowNodeId})";
         }
         
-        public static string GetWaiterName(string contextInstanceId, string processInstanceId, string bpmnProcessId, string nodeToCallId)
+        public static string GetWaiterName(string WorkflowId, string processInstanceId, string bpmnProcessId, string nodeToCallId)
         {
-            return $"Waiter_({contextInstanceId})_({processInstanceId})_({bpmnProcessId})_({nodeToCallId})";
+            return $"Waiter_({WorkflowId})_({processInstanceId})_({bpmnProcessId})_({nodeToCallId})";
         }
 
         public static string GetProcessInstanceIdFromWaiter(string waiterName)

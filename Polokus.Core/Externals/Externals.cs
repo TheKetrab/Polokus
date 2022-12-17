@@ -8,6 +8,6 @@ namespace Polokus.Core.Externals
 {
     public class Externals
     {
-        public List<ContextInstanceExternal> ContextInstances { get; set; } = new();
+        public List<WorkflowExternal> Workflows { get; set; } = new();
     }
 }

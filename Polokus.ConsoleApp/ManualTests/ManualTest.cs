@@ -37,7 +37,7 @@ namespace Polokus.ConsoleApp.ManualTests
             }
             Console.WriteLine();
 
-            var contextsManager = new ContextsManager();
+            var wfManager = new WorkflowsManager();
             string path = Path.Combine(BpmnDir, _bpmnFile);
             if (!File.Exists(path))
             {
@@ -47,15 +47,15 @@ namespace Polokus.ConsoleApp.ManualTests
             }
 
             string str = File.ReadAllText(path);
-            contextsManager.LoadXmlString(str, "Test");
-            var ci = contextsManager.ContextInstances.First().Value;
-            var bpmnProcess = ci.BpmnContext.BpmnProcesses.First();
+            wfManager.LoadXmlString(str, "Test");
+            var wf = wfManager.Workflows.First().Value;
+            var bpmnProcess = wf.BpmnWorkflow.BpmnProcesses.First();
             var startNode = bpmnProcess.GetManualStartNode();
-            var pi = ci.CreateProcessInstance(bpmnProcess);
+            var pi = wf.CreateProcessInstance(bpmnProcess);
 
-            InitTest(contextsManager);
+            InitTest(wfManager);
 
-            bool success = await ci.RunProcessAsync(pi,startNode);
+            bool success = await wf.RunProcessAsync(pi,startNode);
             Console.WriteLine(success ? " -> Process finished sucessfully" : " -> Timeout");
 
             Console.WriteLine();
@@ -69,7 +69,7 @@ namespace Polokus.ConsoleApp.ManualTests
             return success;
         }
 
-        protected virtual void InitTest(ContextsManager contextsManager) { }
+        protected virtual void InitTest(WorkflowsManager wfManager) { }
 
     }
 }

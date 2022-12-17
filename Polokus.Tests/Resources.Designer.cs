@@ -253,7 +253,7 @@ namespace Polokus.Tests {
         
         /// <summary>
         ///   Looks up a localized string similar to {
-        ///    &quot;ContextInstances&quot;: [
+        ///    &quot;Workflows&quot;: [
         ///        {
         ///            &quot;Name&quot;: &quot;name1.bpmn&quot;,
         ///            &quot;ServiceTasks&quot;: [

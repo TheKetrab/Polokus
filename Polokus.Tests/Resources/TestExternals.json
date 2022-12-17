@@ -1,5 +1,5 @@
 ﻿{
-    "ContextInstances": [
+    "Workflows": [
         {
             "Name": "name1.bpmn",
             "ServiceTasks": [

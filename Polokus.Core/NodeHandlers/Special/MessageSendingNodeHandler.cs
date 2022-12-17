@@ -20,11 +20,11 @@ namespace Polokus.Core.NodeHandlers.Special
         private async Task PingStarter(IMessageFlow outgoing)
         {
             var starterToPing = Utils.GetStarterName(
-                ProcessInstance.ContextInstance.Id,
+                ProcessInstance.Workflow.Id,
                 outgoing.TargetProcess.Id,
                 outgoing.Target!.Id);
 
-            await ProcessInstance.ContextInstance.MessageManager
+            await ProcessInstance.Workflow.MessageManager
                 .PingListener(starterToPing, $"parent={ProcessInstance.Id}");
         }
 
@@ -36,12 +36,12 @@ namespace Polokus.Core.NodeHandlers.Special
             IProcessInstance piToCall = await GetProcessInstanceToCall(outgoing);
 
             var waiterToPing = Utils.GetWaiterName(
-                ProcessInstance.ContextInstance.Id,
+                ProcessInstance.Workflow.Id,
                 piToCall.Id,
                 outgoing.TargetProcess.Id,
                 outgoing.Target!.Id);
 
-            await ProcessInstance.ContextInstance.MessageManager
+            await ProcessInstance.Workflow.MessageManager
                 .PingListener(waiterToPing);
 
         }
@@ -50,14 +50,14 @@ namespace Polokus.Core.NodeHandlers.Special
         {
             do
             {
-                var allWaiters = ProcessInstance.ContextInstance.MessageManager.GetWaiters();
+                var allWaiters = ProcessInstance.Workflow.MessageManager.GetWaiters();
                 foreach (var waiter in allWaiters)
                 {
                     if (Utils.GetBpmnProcessIdFromWaiter(waiter.Id) == outgoing.TargetProcess.Id
                         && Utils.GetNodeIdFromWaiter(waiter.Id) == outgoing.Target!.Id)
                     {
                         string pid = Utils.GetProcessInstanceIdFromWaiter(waiter.Id);
-                        IProcessInstance? p = ProcessInstance.ContextInstance.GetProcessInstanceById(pid);
+                        IProcessInstance? p = ProcessInstance.Workflow.GetProcessInstanceById(pid);
                         if (p != null)
                         {
                             return p;

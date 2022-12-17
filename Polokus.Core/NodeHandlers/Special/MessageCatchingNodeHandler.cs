@@ -29,7 +29,7 @@ namespace Polokus.Core.NodeHandlers.Special
 
             var waiter = new NodeHandlerWaiter(ProcessInstance, Node);
             ProcessInstance.Waiters.Add(waiter);
-            ProcessInstance.ContextInstance.MessageManager
+            ProcessInstance.Workflow.MessageManager
                 .RegisterMessageListener(waiter);
 
             return Task.FromResult(false);

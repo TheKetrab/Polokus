@@ -11,7 +11,7 @@ namespace Polokus.App.Views
 {
     public partial class ServiceView : UserControl
     {
-        public ContextsManager ContextsManager;
+        public WorkflowsManager WorkflowsManager;
         public ChromiumWindow chromiumWindow;
 
         public ServiceView()
@@ -22,26 +22,26 @@ namespace Polokus.App.Views
             chromiumWindow.Parent = panelBpmnio;
             chromiumWindow.Dock = DockStyle.Fill;
 
-            ContextsManager = new ContextsManager();
+            WorkflowsManager = new WorkflowsManager();
             LoadBpmnFiles();
 
-            foreach (var contextInstance in ContextsManager.ContextInstances.Values)
+            foreach (var iwf in WorkflowsManager.Workflows.Values)
             {
-                ContextInstance ci = (ContextInstance)contextInstance;
-                ((TimeManager)(contextInstance.TimeManager)).CallersChanged += (s, e) =>
+                Workflow wf = (Workflow)iwf;
+                ((TimeManager)(wf.TimeManager)).CallersChanged += (s, e) =>
                 {
                     if (listViewWaiters.IsHandleCreated && listViewStarters.IsHandleCreated)
                     {
-                        listViewWaiters.BeginInvoke(() => UpdateNodeHandlerWaitersList(ci));
-                        listViewStarters.BeginInvoke(() => UpdateProcessStartersList(ci));
+                        listViewWaiters.BeginInvoke(() => UpdateNodeHandlerWaitersList(wf));
+                        listViewStarters.BeginInvoke(() => UpdateProcessStartersList(wf));
                     }
                 };
-                ((MessageManager)(contextInstance.MessageManager)).CallersChanged += (s, e) =>
+                ((MessageManager)(wf.MessageManager)).CallersChanged += (s, e) =>
                 {
                     if (listViewWaiters.IsHandleCreated && listViewStarters.IsHandleCreated)
                     {
-                        listViewWaiters.BeginInvoke(() => UpdateNodeHandlerWaitersList(ci));
-                        listViewStarters.BeginInvoke(() => UpdateProcessStartersList(ci));
+                        listViewWaiters.BeginInvoke(() => UpdateNodeHandlerWaitersList(wf));
+                        listViewStarters.BeginInvoke(() => UpdateProcessStartersList(wf));
                     }
                 };
 
@@ -68,9 +68,9 @@ namespace Polokus.App.Views
             };
 
 
-            InitializeComboBoxContexts();
+            InitializeComboBoxWorkflows();
 
-            UpdateNodeHandlerWaitersList((ContextInstance?)ContextsManager.ContextInstances.Values.FirstOrDefault());
+            UpdateNodeHandlerWaitersList((Workflow?)WorkflowsManager.Workflows.Values.FirstOrDefault());
         }
 
         private void LoadBpmnFiles()
@@ -100,13 +100,13 @@ namespace Polokus.App.Views
         {
             string str = File.ReadAllText(file);
 
-            ContextsManager.LoadXmlString(str, new FileInfo(file).Name,
+            WorkflowsManager.LoadXmlString(str, new FileInfo(file).Name,
                 settingsProvider: new AppSettingsProvider(),
-                createHooksProviderFunc: (ci) => new AppHooksProvider(ci));
+                createHooksProviderFunc: (wf) => new AppHooksProvider(wf));
 
-            if (!_comboBoxContextsInitialized)
+            if (!_comboBoxWorkflowsInitialized)
             {
-                InitializeComboBoxContexts();
+                InitializeComboBoxWorkflows();
             }
 
         }
@@ -146,58 +146,58 @@ namespace Polokus.App.Views
             LoadGraphForProcessInstance(activeProcess);
         }
 
-        private bool _comboBoxContextsInitialized = false;
-        private void InitializeComboBoxContexts()
+        private bool _comboBoxWorkflowsInitialized = false;
+        private void InitializeComboBoxWorkflows()
         {
-            if (!ContextsManager.ContextInstances.Values.Any())
+            if (!WorkflowsManager.Workflows.Values.Any())
             {
                 return;
             }
 
-            comboBoxContexts.DataSource = new BindingSource(ContextsManager.ContextInstances, null);
-            comboBoxContexts.DisplayMember = "Key";
-            comboBoxContexts.ValueMember = "Value";
+            comboBoxWorkflows.DataSource = new BindingSource(WorkflowsManager.Workflows, null);
+            comboBoxWorkflows.DisplayMember = "Key";
+            comboBoxWorkflows.ValueMember = "Value";
 
-            comboBoxContexts.SelectedIndexChanged += comboBoxContexts_SelectedIndexChanged;
+            comboBoxWorkflows.SelectedIndexChanged += comboBoxWorkflows_SelectedIndexChanged;
 
-            comboBoxContexts_SelectedIndexChanged(null, EventArgs.Empty);
-            _comboBoxContextsInitialized = true;
+            comboBoxWorkflows_SelectedIndexChanged(null, EventArgs.Empty);
+            _comboBoxWorkflowsInitialized = true;
         }
 
-        private void comboBoxContexts_SelectedIndexChanged(object? sender, EventArgs e)
+        private void comboBoxWorkflows_SelectedIndexChanged(object? sender, EventArgs e)
         {
-            var context = GetActiveContextInstance();
-            if (comboBoxContexts.SelectedItem is KeyValuePair<string, IContextInstance> ci)
+            var workflow = GetActiveWorkflow();
+            if (comboBoxWorkflows.SelectedItem is KeyValuePair<string, IWorkflow> wf)
             {
-                ActiveContextInstance = ci.Key;
+                ActiveWorkflow = wf.Key;
             }
 
-            LoadViewForContext(context);
+            LoadViewForWorkflow(workflow);
         }
 
-        private void LoadViewForContext(ContextInstance contextInstance)
+        private void LoadViewForWorkflow(Workflow workflow)
         {
             listViewProcesses.Items.Clear();
-            foreach (var process in contextInstance.BpmnContext.BpmnProcesses)
+            foreach (var process in workflow.BpmnWorkflow.BpmnProcesses)
             {
                 this.listViewProcesses.Items.Add(process.Id);
             }
 
-            UpdateProcessInstancesList(contextInstance);
+            UpdateProcessInstancesList(workflow);
 
         }
 
-        private void UpdateProcessStartersList(ContextInstance? contextInstance)
+        private void UpdateProcessStartersList(Workflow? workflow)
         {
             listViewStarters.Items.Clear();
-            if (contextInstance == null)
+            if (workflow == null)
             {
                 return;
             }
 
             List<Tuple<string,IProcessStarter>> starters = new();
-            starters.AddRange(contextInstance.TimeManager.GetStarters().Select(x => Tuple.Create("Time",x)));
-            starters.AddRange(contextInstance.MessageManager.GetStarters().Select(x => Tuple.Create("Message", x)));
+            starters.AddRange(workflow.TimeManager.GetStarters().Select(x => Tuple.Create("Time",x)));
+            starters.AddRange(workflow.MessageManager.GetStarters().Select(x => Tuple.Create("Message", x)));
 
             foreach (var starter in starters)
             {
@@ -209,17 +209,17 @@ namespace Polokus.App.Views
             }
         }
 
-        private void UpdateNodeHandlerWaitersList(ContextInstance? contextInstance)
+        private void UpdateNodeHandlerWaitersList(Workflow? workflow)
         {
             listViewWaiters.Items.Clear();
-            if (contextInstance == null)
+            if (workflow == null)
             {
                 return;
             }
 
             List<Tuple<string,INodeHandlerWaiter>> waiters = new();
-            waiters.AddRange(contextInstance.TimeManager.GetWaiters().Select(x => Tuple.Create("Time",x)));
-            waiters.AddRange(contextInstance.MessageManager.GetWaiters().Select(x => Tuple.Create("Message", x)));
+            waiters.AddRange(workflow.TimeManager.GetWaiters().Select(x => Tuple.Create("Time",x)));
+            waiters.AddRange(workflow.MessageManager.GetWaiters().Select(x => Tuple.Create("Message", x)));
 
             foreach (var waiter in waiters)
             {
@@ -231,15 +231,15 @@ namespace Polokus.App.Views
             }
         }
 
-        public void UpdateProcessInstancesList(ContextInstance? contextInstance)
+        public void UpdateProcessInstancesList(Workflow? workflow)
         {
             listViewInstances.Items.Clear();
-            if (contextInstance == null)
+            if (workflow == null)
             {
                 return;
             }
 
-            foreach (var instance in contextInstance.ProcessInstances)
+            foreach (var instance in workflow.ProcessInstances)
             {
                 var item = new ListViewItem(instance.Id);
                 item.SubItems.Add(instance.StatusManager.Status.ToStringExt());
@@ -248,7 +248,7 @@ namespace Polokus.App.Views
                 this.listViewInstances.Items.Add(item);
             }
 
-            foreach (var instance in contextInstance.History)
+            foreach (var instance in workflow.History)
             {
                 var item = new ListViewItem(instance.Id);
                 item.SubItems.Add(instance.StatusManager.Status.ToStringExt());
@@ -270,16 +270,16 @@ namespace Polokus.App.Views
             return listView.SelectedItems[0].Text;
         }
 
-        public ContextInstance? GetActiveContextInstance()
+        public Workflow? GetActiveWorkflow()
         {
             object si;
-            if (comboBoxContexts.InvokeRequired)
+            if (comboBoxWorkflows.InvokeRequired)
             {
-                si = comboBoxContexts.Invoke(() => comboBoxContexts.SelectedItem);
+                si = comboBoxWorkflows.Invoke(() => comboBoxWorkflows.SelectedItem);
             }
             else
             {
-                si = comboBoxContexts.SelectedItem;
+                si = comboBoxWorkflows.SelectedItem;
             }
 
             if (si == null)
@@ -287,24 +287,24 @@ namespace Polokus.App.Views
                 return null;
             }
 
-            if (si is KeyValuePair<string, IContextInstance> kv)
+            if (si is KeyValuePair<string, IWorkflow> kv)
             {
-                return (ContextInstance)kv.Value;
+                return (Workflow)kv.Value;
             }
 
             return null;
         }
 
-        private string? ActiveContextInstance { get; set; } = null;
+        private string? ActiveWorkflow { get; set; } = null;
         private string? ActiveProcessInstance { get; set; } = null;
         public string? GetOpenedProcessInstanceGlobalId()
         {
-            if (ActiveContextInstance == null || ActiveProcessInstance == null)
+            if (ActiveWorkflow == null || ActiveProcessInstance == null)
             {
                 return null;
             }
 
-            return Helpers.GetGlobalProcessInstanceId(ActiveContextInstance, ActiveProcessInstance);
+            return Helpers.GetGlobalProcessInstanceId(ActiveWorkflow, ActiveProcessInstance);
         }
 
         public void AppendLogLine(string line)
@@ -320,13 +320,13 @@ namespace Polokus.App.Views
         public void LoadGraphForProcessInstance(string globalProcessInstanceId)
         {
             int i = globalProcessInstanceId.IndexOf('/');
-            string contextInstanceId = globalProcessInstanceId.Substring(0, i);
+            string wfId = globalProcessInstanceId.Substring(0, i);
             string processInstanceId = globalProcessInstanceId.Substring(i + 1);
 
-            ContextInstance contextInstance = (ContextInstance)ContextsManager.ContextInstances[contextInstanceId];
-            ProcessInstance processInstance = (ProcessInstance)contextInstance.GetProcessInstanceById(processInstanceId);
+            Workflow workflow = (Workflow)WorkflowsManager.Workflows[wfId];
+            ProcessInstance processInstance = (ProcessInstance)workflow.GetProcessInstanceById(processInstanceId);
 
-            string rawString = processInstance.BpmnProcess.BpmnContext.RawString;
+            string rawString = processInstance.BpmnProcess.BpmnWorkflow.RawString;
 
             this.chromiumWindow.chromeBrowser.ExecuteScriptAsync($"window.api.openInViewerAsync('{rawString}');");
 
@@ -371,16 +371,16 @@ namespace Polokus.App.Views
         {
             // add new process instance
 
-            var contextInstance = GetActiveContextInstance();
+            var workflow = GetActiveWorkflow();
             var bpmnProcessId = GetSelectedSingleItem(listViewProcesses);
 
-            if (contextInstance == null || bpmnProcessId == null)
+            if (workflow == null || bpmnProcessId == null)
             {
                 throw new Exception("None BPMN process is selected.");
             }
 
 
-            var processInstance = contextInstance.StartProcessManually(bpmnProcessId);
+            var processInstance = workflow.StartProcessManually(bpmnProcessId);
             string processInstanceId = processInstance.Id;
             Task.Run(async () => // TODO: usunac to brzydkie rozwiazanie! musi byc to robione od razu jak sie item doda przez hooks providera
             {
@@ -398,7 +398,7 @@ namespace Polokus.App.Views
             });
         }
 
-        private void buttonLoadContext_Click(object sender, EventArgs e)
+        private void buttonLoadWorkflow_Click(object sender, EventArgs e)
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
@@ -440,14 +440,14 @@ namespace Polokus.App.Views
 
         private void buttonPingWaiter_Click(object sender, EventArgs e)
         {
-            var ci = GetActiveContextInstance();
-            if (ci == null)
+            var wf = GetActiveWorkflow();
+            if (wf == null)
             {
                 return;
             }
 
             string listenerId = this.textBoxPingWaiter.Text;
-            ci.MessageManager.PingListener(listenerId);
+            wf.MessageManager.PingListener(listenerId);
         }
 
 

@@ -75,14 +75,14 @@ namespace Polokus.Core.Execution
                 string? parentProcessId = context.Request.QueryString["parent"];
                 if (parentProcessId != null)
                 {
-                    var processInstance = starter.ContextInstance.GetProcessInstanceById(parentProcessId)
+                    var processInstance = starter.Workflow.GetProcessInstanceById(parentProcessId)
                         ?? throw new Exception($"Process instance with id {parentProcessId} doesn't exist.");
                     var subProcessInstance = processInstance.CreateSubProcessInstance(starter.BpmnProcess);
-                    starter.ContextInstance.StartProcessInstance(subProcessInstance, starter.StartNode, null);
+                    starter.Workflow.StartProcessInstance(subProcessInstance, starter.StartNode, null);
                 }
                 else
                 {
-                    starter.ContextInstance.StartProcessInstance(starter.BpmnProcess, starter.StartNode, null);
+                    starter.Workflow.StartProcessInstance(starter.BpmnProcess, starter.StartNode, null);
                 }
 
             }

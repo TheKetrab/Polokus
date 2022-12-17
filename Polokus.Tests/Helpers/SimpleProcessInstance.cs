@@ -11,8 +11,8 @@ namespace Polokus.Tests.Helpers
 {
     internal class SimpleProcessInstance : ProcessInstance
     {
-        public SimpleProcessInstance(string id, IContextInstance contextInstance, IBpmnProcess bpmnProcess, IHooksProvider? hooksProvider = null)
-            : base(id, contextInstance, bpmnProcess, hooksProvider)
+        public SimpleProcessInstance(string id, IWorkflow workflow, IBpmnProcess bpmnProcess, IHooksProvider? hooksProvider = null)
+            : base(id, workflow, bpmnProcess, hooksProvider)
         {
         }
 

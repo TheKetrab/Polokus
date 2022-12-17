@@ -23,7 +23,7 @@ namespace Polokus.Core.NodeHandlers.Abstract
         public IFlowNode Node => TypedNode;
         public CancellationToken CancellationToken { get; set; }
         public bool IsJoining => Node.Incoming.Count > 1;
-        public IScriptProvider ScriptProvider => ProcessInstance.ContextInstance.ScriptProvider;
+        public IScriptProvider ScriptProvider => ProcessInstance.Workflow.ScriptProvider;
 
 
         public NodeHandler(IProcessInstance processInstance, FlowNode<T> typedNode)

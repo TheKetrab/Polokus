@@ -8,9 +8,9 @@ namespace Polokus.App.Utils
 {
     internal static class Helpers
     {
-        public static string GetGlobalProcessInstanceId(string contextInstanceId, string processInstanceId)
+        public static string GetGlobalProcessInstanceId(string wfId, string processInstanceId)
         {
-            return $"{contextInstanceId}/{processInstanceId}";
+            return $"{wfId}/{processInstanceId}";
         }
     }
 }

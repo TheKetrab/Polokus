@@ -7,7 +7,7 @@ namespace Polokus.Core.Models
     public class BpmnProcess : IBpmnProcess
     {
         public string Id { get; }
-        public IBpmnContext BpmnContext { get; set; }
+        public IBpmnWorkflow BpmnWorkflow { get; set; }
         public tDefinitions? SourceDefinitions { get; set; }
 
 
@@ -18,9 +18,9 @@ namespace Polokus.Core.Models
             = new Dictionary<string, ISequence>();
 
 
-        public BpmnProcess(IBpmnContext bpmnContext, string id)
+        public BpmnProcess(IBpmnWorkflow bpmnWorkflow, string id)
         {
-            BpmnContext = bpmnContext;
+            BpmnWorkflow = bpmnWorkflow;
             Id = id;
         }
 

@@ -5,7 +5,7 @@ using Polokus.Core.Scripting;
 
 namespace Polokus.Core.Execution
 {
-    public class ContextInstance : IContextInstance
+    public class Workflow : IWorkflow
     {
         private int _counter = 0; // processInstanceId
         private object _lock = new object();
@@ -28,8 +28,8 @@ namespace Polokus.Core.Execution
 
 
 
-        public IContextsManager ContextsManager { get; }
-        public IBpmnContext BpmnContext { get; }
+        public IWorkflowsManager WfManager { get; }
+        public IBpmnWorkflow BpmnWorkflow { get; }
 
         public INodeHandlerFactory NodeHandlerFactory { get; }
         public string Id { get; }
@@ -45,7 +45,7 @@ namespace Polokus.Core.Execution
             SettingsProvider = provider;
         }
 
-        public ContextInstance(IContextsManager contextsManager, IBpmnContext bpmnContext, string id,
+        public Workflow(IWorkflowsManager wfManager, IBpmnWorkflow bpmnWorkflow, string id,
             IHooksProvider? hooksProvider = null, ISettingsProvider? settingsProvider = null)
         {
             if (settingsProvider == null)
@@ -59,8 +59,8 @@ namespace Polokus.Core.Execution
             MessageManager = new MessageManager(SettingsProvider.MessageListenerPort);
 
 
-            ContextsManager = contextsManager;
-            BpmnContext = bpmnContext;
+            WfManager = wfManager;
+            BpmnWorkflow = bpmnWorkflow;
             Id = id;
             _hooksProvider = hooksProvider;
 
@@ -151,7 +151,7 @@ namespace Polokus.Core.Execution
 
         public IProcessInstance StartProcessManually(string bpmnProcessId)
         {
-            var bpmnProcess = BpmnContext.BpmnProcesses.Single(x => x.Id == bpmnProcessId);
+            var bpmnProcess = BpmnWorkflow.BpmnProcesses.Single(x => x.Id == bpmnProcessId);
             var startNode = bpmnProcess.GetManualStartNode();
             return StartProcessInstance(bpmnProcess, startNode, -1);
         }

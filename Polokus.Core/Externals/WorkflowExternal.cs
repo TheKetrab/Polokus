@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Polokus.Core.Externals
 {
-    public class ContextInstanceExternal
+    public class WorkflowExternal
     {
         public string Name { get; set; } = string.Empty;
         public List<ServiceTaskExternal> ServiceTasks { get; set; } = new();

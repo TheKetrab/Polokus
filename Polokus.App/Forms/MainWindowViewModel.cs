@@ -69,7 +69,7 @@ namespace Polokus.App.Forms
             }
         }
 
-        public readonly string MainDirPath = @"C:\Custom\BPMN\Polokus\Polokus.Tests\NodeHandlersTests\Bpmn";
+        public readonly string MainDirPath = @"C:\Custom\BPMN\Polokus\Polokus.Tests\Resources\Bpmn";
 
 
     }

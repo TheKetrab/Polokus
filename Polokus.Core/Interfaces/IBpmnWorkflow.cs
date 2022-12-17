@@ -1,22 +1,22 @@
 ﻿namespace Polokus.Core.Interfaces
 {
     /// <summary>
-    /// BpmnContext is an object that represents parsed XML definitions file.
+    /// BpmnWorkflow is an object that represents parsed XML definitions file.
     /// </summary>
-    public interface IBpmnContext
+    public interface IBpmnWorkflow
     {
         /// <summary>
-        /// XML string where context is parsed from.
+        /// XML string where Workflow is parsed from.
         /// </summary>
         string? RawString { get; }
 
         /// <summary>
-        /// Instance of context.
+        /// Instance of Workflow.
         /// </summary>
-        IContextInstance? ContextInstance { get; }
+        IWorkflow? Workflow { get; }
 
         /// <summary>
-        /// List of BPMN processes defined within context.
+        /// List of BPMN processes defined within Workflow.
         /// </summary>
         IEnumerable<IBpmnProcess> BpmnProcesses { get; }
     }

@@ -1,26 +1,26 @@
 ﻿namespace Polokus.Core.Interfaces
 {
     /// <summary>
-    /// IContextInstance is a running instance of its definition: IBpmnContext.
+    /// IWorkflow is a running instance of its definition: IBpmnWorkflow.
     /// </summary>
-    public interface IContextInstance
+    public interface IWorkflow
     {
         string Id { get; }
-        IBpmnContext BpmnContext { get; }
+        IBpmnWorkflow BpmnWorkflow { get; }
         ITimeManager TimeManager { get; }
         IMessageManager MessageManager { get; }
         ISettingsProvider SettingsProvider { get; }
         IScriptProvider ScriptProvider { get; }
-        IContextsManager ContextsManager { get; }
+        IWorkflowsManager WfManager { get; }
         INodeHandlerFactory NodeHandlerFactory { get; }
 
         /// <summary>
-        /// List of active instances of processes, defined in BpmnContext.
+        /// List of active instances of processes, defined in BpmnWorkflow.
         /// </summary>
         ICollection<IProcessInstance> ProcessInstances { get; }
 
         /// <summary>
-        /// List of instancess of processes, defined in Bpmncontext, which are already finished.
+        /// List of instancess of processes, defined in BpmnWorkflow, which are already finished.
         /// </summary>
         ICollection<IProcessInstance> History { get; }
 

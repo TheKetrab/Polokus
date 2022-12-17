@@ -73,10 +73,10 @@ namespace Polokus.App.Views
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.panelWorkspace = new System.Windows.Forms.Panel();
             this.splitContainerWorkspace1 = new System.Windows.Forms.SplitContainer();
-            this.panelContextSelect = new System.Windows.Forms.Panel();
-            this.buttonLoadContext = new System.Windows.Forms.Button();
+            this.panelWorkflowSelect = new System.Windows.Forms.Panel();
+            this.buttonLoadWorkflow = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
-            this.comboBoxContexts = new System.Windows.Forms.ComboBox();
+            this.comboBoxWorkflows = new System.Windows.Forms.ComboBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel5.SuspendLayout();
@@ -95,7 +95,7 @@ namespace Polokus.App.Views
             this.splitContainerWorkspace1.Panel1.SuspendLayout();
             this.splitContainerWorkspace1.Panel2.SuspendLayout();
             this.splitContainerWorkspace1.SuspendLayout();
-            this.panelContextSelect.SuspendLayout();
+            this.panelWorkflowSelect.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -524,26 +524,26 @@ namespace Polokus.App.Views
             this.splitContainerWorkspace1.SplitterWidth = 5;
             this.splitContainerWorkspace1.TabIndex = 0;
             // 
-            // panelContextSelect
+            // panelWorkflowSelect
             // 
-            this.panelContextSelect.Controls.Add(this.buttonLoadContext);
-            this.panelContextSelect.Controls.Add(this.label5);
-            this.panelContextSelect.Controls.Add(this.comboBoxContexts);
-            this.panelContextSelect.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelContextSelect.Location = new System.Drawing.Point(0, 0);
-            this.panelContextSelect.Name = "panelContextSelect";
-            this.panelContextSelect.Size = new System.Drawing.Size(1091, 53);
-            this.panelContextSelect.TabIndex = 0;
+            this.panelWorkflowSelect.Controls.Add(this.buttonLoadWorkflow);
+            this.panelWorkflowSelect.Controls.Add(this.label5);
+            this.panelWorkflowSelect.Controls.Add(this.comboBoxWorkflows);
+            this.panelWorkflowSelect.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelWorkflowSelect.Location = new System.Drawing.Point(0, 0);
+            this.panelWorkflowSelect.Name = "panelWorkflowSelect";
+            this.panelWorkflowSelect.Size = new System.Drawing.Size(1091, 53);
+            this.panelWorkflowSelect.TabIndex = 0;
             // 
-            // buttonLoadContext
+            // buttonLoadWorkflow
             // 
-            this.buttonLoadContext.Location = new System.Drawing.Point(565, 13);
-            this.buttonLoadContext.Name = "buttonLoadContext";
-            this.buttonLoadContext.Size = new System.Drawing.Size(94, 29);
-            this.buttonLoadContext.TabIndex = 2;
-            this.buttonLoadContext.Text = "Load";
-            this.buttonLoadContext.UseVisualStyleBackColor = true;
-            this.buttonLoadContext.Click += new System.EventHandler(this.buttonLoadContext_Click);
+            this.buttonLoadWorkflow.Location = new System.Drawing.Point(565, 13);
+            this.buttonLoadWorkflow.Name = "buttonLoadWorkflow";
+            this.buttonLoadWorkflow.Size = new System.Drawing.Size(94, 29);
+            this.buttonLoadWorkflow.TabIndex = 2;
+            this.buttonLoadWorkflow.Text = "Load";
+            this.buttonLoadWorkflow.UseVisualStyleBackColor = true;
+            this.buttonLoadWorkflow.Click += new System.EventHandler(this.buttonLoadWorkflow_Click);
             // 
             // label5
             // 
@@ -552,22 +552,22 @@ namespace Polokus.App.Views
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(63, 20);
             this.label5.TabIndex = 1;
-            this.label5.Text = "Context:";
+            this.label5.Text = "Workflow:";
             // 
-            // comboBoxContexts
+            // comboBoxWorkflows
             // 
-            this.comboBoxContexts.FormattingEnabled = true;
-            this.comboBoxContexts.Location = new System.Drawing.Point(79, 13);
-            this.comboBoxContexts.Name = "comboBoxContexts";
-            this.comboBoxContexts.Size = new System.Drawing.Size(479, 28);
-            this.comboBoxContexts.TabIndex = 0;
+            this.comboBoxWorkflows.FormattingEnabled = true;
+            this.comboBoxWorkflows.Location = new System.Drawing.Point(79, 13);
+            this.comboBoxWorkflows.Name = "comboBoxWorkflows";
+            this.comboBoxWorkflows.Size = new System.Drawing.Size(479, 28);
+            this.comboBoxWorkflows.TabIndex = 0;
             // 
             // ServiceView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.panelWorkspace);
-            this.Controls.Add(this.panelContextSelect);
+            this.Controls.Add(this.panelWorkflowSelect);
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "ServiceView";
             this.Size = new System.Drawing.Size(1091, 821);
@@ -595,8 +595,8 @@ namespace Polokus.App.Views
             this.splitContainerWorkspace1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerWorkspace1)).EndInit();
             this.splitContainerWorkspace1.ResumeLayout(false);
-            this.panelContextSelect.ResumeLayout(false);
-            this.panelContextSelect.PerformLayout();
+            this.panelWorkflowSelect.ResumeLayout(false);
+            this.panelWorkflowSelect.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -623,10 +623,10 @@ namespace Polokus.App.Views
         private Panel panel8;
         private PolokusNarrowListView listViewProcesses;
         private Panel panelWorkspace;
-        private Panel panelContextSelect;
-        private Button buttonLoadContext;
+        private Panel panelWorkflowSelect;
+        private Button buttonLoadWorkflow;
         private Label label5;
-        private ComboBox comboBoxContexts;
+        private ComboBox comboBoxWorkflows;
         private SplitContainer splitContainerWorkspace1;
         private Panel panel9;
         private PolokusNarrowListView listViewInstances;

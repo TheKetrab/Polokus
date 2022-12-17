@@ -40,7 +40,7 @@ namespace Polokus.Tests
             // Arrange
             Logger.Global.ClearLog();
             var pi = BpmnLoader.LoadBpmnXmlIntoSimpleProcessInstance(Resources.DelayTask);
-            pi.ContextInstance.NodeHandlerFactory
+            pi.Workflow.NodeHandlerFactory
                 .RegisterNodeHandlerForServiceTask<CustomServiceTaskNodeHandler>("DelayTask");
 
             // Act
@@ -94,7 +94,7 @@ namespace Polokus.Tests
             Logger.Global.ClearLog();
             var visitor = new VisitorHooks(VisitTime.BeforeExecute);
             var pi = BpmnLoader.LoadBpmnXmlIntoSimpleProcessInstance(Resources.DelayTask);
-            pi.ContextInstance.NodeHandlerFactory
+            pi.Workflow.NodeHandlerFactory
                 .RegisterNodeHandlerForServiceTask<CustomServiceTaskNodeHandler2>("DelayTask");
 
             // Act

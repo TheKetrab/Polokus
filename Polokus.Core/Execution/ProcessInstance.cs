@@ -6,7 +6,7 @@ namespace Polokus.Core.Execution
     public class ProcessInstance : IProcessInstance
     {
         public string Id { get; set; }
-        public IContextInstance ContextInstance { get; }
+        public IWorkflow Workflow { get; }
         public IBpmnProcess BpmnProcess { get; }
         public object TasksMutex { get; } = new object();
         public ActiveTasksManager ActiveTasksManager { get; private set; }
@@ -26,11 +26,11 @@ namespace Polokus.Core.Execution
 
 
 
-        public ProcessInstance(string id, IContextInstance contextInstance,
+        public ProcessInstance(string id, IWorkflow workflow,
             IBpmnProcess bpmnProcess, IHooksProvider? hooksProvider = null)
         {
             Id = id;
-            ContextInstance = contextInstance;
+            Workflow = workflow;
             ActiveTasksManager = new ActiveTasksManager(this);
             StatusManager = new StatusManager(this);
 
@@ -40,7 +40,7 @@ namespace Polokus.Core.Execution
 
         public IProcessInstance CreateSubProcessInstance(IBpmnProcess bpmnProcess)
         {
-            ProcessInstance processInstance = (ProcessInstance)ContextInstance.CreateProcessInstance(bpmnProcess);
+            ProcessInstance processInstance = (ProcessInstance)Workflow.CreateProcessInstance(bpmnProcess);
             processInstance.ParentProcessInstance = this;
             ChildrenProcessInstances.Add(processInstance);
             processInstance.HooksProvider = HooksProvider;
@@ -100,7 +100,7 @@ namespace Polokus.Core.Execution
 
                 if (nodeHandler == null)
                 {
-                    nodeHandler = ContextInstance.NodeHandlerFactory.CreateNodeHandler(this, node);
+                    nodeHandler = Workflow.NodeHandlerFactory.CreateNodeHandler(this, node);
                     AvailableNodeHandlers.Add(node.Id, nodeHandler);
                 }
 

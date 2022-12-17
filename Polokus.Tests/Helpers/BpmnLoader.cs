@@ -14,19 +14,19 @@ namespace Polokus.Tests.Helpers
 
         public static SimpleProcessInstance LoadBpmnXmlIntoSimpleProcessInstance(string bpmnString)
         {
-            var contextsManager = LoadBpmnXmlIntoContextsManager(bpmnString);
+            var wfManager = LoadBpmnXmlIntoWorkflowsManager(bpmnString);
 
-            var contextInstance = contextsManager.ContextInstances.First().Value;
-            var bpmnProcess = contextInstance.BpmnContext.BpmnProcesses.First();
+            var workflow = wfManager.Workflows.First().Value;
+            var bpmnProcess = workflow.BpmnWorkflow.BpmnProcesses.First();
 
-            return new SimpleProcessInstance($"pi{_cnt++}",contextInstance, bpmnProcess);
+            return new SimpleProcessInstance($"pi{_cnt++}", workflow, bpmnProcess);
         }
 
-        public static ContextsManager LoadBpmnXmlIntoContextsManager(string bpmnString, IHooksProvider? hooksProvider = null)
+        public static WorkflowsManager LoadBpmnXmlIntoWorkflowsManager(string bpmnString, IHooksProvider? hooksProvider = null)
         {
-            var contextsManager = new ContextsManager();
-            contextsManager.LoadXmlString(bpmnString, "pr", hooksProvider: hooksProvider);
-            return contextsManager;
+            var wfManager = new WorkflowsManager();
+            wfManager.LoadXmlString(bpmnString, "pr", hooksProvider: hooksProvider);
+            return wfManager;
         }
 
     }

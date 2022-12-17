@@ -14,15 +14,15 @@ namespace Polokus.Core.Execution
         public string Id { get; }
         public IFlowNode StartNode { get; }
         public IBpmnProcess BpmnProcess { get; }
-        public IContextInstance ContextInstance { get; }
+        public IWorkflow Workflow { get; }
 
 
-        public ProcessStarter(IContextInstance contextInstance, IBpmnProcess bpmnProcess, IFlowNode startNode)
+        public ProcessStarter(IWorkflow workflow, IBpmnProcess bpmnProcess, IFlowNode startNode)
         {
-            ContextInstance = contextInstance;
+            Workflow = workflow;
             BpmnProcess = bpmnProcess;
             StartNode = startNode;
-            Id = Utils.GetStarterName(ContextInstance.Id, BpmnProcess.Id, StartNode.Id);
+            Id = Utils.GetStarterName(Workflow.Id, BpmnProcess.Id, StartNode.Id);
         }
     }
 }

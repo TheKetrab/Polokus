@@ -14,13 +14,13 @@ namespace Polokus.App.Utils
 {
     public class AppHooksProvider : IHooksProvider
     {
-        private ContextInstance _contextInstance;
+        private Workflow _workflow;
         private ServiceView? _view;
         private ServiceView? View => _view ??= MainWindow.Instance.ServiceView;
 
-        public AppHooksProvider(ContextInstance contextInstance)
+        public AppHooksProvider(Workflow workflow)
         {
-            _contextInstance = contextInstance;
+            _workflow = workflow;
         }
 
         
@@ -42,7 +42,7 @@ namespace Polokus.App.Utils
 
         public void OnProcessFinished(string processInstanceId, string result)
         {
-            var instance = _contextInstance.GetProcessInstanceById(processInstanceId);
+            var instance = _workflow.GetProcessInstanceById(processInstanceId);
             string time = instance.StatusManager.TotalTime.ToString(@"hh\:mm\:ss\.ff");
             Log(processInstanceId, $"Process finished with result: {result}. Time: {time}");
         }
@@ -51,7 +51,7 @@ namespace Polokus.App.Utils
         {
             UpdateActiveNodesInGraph(processInstanceId);
             Log(processInstanceId, $"Executing: {node.Id} taskId = {taskId}");
-            Thread.Sleep(_contextInstance.SettingsProvider.DelayForNodeHandlerMs); // delay execution
+            Thread.Sleep(_workflow.SettingsProvider.DelayForNodeHandlerMs); // delay execution
 
             if (node.XmlType == typeof(tManualTask))
             {
@@ -63,7 +63,7 @@ namespace Polokus.App.Utils
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
                     string answer = dialog.Answer;
-                    var instance = (ProcessInstance)_contextInstance.GetProcessInstanceById(processInstanceId);
+                    var instance = (ProcessInstance)_workflow.GetProcessInstanceById(processInstanceId);
                     var nodeHandler = instance.GetNodeHandlerForNodeIfExists(node);
 
                     if (nodeHandler is UserTaskNodeHandler nh)
@@ -83,16 +83,16 @@ namespace Polokus.App.Utils
 
         public void OnStatusChanged(string processInstanceId)
         {
-            var instance = _contextInstance.GetProcessInstanceById(processInstanceId);
+            var instance = _workflow.GetProcessInstanceById(processInstanceId);
 
-            View?.BeginInvoke(new Action(() => View.UpdateProcessInstancesList(_contextInstance)));
+            View?.BeginInvoke(new Action(() => View.UpdateProcessInstancesList(_workflow)));
         }
 
         public void OnTasksChanged(string processInstanceId)
         {
-            if (View?.GetActiveContextInstance() == _contextInstance)
+            if (View?.GetActiveWorkflow() == _workflow)
             {
-                View.BeginInvoke(new Action(() => View.UpdateProcessInstancesList(_contextInstance)));
+                View.BeginInvoke(new Action(() => View.UpdateProcessInstancesList(_workflow)));
             }
         }
 
@@ -103,7 +103,7 @@ namespace Polokus.App.Utils
 
         private void Log(string processInstanceId, string message)
         {
-            string globalInstanceId = Helpers.GetGlobalProcessInstanceId(_contextInstance.Id, processInstanceId);
+            string globalInstanceId = Helpers.GetGlobalProcessInstanceId(_workflow.Id, processInstanceId);
 
             var logger = View?.GetOrCreateLogger(globalInstanceId);
             if (logger == null)
@@ -121,13 +121,13 @@ namespace Polokus.App.Utils
 
         private void UpdateActiveNodesInGraph(string processInstanceId)
         {
-            string globalInstanceId = Helpers.GetGlobalProcessInstanceId(_contextInstance.Id, processInstanceId);
+            string globalInstanceId = Helpers.GetGlobalProcessInstanceId(_workflow.Id, processInstanceId);
             if (globalInstanceId != View?.GetOpenedProcessInstanceGlobalId())
             {
                 return;
             }
 
-            var instance = _contextInstance.ProcessInstances.FirstOrDefault(x => x.Id == processInstanceId);
+            var instance = _workflow.ProcessInstances.FirstOrDefault(x => x.Id == processInstanceId);
             HashSet<string> activeNodesIds = instance.AvailableNodeHandlers.Values.Select(nh => nh.Node.Id).ToHashSet();
 
             var allNodesIds = instance.BpmnProcess.GetNodesIds();

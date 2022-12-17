@@ -30,13 +30,13 @@ namespace Polokus.App.Views
 
         private void TextBoxBpmnPath_TextChanged(object? sender, EventArgs e)
         {
-            // TODO: reload context instances
+            // TODO: reload Workflow instances
         }
 
         private void NumericUpDownMessageListenerPort_ValueChanged(object? sender, EventArgs e)
         {
-            var messageManagers = MainWindow.Instance.ServiceView.ContextsManager
-                .ContextInstances.Select(x => x.Value.MessageManager);
+            var messageManagers = MainWindow.Instance.ServiceView.WorkflowsManager
+                .Workflows.Select(x => x.Value.MessageManager);
 
             if (messageManagers.Any(x => x.IsAnyWaiting()))
             {

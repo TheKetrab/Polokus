@@ -102,7 +102,7 @@ namespace Polokus.Core.Execution
         {
             IProcessStarter starter = (IProcessStarter)context.JobDetail.JobDataMap["Starter"];
 
-            starter.ContextInstance.StartProcessInstance(starter.BpmnProcess, starter.StartNode, null);
+            starter.Workflow.StartProcessInstance(starter.BpmnProcess, starter.StartNode, null);
 
             await Task.CompletedTask;
         }

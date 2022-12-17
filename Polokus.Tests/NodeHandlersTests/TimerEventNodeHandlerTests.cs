@@ -59,7 +59,9 @@ namespace Polokus.Tests.NodeHandlersTests
 
             // Assert
             Assert.IsTrue(DateTime.Now.Second % 10 == 0);
-            Assert.AreEqual("null;Waiter_(pr)_(pi0)_(Process_0ez9rd5)_(Event_0sy3nhf)", visitor.GetResult());
+            CustomAsserts.MatchRegex(
+                visitor.GetResult(),
+                @"^null;Waiter_\(pr\)_\(pi.*\)_\(Process_0ez9rd5\)_\(Event_0sy3nhf\)$");
 
         }
 

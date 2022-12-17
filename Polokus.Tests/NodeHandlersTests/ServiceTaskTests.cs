@@ -39,14 +39,14 @@ namespace Polokus.Tests.NodeHandlersTests
             // Arrange
             VisitorHooks visitor = new VisitorHooks();
             var pi = BpmnLoader.LoadBpmnXmlIntoSimpleProcessInstance(Resources.ServiceTask1);
-            pi.ContextInstance.NodeHandlerFactory
+            pi.Workflow.NodeHandlerFactory
                 .RegisterNodeHandlerForServiceTask<CustomServiceTaskNodeHandler>("CustomServiceTask");
 
             // Act
             await pi.RunSimple(visitor);
 
             // Assert
-            Assert.AreEqual(2, pi.ContextInstance.ScriptProvider.Globals.globals.Count);
+            Assert.AreEqual(2, pi.Workflow.ScriptProvider.Globals.globals.Count);
             Assert.AreEqual("start;CustomServiceTask;exclusive;end2", visitor.GetResult());
 
 

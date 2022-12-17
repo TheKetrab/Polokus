@@ -17,12 +17,12 @@ namespace Polokus.Core.Scripting
     public class DynamicServiceTaskRegistrator
     {
         private INodeHandlerFactory _factory;
-        private ContextInstance _contextInstance;
+        private Workflow _Workflow;
 
-        public DynamicServiceTaskRegistrator(ContextInstance contextInstance)
+        public DynamicServiceTaskRegistrator(Workflow Workflow)
         {
-            _contextInstance = contextInstance;
-            _factory = contextInstance.NodeHandlerFactory;
+            _Workflow = Workflow;
+            _factory = Workflow.NodeHandlerFactory;
         }
 
         private static bool IsServiceNH(Type type)
@@ -51,21 +51,21 @@ namespace Polokus.Core.Scripting
         {
             // TODO: fix this implementations
 
-            string externalsPath = _contextInstance.SettingsProvider.ServiceTasksExternals;
+            string externalsPath = _Workflow.SettingsProvider.ServiceTasksExternals;
             string jsonContent = File.ReadAllText(externalsPath);
             var doc = JsonDocument.Parse(jsonContent);
 
             string assembly = string.Empty;
             string className = string.Empty;
 
-            var ci = doc.RootElement.GetProperty("contextInstances");
-            int n = ci.GetArrayLength();
+            var wf = doc.RootElement.GetProperty("Workflows");
+            int n = wf.GetArrayLength();
             for (int i = 0; i < n; i++)
             {
-                var nn = ci[i].GetProperty("name").GetString();
-                if (nn == _contextInstance.Id)         
+                var nn = wf[i].GetProperty("name").GetString();
+                if (nn == _Workflow.Id)         
                 {
-                    var st = ci[i].GetProperty("serviceTasks");
+                    var st = wf[i].GetProperty("serviceTasks");
                     int n2 = st.GetArrayLength();
                     for (int j = 0; j < n2; j++)
                     {

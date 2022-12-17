@@ -3,15 +3,15 @@ using Polokus.Core.Models.BpmnObjects.Xsd;
 
 namespace Polokus.Core.Models
 {
-    public class BpmnContext : IBpmnContext
+    public class BpmnWorkflow : IBpmnWorkflow
     {
         public string? RawString { get; set; }
-        public IContextInstance? ContextInstance { get; }
+        public IWorkflow? Workflow { get; }
         public IEnumerable<IBpmnProcess> BpmnProcesses { get; private set; }
 
         public tDefinitions? Definitions { get; set; }
 
-        public BpmnContext()
+        public BpmnWorkflow()
         {
             BpmnProcesses = new List<IBpmnProcess>();
         }

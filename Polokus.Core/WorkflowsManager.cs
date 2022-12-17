@@ -13,39 +13,39 @@ using System.Threading.Tasks;
 
 namespace Polokus.Core
 {
-    public class ContextsManager : IContextsManager
+    public class WorkflowsManager : IWorkflowsManager
     {
-        public IDictionary<string, IContextInstance> ContextInstances { get; }
-            = new Dictionary<string, IContextInstance>();
+        public IDictionary<string, IWorkflow> Workflows { get; }
+            = new Dictionary<string, IWorkflow>();
 
         public void LoadXmlString(string xmlString,
-            string bpmnContextName,
+            string bpmnWorkflowName,
             IHooksProvider? hooksProvider = null,
             ISettingsProvider? settingsProvider = null,
-            Func<ContextInstance, IHooksProvider>? createHooksProviderFunc = null)
+            Func<Workflow, IHooksProvider>? createHooksProviderFunc = null)
         {
             BpmnParser parser = new BpmnParser();
-            IBpmnContext bpmnContext = parser.ParseBpmnXml(xmlString);
+            IBpmnWorkflow bpmnWorkflow = parser.ParseBpmnXml(xmlString);
 
-            var contextInstance = new ContextInstance(this,
-                bpmnContext, bpmnContextName,
+            var workflow = new Workflow(this,
+                bpmnWorkflow, bpmnWorkflowName,
                 settingsProvider: settingsProvider,
                 hooksProvider: hooksProvider);
 
             if (hooksProvider == null && createHooksProviderFunc != null)
             {
-                hooksProvider = createHooksProviderFunc(contextInstance);
-                contextInstance.SetHooksProvider(hooksProvider);
+                hooksProvider = createHooksProviderFunc(workflow);
+                workflow.SetHooksProvider(hooksProvider);
             }
 
-            RegisterWaiters(contextInstance);
+            RegisterWaiters(workflow);
 
-            ContextInstances.Add(bpmnContextName, contextInstance);
+            Workflows.Add(bpmnWorkflowName, workflow);
         }
 
-        private void RegisterWaiters(ContextInstance contextInstance)
+        private void RegisterWaiters(Workflow workflow)
         {
-            var allStartNodes = contextInstance.BpmnContext.BpmnProcesses.SelectMany(x => x.GetStartNodes());
+            var allStartNodes = workflow.BpmnWorkflow.BpmnProcesses.SelectMany(x => x.GetStartNodes());
             foreach (var startNode in allStartNodes)
             {
                 if (startNode is FlowNode<tStartEvent> startFlowNode)
@@ -57,13 +57,13 @@ namespace Polokus.Core
                         if (eventDefinition is tTimerEventDefinition)
                         {
                             string timeDefinition = startFlowNode.Name;
-                            var processStarter = new ProcessStarter(contextInstance, startFlowNode.BpmnProcess, startNode);
-                            contextInstance.TimeManager.RegisterStarter(timeDefinition, processStarter);
+                            var processStarter = new ProcessStarter(workflow, startFlowNode.BpmnProcess, startNode);
+                            workflow.TimeManager.RegisterStarter(timeDefinition, processStarter);
                         }
                         else if (eventDefinition is tMessageEventDefinition)
                         {
-                            var processStarter = new ProcessStarter(contextInstance, startFlowNode.BpmnProcess, startNode);
-                            contextInstance.MessageManager.RegisterMessageListener(processStarter);
+                            var processStarter = new ProcessStarter(workflow, startFlowNode.BpmnProcess, startNode);
+                            workflow.MessageManager.RegisterMessageListener(processStarter);
                         }
 
                     }

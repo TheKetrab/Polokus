@@ -25,7 +25,7 @@ namespace Polokus.Core.Execution
             ProcessInstance = processInstance;
             NodeToCall = nodeToCall;
             Id = Utils.GetWaiterName(
-                ProcessInstance.ContextInstance.Id, ProcessInstance.Id,
+                ProcessInstance.Workflow.Id, ProcessInstance.Id,
                 ProcessInstance.BpmnProcess.Id, NodeToCall.Id);
 
         }

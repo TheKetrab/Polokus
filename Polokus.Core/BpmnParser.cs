@@ -8,8 +8,6 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Xml;
 using System.Xml.Serialization;
-using System.Reflection.Metadata.Ecma335;
-using System.Runtime.CompilerServices;
 using Polokus.Core.Factories;
 using Polokus.Core.Interfaces;
 using Polokus.Core.Helpers;
@@ -23,7 +21,7 @@ namespace Polokus.Core
     /// </summary>
     public class BpmnParser
     {
-        public IBpmnContext ParseBpmnXml(string bpmnXml)
+        public IBpmnWorkflow ParseBpmnXml(string bpmnXml)
         {
             var definitions = DeserializeXml<tDefinitions>(bpmnXml);
             if (definitions == null)
@@ -31,12 +29,12 @@ namespace Polokus.Core
                 throw new XmlException($"Failed to parse bpmn xml:\n{bpmnXml}");
             }
 
-            var context = new BpmnContext();
-            LoadDefinitions(context, definitions);
+            var Workflow = new BpmnWorkflow();
+            LoadDefinitions(Workflow, definitions);
 
-            context.RawString = bpmnXml;
+            Workflow.RawString = bpmnXml;
 
-            return context;
+            return Workflow;
         }
 
         private void FillProcessConnections(BpmnProcess process,
@@ -85,13 +83,13 @@ namespace Polokus.Core
             
         }
 
-        private void ReadFlowElementsInProcess(BpmnContext context, tDefinitions definitions,
+        private void ReadFlowElementsInProcess(BpmnWorkflow Workflow, tDefinitions definitions,
             tFlowElement[] items, string processId, List<IBpmnProcess> processes)
         {
             var sequences = items.Where(x => x is tSequenceFlow).Cast<tSequenceFlow>();
             var flowNodes = items.Where(x => x is tFlowNode).Cast<tFlowNode>();
 
-            var process = new BpmnProcess(context, processId);
+            var process = new BpmnProcess(Workflow, processId);
             process.SourceDefinitions = definitions;
             FillProcessConnections(process, sequences, flowNodes);
 
@@ -100,11 +98,11 @@ namespace Polokus.Core
             var subProcesses = items.Where(x => x is tSubProcess).Cast<tSubProcess>();
             foreach (var sp in subProcesses)
             {
-                ReadFlowElementsInProcess(context, definitions, sp.Items1, sp.id, processes);
+                ReadFlowElementsInProcess(Workflow, definitions, sp.Items1, sp.id, processes);
             }
         }
 
-        private void LoadDefinitions(BpmnContext context, tDefinitions definitions)
+        private void LoadDefinitions(BpmnWorkflow Workflow, tDefinitions definitions)
         {
             // Read processes
             List<IBpmnProcess> processes = new();
@@ -112,7 +110,7 @@ namespace Polokus.Core
             {
                 if (item is tProcess xmlProcess)
                 {
-                    ReadFlowElementsInProcess(context, definitions, xmlProcess.Items, xmlProcess.id, processes);
+                    ReadFlowElementsInProcess(Workflow, definitions, xmlProcess.Items, xmlProcess.id, processes);
                 }                
             }
 
@@ -148,7 +146,7 @@ namespace Polokus.Core
 
             }
 
-            context.SetBpmnProcesses(processes);
+            Workflow.SetBpmnProcesses(processes);
         }
 
         public static T? DeserializeXml<T>(string xmlString) where T : class

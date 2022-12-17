@@ -22,7 +22,7 @@ namespace Polokus.Tests.NodeHandlersTests
             await pi.RunSimple(visitor);
 
             // Assert
-            Assert.AreEqual(720 + 222, pi.ContextInstance.ScriptProvider.Globals.globals["a"]);
+            Assert.AreEqual(720 + 222, pi.Workflow.ScriptProvider.Globals.globals["a"]);
             Assert.AreEqual("start;tScriptTask;tScriptTask;exclusive;end1", visitor.GetResult());
 
         }

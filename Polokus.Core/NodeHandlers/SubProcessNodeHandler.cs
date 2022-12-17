@@ -19,12 +19,12 @@ namespace Polokus.Core.NodeHandlers
 
         public override async Task Action(INodeCaller? caller)
         {
-            var ci = this.ProcessInstance.ContextInstance;
-            var bpmnProcess = ci.BpmnContext.BpmnProcesses.First(x => x.Id == this.Node.Id);
+            var wf = this.ProcessInstance.Workflow;
+            var bpmnProcess = wf.BpmnWorkflow.BpmnProcesses.First(x => x.Id == this.Node.Id);
             var manualStartNode = bpmnProcess.GetManualStartNode();
 
             var subProcessInstance = this.ProcessInstance.CreateSubProcessInstance(bpmnProcess);
-            await ci.RunProcessAsync(subProcessInstance, manualStartNode, null);
+            await wf.RunProcessAsync(subProcessInstance, manualStartNode, null);
         }
     }
 }

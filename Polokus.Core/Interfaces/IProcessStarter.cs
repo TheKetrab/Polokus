@@ -8,6 +8,6 @@
         string Id { get; }
         IFlowNode StartNode { get; }
         IBpmnProcess BpmnProcess { get; }
-        IContextInstance ContextInstance { get; }
+        IWorkflow Workflow { get; }
     }
 }
