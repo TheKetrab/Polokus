@@ -16,8 +16,11 @@ namespace Polokus.App.Views
 {
     public partial class SettingsView : UserControl
     {
-        public SettingsView()
+        private MainWindow _mainWindow;
+
+        public SettingsView(MainWindow mainWindow)
         {
+            _mainWindow = mainWindow;
             InitializeComponent();
             InitBindings();
 
@@ -35,7 +38,7 @@ namespace Polokus.App.Views
 
         private void NumericUpDownMessageListenerPort_ValueChanged(object? sender, EventArgs e)
         {
-            var messageManagers = MainWindow.Instance.ServiceView.WorkflowsManager
+            var messageManagers = _mainWindow.MainPanel.ServiceView.WorkflowsManager
                 .Workflows.Select(x => x.Value.MessageManager);
 
             if (messageManagers.Any(x => x.IsAnyWaiting()))

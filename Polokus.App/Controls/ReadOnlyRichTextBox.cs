@@ -51,20 +51,6 @@ namespace Polokus.App.Controls
             HideCaret(this.Handle);
         }
 
-        private void InitializeComponent()
-        {
-            //
-            // ReadOnlyRichTextBox
-            //
-            this.Resize += new System.EventHandler(this.ReadOnlyRichTextBox_Resize);
-
-        }
-
-        private void ReadOnlyRichTextBox_Resize(object sender, System.EventArgs e)
-        {
-            HideCaret(this.Handle);
-        }
-
         public void AppendFormattedText(string text, Color textColor, Boolean isBold, HorizontalAlignment alignment = HorizontalAlignment.Left)
         {
             // https://stackoverflow.com/a/35464653/12479893

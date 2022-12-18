@@ -1,12 +1,12 @@
 {
-	"contextInstances": [
+	"Workflows": [
 	{
-		"name": "processServiceTask.bpmn",
-		"serviceTasks": [
+		"Name": "processServiceTask.bpmn",
+		"ServiceTasks": [
 		{
-			"assembly": "C:/Custom/BPMN/Polokus/Polokus.CustomServiceTaskExample/bin/Debug/net6.0/Polokus.CustomServiceTaskExample.dll",
-			"className": "Polokus.CustomServiceTaskExample.MyCustomServiceTaskNodeHandler",
-			"serviceTaskName": "MyCustomServiceTaskNodeHandler"
+			"Assembly": "C:/Custom/BPMN/Polokus/Polokus.CustomServiceTaskExample/bin/Debug/net6.0/Polokus.CustomServiceTaskExample.dll",
+			"ClassName": "Polokus.CustomServiceTaskExample.MyCustomServiceTaskNodeHandler",
+			"ServiceTaskName": "MyCustomServiceTaskNodeHandler"
 		}
 		]
 	}

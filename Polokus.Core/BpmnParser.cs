@@ -32,7 +32,7 @@ namespace Polokus.Core
             var Workflow = new BpmnWorkflow();
             LoadDefinitions(Workflow, definitions);
 
-            Workflow.RawString = bpmnXml;
+            Workflow.RawString = bpmnXml.Replace("\r","").Replace("\n","");
 
             return Workflow;
         }

@@ -16,7 +16,7 @@ namespace Polokus.App.Utils
     {
         private Workflow _workflow;
         private ServiceView? _view;
-        private ServiceView? View => _view ??= MainWindow.Instance.ServiceView;
+        private ServiceView? View => _view ??= Program.MainWindow.MainPanel.ServiceView;
 
         public AppHooksProvider(Workflow workflow)
         {

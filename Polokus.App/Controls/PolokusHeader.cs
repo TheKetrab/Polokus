@@ -21,15 +21,20 @@ namespace Polokus.App.Controls
             polokusLogo = Properties.Resources.Polokus128;
         }
 
+        public bool Frozen { get; set; } = false;
+
         protected override void OnPaint(PaintEventArgs e)
         {
-            if (this.Width >= PolokusStyle.HideMenuPixels)
+            if (!Frozen)
             {
-                DrawNormal(e);
-            }
-            else
-            {
-                DrawMini(e);
+                if (this.Width >= PolokusStyle.HideMenuPixels)
+                {
+                    DrawNormal(e);
+                }
+                else
+                {
+                    DrawMini(e);
+                }
             }
 
             base.OnPaint(e);

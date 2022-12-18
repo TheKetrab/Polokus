@@ -32,7 +32,6 @@ namespace Polokus.App.Forms
 
         }
 
-        public Size FormSize;
         public int BorderSize = 2;
 
         public enum PanelView

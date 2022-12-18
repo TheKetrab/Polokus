@@ -7,6 +7,8 @@ namespace Polokus.App
 {
     internal static class Program
     {
+        public static MainWindow MainWindow;
+
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>
@@ -37,7 +39,8 @@ namespace Polokus.App
             CefSettings settings = new CefSettings();
             Cef.Initialize(settings);
 
-            Application.Run(new MainWindow());
+            MainWindow = new MainWindow();
+            Application.Run(MainWindow);
 
 
             // ----- EXIT -----
@@ -51,13 +54,13 @@ namespace Polokus.App
         static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
         {
             var dialog = new ErrorDialog(e.Exception);
-            dialog.ShowDialog(MainWindow.Instance);
+            dialog.ShowDialog(MainWindow);
         }
 
         static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             var dialog = new ErrorDialog((Exception)e.ExceptionObject);
-            dialog.ShowDialog(MainWindow.Instance);
+            dialog.ShowDialog(MainWindow);
 
         }
 

@@ -15,16 +15,19 @@ namespace Polokus.App.Views
 {
     public partial class XmlView : UserControl
     {
-        public XmlView()
+        private MainWindow _mainWindow;
+
+        public XmlView(MainWindow mainWindow)
         {
+            _mainWindow = mainWindow;
             InitializeComponent();
             readOnlyRichTextBox1.WordWrap = false;
             readOnlyRichTextBox1.Font = new Font(FontFamily.GenericMonospace, readOnlyRichTextBox1.Font.Size);
 
 
-            MainWindow.Instance.TVIndexChanged += (s, e) =>
+            _mainWindow.Menu.TVIndexChanged += (s, e) =>
             {
-                if (MainWindow.Instance.ViewModel.ActivePanelView != MainWindowViewModel.PanelView.ProcessesXml)
+                if (_mainWindow.ViewModel.ActivePanelView != MainWindowViewModel.PanelView.ProcessesXml)
                 {
                     return;
                 }

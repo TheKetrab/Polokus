@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using Polokus.Core.Execution;
+using Polokus.Core.Externals;
 using Polokus.Core.Interfaces;
 using Polokus.Core.NodeHandlers;
 using System;
@@ -17,12 +18,14 @@ namespace Polokus.Core.Scripting
     public class DynamicServiceTaskRegistrator
     {
         private INodeHandlerFactory _factory;
-        private Workflow _Workflow;
+        private Workflow _workflow;
+        private ExternalsManager _externalsManager;
 
         public DynamicServiceTaskRegistrator(Workflow Workflow)
         {
-            _Workflow = Workflow;
+            _workflow = Workflow;
             _factory = Workflow.NodeHandlerFactory;
+            _externalsManager = new ExternalsManager();
         }
 
         private static bool IsServiceNH(Type type)
@@ -49,39 +52,15 @@ namespace Polokus.Core.Scripting
 
         public void RegisterServiceTask(string name)
         {
-            // TODO: fix this implementations
-
-            string externalsPath = _Workflow.SettingsProvider.ServiceTasksExternals;
+            string externalsPath = _workflow.SettingsProvider.ServiceTasksExternals;
             string jsonContent = File.ReadAllText(externalsPath);
-            var doc = JsonDocument.Parse(jsonContent);
 
-            string assembly = string.Empty;
-            string className = string.Empty;
+            var externals = _externalsManager.LoadExternals(jsonContent);
 
-            var wf = doc.RootElement.GetProperty("Workflows");
-            int n = wf.GetArrayLength();
-            for (int i = 0; i < n; i++)
-            {
-                var nn = wf[i].GetProperty("name").GetString();
-                if (nn == _Workflow.Id)         
-                {
-                    var st = wf[i].GetProperty("serviceTasks");
-                    int n2 = st.GetArrayLength();
-                    for (int j = 0; j < n2; j++)
-                    {
-                        var stn = st[j].GetProperty("serviceTaskName").GetString();
-                        if (stn == name)
-                        {
-                            assembly = st[j].GetProperty("assembly").GetString();
-                            className = st[j].GetProperty("className").GetString();
-                        }
-                    }
-                }
+            var wf = externals.Workflows[0];
+            var st = wf.ServiceTasks[0];
 
-            }
-
-            ;
-            RegisterServiceTask(assembly, className, name);
+            RegisterServiceTask(st.Assembly, st.ClassName, name);
         }
 
     }

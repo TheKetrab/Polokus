@@ -6,7 +6,7 @@
     public interface IBpmnWorkflow
     {
         /// <summary>
-        /// XML string where Workflow is parsed from.
+        /// XML string where Workflow is parsed from. Contains no line breaks! Minimalized xml.
         /// </summary>
         string? RawString { get; }
 

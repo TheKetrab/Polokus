@@ -12,16 +12,19 @@ using System.Windows.Forms;
 using CefSharp;
 using CefSharp.SchemeHandler;
 using CefSharp.WinForms;
+using Polokus.App.Forms;
 using Polokus.App.Utils;
 
 namespace Polokus.App.Views
 {
     public partial class ChromiumWindow : UserControl
     {
+        private MainWindow _mainWindow;
         private readonly string bpmnioPage = Path.Combine(Application.StartupPath,"editor/index.html");
 
-        public ChromiumWindow(string mode = "")
+        public ChromiumWindow(MainWindow mainWindow, string mode = "")
         {
+            _mainWindow = mainWindow;
             InitializeComponent();
             InitializeChromium(mode);
         }

@@ -1,4 +1,5 @@
 ﻿using CefSharp;
+using Polokus.App.Forms;
 using Polokus.App.Utils;
 using Polokus.Core;
 using Polokus.Core.Execution;
@@ -11,14 +12,17 @@ namespace Polokus.App.Views
 {
     public partial class ServiceView : UserControl
     {
+        private MainWindow _mainWindow;
         public WorkflowsManager WorkflowsManager;
         public ChromiumWindow chromiumWindow;
 
-        public ServiceView()
+        public ServiceView(MainWindow mainWindow)
         {
+            _mainWindow = mainWindow;
             InitializeComponent();
 
-            chromiumWindow = new ChromiumWindow("viewer");
+
+            chromiumWindow = new ChromiumWindow(_mainWindow,"viewer");
             chromiumWindow.Parent = panelBpmnio;
             chromiumWindow.Dock = DockStyle.Fill;
 
@@ -344,6 +348,11 @@ namespace Polokus.App.Views
         {
             this.readOnlyRichTextBox1.Text = "";
             
+            if (!_logs.ContainsKey(globalProcessInstanceId))
+            {
+                return;
+            }
+
             var messages = _logs[globalProcessInstanceId].GetMessages();
             foreach (var message in messages)
             {

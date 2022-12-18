@@ -4,6 +4,9 @@
     <Compile Update="Controls\IconBtn.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Update="Controls\MainWindowSideMenu.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Update="Controls\PolokusButton.cs">
       <SubType>Component</SubType>
     </Compile>
