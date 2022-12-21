@@ -12,7 +12,6 @@ namespace Polokus.Core.Execution
     public class MessageManager : IMessageManager
     {
         public int ListeningPort { get; }
-        public event EventHandler? CallersChanged;
 
         private Dictionary<string, IProcessStarter> _starters = new();
         private Dictionary<string, INodeHandlerWaiter> _waiters = new();
@@ -45,7 +44,7 @@ namespace Polokus.Core.Execution
             using (var listener = new HttpListener())
             {
                 _waiters.Add(waiter.Id, waiter);
-                CallersChanged?.Invoke(null, EventArgs.Empty);
+                waiter.HooksProvider?.OnCallerChanged(waiter.Id, CallerChangedType.WaiterInserted);
 
                 listener.Prefixes.Add($"http://localhost:{ListeningPort}/{waiter.Id}/");
                 listener.Start();
@@ -53,7 +52,7 @@ namespace Polokus.Core.Execution
                 var context = await listener.GetContextAsync();
 
                 _waiters.Remove(waiter.Id);
-                CallersChanged?.Invoke(null, EventArgs.Empty);
+                waiter.HooksProvider?.OnCallerChanged(waiter.Id, CallerChangedType.WaiterRemoved);
 
                 waiter.Invoke();
             }
@@ -64,13 +63,15 @@ namespace Polokus.Core.Execution
             using (var listener = new HttpListener())
             {
                 _starters.Add(starter.Id, starter);
-                CallersChanged?.Invoke(null, EventArgs.Empty);
+                starter.HooksProvider?.OnCallerChanged(starter.Id, CallerChangedType.StarterRegistered);
 
                 listener.Prefixes.Add($"http://localhost:{ListeningPort}/{starter.Id}/");
                 listener.Start();
 
                 var context = await listener.GetContextAsync();
-                CallersChanged?.Invoke(null, EventArgs.Empty);
+                starter.HooksProvider?.OnCallerChanged(starter.Id, CallerChangedType.StarterStartedProcess);
+
+                // TODO: czy to nie jest tak, ze jak raz starter wystartuje proces, to juz drugi raz nie umie?
 
                 string? parentProcessId = context.Request.QueryString["parent"];
                 if (parentProcessId != null)

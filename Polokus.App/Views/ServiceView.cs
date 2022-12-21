@@ -15,67 +15,60 @@ namespace Polokus.App.Views
         private MainWindow _mainWindow;
         public PolokusMaster PolokusMaster;
         public ChromiumWindow chromiumWindow;
-
+        
         public ServiceView(MainWindow mainWindow)
         {
             _mainWindow = mainWindow;
             InitializeComponent();
 
+            PolokusMaster = new PolokusMaster();
+            PolokusMaster.HooksManager.RegisterHooksProvider(new AppHooksProvider(this));
 
             chromiumWindow = new ChromiumWindow(_mainWindow,"viewer");
             chromiumWindow.Parent = panelBpmnio;
             chromiumWindow.Dock = DockStyle.Fill;
 
-            PolokusMaster = new PolokusMaster();
-            PolokusMaster.HooksManager.RegisterHooksProvider(new AppHooksProvider(this));
+            
             LoadBpmnFiles();
 
-            foreach (var iwf in PolokusMaster.GetWorkflows())
-            {
-                Workflow wf = (Workflow)iwf;
-                ((TimeManager)(wf.TimeManager)).CallersChanged += (s, e) =>
-                {
-                    if (listViewWaiters.IsHandleCreated && listViewStarters.IsHandleCreated)
-                    {
-                        listViewWaiters.BeginInvoke(() => UpdateNodeHandlerWaitersList(wf));
-                        listViewStarters.BeginInvoke(() => UpdateProcessStartersList(wf));
-                    }
-                };
-                ((MessageManager)(wf.MessageManager)).CallersChanged += (s, e) =>
-                {
-                    if (listViewWaiters.IsHandleCreated && listViewStarters.IsHandleCreated)
-                    {
-                        listViewWaiters.BeginInvoke(() => UpdateNodeHandlerWaitersList(wf));
-                        listViewStarters.BeginInvoke(() => UpdateProcessStartersList(wf));
-                    }
-                };
-
-            }
-
-            this.listViewProcesses.SizeChanged += (s, e) =>
-            {
-                this.listViewProcesses.Columns[0].Width = this.listViewProcesses.Width - 25;
-            };
-            this.listViewInstances.SizeChanged += (s, e) =>
-            {
-                this.listViewInstances.Columns[0].Width = this.listViewInstances.Width - this.listViewInstances.Columns[1].Width - 25;
-            };
-
-            this.listViewInstances.SelectedIndexChanged += (s, e) =>
-            {
-                if (listViewInstances.SelectedItems.Count == 1)
-                {
-                    var item = this.listViewInstances.SelectedItems[0];
-                    ActiveProcessInstance = item.SubItems[0].Text;
-
-                    ActiveProcessChanged();
-                }
-            };
-
+            this.listViewProcesses.SizeChanged += ListViewProcesses_SizeChanged;
+            this.listViewInstances.SizeChanged += ListViewInstances_SizeChanged;
+            this.listViewInstances.SelectedIndexChanged += ListViewInstances_SelectedIndexChanged;
 
             InitializeComboBoxWorkflows();
 
-            UpdateNodeHandlerWaitersList((Workflow?)PolokusMaster.GetWorkflows().FirstOrDefault());
+            LoadViewForFirstWorkflow();
+        }
+
+        private void LoadViewForFirstWorkflow()
+        {
+            var wf = PolokusMaster.GetWorkflows().FirstOrDefault() as Workflow;
+            if (wf != null)
+            {
+                ActiveWorkflow = wf.Id;
+                LoadViewForWorkflow(wf);
+            }
+        }
+
+        private void ListViewInstances_SelectedIndexChanged(object? sender, EventArgs e)
+        {
+            if (listViewInstances.SelectedItems.Count == 1)
+            {
+                var item = this.listViewInstances.SelectedItems[0];
+                ActiveProcessInstance = item.SubItems[0].Text;
+
+                ActiveProcessChanged();
+            }
+        }
+
+        private void ListViewInstances_SizeChanged(object? sender, EventArgs e)
+        {
+            this.listViewInstances.Columns[0].Width = this.listViewInstances.Width - this.listViewInstances.Columns[1].Width - 25;
+        }
+
+        private void ListViewProcesses_SizeChanged(object? sender, EventArgs e)
+        {
+            this.listViewProcesses.Columns[0].Width = this.listViewProcesses.Width - 25;
         }
 
         private void LoadBpmnFiles()
@@ -83,7 +76,8 @@ namespace Polokus.App.Views
             string bpmnDir = Properties.Settings.Default.BpmnPath;
             if (!Directory.Exists(bpmnDir))
             {
-                if (MessageBox.Show($"BpmnPath {bpmnDir} does not exists. Do you want to create this directory?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                string msg = $"BpmnPath {bpmnDir} does not exists. Do you want to create this directory?";
+                if (MessageBox.Show(msg, "", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
                     Directory.CreateDirectory(bpmnDir);
                 }
@@ -104,32 +98,11 @@ namespace Polokus.App.Views
         private void LoadXmlFile(string file)
         {
             string str = File.ReadAllText(file);
-
             PolokusMaster.LoadXmlString(str, new FileInfo(file).Name);
 
-            if (!_comboBoxWorkflowsInitialized)
-            {
-                InitializeComboBoxWorkflows();
-            }
-
         }
 
 
-        private Dictionary<string, Logger> _logs = new();
-
-        public Logger GetOrCreateLogger(string globalId)
-        {
-            if (_logs.ContainsKey(globalId))
-            {
-                return _logs[globalId];
-            }
-            else
-            {
-                var newLogger = new Logger();
-                _logs.Add(globalId, new Logger());
-                return newLogger;
-            }
-        }
         public Logger? GetLoggerForOpenedInstance()
         {
             string? id = GetOpenedProcessInstanceGlobalId();
@@ -138,56 +111,65 @@ namespace Polokus.App.Views
                 return null;
             }
 
-            return GetOrCreateLogger(id);
+            return PolokusMaster.GetOrCreateLogger(id);
         }
 
+        /// <summary>
+        /// Method refreshes logs and diagram views for current active process instance.
+        /// </summary>
         private void ActiveProcessChanged()
         {
-            string activeProcess = GetOpenedProcessInstanceGlobalId();
-
-            LoadLogsForProcessInstance(activeProcess);
-            LoadGraphForProcessInstance(activeProcess);
-        }
-
-        private bool _comboBoxWorkflowsInitialized = false;
-        private void InitializeComboBoxWorkflows()
-        {
-            if (!PolokusMaster.GetWorkflows().Any())
+            string? activeGlobalPiId = GetOpenedProcessInstanceGlobalId();
+            if (activeGlobalPiId == null)
             {
                 return;
             }
 
+            LoadLogsForProcessInstance(activeGlobalPiId);
+            LoadGraphForProcessInstance(activeGlobalPiId);
+        }
+
+
+        private void InitializeComboBoxWorkflows()
+        {
             comboBoxWorkflows.DataSource = new BindingSource(PolokusMaster._workflows, null);
             comboBoxWorkflows.DisplayMember = "Key";
             comboBoxWorkflows.ValueMember = "Value";
-
             comboBoxWorkflows.SelectedIndexChanged += comboBoxWorkflows_SelectedIndexChanged;
-
-            comboBoxWorkflows_SelectedIndexChanged(null, EventArgs.Empty);
-            _comboBoxWorkflowsInitialized = true;
         }
 
         private void comboBoxWorkflows_SelectedIndexChanged(object? sender, EventArgs e)
         {
-            var workflow = GetActiveWorkflow();
             if (comboBoxWorkflows.SelectedItem is KeyValuePair<string, IWorkflow> wf)
             {
                 ActiveWorkflow = wf.Key;
             }
 
+            var workflow = GetActiveWorkflow();
             LoadViewForWorkflow(workflow);
         }
 
+
         private void LoadViewForWorkflow(Workflow workflow)
+        {
+            UpdateBpmnProcessesList(workflow);
+            UpdateProcessInstancesList(workflow);
+            UpdateProcessStartersList(workflow);
+            UpdateNodeHandlerWaitersList(workflow);
+        }
+
+        private void UpdateBpmnProcessesList(Workflow workflow)
         {
             listViewProcesses.Items.Clear();
             foreach (var process in workflow.BpmnWorkflow.BpmnProcesses)
             {
                 this.listViewProcesses.Items.Add(process.Id);
             }
+        }
 
-            UpdateProcessInstancesList(workflow);
-
+        public void UpdateProcessStartersListSafe(Workflow workflow)
+        {
+            this.listViewStarters.BeginInvoke(() => UpdateProcessStartersList(workflow));
         }
 
         private void UpdateProcessStartersList(Workflow? workflow)
@@ -212,6 +194,11 @@ namespace Polokus.App.Views
             }
         }
 
+        public void UpdateNodeHandlerWaitersListSafe(Workflow workflow)
+        {
+            this.listViewWaiters.BeginInvoke(() => UpdateNodeHandlerWaitersList(workflow));
+        }
+
         private void UpdateNodeHandlerWaitersList(Workflow? workflow)
         {
             listViewWaiters.Items.Clear();
@@ -234,7 +221,12 @@ namespace Polokus.App.Views
             }
         }
 
-        public void UpdateProcessInstancesList(Workflow? workflow)
+        public void UpdateProcessInstancesListSafe(Workflow workflow)
+        {
+            this.listViewInstances.BeginInvoke(() => UpdateProcessInstancesList(workflow));
+        }
+
+        private void UpdateProcessInstancesList(Workflow? workflow)
         {
             listViewInstances.Items.Clear();
             if (workflow == null)
@@ -277,31 +269,18 @@ namespace Polokus.App.Views
         {
             return (Workflow)PolokusMaster.GetWorkflow(wfId);
         }
+
         public Workflow? GetActiveWorkflow()
         {
-            object si;
-            if (comboBoxWorkflows.InvokeRequired)
-            {
-                si = comboBoxWorkflows.Invoke(() => comboBoxWorkflows.SelectedItem);
-            }
-            else
-            {
-                si = comboBoxWorkflows.SelectedItem;
-            }
-
-            if (si == null)
+            if (ActiveWorkflow == null)
             {
                 return null;
             }
 
-            if (si is KeyValuePair<string, IWorkflow> kv)
-            {
-                return (Workflow)kv.Value;
-            }
-
-            return null;
+            return PolokusMaster.GetWorkflow(ActiveWorkflow) as Workflow;
         }
 
+        
         private string? ActiveWorkflow { get; set; } = null;
         private string? ActiveProcessInstance { get; set; } = null;
         public string? GetOpenedProcessInstanceGlobalId()
@@ -314,7 +293,7 @@ namespace Polokus.App.Views
             return Helpers.GetGlobalProcessInstanceId(ActiveWorkflow, ActiveProcessInstance);
         }
 
-        public void AppendLogLine(string line)
+        public void AppendLogLineSafe(string line)
         {
             this.BeginInvoke(() =>
             {
@@ -323,45 +302,47 @@ namespace Polokus.App.Views
             });
         }
 
-        
-        public void LoadGraphForProcessInstance(string globalProcessInstanceId)
+
+        private ProcessInstance GetProcessInstance(string globalPiId)
         {
-            int i = globalProcessInstanceId.IndexOf('/');
-            string wfId = globalProcessInstanceId.Substring(0, i);
-            string processInstanceId = globalProcessInstanceId.Substring(i + 1);
+            Helpers.GetWfPiIDs(globalPiId, out string wfId, out string piId);
 
-            Workflow workflow = (Workflow)PolokusMaster.GetWorkflow(wfId);
-            ProcessInstance processInstance = (ProcessInstance)workflow.GetProcessInstanceById(processInstanceId);
+            Workflow workflow = PolokusMaster.GetWorkflow(wfId) as Workflow
+                ?? throw new Exception("Failed to get workflow.");
 
-            string rawString = processInstance.BpmnProcess.BpmnWorkflow.RawString;
-
-            this.chromiumWindow.chromeBrowser.ExecuteScriptAsync($"window.api.openInViewerAsync('{rawString}');");
-
-
-            HashSet<string> activeNodesIds = processInstance.AvailableNodeHandlers.Values.Select(nh => nh.Node.Id).ToHashSet();
-
-            var allNodesIds = processInstance.BpmnProcess.GetNodesIds();
-            var inactiveNodesIds = allNodesIds.Where(x => !activeNodesIds.Contains(x));
-
-            BpmnioClient.SetColours(chromiumWindow, activeNodesIds, inactiveNodesIds);
+            return workflow.GetProcessInstanceById(piId) as ProcessInstance
+                ?? throw new Exception("Failed to get process instance.");
 
         }
 
-        public void LoadLogsForProcessInstance(string globalProcessInstanceId)
+        public void LoadGraphForProcessInstance(string globalPiId)
+        {
+            ProcessInstance pi = GetProcessInstance(globalPiId);
+            string rawString = pi.BpmnProcess.BpmnWorkflow.RawString ?? "";
+
+            this.chromiumWindow.chromeBrowser.ExecuteScriptAsync(
+                $"window.api.openInViewerAsync('{rawString}');");
+
+            HashSet<string> activeNodesIds = pi.AvailableNodeHandlers.Values
+                .Select(nh => nh.Node.Id).ToHashSet();
+
+            var allNodesIds = pi.BpmnProcess.GetNodesIds();
+            var inactiveNodesIds = allNodesIds.Where(x => !activeNodesIds.Contains(x));
+
+            BpmnioClient.SetColours(chromiumWindow, activeNodesIds, inactiveNodesIds);
+        }
+
+        public void LoadLogsForProcessInstance(string globalPiId)
         {
             this.readOnlyRichTextBox1.Text = "";
-            
-            if (!_logs.ContainsKey(globalProcessInstanceId))
-            {
-                return;
-            }
 
-            var messages = _logs[globalProcessInstanceId].GetMessages();
+            var logger = PolokusMaster.GetOrCreateLogger(globalPiId);
+            var messages = logger.GetMessages();
             foreach (var message in messages)
             {
                 string br = string.IsNullOrEmpty(this.readOnlyRichTextBox1.Text) ? "" : "\n";
 
-                switch (message.Item1) 
+                switch (message.Item1)
                 {
                     case Logger.MsgType.Simple:
                         readOnlyRichTextBox1.AppendText(br + message.Item2);
@@ -372,10 +353,7 @@ namespace Polokus.App.Views
                     case Logger.MsgType.Error:
                         readOnlyRichTextBox1.AppendFormattedText(br + message.Item2, Color.Red, true);
                         break;
-
                 }
-
-
             }
         }
 
@@ -461,9 +439,6 @@ namespace Polokus.App.Views
             string listenerId = this.textBoxPingWaiter.Text;
             wf.MessageManager.PingListener(listenerId);
         }
-
-
-
 
     }
 }

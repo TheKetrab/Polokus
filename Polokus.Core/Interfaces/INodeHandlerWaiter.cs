@@ -7,6 +7,7 @@
     {
         IFlowNode NodeToCall { get; }
         IProcessInstance ProcessInstance { get; }
+        IHooksProvider? HooksProvider { get; }
         void Invoke();
     }
 }

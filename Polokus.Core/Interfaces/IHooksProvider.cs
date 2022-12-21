@@ -1,4 +1,6 @@
-﻿namespace Polokus.Core.Interfaces
+﻿using Polokus.Core.Hooks;
+
+namespace Polokus.Core.Interfaces
 {
     /// <summary>
     /// HooksProvider is an object that allows to inject hooks for some actions during processing a BPMN process.
@@ -14,5 +16,6 @@
         void OnTasksChanged(string wfId, string piId);
         void OnTimeout(string wfId, string piId);
         void OnProcessFinished(string wfId, string piId, string result);
+        void OnCallerChanged(string callerId, CallerChangedType type);
     }
 }

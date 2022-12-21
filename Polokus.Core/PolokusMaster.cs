@@ -1,5 +1,6 @@
 ﻿using Polokus.Core.Execution;
 using Polokus.Core.Externals;
+using Polokus.Core.Helpers;
 using Polokus.Core.Hooks;
 using Polokus.Core.Interfaces;
 using Polokus.Core.Models;
@@ -30,6 +31,25 @@ namespace Polokus.Core
 
         public ICollection<FileMonitor> FileMonitors { get; }
             = new List<FileMonitor>();
+
+
+        private Dictionary<string, Logger> _logs = new();
+
+        public Logger GetOrCreateLogger(string globalPiId)
+        {
+            if (_logs.ContainsKey(globalPiId))
+            {
+                return _logs[globalPiId];
+            }
+            else
+            {
+                var newLogger = new Logger();
+                _logs.Add(globalPiId, new Logger());
+                return newLogger;
+            }
+        }
+
+
 
         public PolokusMaster()
         {
@@ -85,13 +105,17 @@ namespace Polokus.Core
             return _workflows.Values;
         }
 
-
+        /// <summary>
+        /// This method reads and parses BPMN workflow definitions from given string, adds it to stored dictionary and returns parsed workflow.
+        /// </summary>
+        /// <param name="xmlString">BPMN process stored in xml as string.</param>
+        /// <param name="bpmnWorkflowName">Name of process.</param>
         public void LoadXmlString(string xmlString, string bpmnWorkflowName)
         {
             BpmnParser parser = new BpmnParser();
             IBpmnWorkflow bpmnWorkflow = parser.ParseBpmnXml(xmlString);
 
-            var workflow = new Workflow(this, bpmnWorkflow, bpmnWorkflowName);
+            var workflow = new Workflow(this, bpmnWorkflow, bpmnWorkflowName, hooksProvider: HooksManager);
             RegisterWaiters(workflow);
 
             AddWorkflow(bpmnWorkflowName, workflow);

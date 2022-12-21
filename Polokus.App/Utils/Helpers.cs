@@ -12,5 +12,12 @@ namespace Polokus.App.Utils
         {
             return $"{wfId}/{processInstanceId}";
         }
+
+        public static void GetWfPiIDs(string globalPiId, out string wfId, out string piId)
+        {
+            int i = globalPiId.IndexOf('/');
+            wfId = globalPiId.Substring(0, i);
+            piId = globalPiId.Substring(i + 1);
+        }
     }
 }

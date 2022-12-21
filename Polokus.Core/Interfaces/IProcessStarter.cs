@@ -9,5 +9,6 @@
         IFlowNode StartNode { get; }
         IBpmnProcess BpmnProcess { get; }
         IWorkflow Workflow { get; }
+        IHooksProvider? HooksProvider { get; }
     }
 }

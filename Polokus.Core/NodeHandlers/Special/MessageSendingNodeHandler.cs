@@ -19,7 +19,7 @@ namespace Polokus.Core.NodeHandlers.Special
 
         private async Task PingStarter(IMessageFlow outgoing)
         {
-            var starterToPing = Utils.GetStarterName(
+            var starterToPing = CallersIds.GetStarterId(
                 ProcessInstance.Workflow.Id,
                 outgoing.TargetProcess.Id,
                 outgoing.Target!.Id);
@@ -35,7 +35,7 @@ namespace Polokus.Core.NodeHandlers.Special
 
             IProcessInstance piToCall = await GetProcessInstanceToCall(outgoing);
 
-            var waiterToPing = Utils.GetWaiterName(
+            var waiterToPing = CallersIds.GetWaiterId(
                 ProcessInstance.Workflow.Id,
                 piToCall.Id,
                 outgoing.TargetProcess.Id,
@@ -53,10 +53,10 @@ namespace Polokus.Core.NodeHandlers.Special
                 var allWaiters = ProcessInstance.Workflow.MessageManager.GetWaiters();
                 foreach (var waiter in allWaiters)
                 {
-                    if (Utils.GetBpmnProcessIdFromWaiter(waiter.Id) == outgoing.TargetProcess.Id
-                        && Utils.GetNodeIdFromWaiter(waiter.Id) == outgoing.Target!.Id)
+                    if (CallersIds.GetBpmnProcessIdFromWaiter(waiter.Id) == outgoing.TargetProcess.Id
+                        && CallersIds.GetNodeIdFromWaiter(waiter.Id) == outgoing.Target!.Id)
                     {
-                        string pid = Utils.GetProcessInstanceIdFromWaiter(waiter.Id);
+                        string pid = CallersIds.GetProcessInstanceIdFromWaiter(waiter.Id);
                         IProcessInstance? p = ProcessInstance.Workflow.GetProcessInstanceById(pid);
                         if (p != null)
                         {

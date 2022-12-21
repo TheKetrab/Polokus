@@ -14,6 +14,7 @@ namespace Polokus.Core.Execution
         public IProcessInstance ProcessInstance { get; }
 
         public string Id { get; }
+        public IHooksProvider? HooksProvider => ProcessInstance.HooksProvider;
 
         public void Invoke()
         {
@@ -24,7 +25,7 @@ namespace Polokus.Core.Execution
         {
             ProcessInstance = processInstance;
             NodeToCall = nodeToCall;
-            Id = Utils.GetWaiterName(
+            Id = CallersIds.GetWaiterId(
                 ProcessInstance.Workflow.Id, ProcessInstance.Id,
                 ProcessInstance.BpmnProcess.Id, NodeToCall.Id);
 

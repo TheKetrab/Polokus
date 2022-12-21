@@ -15,6 +15,7 @@ namespace Polokus.Core.Execution
         public IFlowNode StartNode { get; }
         public IBpmnProcess BpmnProcess { get; }
         public IWorkflow Workflow { get; }
+        public IHooksProvider? HooksProvider => Workflow.PolokusMaster.HooksManager;
 
 
         public ProcessStarter(IWorkflow workflow, IBpmnProcess bpmnProcess, IFlowNode startNode)
@@ -22,7 +23,7 @@ namespace Polokus.Core.Execution
             Workflow = workflow;
             BpmnProcess = bpmnProcess;
             StartNode = startNode;
-            Id = Utils.GetStarterName(Workflow.Id, BpmnProcess.Id, StartNode.Id);
+            Id = CallersIds.GetStarterId(Workflow.Id, BpmnProcess.Id, StartNode.Id);
         }
     }
 }

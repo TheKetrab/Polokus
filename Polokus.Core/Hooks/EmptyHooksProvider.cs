@@ -18,5 +18,6 @@ namespace Polokus.Core.Hooks
         public virtual void OnTasksChanged(string wfId, string piId) { }
         public virtual void OnTimeout(string wfId, string piId) { }
         public virtual void OnProcessFinished(string wfId, string piId, string result) { }
+        public virtual void OnCallerChanged(string callerId, CallerChangedType type) { }
     }
 }

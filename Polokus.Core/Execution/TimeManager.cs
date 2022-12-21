@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static Quartz.Logging.OperationName;
 using Polokus.Core.Interfaces;
+using Polokus.Core.Hooks;
 
 namespace Polokus.Core.Execution
 {
@@ -18,8 +19,6 @@ namespace Polokus.Core.Execution
         public TimeManager()
         {
         }
-
-        public event EventHandler? CallersChanged;
 
         Dictionary<string, IProcessStarter> _starters = new();
         Dictionary<string, INodeHandlerWaiter> _waiters = new();
@@ -48,7 +47,7 @@ namespace Polokus.Core.Execution
             await scheduler.Start();
 
             _starters.Add(starter.Id, starter);
-            CallersChanged?.Invoke(null, EventArgs.Empty);
+            starter.HooksProvider?.OnCallerChanged(starter.Id, CallerChangedType.StarterStartedProcess);
         }
 
         public async void RegisterWaiter(string timeString, INodeHandlerWaiter waiter, bool oneTime)
@@ -66,13 +65,13 @@ namespace Polokus.Core.Execution
             await scheduler.Start();
 
             _waiters.Add(waiter.Id, waiter);
-            CallersChanged?.Invoke(null, EventArgs.Empty);
+            waiter.HooksProvider?.OnCallerChanged(waiter.Id, CallerChangedType.WaiterInserted);
         }
 
         public void RemoveWaiter(INodeHandlerWaiter waiter)
         {
             _waiters.Remove(waiter.Id);
-            CallersChanged?.Invoke(null, EventArgs.Empty);
+            waiter.HooksProvider?.OnCallerChanged(waiter.Id, CallerChangedType.WaiterRemoved);
         }
 
 

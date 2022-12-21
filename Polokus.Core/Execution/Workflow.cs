@@ -59,7 +59,7 @@ namespace Polokus.Core.Execution
             BpmnWorkflow = bpmnWorkflow;
             Id = id;
 
-            HooksProvider = hooksProvider ?? PolokusMaster.HooksManager;
+            HooksProvider = hooksProvider;
 
             var nhFactory = new NodeHandlerFactory();
             nhFactory.SetDefaultNodeHandlers();
@@ -102,6 +102,7 @@ namespace Polokus.Core.Execution
         {
             string processId = $"pi{GetAnotherProcessId()}/{bpmnProcess.Id}";
             var instance = new ProcessInstance(processId, this, bpmnProcess);
+            instance.HooksProvider = this.HooksProvider;
             
             if (parent != null)
             {

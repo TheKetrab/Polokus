@@ -71,6 +71,11 @@ namespace Polokus.Core.Hooks
         {
             _hooksProviders.ForEach(x => x.OnTimeout(wfId, piId));
         }
+
+        public void OnCallerChanged(string callerId, CallerChangedType type)
+        {
+            _hooksProviders.ForEach(x => x.OnCallerChanged(callerId, type));
+        }
         #endregion
     }
 }
