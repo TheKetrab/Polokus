@@ -19,13 +19,11 @@ namespace Polokus.Core.Scripting
     {
         private INodeHandlerFactory _factory;
         private Workflow _workflow;
-        private ExternalsManager _externalsManager;
 
         public DynamicServiceTaskRegistrator(Workflow Workflow)
         {
             _workflow = Workflow;
             _factory = Workflow.NodeHandlerFactory;
-            _externalsManager = new ExternalsManager();
         }
 
         private static bool IsServiceNH(Type type)
@@ -55,7 +53,7 @@ namespace Polokus.Core.Scripting
             string externalsPath = _workflow.SettingsProvider.ServiceTasksExternals;
             string jsonContent = File.ReadAllText(externalsPath);
 
-            var externals = _externalsManager.LoadExternals(jsonContent);
+            var externals = ExternalsManager.LoadExternals(jsonContent);
 
             var wf = externals.Workflows[0];
             var st = wf.ServiceTasks[0];

@@ -10,13 +10,12 @@ namespace Polokus.Tests.ExternalsTests
     public class DeserializationTests
     {
         [Test]
-        public void LoadExternals()
+        public void LoadExternals_LoadServiceTasks()
         {
             // Arrange
-            var manager = new ExternalsManager();
 
             // Act
-            var externals = manager.LoadExternals(Resources.TestExternals);
+            var externals = ExternalsManager.LoadExternals(Resources.TestExternals);
 
             // Assert
             Assert.AreEqual(2, externals.Workflows.Count);

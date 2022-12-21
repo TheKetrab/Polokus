@@ -13,7 +13,7 @@ namespace Polokus.App.Views
     public partial class ServiceView : UserControl
     {
         private MainWindow _mainWindow;
-        public WorkflowsManager WorkflowsManager;
+        public PolokusMaster PolokusMaster;
         public ChromiumWindow chromiumWindow;
 
         public ServiceView(MainWindow mainWindow)
@@ -26,10 +26,11 @@ namespace Polokus.App.Views
             chromiumWindow.Parent = panelBpmnio;
             chromiumWindow.Dock = DockStyle.Fill;
 
-            WorkflowsManager = new WorkflowsManager();
+            PolokusMaster = new PolokusMaster();
+            PolokusMaster.HooksManager.RegisterHooksProvider(new AppHooksProvider(this));
             LoadBpmnFiles();
 
-            foreach (var iwf in WorkflowsManager.Workflows.Values)
+            foreach (var iwf in PolokusMaster.GetWorkflows())
             {
                 Workflow wf = (Workflow)iwf;
                 ((TimeManager)(wf.TimeManager)).CallersChanged += (s, e) =>
@@ -74,7 +75,7 @@ namespace Polokus.App.Views
 
             InitializeComboBoxWorkflows();
 
-            UpdateNodeHandlerWaitersList((Workflow?)WorkflowsManager.Workflows.Values.FirstOrDefault());
+            UpdateNodeHandlerWaitersList((Workflow?)PolokusMaster.GetWorkflows().FirstOrDefault());
         }
 
         private void LoadBpmnFiles()
@@ -104,9 +105,7 @@ namespace Polokus.App.Views
         {
             string str = File.ReadAllText(file);
 
-            WorkflowsManager.LoadXmlString(str, new FileInfo(file).Name,
-                settingsProvider: new AppSettingsProvider(),
-                createHooksProviderFunc: (wf) => new AppHooksProvider(wf));
+            PolokusMaster.LoadXmlString(str, new FileInfo(file).Name);
 
             if (!_comboBoxWorkflowsInitialized)
             {
@@ -153,12 +152,12 @@ namespace Polokus.App.Views
         private bool _comboBoxWorkflowsInitialized = false;
         private void InitializeComboBoxWorkflows()
         {
-            if (!WorkflowsManager.Workflows.Values.Any())
+            if (!PolokusMaster.GetWorkflows().Any())
             {
                 return;
             }
 
-            comboBoxWorkflows.DataSource = new BindingSource(WorkflowsManager.Workflows, null);
+            comboBoxWorkflows.DataSource = new BindingSource(PolokusMaster._workflows, null);
             comboBoxWorkflows.DisplayMember = "Key";
             comboBoxWorkflows.ValueMember = "Value";
 
@@ -274,6 +273,10 @@ namespace Polokus.App.Views
             return listView.SelectedItems[0].Text;
         }
 
+        public Workflow GetWorkflowById(string wfId)
+        {
+            return (Workflow)PolokusMaster.GetWorkflow(wfId);
+        }
         public Workflow? GetActiveWorkflow()
         {
             object si;
@@ -327,7 +330,7 @@ namespace Polokus.App.Views
             string wfId = globalProcessInstanceId.Substring(0, i);
             string processInstanceId = globalProcessInstanceId.Substring(i + 1);
 
-            Workflow workflow = (Workflow)WorkflowsManager.Workflows[wfId];
+            Workflow workflow = (Workflow)PolokusMaster.GetWorkflow(wfId);
             ProcessInstance processInstance = (ProcessInstance)workflow.GetProcessInstanceById(processInstanceId);
 
             string rawString = processInstance.BpmnProcess.BpmnWorkflow.RawString;

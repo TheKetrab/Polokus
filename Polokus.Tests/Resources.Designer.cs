@@ -267,7 +267,8 @@ namespace Polokus.Tests {
         ///                    &quot;ClassName&quot;: &quot;className2&quot;,
         ///                    &quot;ServiceTaskName&quot;: &quot;serviceTaskName2&quot;
         ///                }
-        ///            ]        /// [rest of string was truncated]&quot;;.
+        ///            ]
+        ///       [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string TestExternals {
             get {

@@ -38,8 +38,8 @@ namespace Polokus.App.Views
 
         private void NumericUpDownMessageListenerPort_ValueChanged(object? sender, EventArgs e)
         {
-            var messageManagers = _mainWindow.MainPanel.ServiceView.WorkflowsManager
-                .Workflows.Select(x => x.Value.MessageManager);
+            var messageManagers = _mainWindow.MainPanel.ServiceView.PolokusMaster
+                .GetWorkflows().Select(x => x.MessageManager);
 
             if (messageManagers.Any(x => x.IsAnyWaiting()))
             {

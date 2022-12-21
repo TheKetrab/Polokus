@@ -19,8 +19,8 @@ namespace Polokus.Tests.NodeHandlersTests
             // Arrange
             int cnt = 0;
             var hooksMock = new Mock<IHooksProvider>();
-            hooksMock.Setup(x => x.BeforeExecuteNode(It.IsAny<string>(),It.IsAny<IFlowNode>(),It.IsAny<int>(),It.IsAny<INodeCaller?>()))
-                .Callback((string pi, IFlowNode n, int i, INodeCaller? c) => { if (n.Name == "parallel2") cnt++; });
+            hooksMock.Setup(x => x.BeforeExecuteNode(It.IsAny<string>(),It.IsAny<string>(),It.IsAny<IFlowNode>(),It.IsAny<int>(),It.IsAny<INodeCaller?>()))
+                .Callback((string wf, string pi, IFlowNode n, int i, INodeCaller? c) => { if (n.Name == "parallel2") cnt++; });
 
             var pi = BpmnLoader.LoadBpmnXmlIntoSimpleProcessInstance(Resources.Parallel1);
 

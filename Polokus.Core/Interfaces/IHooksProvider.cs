@@ -5,14 +5,14 @@
     /// </summary>
     public interface IHooksProvider
     {
-        void AfterExecuteNodeSuccess(string processInstanceId, IFlowNode node, int taskId);
-        void AfterExecuteNodeFailure(string processInstanceId, IFlowNode node, int taskId);
-        void AfterExecuteNodeSuspension(string processInstanceId, IFlowNode node, int taskId);
-        void BeforeStartNewSequence(string processInstanceId, IFlowNode firstNode, INodeCaller? caller);
-        void BeforeExecuteNode(string processInstanceId, IFlowNode node, int taskId, INodeCaller? caller);
-        void OnStatusChanged(string processInstanceId);
-        void OnTasksChanged(string processInstanceId);
-        void OnTimeout(string processInstanceId);
-        void OnProcessFinished(string processInstanceId, string result);
+        void AfterExecuteNodeSuccess(string wfId, string piId, IFlowNode node, int taskId);
+        void AfterExecuteNodeFailure(string wfId, string piId, IFlowNode node, int taskId);
+        void AfterExecuteNodeSuspension(string wfId, string piId, IFlowNode node, int taskId);
+        void BeforeStartNewSequence(string wfId, string piId, IFlowNode firstNode, INodeCaller? caller);
+        void BeforeExecuteNode(string wfId, string piId, IFlowNode node, int taskId, INodeCaller? caller);
+        void OnStatusChanged(string wfId, string piId);
+        void OnTasksChanged(string wfId, string piId);
+        void OnTimeout(string wfId, string piId);
+        void OnProcessFinished(string wfId, string piId, string result);
     }
 }

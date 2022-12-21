@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Polokus.Core;
+using Polokus.Core.Execution;
+using Polokus.Core.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,6 +28,11 @@ namespace Polokus.Tests.Helpers
             }
 
             return str.Substring(idx1, idx2 - idx1);
+        }
+
+        public static IWorkflow GetFirstWorkflow(this IPolokusMaster polokus)
+        {
+            return polokus.GetWorkflows().First();
         }
     }
 }

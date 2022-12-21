@@ -28,24 +28,20 @@ namespace Polokus.Core.Execution
 
 
 
-        public IWorkflowsManager WfManager { get; }
+        public IPolokusMaster PolokusMaster { get; }
         public IBpmnWorkflow BpmnWorkflow { get; }
 
         public INodeHandlerFactory NodeHandlerFactory { get; }
         public string Id { get; }
 
-        protected IHooksProvider? _hooksProvider;
-        public void SetHooksProvider(IHooksProvider provider)
-        {
-            _hooksProvider = provider;
-        }
+        public IHooksProvider? HooksProvider { get; }
 
         public void SetSettingsProvider(ISettingsProvider provider)
         {
             SettingsProvider = provider;
         }
 
-        public Workflow(IWorkflowsManager wfManager, IBpmnWorkflow bpmnWorkflow, string id,
+        public Workflow(IPolokusMaster polokus, IBpmnWorkflow bpmnWorkflow, string id,
             IHooksProvider? hooksProvider = null, ISettingsProvider? settingsProvider = null)
         {
             if (settingsProvider == null)
@@ -59,10 +55,11 @@ namespace Polokus.Core.Execution
             MessageManager = new MessageManager(SettingsProvider.MessageListenerPort);
 
 
-            WfManager = wfManager;
+            PolokusMaster = polokus;
             BpmnWorkflow = bpmnWorkflow;
             Id = id;
-            _hooksProvider = hooksProvider;
+
+            HooksProvider = hooksProvider ?? PolokusMaster.HooksManager;
 
             var nhFactory = new NodeHandlerFactory();
             nhFactory.SetDefaultNodeHandlers();
@@ -85,7 +82,7 @@ namespace Polokus.Core.Execution
                 await Task.Delay(100);
                 if (IsTimeout(start, timeout))
                 {
-                    _hooksProvider?.OnTimeout(instance.Id);
+                    HooksProvider?.OnTimeout(instance.Workflow.Id, instance.Id);
                     ProcessInstances.Remove(instance);
                     History.Add(instance);
 
@@ -97,16 +94,22 @@ namespace Polokus.Core.Execution
             instance.StatusManager.Finish();
             ProcessInstances.Remove(instance);
             History.Add(instance);
-            _hooksProvider?.OnProcessFinished(instance.Id, "success");
+            HooksProvider?.OnProcessFinished(instance.Workflow.Id, instance.Id, "success");
             return true;
         }
 
-        public IProcessInstance CreateProcessInstance(IBpmnProcess bpmnProcess)
+        public IProcessInstance CreateProcessInstance(IBpmnProcess bpmnProcess, IProcessInstance? parent = null)
         {
             string processId = $"pi{GetAnotherProcessId()}/{bpmnProcess.Id}";
-            var instance = new ProcessInstance(processId, this, bpmnProcess, _hooksProvider);
+            var instance = new ProcessInstance(processId, this, bpmnProcess);
+            
+            if (parent != null)
+            {
+                instance.HooksProvider = parent.HooksProvider;
+            }
+
             ProcessInstances.Add(instance);
-            _hooksProvider?.OnStatusChanged(instance.Id);
+            HooksProvider?.OnStatusChanged(instance.Workflow.Id, instance.Id);
             return instance;
         }
 

@@ -24,7 +24,7 @@ namespace Polokus.Core.Execution
             set
             {
                 _status = value;
-                _pi.HooksProvider?.OnStatusChanged(_pi.Id);
+                _pi.HooksProvider?.OnStatusChanged(_pi.Workflow.Id, _pi.Id);
             }
         }
 

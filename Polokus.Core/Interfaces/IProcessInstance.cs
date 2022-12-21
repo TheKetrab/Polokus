@@ -7,12 +7,13 @@ namespace Polokus.Core.Interfaces
     /// </summary>
     public interface IProcessInstance
     {
-        public string Id { get; }
+        string Id { get; }
         IWorkflow Workflow { get; }
         IBpmnProcess BpmnProcess { get; }
         ActiveTasksManager ActiveTasksManager { get; }
         IProcessInstance? ParentProcessInstance { get; }
         IStatusManager StatusManager { get; }
+        IHooksProvider? HooksProvider { get; set; }
 
 
         ICollection<IProcessInstance> ChildrenProcessInstances { get; }

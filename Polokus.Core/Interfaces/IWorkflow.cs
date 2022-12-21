@@ -11,7 +11,7 @@
         IMessageManager MessageManager { get; }
         ISettingsProvider SettingsProvider { get; }
         IScriptProvider ScriptProvider { get; }
-        IWorkflowsManager WfManager { get; }
+        IPolokusMaster PolokusMaster { get; }
         INodeHandlerFactory NodeHandlerFactory { get; }
 
         /// <summary>
@@ -37,7 +37,7 @@
         /// </summary>
         /// <param name="bpmnProcess"></param>
         /// <returns></returns>
-        IProcessInstance CreateProcessInstance(IBpmnProcess bpmnProcess);
+        IProcessInstance CreateProcessInstance(IBpmnProcess bpmnProcess, IProcessInstance? parent = null);
         
         /// <summary>
         /// This method manually runs instance given as argument <paramref name="processInstance"/>

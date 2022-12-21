@@ -38,7 +38,7 @@ namespace Polokus.Core.Execution
             CancellationTokenSource cts = new CancellationTokenSource();
 
             ActiveTasks.Add(taskId, Tuple.Create(cts, nh)); // TODO to bardzo wazne zeby to nie byl null
-            ProcessInstance.HooksProvider?.OnTasksChanged(ProcessInstance.Id);
+            ProcessInstance.HooksProvider?.OnTasksChanged(ProcessInstance.Workflow.Id, ProcessInstance.Id);
             return Tuple.Create(taskId, cts.Token);
         }
 
@@ -53,7 +53,7 @@ namespace Polokus.Core.Execution
         public void RemoveRunningTask(int taskId)
         {
             ActiveTasks.Remove(taskId);
-            ProcessInstance.HooksProvider?.OnTasksChanged(ProcessInstance.Id);
+            ProcessInstance.HooksProvider?.OnTasksChanged(ProcessInstance.Workflow.Id, ProcessInstance.Id);
         }
 
 
@@ -63,14 +63,14 @@ namespace Polokus.Core.Execution
             ActiveTasks.Values.ForEach(x => x.Item1.Cancel(true));
             ActiveTasks.Clear();
             ProcessInstance.AvailableNodeHandlers.Clear();
-            ProcessInstance.HooksProvider?.OnTasksChanged(ProcessInstance.Id);
+            ProcessInstance.HooksProvider?.OnTasksChanged(ProcessInstance.Workflow.Id, ProcessInstance.Id);
         }
         public void Stop()
         {
             ActiveTasks.Values.ForEach(x => x.Item1.Cancel(true));
             ActiveTasks.Clear();
             ProcessInstance.AvailableNodeHandlers.Clear();
-            ProcessInstance.HooksProvider?.OnTasksChanged(ProcessInstance.Id);
+            ProcessInstance.HooksProvider?.OnTasksChanged(ProcessInstance.Workflow.Id, ProcessInstance.Id);
         }
         public void Resume()
         {

@@ -37,7 +37,7 @@ namespace Polokus.ConsoleApp.ManualTests
             }
             Console.WriteLine();
 
-            var wfManager = new WorkflowsManager();
+            var wfManager = new PolokusMaster();
             string path = Path.Combine(BpmnDir, _bpmnFile);
             if (!File.Exists(path))
             {
@@ -48,7 +48,7 @@ namespace Polokus.ConsoleApp.ManualTests
 
             string str = File.ReadAllText(path);
             wfManager.LoadXmlString(str, "Test");
-            var wf = wfManager.Workflows.First().Value;
+            var wf = wfManager.GetWorkflows().First();
             var bpmnProcess = wf.BpmnWorkflow.BpmnProcesses.First();
             var startNode = bpmnProcess.GetManualStartNode();
             var pi = wf.CreateProcessInstance(bpmnProcess);
@@ -69,7 +69,7 @@ namespace Polokus.ConsoleApp.ManualTests
             return success;
         }
 
-        protected virtual void InitTest(WorkflowsManager wfManager) { }
+        protected virtual void InitTest(PolokusMaster polokus) { }
 
     }
 }

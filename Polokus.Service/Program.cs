@@ -1,25 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.ServiceProcess;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Polokus.Service;
+using Topshelf;
 
-namespace Polokus.Service
+Console.WriteLine("Hello, World!");
+
+
+var exitCode = HostFactory.Run(x =>
 {
-    internal static class Program
+    x.Service<PolokusService>(s =>
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        static void Main()
-        {
-            ServiceBase[] ServicesToRun;
-            ServicesToRun = new ServiceBase[]
-            {
-                new Service1()
-            };
-            ServiceBase.Run(ServicesToRun);
-        }
-    }
-}
+        s.ConstructUsing(polokus => new PolokusService());
+        s.WhenStarted(polokus => polokus.Start());
+        s.WhenStopped(polokus => polokus.Stop());
+
+
+    });
+
+    x.RunAsLocalSystem();
+    x.SetServiceName("PolokusService");
+    x.SetDisplayName("Polokus Service");
+    x.SetDescription("This service is an instance of BPMN 2.0 Polokus Engine that provides execution of BPMN Workflows.");
+
+});
+
+int exitCodeValue = (int)Convert.ChangeType(exitCode, exitCode.GetTypeCode());
+Environment.ExitCode = exitCodeValue;

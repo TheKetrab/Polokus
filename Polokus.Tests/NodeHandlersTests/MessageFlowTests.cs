@@ -20,7 +20,7 @@ namespace Polokus.Tests.NodeHandlersTests
             // Arrange
             VisitorHooks visitor = new VisitorHooks(VisitTime.BeforeExecute);
             var wfm = BpmnLoader.LoadBpmnXmlIntoWorkflowsManager(Resources.MsgBetweenProcesses1, visitor);
-            var wf = wfm.Workflows.First().Value;
+            var wf = wfm.GetFirstWorkflow();
             var bpmnProcess = wf.BpmnWorkflow.BpmnProcesses.First(x => x.Id == "Process_1fqg2b6");
             var startNode = bpmnProcess.GetManualStartNode();
             var pi = wf.CreateProcessInstance(bpmnProcess);
@@ -61,7 +61,7 @@ namespace Polokus.Tests.NodeHandlersTests
 
             VisitorHooks visitor = new VisitorHooks(VisitTime.BeforeExecute);
             var wfm = BpmnLoader.LoadBpmnXmlIntoWorkflowsManager(bpmnString, visitor);
-            var wf = wfm.Workflows.First().Value;
+            var wf = wfm.GetFirstWorkflow();
 
             string[] processIds = new string[3] { "Process_1pq1cix", "Process_0p4rtg3", "Process_1ylxybt" };
             IBpmnProcess[] bpmnProcesses = processIds.Select(pid => wf.BpmnWorkflow.BpmnProcesses.First(pr => pr.Id == pid)).ToArray();
@@ -96,7 +96,7 @@ namespace Polokus.Tests.NodeHandlersTests
         {
             // Arrange
             var wfm = BpmnLoader.LoadBpmnXmlIntoWorkflowsManager(Resources.MsgBetweenProcesses4);
-            var wf = wfm.Workflows.First().Value;
+            var wf = wfm.GetFirstWorkflow();
             var bpmnProcess = wf.BpmnWorkflow.BpmnProcesses.First(x => x.Id == "Process_05l3o9f");
             var startNode = bpmnProcess.GetManualStartNode();
             var pi = wf.CreateProcessInstance(bpmnProcess);

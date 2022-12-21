@@ -12,7 +12,7 @@ namespace Polokus.Core.Execution
         public ActiveTasksManager ActiveTasksManager { get; private set; }
         public IStatusManager StatusManager { get; private set; }
 
-        public IHooksProvider? HooksProvider;
+        public IHooksProvider? HooksProvider { get; set; }
         public IProcessInstance? ParentProcessInstance { get; private set; }
 
         public ICollection<IProcessInstance> ChildrenProcessInstances { get; }
@@ -27,7 +27,7 @@ namespace Polokus.Core.Execution
 
 
         public ProcessInstance(string id, IWorkflow workflow,
-            IBpmnProcess bpmnProcess, IHooksProvider? hooksProvider = null)
+            IBpmnProcess bpmnProcess, IProcessInstance? parent = null)
         {
             Id = id;
             Workflow = workflow;
@@ -35,13 +35,12 @@ namespace Polokus.Core.Execution
             StatusManager = new StatusManager(this);
 
             BpmnProcess = bpmnProcess;
-            HooksProvider = hooksProvider;
+            ParentProcessInstance = parent;
         }
 
         public IProcessInstance CreateSubProcessInstance(IBpmnProcess bpmnProcess)
         {
-            ProcessInstance processInstance = (ProcessInstance)Workflow.CreateProcessInstance(bpmnProcess);
-            processInstance.ParentProcessInstance = this;
+            var processInstance = Workflow.CreateProcessInstance(bpmnProcess, this);
             ChildrenProcessInstances.Add(processInstance);
             processInstance.HooksProvider = HooksProvider;
             return processInstance;
@@ -113,7 +112,7 @@ namespace Polokus.Core.Execution
             INodeHandler nodeHandler = GetNodeHandlerForNode(node);
             ActiveTasksManager.AssignTaskToAnotherNodeHandler(taskId, nodeHandler);
 
-            HooksProvider?.BeforeExecuteNode(Id, node, taskId, caller);
+            HooksProvider?.BeforeExecuteNode(Workflow.Id, Id, node, taskId, caller);
             var executionResult = await nodeHandler.Execute(caller, taskId);
             lock (TasksMutex)
             {
@@ -126,17 +125,17 @@ namespace Polokus.Core.Execution
             switch (resultInfo.State)
             {
                 case ProcessResultState.Success:
-                    HooksProvider?.AfterExecuteNodeSuccess(Id, node, taskId);
+                    HooksProvider?.AfterExecuteNodeSuccess(Workflow.Id, Id, node, taskId);
                     AvailableNodeHandlers.Remove(node.Id);
                     RunFurtherNodes(node, taskId, resultInfo.SequencesToInvoke!.ToArray());
                     break;
                 case ProcessResultState.Failure:
-                    HooksProvider?.AfterExecuteNodeFailure(Id, node, taskId);
+                    HooksProvider?.AfterExecuteNodeFailure(Workflow.Id, Id, node, taskId);
                     ActiveTasksManager.RemoveRunningTask(taskId);
                     AvailableNodeHandlers.Remove(node.Id);
                     break;
                 case ProcessResultState.Suspension:
-                    HooksProvider?.AfterExecuteNodeSuspension(Id, node, taskId);
+                    HooksProvider?.AfterExecuteNodeSuspension(Workflow.Id, Id, node, taskId);
                     ActiveTasksManager.RemoveRunningTask(taskId);
                     break;
                 case ProcessResultState.Cancellation:
@@ -149,7 +148,7 @@ namespace Polokus.Core.Execution
 
         public void StartNewSequence(IFlowNode firstNode, INodeCaller? caller)
         {
-            HooksProvider?.BeforeStartNewSequence(Id, firstNode, caller);
+            HooksProvider?.BeforeStartNewSequence(Workflow.Id, Id, firstNode, caller);
             var newTask = ActiveTasksManager.AddNewTask(GetNodeHandlerForNode(firstNode));
             int taskId = newTask.Item1;
             CancellationToken ctoken = newTask.Item2;

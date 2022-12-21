@@ -4,7 +4,7 @@ using Polokus.Core.Models;
 using Polokus.Core.Models.BpmnObjects.Xsd;
 using Polokus.Core.NodeHandlers;
 
-namespace Polokus.CustomServiceTaskExample
+namespace Polokus.ExternalsExample
 {
     public class MyCustomServiceTaskNodeHandler : ServiceTaskNodeHandler
     {

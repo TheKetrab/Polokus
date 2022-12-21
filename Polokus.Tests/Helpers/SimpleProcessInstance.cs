@@ -11,8 +11,9 @@ namespace Polokus.Tests.Helpers
 {
     internal class SimpleProcessInstance : ProcessInstance
     {
-        public SimpleProcessInstance(string id, IWorkflow workflow, IBpmnProcess bpmnProcess, IHooksProvider? hooksProvider = null)
-            : base(id, workflow, bpmnProcess, hooksProvider)
+        public SimpleProcessInstance(string id, IWorkflow workflow, IBpmnProcess bpmnProcess,
+            IHooksProvider? hooksProvider = null)
+            : base(id, workflow, bpmnProcess)
         {
         }
 
@@ -33,7 +34,7 @@ namespace Polokus.Tests.Helpers
 
                 if (timeout.HasValue && DateTime.Now - start > TimeSpan.FromSeconds(timeout.Value))
                 {
-                    HooksProvider?.OnTimeout("");
+                    HooksProvider?.OnTimeout("","");
                     return false;
                 }
             }
