@@ -5,6 +5,7 @@ using Polokus.Core;
 using Polokus.Core.Execution;
 using Polokus.Core.Helpers;
 using Polokus.Core.Interfaces;
+using System.Collections.ObjectModel;
 using System.Data;
 using System.Reflection;
 
@@ -32,12 +33,56 @@ namespace Polokus.App.Views
             LoadBpmnFiles();
 
             this.listViewProcesses.SizeChanged += ListViewProcesses_SizeChanged;
+            this.listViewProcesses.SelectedIndexChanged += ListViewProcesses_SelectedIndexChanged;
+
             this.listViewInstances.SizeChanged += ListViewInstances_SizeChanged;
             this.listViewInstances.SelectedIndexChanged += ListViewInstances_SelectedIndexChanged;
+            this.listViewStarters.SizeChanged += ListViewStarters_SizeChanged;
+            this.listViewWaiters.SizeChanged += ListViewWaiters_SizeChanged;
+
+            AnyBpmnProcessSelected = false;
+            AnyProcessInstanceSelected = false;
 
             InitializeComboBoxWorkflows();
 
             LoadViewForFirstWorkflow();
+        }
+
+        private void ListViewProcesses_SelectedIndexChanged(object? sender, EventArgs e)
+        {
+            if (this.listViewProcesses.SelectedItems.Count == 1)
+            {
+                AnyBpmnProcessSelected = true;
+            }
+            else
+            {
+                AnyBpmnProcessSelected = false;
+            }
+        }
+
+        private bool _anyBpmnProcessSelected;
+        public bool AnyBpmnProcessSelected
+        {
+            get => _anyBpmnProcessSelected;
+            set 
+            {
+                _anyBpmnProcessSelected = value;
+                this.buttonAdd.Enabled = value;
+            }
+        }
+
+        private bool _anyProcessInstanceSelected;
+        public bool AnyProcessInstanceSelected
+        {
+            get => _anyProcessInstanceSelected;
+            set
+            {
+                _anyProcessInstanceSelected = value;
+                this.buttonRestart.Enabled = value;
+                this.buttonStop.Enabled = value;
+                this.buttonDelete.Enabled = value;
+                this.buttonStart.Enabled = value;
+            }
         }
 
         private void LoadViewForFirstWorkflow()
@@ -58,17 +103,57 @@ namespace Polokus.App.Views
                 ActiveProcessInstance = item.SubItems[0].Text;
 
                 ActiveProcessChanged();
+                AnyProcessInstanceSelected = true;
+            }
+            else
+            {
+                AnyProcessInstanceSelected = false;
             }
         }
 
         private void ListViewInstances_SizeChanged(object? sender, EventArgs e)
         {
-            this.listViewInstances.Columns[0].Width = this.listViewInstances.Width - this.listViewInstances.Columns[1].Width - 25;
+            int maxWidth = this.listViewInstances.Width - 10;
+
+            int c2Width = (int)(0.2 * maxWidth);
+            this.listViewInstances.Columns[2].Width = c2Width;
+
+            int c1Width = (int)(0.2 * maxWidth);
+            this.listViewInstances.Columns[1].Width = c1Width;
+
+            this.listViewInstances.Columns[0].Width = maxWidth - c2Width - c1Width;
+        }
+
+        private void ListViewWaiters_SizeChanged(object? sender, EventArgs e)
+        {
+            int maxWidth = this.listViewWaiters.Width - 10;
+
+            int c2Width = (int)(0.25 * maxWidth);
+            this.listViewWaiters.Columns[2].Width = c2Width;
+
+            int c1Width = (int)(0.3 * maxWidth);
+            this.listViewWaiters.Columns[1].Width = c1Width;
+
+            this.listViewWaiters.Columns[0].Width = maxWidth - c2Width - c1Width;
+        }
+
+        private void ListViewStarters_SizeChanged(object? sender, EventArgs e)
+        {
+            int maxWidth = this.listViewStarters.Width - 10;
+
+            int c2Width = (int)(0.25 * maxWidth);
+            this.listViewStarters.Columns[2].Width = c2Width;
+
+            int c1Width = (int)(0.3 * maxWidth);
+            this.listViewStarters.Columns[1].Width = c1Width;
+
+            this.listViewStarters.Columns[0].Width = maxWidth - c2Width - c1Width;
         }
 
         private void ListViewProcesses_SizeChanged(object? sender, EventArgs e)
         {
-            this.listViewProcesses.Columns[0].Width = this.listViewProcesses.Width - 25;
+            int maxWidth = this.listViewProcesses.Width - 10;
+            this.listViewProcesses.Columns[0].Width = maxWidth;
         }
 
         private void LoadBpmnFiles()
