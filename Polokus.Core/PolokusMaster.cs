@@ -35,6 +35,8 @@ namespace Polokus.Core
 
         private Dictionary<string, Logger> _logs = new();
 
+        public event EventHandler<string>? Signal;
+
         public Logger GetOrCreateLogger(string globalPiId)
         {
             if (_logs.ContainsKey(globalPiId))
@@ -78,6 +80,20 @@ namespace Polokus.Core
             {
                 SettingsProvider = new DefaultSettingsProvider();
             }
+
+            // --------------------------------------------------------------------------------------
+            string pathToMonitor = @"C:\Custom\BPMN\Polokus\Examples\PathToMonitor";
+            var fm = new FileMonitor(pathToMonitor);
+            FileMonitors.Add(fm);
+            fm.StartMonitoring();
+            fm.FileCreated += (s, e) => { Signal?.Invoke(this, "FileCreated"); };
+            fm.FileModified += (s, e) => { Signal?.Invoke(this, "FileModified"); };
+            fm.FileRenamed += (s, e) => { Signal?.Invoke(this, "FileRenamed"); };
+            fm.DirectoryCreated += (s, e) => { Signal?.Invoke(this, "DirectoryCreated"); };
+            fm.DirectoryRenamed += (s, e) => { Signal?.Invoke(this, "DirectoryRenamed"); };
+            fm.ItemDeleted += (s, e) => { Signal?.Invoke(this, "ItemDeleted"); };
+            // --------------------------------------------------------------------------------------
+
         }
 
         public void AddWorkflow(string id, IWorkflow workflow)
@@ -116,12 +132,12 @@ namespace Polokus.Core
             IBpmnWorkflow bpmnWorkflow = parser.ParseBpmnXml(xmlString);
 
             var workflow = new Workflow(this, bpmnWorkflow, bpmnWorkflowName, hooksProvider: HooksManager);
-            RegisterWaiters(workflow);
+            RegisterStarters(workflow);
 
             AddWorkflow(bpmnWorkflowName, workflow);
         }
 
-        private void RegisterWaiters(Workflow workflow)
+        private void RegisterStarters(Workflow workflow)
         {
             var allStartNodes = workflow.BpmnWorkflow.BpmnProcesses.SelectMany(x => x.GetStartNodes());
             foreach (var startNode in allStartNodes)
@@ -130,7 +146,6 @@ namespace Polokus.Core
                 {
                     if (startFlowNode.XmlElement.Items?.Any() ?? false)
                     {
-
                         var eventDefinition = startFlowNode.XmlElement.Items[0];
                         if (eventDefinition is tTimerEventDefinition)
                         {
@@ -143,6 +158,11 @@ namespace Polokus.Core
                             var processStarter = new ProcessStarter(workflow, startFlowNode.BpmnProcess, startNode);
                             workflow.MessageManager.RegisterMessageListener(processStarter);
                         }
+                        else if (eventDefinition is tSignalEventDefinition)
+                        {
+                            var processStarter = new ProcessStarter(workflow, startFlowNode.BpmnProcess, startNode);
+                            workflow.SignalManager.RegisterSignalListener(processStarter);
+                        }
 
                     }
 
@@ -151,7 +171,9 @@ namespace Polokus.Core
             }
         }
 
-
-
+        public void EmitSignal(object? sender, string signal)
+        {
+            Signal?.Invoke(sender, signal);
+        }
     }
 }

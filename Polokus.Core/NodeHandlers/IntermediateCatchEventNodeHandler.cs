@@ -36,6 +36,10 @@ namespace Polokus.Core.NodeHandlers
             {
                 _subhandler = new MessageCatchingNodeHandler<tIntermediateCatchEvent>(ProcessInstance, TypedNode);
             }
+            else if (eventDefinition is tSignalEventDefinition)
+            {
+                _subhandler = new SignalSlottingNodeHandler<tIntermediateCatchEvent>(ProcessInstance, TypedNode);
+            }
             else
             {
                 throw new Exception($"Unknown definition of node {this.Node.Name}: {eventDefinition.id}");

@@ -21,6 +21,7 @@ namespace Polokus.Core.Execution
         public ITimeManager TimeManager { get; }
         public IMessageManager MessageManager { get; }
         public IScriptProvider ScriptProvider { get; }
+        public ISignalManager SignalManager { get; }
 
 
         public ICollection<IProcessInstance> History { get; } = new List<IProcessInstance>();
@@ -53,6 +54,7 @@ namespace Polokus.Core.Execution
             ScriptProvider = new ScriptProvider();
             SettingsProvider = settingsProvider;
             MessageManager = new MessageManager(SettingsProvider.MessageListenerPort);
+            SignalManager = new SignalManager(this);
 
 
             PolokusMaster = polokus;

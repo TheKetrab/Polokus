@@ -50,7 +50,18 @@ namespace Polokus.Core.Interfaces
         /// <summary>
         /// Parses BPMN XML string and adds workflow to collecion.
         /// </summary>
-        public void LoadXmlString(string xmlString, string bpmnWorkflowName);
+        void LoadXmlString(string xmlString, string bpmnWorkflowName);
+
+        /// <summary>
+        /// Signal that can be emited.
+        /// </summary>
+        event EventHandler<string>? Signal;
+
+        /// <summary>
+        /// This method invokes signal event with given parameters.
+        /// </summary>
+        /// <param name="signal"></param>
+        void EmitSignal(object? sender, string signal);
 
     }
 }

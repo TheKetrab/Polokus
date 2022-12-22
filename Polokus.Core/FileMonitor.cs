@@ -18,14 +18,14 @@ namespace Polokus.Monitors.FileMonitor
             _watcher = new FileSystemWatcher(_path);
             _watcher.EnableRaisingEvents = false;
 
-            //_watcher.NotifyFilter = NotifyFilters.Attributes
-            //         | NotifyFilters.CreationTime
-            //         | NotifyFilters.DirectoryName
-            //         | NotifyFilters.FileName
-            //         | NotifyFilters.LastAccess
-            //         | NotifyFilters.LastWrite
-            //         | NotifyFilters.Security
-            //         | NotifyFilters.Size;
+            _watcher.NotifyFilter = NotifyFilters.Attributes
+                     | NotifyFilters.CreationTime
+                     | NotifyFilters.DirectoryName
+                     | NotifyFilters.FileName
+                     | NotifyFilters.LastAccess
+                     | NotifyFilters.LastWrite
+                     | NotifyFilters.Security
+                     | NotifyFilters.Size;
 
             _watcher.Renamed += _watcher_Renamed;
             _watcher.Changed += _watcher_Changed;
@@ -73,7 +73,6 @@ namespace Polokus.Monitors.FileMonitor
         public event EventHandler<string>? FileCreated;
         public event EventHandler<string>? FileModified;
         public event EventHandler<string>? FileRenamed;
-        public event EventHandler<string>? FileMoved;
 
         public event EventHandler<string>? DirectoryCreated;
         public event EventHandler<string>? DirectoryRenamed;

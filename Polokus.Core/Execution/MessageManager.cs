@@ -35,7 +35,7 @@ namespace Polokus.Core.Execution
         public void RegisterMessageListener(IProcessStarter starter)
         {
             Task t = new Task(async () => { await WaitForMessage(starter); });
-            t.Start();
+            t.Start(); // TODO: czy to nie dziala przypadkiem tylko raz?
         }
 
 

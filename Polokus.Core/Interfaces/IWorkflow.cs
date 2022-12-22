@@ -9,6 +9,7 @@
         IBpmnWorkflow BpmnWorkflow { get; }
         ITimeManager TimeManager { get; }
         IMessageManager MessageManager { get; }
+        ISignalManager SignalManager { get; }
         ISettingsProvider SettingsProvider { get; }
         IScriptProvider ScriptProvider { get; }
         IPolokusMaster PolokusMaster { get; }
