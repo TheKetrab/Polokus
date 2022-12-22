@@ -52,6 +52,8 @@ namespace Polokus.App.Views
             this.buttonBrowseBpmnPath = new Polokus.App.Controls.PolokusButton();
             this.textBoxBpmnPath = new System.Windows.Forms.TextBox();
             this.polokusLabel1 = new Polokus.App.Controls.PolokusLabel();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.panel3 = new System.Windows.Forms.Panel();
             this.panel1.SuspendLayout();
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownTimeoutForManualProcesses)).BeginInit();
@@ -66,8 +68,10 @@ namespace Polokus.App.Views
             // panel1
             // 
             this.panel1.Controls.Add(this.groupBox3);
+            this.panel1.Controls.Add(this.panel2);
             this.panel1.Controls.Add(this.buttonSaveSettings);
             this.panel1.Controls.Add(this.groupBox2);
+            this.panel1.Controls.Add(this.panel3);
             this.panel1.Controls.Add(this.groupBox1);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 0);
@@ -88,11 +92,11 @@ namespace Polokus.App.Views
             this.groupBox3.Controls.Add(this.polokusLabel4);
             this.groupBox3.Controls.Add(this.trackBarDelayPerNodeHandler);
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox3.Location = new System.Drawing.Point(10, 275);
+            this.groupBox3.Location = new System.Drawing.Point(10, 315);
             this.groupBox3.Margin = new System.Windows.Forms.Padding(0);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Padding = new System.Windows.Forms.Padding(10, 20, 10, 20);
-            this.groupBox3.Size = new System.Drawing.Size(1180, 143);
+            this.groupBox3.Size = new System.Drawing.Size(1180, 177);
             this.groupBox3.TabIndex = 3;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Process Instance options";
@@ -101,7 +105,7 @@ namespace Polokus.App.Views
             // 
             this.polokusLabel7.AutoSize = true;
             this.polokusLabel7.Font = new System.Drawing.Font("Montserrat", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.polokusLabel7.Location = new System.Drawing.Point(446, 94);
+            this.polokusLabel7.Location = new System.Drawing.Point(608, 94);
             this.polokusLabel7.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.polokusLabel7.Name = "polokusLabel7";
             this.polokusLabel7.Size = new System.Drawing.Size(13, 16);
@@ -110,7 +114,7 @@ namespace Polokus.App.Views
             // 
             // numericUpDownTimeoutForManualProcesses
             // 
-            this.numericUpDownTimeoutForManualProcesses.Location = new System.Drawing.Point(365, 91);
+            this.numericUpDownTimeoutForManualProcesses.Location = new System.Drawing.Point(527, 91);
             this.numericUpDownTimeoutForManualProcesses.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.numericUpDownTimeoutForManualProcesses.Maximum = new decimal(new int[] {
             65535,
@@ -130,7 +134,7 @@ namespace Polokus.App.Views
             // 
             this.polokusLabel6.AutoSize = true;
             this.polokusLabel6.Font = new System.Drawing.Font("Montserrat", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.polokusLabel6.Location = new System.Drawing.Point(446, 38);
+            this.polokusLabel6.Location = new System.Drawing.Point(608, 38);
             this.polokusLabel6.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.polokusLabel6.Name = "polokusLabel6";
             this.polokusLabel6.Size = new System.Drawing.Size(26, 16);
@@ -139,7 +143,7 @@ namespace Polokus.App.Views
             // 
             // numericUpDownDelayPerNodeHandler
             // 
-            this.numericUpDownDelayPerNodeHandler.Location = new System.Drawing.Point(365, 35);
+            this.numericUpDownDelayPerNodeHandler.Location = new System.Drawing.Point(527, 35);
             this.numericUpDownDelayPerNodeHandler.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.numericUpDownDelayPerNodeHandler.Maximum = new decimal(new int[] {
             10000,
@@ -152,7 +156,7 @@ namespace Polokus.App.Views
             // 
             // trackBarTimeOutForManualProcesses
             // 
-            this.trackBarTimeOutForManualProcesses.Location = new System.Drawing.Point(206, 93);
+            this.trackBarTimeOutForManualProcesses.Location = new System.Drawing.Point(368, 93);
             this.trackBarTimeOutForManualProcesses.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.trackBarTimeOutForManualProcesses.Maximum = 300;
             this.trackBarTimeOutForManualProcesses.Minimum = -1;
@@ -186,7 +190,7 @@ namespace Polokus.App.Views
             // 
             // trackBarDelayPerNodeHandler
             // 
-            this.trackBarDelayPerNodeHandler.Location = new System.Drawing.Point(206, 37);
+            this.trackBarDelayPerNodeHandler.Location = new System.Drawing.Point(368, 37);
             this.trackBarDelayPerNodeHandler.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.trackBarDelayPerNodeHandler.Maximum = 10000;
             this.trackBarDelayPerNodeHandler.Name = "trackBarDelayPerNodeHandler";
@@ -215,7 +219,7 @@ namespace Polokus.App.Views
             this.groupBox2.Controls.Add(this.numericUpDownMessageListenerPort);
             this.groupBox2.Controls.Add(this.checkBoxEnableLogs);
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox2.Location = new System.Drawing.Point(10, 149);
+            this.groupBox2.Location = new System.Drawing.Point(10, 169);
             this.groupBox2.Margin = new System.Windows.Forms.Padding(0);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Padding = new System.Windows.Forms.Padding(10, 20, 10, 20);
@@ -237,7 +241,7 @@ namespace Polokus.App.Views
             // 
             // numericUpDownMessageListenerPort
             // 
-            this.numericUpDownMessageListenerPort.Location = new System.Drawing.Point(168, 64);
+            this.numericUpDownMessageListenerPort.Location = new System.Drawing.Point(368, 64);
             this.numericUpDownMessageListenerPort.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.numericUpDownMessageListenerPort.Maximum = new decimal(new int[] {
             65535,
@@ -298,10 +302,10 @@ namespace Polokus.App.Views
             this.textBoxBpmnServiceNodeHandlers.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxBpmnServiceNodeHandlers.Font = new System.Drawing.Font("Montserrat", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.textBoxBpmnServiceNodeHandlers.Location = new System.Drawing.Point(308, 69);
+            this.textBoxBpmnServiceNodeHandlers.Location = new System.Drawing.Point(368, 69);
             this.textBoxBpmnServiceNodeHandlers.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.textBoxBpmnServiceNodeHandlers.Name = "textBoxBpmnServiceNodeHandlers";
-            this.textBoxBpmnServiceNodeHandlers.Size = new System.Drawing.Size(740, 22);
+            this.textBoxBpmnServiceNodeHandlers.Size = new System.Drawing.Size(680, 22);
             this.textBoxBpmnServiceNodeHandlers.TabIndex = 4;
             // 
             // polokusLabel3
@@ -334,10 +338,10 @@ namespace Polokus.App.Views
             this.textBoxBpmnPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxBpmnPath.Font = new System.Drawing.Font("Montserrat", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.textBoxBpmnPath.Location = new System.Drawing.Point(160, 34);
+            this.textBoxBpmnPath.Location = new System.Drawing.Point(368, 34);
             this.textBoxBpmnPath.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.textBoxBpmnPath.Name = "textBoxBpmnPath";
-            this.textBoxBpmnPath.Size = new System.Drawing.Size(888, 22);
+            this.textBoxBpmnPath.Size = new System.Drawing.Size(680, 22);
             this.textBoxBpmnPath.TabIndex = 1;
             // 
             // polokusLabel1
@@ -350,6 +354,22 @@ namespace Polokus.App.Views
             this.polokusLabel1.Size = new System.Drawing.Size(135, 16);
             this.polokusLabel1.TabIndex = 0;
             this.polokusLabel1.Text = "Path with bpmn files:";
+            // 
+            // panel2
+            // 
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel2.Location = new System.Drawing.Point(10, 295);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(1180, 20);
+            this.panel2.TabIndex = 4;
+            // 
+            // panel3
+            // 
+            this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel3.Location = new System.Drawing.Point(10, 149);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(1180, 20);
+            this.panel3.TabIndex = 5;
             // 
             // SettingsView
             // 
@@ -400,5 +420,7 @@ namespace Polokus.App.Views
         private Controls.PolokusLabel polokusLabel6;
         private NumericUpDown numericUpDownDelayPerNodeHandler;
         private PolokusTrackBar trackBarTimeOutForManualProcesses;
+        private Panel panel2;
+        private Panel panel3;
     }
 }
