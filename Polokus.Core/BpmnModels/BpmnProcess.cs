@@ -109,7 +109,12 @@ namespace Polokus.Core.Models
 
         public IFlowNode GetManualStartNode()
         {
-            return nodesDictionary.Values.Single(x => BpmnXmlHelpers.IsManualStartNode(x));
+            return nodesDictionary.Values.Single(BpmnXmlHelpers.IsManualStartNode);
+        }
+
+        public bool IsManualProcess()
+        {
+            return nodesDictionary.Values.Any(BpmnXmlHelpers.IsManualStartNode);
         }
 
         public IEnumerable<string> GetNodesIds()

@@ -44,6 +44,11 @@
         IEnumerable<IFlowNode> GetStartNodes();
 
         /// <summary>
+        /// This method returns true iif this BPMN process is manual (has manual start node).
+        /// </summary>
+        bool IsManualProcess();
+
+        /// <summary>
         /// This method returns true iif. there is a path in graph of BPMN process'
         /// nodes from <paramref name="src"/> to <paramref name="dest"/>.
         /// </summary>

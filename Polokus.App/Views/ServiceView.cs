@@ -163,7 +163,10 @@ namespace Polokus.App.Views
             listViewProcesses.Items.Clear();
             foreach (var process in workflow.BpmnWorkflow.BpmnProcesses)
             {
-                this.listViewProcesses.Items.Add(process.Id);
+                if (process.IsManualProcess())
+                {
+                    this.listViewProcesses.Items.Add(process.Id);
+                }
             }
         }
 
