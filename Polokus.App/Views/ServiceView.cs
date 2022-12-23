@@ -271,6 +271,7 @@ namespace Polokus.App.Views
             List<Tuple<string,IProcessStarter>> starters = new();
             starters.AddRange(workflow.TimeManager.GetStarters().Select(x => Tuple.Create("Time",x)));
             starters.AddRange(workflow.MessageManager.GetStarters().Select(x => Tuple.Create("Message", x)));
+            starters.AddRange(workflow.SignalManager.GetStarters().Select(x => Tuple.Create("Signal", x)));
 
             foreach (var starter in starters)
             {
@@ -298,6 +299,7 @@ namespace Polokus.App.Views
             List<Tuple<string,INodeHandlerWaiter>> waiters = new();
             waiters.AddRange(workflow.TimeManager.GetWaiters().Select(x => Tuple.Create("Time",x)));
             waiters.AddRange(workflow.MessageManager.GetWaiters().Select(x => Tuple.Create("Message", x)));
+            waiters.AddRange(workflow.SignalManager.GetWaiters().Select(x => Tuple.Create("Signal", x)));
 
             foreach (var waiter in waiters)
             {

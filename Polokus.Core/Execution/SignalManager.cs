@@ -52,6 +52,7 @@ namespace Polokus.Core.Execution
 
         public void RegisterSignalListener(IProcessStarter starter)
         {
+            _starters.Add(starter.Id, starter);
             Workflow.PolokusMaster.Signal += (s, e) =>
             {
                 if (e == starter.StartNode.Name)
