@@ -241,6 +241,8 @@ namespace Polokus.App.Views
             UpdateProcessInstancesList(workflow);
             UpdateProcessStartersList(workflow);
             UpdateNodeHandlerWaitersList(workflow);
+
+            LoadBpmnGraph(workflow.BpmnWorkflow.RawString ?? "");
         }
 
         private void UpdateBpmnProcessesList(Workflow workflow)
@@ -405,13 +407,22 @@ namespace Polokus.App.Views
 
         }
 
+        private void LoadBpmnGraph(string rawString)
+        {
+            if (!this.chromiumWindow.chromeBrowser.IsBrowserInitialized)
+            {
+                return;
+            }
+
+            this.chromiumWindow.chromeBrowser.ExecuteScriptAsync(
+                $"window.api.openInViewerAsync('{rawString}');");
+        }
+
         public void LoadGraphForProcessInstance(string globalPiId)
         {
             ProcessInstance pi = GetProcessInstance(globalPiId);
             string rawString = pi.BpmnProcess.BpmnWorkflow.RawString ?? "";
-
-            this.chromiumWindow.chromeBrowser.ExecuteScriptAsync(
-                $"window.api.openInViewerAsync('{rawString}');");
+            LoadBpmnGraph(rawString);
 
             HashSet<string> activeNodesIds = pi.AvailableNodeHandlers.Values
                 .Select(nh => nh.Node.Id).ToHashSet();
