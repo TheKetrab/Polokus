@@ -7,7 +7,7 @@ using Polokus.Core.Models;
 using Polokus.Core.Models.BpmnObjects.Xsd;
 using Polokus.Core.NodeHandlers;
 using Polokus.Core.Scripting;
-using Polokus.Monitors.FileMonitor;
+using Polokus;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -35,7 +35,7 @@ namespace Polokus.Core
 
         private Dictionary<string, Logger> _logs = new();
 
-        public event EventHandler<string>? Signal;
+        public event EventHandler<Signal>? Signal;
 
         public Logger GetOrCreateLogger(string globalPiId)
         {
@@ -58,47 +58,101 @@ namespace Polokus.Core
             Externals = ExternalsManager.TryLoadExternals("./externals.json");
             if (Externals != null)
             {
-
-
-                if (Externals.HooksProvider != null)
+                // ----- Register Hooks Providers -----
+                if (Externals.HooksProviders != null)
                 {
-                    // TODO: wczytywanie z externalsow WIELU hooks providerow
-                    //HooksManager = ExternalsManager.InstantiateHooksProvider(Externals);
-                    
+                    foreach (var externalHp in Externals.HooksProviders)
+                    {
+                        var hooksProvider = ExternalsManager.InstantiateHooksProvider(externalHp);
+                        HooksManager.RegisterHooksProvider(hooksProvider);
+                    }
                 }
 
+                // ----- Register Settings Provider -----
                 if (Externals.SettingsProvider != null)
                 {
-                    SettingsProvider = ExternalsManager.InstantiateSettingsProvider(Externals);
+                    SettingsProvider = ExternalsManager.InstantiateSettingsProvider(Externals.SettingsProvider);
                 }
-                {
 
+                // ----- Register File Monitors -----
+                if (Externals.FileMonitors != null)
+                {
+                    foreach (var fileMonitor in Externals.FileMonitors)
+                    {
+                        RegisterFileMonitor(fileMonitor.Path,
+                            fileMonitor.Actions.Select(x => Tuple.Create(x.Event, x.Signal, x.Params)));
+                    }
                 }
+
             }
 
+            // ===== ===== ASSURE SETTINGS PROVIDER IS NOT NULL ===== =====
             if (SettingsProvider == null)
             {
                 SettingsProvider = new DefaultSettingsProvider();
             }
 
-            // --------------------------------------------------------------------------------------
-            string pathToMonitor = @"C:\Custom\BPMN\Polokus\Examples\PathToMonitor";
-            RegisterFileMonitor(pathToMonitor);
-            // --------------------------------------------------------------------------------------
-
         }
 
-        public void RegisterFileMonitor(string pathToMonitor)
+        private void RegisterActionForFileMonitor(FileMonitor fm,
+            FileMonitor.FileEvtType evtType, string signal, string? parameters)
+        {
+            EventHandler<string> evt = (s, e) =>
+            {
+                string queryString = string.IsNullOrEmpty(parameters)
+                    ? $"path={e}"
+                    : $"{parameters}&path={e}";
+
+                Signal?.Invoke(this, new Signal(signal, queryString));
+            };
+
+            switch (evtType)
+            {
+                case FileMonitor.FileEvtType.FileCreated:
+                    fm.FileCreated += evt;
+                    break;
+                case FileMonitor.FileEvtType.FileRenamed:
+                    fm.FileRenamed += evt;
+                    break;
+                case FileMonitor.FileEvtType.FileModified:
+                    fm.FileModified += evt;
+                    break;
+                case FileMonitor.FileEvtType.DirectoryRenamed:
+                    fm.DirectoryRenamed += evt;
+                    break;
+                case FileMonitor.FileEvtType.DirectoryCreated:
+                    fm.DirectoryCreated += evt;
+                    break;
+                case FileMonitor.FileEvtType.ItemDeleted:
+                    fm.ItemDeleted += evt;
+                    break;
+            }
+        }
+
+        public void RegisterFileMonitor(string pathToMonitor,
+            FileMonitor.FileEvtType evtType, string signal, string? parameters = null)
         {
             var fm = new FileMonitor(pathToMonitor);
-            FileMonitors.Add(fm);
+            RegisterActionForFileMonitor(fm, evtType, signal, parameters);
             fm.StartMonitoring();
-            fm.FileCreated += (s, e) => { Signal?.Invoke(this, "FileCreated"); };
-            fm.FileModified += (s, e) => { Signal?.Invoke(this, "FileModified"); };
-            fm.FileRenamed += (s, e) => { Signal?.Invoke(this, "FileRenamed"); };
-            fm.DirectoryCreated += (s, e) => { Signal?.Invoke(this, "DirectoryCreated"); };
-            fm.DirectoryRenamed += (s, e) => { Signal?.Invoke(this, "DirectoryRenamed"); };
-            fm.ItemDeleted += (s, e) => { Signal?.Invoke(this, "ItemDeleted"); };
+            FileMonitors.Add(fm);
+        }
+
+        public void RegisterFileMonitor(string pathToMonitor,
+            IEnumerable<Tuple<FileMonitor.FileEvtType,string,string>> actions)
+        {
+            var fm = new FileMonitor(pathToMonitor);
+            foreach (var action in actions) 
+            {
+                var evtType = action.Item1;
+                string signal = action.Item2;
+                string parameters = action.Item3;
+
+                RegisterActionForFileMonitor(fm, evtType, signal, parameters);
+            }
+
+            fm.StartMonitoring();
+            FileMonitors.Add(fm);
         }
 
         public void AddWorkflow(string id, IWorkflow workflow)
@@ -176,9 +230,9 @@ namespace Polokus.Core
             }
         }
 
-        public void EmitSignal(object? sender, string signal)
+        public void EmitSignal(object? sender, string signal, string? parameters)
         {
-            Signal?.Invoke(sender, signal);
+            Signal?.Invoke(sender, new Signal(signal,parameters));
         }
     }
 }

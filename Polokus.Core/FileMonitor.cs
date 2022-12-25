@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Security.Cryptography;
 
-namespace Polokus.Monitors.FileMonitor
+namespace Polokus
 {
     /// <summary>
     /// File monitor inspects single directory and provides some events.
@@ -10,6 +10,16 @@ namespace Polokus.Monitors.FileMonitor
     {
         private string _path;
         private FileSystemWatcher _watcher;
+
+        public enum FileEvtType
+        {
+            FileCreated,
+            FileModified,
+            FileRenamed,
+            DirectoryCreated,
+            DirectoryRenamed,
+            ItemDeleted
+        }
 
         public FileMonitor(string path)
         {

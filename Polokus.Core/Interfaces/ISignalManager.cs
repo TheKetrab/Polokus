@@ -35,7 +35,8 @@
         /// This method emits signal to PolokusMaster object (global scope).
         /// </summary>
         /// <param name="signal">Id of signal.</param>
-        void EmitSignal(string signal);
+        /// <param name="parameters">Parameters to invoke signal with.</param>
+        void EmitSignal(string signal, string? parameters = null);
 
     }
 }

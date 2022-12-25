@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Polokus.Core.Externals
+namespace Polokus.Core.Externals.Models
 {
-    public class WorkflowExternal
+    public class ExternalWorkflow
     {
         public string Name { get; set; } = string.Empty;
-        public List<ServiceTaskExternal> ServiceTasks { get; set; } = new();
+        public List<ExternalServiceTask> ServiceTasks { get; set; } = new();
     }
 }

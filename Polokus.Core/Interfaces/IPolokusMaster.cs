@@ -1,5 +1,6 @@
-﻿using Polokus.Core.Externals;
-using Polokus.Monitors.FileMonitor;
+﻿using Polokus.Core.Execution;
+using Polokus.Core.Externals;
+using Polokus;
 
 namespace Polokus.Core.Interfaces
 {
@@ -55,13 +56,14 @@ namespace Polokus.Core.Interfaces
         /// <summary>
         /// Signal that can be emited.
         /// </summary>
-        event EventHandler<string>? Signal;
+        event EventHandler<Signal>? Signal;
 
         /// <summary>
         /// This method invokes signal event with given parameters.
         /// </summary>
-        /// <param name="signal"></param>
-        void EmitSignal(object? sender, string signal);
+        /// <param name="signal">Name of signal.</param>
+        /// <param name="parameters">Parameters of signal.</param>
+        void EmitSignal(object? sender, string signal, string? parameters);
 
     }
 }

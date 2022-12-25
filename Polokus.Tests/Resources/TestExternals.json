@@ -30,5 +30,36 @@
                 }
             ]
         }
-    ]
+    ],
+    "FileMonitors": [
+        {
+            "Path": "path/to/monitor1",
+            "Actions": [
+                {
+                    "Event": "FileCreated",
+                    "Signal": "SIGNAL_NAME1",
+                    "Params": "parameters1"
+                },
+                {
+                    "Event": "ItemDeleted",
+                    "Signal": "SIGNAL_NAME2",
+                    "Params": "parameters2"
+                }
+            ]
+        }
+    ],
+    "HooksProviders": [
+        {
+            "Assembly": "assembly1.dll",
+            "ClassName": "HooksProvider1"
+        },
+        {
+            "Assembly": "assembly2.dll",
+            "ClassName": "HooksProvider2"
+        }
+    ],
+    "SettingsProvider": {
+        "Assembly": "SettingsProviderAssembly.dll",
+        "ClassName": "SettingsProviderClass"
+    }
 }

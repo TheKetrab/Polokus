@@ -1,4 +1,6 @@
-﻿using Polokus.Core.Interfaces;
+﻿using Polokus.Core.Externals.Models;
+using Polokus.Core.Interfaces;
+using Polokus;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +27,10 @@ namespace Polokus.Core.Externals
 
         public static Externals LoadExternals(string jsonString)
         {
-            return JsonSerializer.Deserialize<Externals>(jsonString)
+            var options = new JsonSerializerOptions();
+            options.Converters.Add(new EnumJsonConverter<FileMonitor.FileEvtType>());
+
+            return JsonSerializer.Deserialize<Externals>(jsonString,options)
                 ?? throw new SerializationException("Failed to load externals.");
         }
 
@@ -46,40 +51,38 @@ namespace Polokus.Core.Externals
             }
         }
 
-        public static IHooksProvider InstantiateHooksProvider(Externals externals)
+        public static ISettingsProvider InstantiateSettingsProvider(ExternalSettingsProvider externalSettingsProvider)
         {
-            if (externals.HooksProvider == null)
-            {
-                throw new Exception("Cannot instantiate hooks provider because external definitions are empty.");
-            }
-
-            var asm = Assembly.LoadFile(externals.HooksProvider.Assembly);
-            var type = asm.GetType(externals.HooksProvider.ClassName);
-            if (type == null)
-            {
-                throw new Exception("Cannot find type in assembly.");
-            }
-
-            return Activator.CreateInstance(type) as IHooksProvider
-                ?? throw new Exception("Unable to instantiate settings provider.");
+            return Instantiate<ISettingsProvider>(externalSettingsProvider.Assembly, externalSettingsProvider.ClassName);
         }
 
-        public static ISettingsProvider InstantiateSettingsProvider(Externals externals)
+        public static IHooksProvider InstantiateHooksProvider(ExternalHooksProvider externalHooksProvider)
         {
-            if (externals.SettingsProvider == null)
-            {
-                throw new Exception("Cannot instantiate settings provider because external definitions are empty.");
-            }
+            return Instantiate<IHooksProvider>(externalHooksProvider.Assembly, externalHooksProvider.ClassName);
+        }
 
-            var asm = Assembly.LoadFile(externals.SettingsProvider.Assembly);
-            var type = asm.GetType(externals.SettingsProvider.ClassName);
+        private static T Instantiate<T>(string assembly, string className)
+        {
+            var asm = Assembly.LoadFile(assembly);
+            var type = asm.GetType(className);
             if (type == null)
             {
-                throw new Exception("Cannot find type in assembly.");
+                throw new Exception($"Cannot find type {className} in assembly: {assembly}");
             }
 
-            return Activator.CreateInstance(type) as ISettingsProvider
-                ?? throw new Exception("Unable to instantiate settings provider.");
+            object? obj = Activator.CreateInstance(type);
+            if (obj == null)
+            {
+                throw new Exception("Failed to instantiate object.");
+            }
+            if (obj is T t)
+            {
+                return t;
+            }
+            else
+            {
+                throw new Exception($"Unable to cast object of type {obj?.GetType().FullName} to {typeof(T).FullName}");
+            }
         }
     }
 }

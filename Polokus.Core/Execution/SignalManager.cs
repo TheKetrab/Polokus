@@ -20,9 +20,9 @@ namespace Polokus.Core.Execution
             Workflow = workflow;
         }
 
-        public void EmitSignal(string signal)
+        public void EmitSignal(string signal, string? parameters = null)
         {
-            Workflow.PolokusMaster.EmitSignal(Workflow, signal);
+            Workflow.PolokusMaster.EmitSignal(Workflow, signal, parameters);
         }
 
         public IEnumerable<IProcessStarter> GetStarters()
@@ -51,14 +51,19 @@ namespace Polokus.Core.Execution
             _waiters.Add(waiter.Id, waiter);
 
             // one time event only
-            EventHandler<string>? action = null;
+            EventHandler<Signal>? action = null;
             Workflow.PolokusMaster.Signal += action = (s, e) =>
             {
-                Workflow.PolokusMaster.Signal -= action;
+                if (e.Name == waiter.NodeToCall.Name)
+                {
+                    Workflow.PolokusMaster.Signal -= action;
 
-                _waiters.Remove(waiter.Id);
-                waiter.HooksProvider?.OnCallerChanged(waiter.Id, CallerChangedType.WaiterRemoved);
-                waiter.Invoke();
+                    // TODO: passing parameters to signal?
+
+                    _waiters.Remove(waiter.Id);
+                    waiter.HooksProvider?.OnCallerChanged(waiter.Id, CallerChangedType.WaiterRemoved);
+                    waiter.Invoke();
+                }
             };
 
         }
@@ -68,8 +73,9 @@ namespace Polokus.Core.Execution
             _starters.Add(starter.Id, starter);
             Workflow.PolokusMaster.Signal += (s, e) =>
             {
-                if (e == starter.StartNode.Name)
+                if (e.Name == starter.StartNode.Name)
                 {
+                    // TODO: passing parameters to signal?
                     starter.Workflow.StartProcessInstance(starter.BpmnProcess, starter.StartNode, null);
                 }
             };

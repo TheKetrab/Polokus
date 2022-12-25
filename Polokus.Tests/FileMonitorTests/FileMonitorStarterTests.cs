@@ -1,6 +1,6 @@
 ﻿using Polokus.Core;
 using Polokus.Core.Hooks;
-using Polokus.Monitors.FileMonitor;
+using Polokus;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,7 +32,7 @@ namespace Polokus.Tests.FileMonitorTests
             master.HooksManager!.RegisterHooksProvider(visitor);
             master.LoadXmlString(Resources.SignalProcessStarter1, "SignalProcessStarter");
 
-            master.RegisterFileMonitor(_dirToMonitor);
+            master.RegisterFileMonitor(_dirToMonitor, FileMonitor.FileEvtType.FileCreated, "FileCreated");
             
             // Act
             string filePath = Path.Combine(_dirToMonitor, "file.txt");
