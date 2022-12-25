@@ -1,4 +1,5 @@
-﻿using Polokus.Core.Interfaces;
+﻿using Polokus.Core.Hooks;
+using Polokus.Core.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,7 +48,19 @@ namespace Polokus.Core.Execution
 
         public void RegisterSignalListener(INodeHandlerWaiter waiter)
         {
-            throw new NotImplementedException();
+            _waiters.Add(waiter.Id, waiter);
+
+            // one time event only
+            EventHandler<string>? action = null;
+            Workflow.PolokusMaster.Signal += action = (s, e) =>
+            {
+                Workflow.PolokusMaster.Signal -= action;
+
+                _waiters.Remove(waiter.Id);
+                waiter.HooksProvider?.OnCallerChanged(waiter.Id, CallerChangedType.WaiterRemoved);
+                waiter.Invoke();
+            };
+
         }
 
         public void RegisterSignalListener(IProcessStarter starter)

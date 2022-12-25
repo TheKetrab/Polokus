@@ -83,6 +83,13 @@ namespace Polokus.Core
 
             // --------------------------------------------------------------------------------------
             string pathToMonitor = @"C:\Custom\BPMN\Polokus\Examples\PathToMonitor";
+            RegisterFileMonitor(pathToMonitor);
+            // --------------------------------------------------------------------------------------
+
+        }
+
+        public void RegisterFileMonitor(string pathToMonitor)
+        {
             var fm = new FileMonitor(pathToMonitor);
             FileMonitors.Add(fm);
             fm.StartMonitoring();
@@ -92,8 +99,6 @@ namespace Polokus.Core
             fm.DirectoryCreated += (s, e) => { Signal?.Invoke(this, "DirectoryCreated"); };
             fm.DirectoryRenamed += (s, e) => { Signal?.Invoke(this, "DirectoryRenamed"); };
             fm.ItemDeleted += (s, e) => { Signal?.Invoke(this, "ItemDeleted"); };
-            // --------------------------------------------------------------------------------------
-
         }
 
         public void AddWorkflow(string id, IWorkflow workflow)

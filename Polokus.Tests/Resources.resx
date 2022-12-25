@@ -154,6 +154,12 @@
   <data name="ServiceTask1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\Bpmn\ServiceTask1.bpmn;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1250</value>
   </data>
+  <data name="SignalProcessStarter1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Bpmn\SignalProcessStarter1.bpmn;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1250</value>
+  </data>
+  <data name="SignalWaiter1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Bpmn\SignalWaiter1.bpmn;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1250</value>
+  </data>
   <data name="SubProcess1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\Bpmn\SubProcess1.bpmn;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1250</value>
   </data>
