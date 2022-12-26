@@ -51,7 +51,14 @@ namespace Polokus.Core
             }
         }
 
+        public IFlowNode GetFlowNode(string wfId, string piId, string nodeId)
+        {
+            IWorkflow workflow = _workflows[wfId];
+            IProcessInstance processInstance = workflow.GetProcessInstanceById(piId);
+            IFlowNode node = processInstance.BpmnProcess.GetNodeById(nodeId);
 
+            return node;
+        }
 
         public PolokusMaster()
         {

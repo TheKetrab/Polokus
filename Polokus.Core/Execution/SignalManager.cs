@@ -61,7 +61,7 @@ namespace Polokus.Core.Execution
                     // TODO: passing parameters to signal?
 
                     _waiters.Remove(waiter.Id);
-                    waiter.HooksProvider?.OnCallerChanged(waiter.Id, CallerChangedType.WaiterRemoved);
+                    waiter.HooksProvider?.OnCallerChanged(waiter.Id, nameof(CallerChangedType.WaiterRemoved));
                     waiter.Invoke();
                 }
             };

@@ -44,7 +44,7 @@ namespace Polokus.Core.Execution
             using (var listener = new HttpListener())
             {
                 _waiters.Add(waiter.Id, waiter);
-                waiter.HooksProvider?.OnCallerChanged(waiter.Id, CallerChangedType.WaiterInserted);
+                waiter.HooksProvider?.OnCallerChanged(waiter.Id, nameof(CallerChangedType.WaiterInserted));
 
                 listener.Prefixes.Add($"http://localhost:{ListeningPort}/{waiter.Id}/");
                 listener.Start();
@@ -52,7 +52,7 @@ namespace Polokus.Core.Execution
                 var context = await listener.GetContextAsync();
 
                 _waiters.Remove(waiter.Id);
-                waiter.HooksProvider?.OnCallerChanged(waiter.Id, CallerChangedType.WaiterRemoved);
+                waiter.HooksProvider?.OnCallerChanged(waiter.Id, nameof(CallerChangedType.WaiterRemoved));
 
                 waiter.Invoke();
             }
@@ -63,13 +63,13 @@ namespace Polokus.Core.Execution
             using (var listener = new HttpListener())
             {
                 _starters.Add(starter.Id, starter);
-                starter.HooksProvider?.OnCallerChanged(starter.Id, CallerChangedType.StarterRegistered);
+                starter.HooksProvider?.OnCallerChanged(starter.Id, nameof(CallerChangedType.StarterRegistered));
 
                 listener.Prefixes.Add($"http://localhost:{ListeningPort}/{starter.Id}/");
                 listener.Start();
 
                 var context = await listener.GetContextAsync();
-                starter.HooksProvider?.OnCallerChanged(starter.Id, CallerChangedType.StarterStartedProcess);
+                starter.HooksProvider?.OnCallerChanged(starter.Id, nameof(CallerChangedType.StarterStartedProcess));
 
                 // TODO: czy to nie jest tak, ze jak raz starter wystartuje proces, to juz drugi raz nie umie?
 

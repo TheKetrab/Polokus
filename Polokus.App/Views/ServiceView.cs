@@ -5,6 +5,7 @@ using Polokus.Core;
 using Polokus.Core.Execution;
 using Polokus.Core.Helpers;
 using Polokus.Core.Interfaces;
+using Polokus.Core.Remote;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Reflection;
@@ -14,16 +15,18 @@ namespace Polokus.App.Views
     public partial class ServiceView : UserControl
     {
         private MainWindow _mainWindow;
-        public PolokusMaster PolokusMaster;
+        //public PolokusMaster PolokusMaster;
         public ChromiumWindow chromiumWindow;
-        
+
+        public RemoteLogsService RemoteLogsService = new(); // TODO service
+        public RemoteProcessInstancesService RemoteProcessInstancesService = new(); // TODO
+        public RemotePolokusService RemotePolokusService = new(); // TODO
+        public RemoteWorkflowsService RemoteWorkflowsService = new(); // TODO
+
         public ServiceView(MainWindow mainWindow)
         {
             _mainWindow = mainWindow;
             InitializeComponent();
-
-            PolokusMaster = new PolokusMaster();
-            PolokusMaster.HooksManager.RegisterHooksProvider(new AppHooksProvider(this));
 
             chromiumWindow = new ChromiumWindow(_mainWindow,"viewer");
             chromiumWindow.Parent = panelBpmnio;
@@ -87,12 +90,14 @@ namespace Polokus.App.Views
 
         private void LoadViewForFirstWorkflow()
         {
-            var wf = PolokusMaster.GetWorkflows().FirstOrDefault() as Workflow;
-            if (wf != null)
+            var wfId = RemotePolokusService.GetWorkflowsIds().FirstOrDefault();
+            if (wfId == null)
             {
-                ActiveWorkflow = wf.Id;
-                LoadViewForWorkflow(wf);
+                return;
             }
+
+            ActiveWorkflow = wfId;
+            LoadViewForWorkflow(wfId);
         }
 
         private void ListViewInstances_SelectedIndexChanged(object? sender, EventArgs e)
@@ -183,20 +188,7 @@ namespace Polokus.App.Views
         private void LoadXmlFile(string file)
         {
             string str = File.ReadAllText(file);
-            PolokusMaster.LoadXmlString(str, new FileInfo(file).Name);
-
-        }
-
-
-        public Logger? GetLoggerForOpenedInstance()
-        {
-            string? id = GetOpenedProcessInstanceGlobalId();
-            if (id == null)
-            {
-                return null;
-            }
-
-            return PolokusMaster.GetOrCreateLogger(id);
+            RemotePolokusService.LoadXmlString(str, new FileInfo(file).Name);
         }
 
         /// <summary>
@@ -217,7 +209,7 @@ namespace Polokus.App.Views
 
         private void InitializeComboBoxWorkflows()
         {
-            comboBoxWorkflows.DataSource = new BindingSource(PolokusMaster._workflows, null);
+            // TODO: comboBoxWorkflows.DataSource = new BindingSource(PolokusMaster._workflows, null);
             comboBoxWorkflows.DisplayMember = "Key";
             comboBoxWorkflows.ValueMember = "Value";
             comboBoxWorkflows.SelectedIndexChanged += comboBoxWorkflows_SelectedIndexChanged;
@@ -230,120 +222,95 @@ namespace Polokus.App.Views
                 ActiveWorkflow = wf.Key;
             }
 
-            var workflow = GetActiveWorkflow();
-            LoadViewForWorkflow(workflow);
-        }
-
-
-        private void LoadViewForWorkflow(Workflow workflow)
-        {
-            UpdateBpmnProcessesList(workflow);
-            UpdateProcessInstancesList(workflow);
-            UpdateProcessStartersList(workflow);
-            UpdateNodeHandlerWaitersList(workflow);
-
-            LoadBpmnGraph(workflow.BpmnWorkflow.RawString ?? "");
-        }
-
-        private void UpdateBpmnProcessesList(Workflow workflow)
-        {
-            listViewProcesses.Items.Clear();
-            foreach (var process in workflow.BpmnWorkflow.BpmnProcesses)
-            {
-                if (process.IsManualProcess())
-                {
-                    this.listViewProcesses.Items.Add(process.Id);
-                }
-            }
-        }
-
-        public void UpdateProcessStartersListSafe(Workflow workflow)
-        {
-            this.listViewStarters.BeginInvoke(() => UpdateProcessStartersList(workflow));
-        }
-
-        private void UpdateProcessStartersList(Workflow? workflow)
-        {
-            listViewStarters.Items.Clear();
-            if (workflow == null)
+            if (ActiveWorkflow == null)
             {
                 return;
             }
 
-            List<Tuple<string,IProcessStarter>> starters = new();
-            starters.AddRange(workflow.TimeManager.GetStarters().Select(x => Tuple.Create("Time",x)));
-            starters.AddRange(workflow.MessageManager.GetStarters().Select(x => Tuple.Create("Message", x)));
-            starters.AddRange(workflow.SignalManager.GetStarters().Select(x => Tuple.Create("Signal", x)));
+            LoadViewForWorkflow(ActiveWorkflow);
+        }
+
+
+        private void LoadViewForWorkflow(string wfId)
+        {
+            UpdateBpmnProcessesList(wfId);
+            UpdateProcessInstancesList(wfId);
+            UpdateProcessStartersList(wfId);
+            UpdateNodeHandlerWaitersList(wfId);
+
+            string rawString = RemoteWorkflowsService.GetRawString(wfId);
+            LoadBpmnGraph(rawString);
+        }
+
+        private void UpdateBpmnProcessesList(string wfId)
+        {
+            listViewProcesses.Items.Clear();
+            var processes = RemoteWorkflowsService.GetManualBpmnProcessesIds(wfId);
+            foreach (var processId in processes)
+            {
+                this.listViewProcesses.Items.Add(processId);
+            }
+        }
+
+        public void UpdateProcessStartersListSafe(string wfId)
+        {
+            this.listViewStarters.BeginInvoke(() => UpdateProcessStartersList(wfId));
+        }
+
+        private void UpdateProcessStartersList(string wfId)
+        {
+            listViewStarters.Items.Clear();
+
+            var starters = RemoteWorkflowsService.GetProcessStarters(wfId);
 
             foreach (var starter in starters)
             {
-                var item = new ListViewItem(starter.Item2.Id);
-                item.SubItems.Add(starter.Item2.StartNode.Id);
-                item.SubItems.Add(starter.Item1);
+                var item = new ListViewItem(starter.Id);
+                item.SubItems.Add(starter.StartNode);
+                item.SubItems.Add(starter.StarterType);
 
                 this.listViewStarters.Items.Add(item);
             }
         }
 
-        public void UpdateNodeHandlerWaitersListSafe(Workflow workflow)
+        public void UpdateNodeHandlerWaitersListSafe(string wfId)
         {
-            this.listViewWaiters.BeginInvoke(() => UpdateNodeHandlerWaitersList(workflow));
+            this.listViewWaiters.BeginInvoke(() => UpdateNodeHandlerWaitersList(wfId));
         }
 
-        private void UpdateNodeHandlerWaitersList(Workflow? workflow)
+        private void UpdateNodeHandlerWaitersList(string wfId)
         {
             listViewWaiters.Items.Clear();
-            if (workflow == null)
-            {
-                return;
-            }
 
-            List<Tuple<string,INodeHandlerWaiter>> waiters = new();
-            waiters.AddRange(workflow.TimeManager.GetWaiters().Select(x => Tuple.Create("Time",x)));
-            waiters.AddRange(workflow.MessageManager.GetWaiters().Select(x => Tuple.Create("Message", x)));
-            waiters.AddRange(workflow.SignalManager.GetWaiters().Select(x => Tuple.Create("Signal", x)));
-
+            var waiters = RemoteWorkflowsService.GetNodeHandlerWaiters(wfId);
             foreach (var waiter in waiters)
             {
-                var item = new ListViewItem(waiter.Item2.Id);
-                item.SubItems.Add(waiter.Item2.NodeToCall.Id);
-                item.SubItems.Add(waiter.Item1);
+                var item = new ListViewItem(waiter.Id);
+                item.SubItems.Add(waiter.NodeToCall);
+                item.SubItems.Add(waiter.WaiterType);
 
                 this.listViewWaiters.Items.Add(item);
             }
         }
 
-        public void UpdateProcessInstancesListSafe(Workflow workflow)
+        public void UpdateProcessInstancesListSafe(string wfId)
         {
-            this.listViewInstances.BeginInvoke(() => UpdateProcessInstancesList(workflow));
+            this.listViewInstances.BeginInvoke(() => UpdateProcessInstancesList(wfId));
         }
 
-        private void UpdateProcessInstancesList(Workflow? workflow)
+        private void UpdateProcessInstancesList(string wfId)
         {
             listViewInstances.Items.Clear();
-            if (workflow == null)
-            {
-                return;
-            }
+            var processInstances = RemoteWorkflowsService.GetProcessInstancesInfos(wfId);
 
-            foreach (var instance in workflow.ProcessInstances)
+            foreach (var instance in processInstances)
             {
                 var item = new ListViewItem(instance.Id);
-                item.SubItems.Add(instance.StatusManager.Status.ToStringExt());
-                item.SubItems.Add(instance.ActiveTasksManager.GetNodeHandlers().Count().ToString());
+                item.SubItems.Add(instance.Status);
+                item.SubItems.Add(instance.ActiveTasks);
 
                 this.listViewInstances.Items.Add(item);
             }
-
-            foreach (var instance in workflow.History)
-            {
-                var item = new ListViewItem(instance.Id);
-                item.SubItems.Add(instance.StatusManager.Status.ToStringExt());
-                item.SubItems.Add(instance.ActiveTasksManager.GetNodeHandlers().Count().ToString());
-
-                this.listViewInstances.Items.Add(item);
-            }
-
         }
 
 
@@ -356,24 +323,8 @@ namespace Polokus.App.Views
 
             return listView.SelectedItems[0].Text;
         }
-
-        public Workflow GetWorkflowById(string wfId)
-        {
-            return (Workflow)PolokusMaster.GetWorkflow(wfId);
-        }
-
-        public Workflow? GetActiveWorkflow()
-        {
-            if (ActiveWorkflow == null)
-            {
-                return null;
-            }
-
-            return PolokusMaster.GetWorkflow(ActiveWorkflow) as Workflow;
-        }
-
         
-        private string? ActiveWorkflow { get; set; } = null;
+        public string? ActiveWorkflow { get; private set; } = null;
         private string? ActiveProcessInstance { get; set; } = null;
         public string? GetOpenedProcessInstanceGlobalId()
         {
@@ -395,17 +346,7 @@ namespace Polokus.App.Views
         }
 
 
-        private ProcessInstance GetProcessInstance(string globalPiId)
-        {
-            Helpers.GetWfPiIDs(globalPiId, out string wfId, out string piId);
 
-            Workflow workflow = PolokusMaster.GetWorkflow(wfId) as Workflow
-                ?? throw new Exception("Failed to get workflow.");
-
-            return workflow.GetProcessInstanceById(piId) as ProcessInstance
-                ?? throw new Exception("Failed to get process instance.");
-
-        }
 
         private void LoadBpmnGraph(string rawString)
         {
@@ -420,14 +361,13 @@ namespace Polokus.App.Views
 
         public void LoadGraphForProcessInstance(string globalPiId)
         {
-            ProcessInstance pi = GetProcessInstance(globalPiId);
-            string rawString = pi.BpmnProcess.BpmnWorkflow.RawString ?? "";
+            Helpers.GetWfPiIDs(globalPiId, out string wfId, out string piId);
+            string rawString = RemoteWorkflowsService.GetRawString(wfId);
             LoadBpmnGraph(rawString);
 
-            HashSet<string> activeNodesIds = pi.AvailableNodeHandlers.Values
-                .Select(nh => nh.Node.Id).ToHashSet();
+            HashSet<string> activeNodesIds = RemoteProcessInstancesService.GetActiveNodesIds(wfId, piId).ToHashSet();
 
-            var allNodesIds = pi.BpmnProcess.GetNodesIds();
+            var allNodesIds = RemoteProcessInstancesService.GetAllNodesIds(wfId, piId);
             var inactiveNodesIds = allNodesIds.Where(x => !activeNodesIds.Contains(x));
 
             BpmnioClient.SetColours(chromiumWindow, activeNodesIds, inactiveNodesIds);
@@ -437,8 +377,8 @@ namespace Polokus.App.Views
         {
             this.readOnlyRichTextBox1.Text = "";
 
-            var logger = PolokusMaster.GetOrCreateLogger(globalPiId);
-            var messages = logger.GetMessages();
+            Helpers.GetWfPiIDs(globalPiId, out string wfId, out string piId);
+            var messages = RemoteLogsService.GetMessages(wfId, piId);
             foreach (var message in messages)
             {
                 string br = string.IsNullOrEmpty(this.readOnlyRichTextBox1.Text) ? "" : "\n";
@@ -462,23 +402,22 @@ namespace Polokus.App.Views
         {
             // add new process instance
 
-            var workflow = GetActiveWorkflow();
+            var wfId = ActiveWorkflow;
             var bpmnProcessId = GetSelectedSingleItem(listViewProcesses);
 
-            if (workflow == null || bpmnProcessId == null)
+            if (wfId == null || bpmnProcessId == null)
             {
                 throw new Exception("None BPMN process is selected.");
             }
 
 
-            var processInstance = workflow.StartProcessManually(bpmnProcessId);
-            string processInstanceId = processInstance.Id;
+            string piId = RemoteWorkflowsService.StartProcessManually(wfId, bpmnProcessId);
             Task.Run(async () => // TODO: usunac to brzydkie rozwiazanie! musi byc to robione od razu jak sie item doda przez hooks providera
             {
                 await Task.Delay(500);
                 listViewInstances.BeginInvoke(() =>
                 {
-                    var item = this.listViewInstances.FindItemWithText(processInstanceId);
+                    var item = this.listViewInstances.FindItemWithText(piId);
                     int idx = this.listViewInstances.Items.IndexOf(item);
                     if (idx != -1)
                     {
@@ -530,15 +469,14 @@ namespace Polokus.App.Views
         }
 
         private void buttonPingWaiter_Click(object sender, EventArgs e)
-        {
-            var wf = GetActiveWorkflow();
-            if (wf == null)
+        {            
+            if (ActiveWorkflow == null)
             {
-                return;
+                throw new Exception("None workflow is active.");
             }
 
             string listenerId = this.textBoxPingWaiter.Text;
-            wf.MessageManager.PingListener(listenerId);
+            RemoteWorkflowsService.PingListener(ActiveWorkflow, listenerId);
         }
 
     }

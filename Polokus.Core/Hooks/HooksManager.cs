@@ -53,34 +53,34 @@ namespace Polokus.Core.Hooks
         }
 
         #region IHooksProviderImpl
-        public void AfterExecuteNodeFailure(string wfId, string piId, IFlowNode node, int taskId)
+        public void AfterExecuteNodeFailure(string wfId, string piId, string nodeId, int taskId)
         {
             _hooksProviders.ForEach(x => ExecuteAction(x.WaitFor,
-                () => x.Object.AfterExecuteNodeFailure(wfId, piId, node, taskId)));
+                () => x.Object.AfterExecuteNodeFailure(wfId, piId, nodeId, taskId)));
         }
 
-        public void AfterExecuteNodeSuccess(string wfId, string piId, IFlowNode node, int taskId)
+        public void AfterExecuteNodeSuccess(string wfId, string piId, string nodeId, int taskId)
         {
             _hooksProviders.ForEach(x => ExecuteAction(x.WaitFor,
-                () => x.Object.AfterExecuteNodeSuccess(wfId, piId, node, taskId)));
+                () => x.Object.AfterExecuteNodeSuccess(wfId, piId, nodeId, taskId)));
         }
 
-        public void AfterExecuteNodeSuspension(string wfId, string piId, IFlowNode node, int taskId)
+        public void AfterExecuteNodeSuspension(string wfId, string piId, string nodeId, int taskId)
         {
             _hooksProviders.ForEach(x => ExecuteAction(x.WaitFor,
-                () => x.Object.AfterExecuteNodeSuspension(wfId, piId, node, taskId)));
+                () => x.Object.AfterExecuteNodeSuspension(wfId, piId, nodeId, taskId)));
         }
 
-        public void BeforeExecuteNode(string wfId, string piId, IFlowNode node, int taskId, INodeCaller? caller)
+        public void BeforeExecuteNode(string wfId, string piId, string nodeId, int taskId, string? callerNodeId)
         {
             _hooksProviders.ForEach(x => ExecuteAction(x.WaitFor,
-                () => x.Object.BeforeExecuteNode(wfId, piId, node, taskId, caller)));
+                () => x.Object.BeforeExecuteNode(wfId, piId, nodeId, taskId, callerNodeId)));
         }
 
-        public void BeforeStartNewSequence(string wfId, string piId, IFlowNode firstNode, INodeCaller? caller)
+        public void BeforeStartNewSequence(string wfId, string piId, string nodeId, string? callerNodeId)
         {
             _hooksProviders.ForEach(x => ExecuteAction(x.WaitFor,
-                () => x.Object.BeforeStartNewSequence(wfId, piId, firstNode, caller)));
+                () => x.Object.BeforeStartNewSequence(wfId, piId, nodeId, callerNodeId)));
         }
 
         public void OnProcessFinished(string wfId, string piId, string result)
@@ -107,10 +107,10 @@ namespace Polokus.Core.Hooks
                 () => x.Object.OnTimeout(wfId, piId)));
         }
 
-        public void OnCallerChanged(string callerId, CallerChangedType type)
+        public void OnCallerChanged(string callerId, string callerChangedType)
         {
             _hooksProviders.ForEach(x => ExecuteAction(x.WaitFor,
-                () => x.Object.OnCallerChanged(callerId, type)));
+                () => x.Object.OnCallerChanged(callerId, callerChangedType)));
         }
         #endregion
     }

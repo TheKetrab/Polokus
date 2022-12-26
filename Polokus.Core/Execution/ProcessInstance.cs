@@ -112,7 +112,7 @@ namespace Polokus.Core.Execution
             INodeHandler nodeHandler = GetNodeHandlerForNode(node);
             ActiveTasksManager.AssignTaskToAnotherNodeHandler(taskId, nodeHandler);
 
-            HooksProvider?.BeforeExecuteNode(Workflow.Id, Id, node, taskId, caller);
+            HooksProvider?.BeforeExecuteNode(Workflow.Id, Id, node.Id, taskId, caller.Id);
             var executionResult = await nodeHandler.Execute(caller, taskId);
             lock (TasksMutex)
             {
@@ -125,17 +125,17 @@ namespace Polokus.Core.Execution
             switch (resultInfo.State)
             {
                 case ProcessResultState.Success:
-                    HooksProvider?.AfterExecuteNodeSuccess(Workflow.Id, Id, node, taskId);
+                    HooksProvider?.AfterExecuteNodeSuccess(Workflow.Id, Id, node.Id, taskId);
                     AvailableNodeHandlers.Remove(node.Id);
                     RunFurtherNodes(node, taskId, resultInfo.SequencesToInvoke!.ToArray());
                     break;
                 case ProcessResultState.Failure:
-                    HooksProvider?.AfterExecuteNodeFailure(Workflow.Id, Id, node, taskId);
+                    HooksProvider?.AfterExecuteNodeFailure(Workflow.Id, Id, node.Id, taskId);
                     ActiveTasksManager.RemoveRunningTask(taskId);
                     AvailableNodeHandlers.Remove(node.Id);
                     break;
                 case ProcessResultState.Suspension:
-                    HooksProvider?.AfterExecuteNodeSuspension(Workflow.Id, Id, node, taskId);
+                    HooksProvider?.AfterExecuteNodeSuspension(Workflow.Id, Id, node.Id, taskId);
                     ActiveTasksManager.RemoveRunningTask(taskId);
                     break;
                 case ProcessResultState.Cancellation:
@@ -148,7 +148,7 @@ namespace Polokus.Core.Execution
 
         public void StartNewSequence(IFlowNode firstNode, INodeCaller? caller)
         {
-            HooksProvider?.BeforeStartNewSequence(Workflow.Id, Id, firstNode, caller);
+            HooksProvider?.BeforeStartNewSequence(Workflow.Id, Id, firstNode.Id, caller.Id);
             var newTask = ActiveTasksManager.AddNewTask(GetNodeHandlerForNode(firstNode));
             int taskId = newTask.Item1;
             CancellationToken ctoken = newTask.Item2;

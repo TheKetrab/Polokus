@@ -47,7 +47,7 @@ namespace Polokus.Core.Execution
             await scheduler.Start();
 
             _starters.Add(starter.Id, starter);
-            starter.HooksProvider?.OnCallerChanged(starter.Id, CallerChangedType.StarterStartedProcess);
+            starter.HooksProvider?.OnCallerChanged(starter.Id, nameof(CallerChangedType.StarterStartedProcess));
         }
 
         public async void RegisterWaiter(string timeString, INodeHandlerWaiter waiter, bool oneTime)
@@ -65,13 +65,13 @@ namespace Polokus.Core.Execution
             await scheduler.Start();
 
             _waiters.Add(waiter.Id, waiter);
-            waiter.HooksProvider?.OnCallerChanged(waiter.Id, CallerChangedType.WaiterInserted);
+            waiter.HooksProvider?.OnCallerChanged(waiter.Id, nameof(CallerChangedType.WaiterInserted));
         }
 
         public void RemoveWaiter(INodeHandlerWaiter waiter)
         {
             _waiters.Remove(waiter.Id);
-            waiter.HooksProvider?.OnCallerChanged(waiter.Id, CallerChangedType.WaiterRemoved);
+            waiter.HooksProvider?.OnCallerChanged(waiter.Id, nameof(CallerChangedType.WaiterRemoved));
         }
 
 

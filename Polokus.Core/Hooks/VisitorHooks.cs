@@ -38,11 +38,11 @@ namespace Polokus.Core.Hooks
             return (_visitMask & (uint)visitTime) != 0;
         }
 
-        private void LogActionSafe(IFlowNode node, VisitTime visitTime)
+        private void LogActionSafe(string nodeId, VisitTime visitTime)
         {
             lock(sb)
             {
-                LogAction(node, visitTime);
+                LogAction(nodeId, visitTime);
             }
         }
 
@@ -66,59 +66,61 @@ namespace Polokus.Core.Hooks
             }
         }
 
-        private void LogAction(IFlowNode node, VisitTime visitTime)
+        private void LogAction(string nodeId, VisitTime visitTime)
         {            
-            if (!FitWithMask(visitTime))
-            {
-                return;
-            }
+            // TODO
 
-            if (((_visitMask & (uint)VisitTime.MarkNameForSpecialNodes) != 0)
-                &&
-                 (node.XmlType == typeof(tScriptTask)
-                 || node.XmlType == typeof(tIntermediateCatchEvent)))
-            {
-                bool withDetails = (_visitMask & (uint)VisitTime.PutNameInParenthesis) != 0;
+            //if (!FitWithMask(visitTime))
+            //{
+            //    return;
+            //}
 
-                LogMarked(node, withDetails);
+            //if (((_visitMask & (uint)VisitTime.MarkNameForSpecialNodes) != 0)
+            //    &&
+            //     (node.XmlType == typeof(tScriptTask)
+            //     || node.XmlType == typeof(tIntermediateCatchEvent)))
+            //{
+            //    bool withDetails = (_visitMask & (uint)VisitTime.PutNameInParenthesis) != 0;
 
-                return;
-            }
+            //    LogMarked(node, withDetails);
 
-            if (sb.Length != 0)
-            {
-                sb.Append(separator);
-            }
+            //    return;
+            //}
 
-            sb.Append(node.Name);
+            //if (sb.Length != 0)
+            //{
+            //    sb.Append(separator);
+            //}
+
+            //sb.Append(node.Name);
         }
 
 
-        public override void BeforeExecuteNode(string wfId, string piId, IFlowNode node, int taskId, INodeCaller? caller)
+        public override void BeforeExecuteNode(string wfId, string piId, string nodeId, int taskId, string? nodeCaller)
         {
-            LogActionSafe(node, VisitTime.BeforeExecute);
+            LogActionSafe(nodeId, VisitTime.BeforeExecute);
         }
 
-        public override void AfterExecuteNodeSuccess(string wfId, string piId, IFlowNode node, int taskId)
+        public override void AfterExecuteNodeSuccess(string wfId, string piId, string nodeId, int taskId)
         {
-            LogActionSafe(node, VisitTime.AfterExecuteSuccess);
+            LogActionSafe(nodeId, VisitTime.AfterExecuteSuccess);
         }
 
-        public override void AfterExecuteNodeFailure(string wfId, string piId, IFlowNode node, int taskId)
+        public override void AfterExecuteNodeFailure(string wfId, string piId, string nodeId, int taskId)
         {
-            LogActionSafe(node, VisitTime.AfterExecuteFailure);
+            LogActionSafe(nodeId, VisitTime.AfterExecuteFailure);
         }
 
-        public override void AfterExecuteNodeSuspension(string wfId, string piId, IFlowNode node, int taskId)
+        public override void AfterExecuteNodeSuspension(string wfId, string piId, string nodeId, int taskId)
         {
-            LogActionSafe(node, VisitTime.AfterExecuteSuspension);
+            LogActionSafe(nodeId, VisitTime.AfterExecuteSuspension);
         }
 
-        public override void BeforeStartNewSequence(string wfId, string piId, IFlowNode firstNode, INodeCaller? caller)
+        public override void BeforeStartNewSequence(string wfId, string piId, string nodeId, string? nodeCallerId)
         {
             if (FitWithMask(VisitTime.StartNewSequence))
             {
-                LogStringSafe(caller?.Id ?? "null");
+                LogStringSafe(nodeCallerId ?? "null");
             }
         }
 

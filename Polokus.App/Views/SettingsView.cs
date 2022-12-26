@@ -38,15 +38,15 @@ namespace Polokus.App.Views
 
         private void NumericUpDownMessageListenerPort_ValueChanged(object? sender, EventArgs e)
         {
-            var messageManagers = _mainWindow.MainPanel.ServiceView.PolokusMaster
-                .GetWorkflows().Select(x => x.MessageManager);
+            // TODO
 
-            if (messageManagers.Any(x => x.IsAnyWaiting()))
-            {
-                MessageBox.Show("Warning! You changed app port, but there are some waiters. You won't be able to perform ping with Polokus, you will have to ping them manually.");
-            }
-                
-                    
+            //var messageManagers = _mainWindow.MainPanel.ServiceView.PolokusMaster
+            //    .GetWorkflows().Select(x => x.MessageManager);
+
+            //if (messageManagers.Any(x => x.IsAnyWaiting()))
+            //{
+            //    MessageBox.Show("Warning! You changed app port, but there are some waiters. You won't be able to perform ping with Polokus, you will have to ping them manually.");
+            //}
         }
 
 

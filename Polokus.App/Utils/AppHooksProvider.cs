@@ -23,59 +23,57 @@ namespace Polokus.App.Utils
             _serviceView = serviceView;
         }        
 
-        public void AfterExecuteNodeFailure(string wfId, string piId, IFlowNode node, int taskId)
+        public void AfterExecuteNodeFailure(string wfId, string piId, string nodeId, int taskId)
         {
 
         }
 
-        public void AfterExecuteNodeSuccess(string wfId, string piId, IFlowNode node, int taskId)
+        public void AfterExecuteNodeSuccess(string wfId, string piId, string nodeId, int taskId)
         {
 
         }
 
-        public void AfterExecuteNodeSuspension(string wfId, string piId, IFlowNode node, int taskId)
+        public void AfterExecuteNodeSuspension(string wfId, string piId, string nodeId, int taskId)
         {
 
         }
 
         public void OnProcessFinished(string wfId, string piId, string result)
         {
-            var instance = GetProcessInstanceById(wfId, piId);
-            string time = instance.StatusManager.TotalTime.ToString(@"hh\:mm\:ss\.ff");
+            string time = _serviceView.RemoteProcessInstancesService.GetTotalTime(wfId, piId);
             Log(wfId, piId, $"Process finished with result: {result}. Time: {time}");
         }
 
-        public void BeforeExecuteNode(string wfId, string piId, IFlowNode node, int taskId, INodeCaller? caller)
+        public void BeforeExecuteNode(string wfId, string piId, string nodeId, int taskId, string? nodeCallerId)
         {
             UpdateActiveNodesInGraphIfNeeded(wfId, piId);
-            Log(wfId, piId, $"Executing: {node.Id} taskId = {taskId}");
-            Thread.Sleep(_serviceView.PolokusMaster.SettingsProvider.DelayForNodeHandlerMs); // delay execution
+            Log(wfId, piId, $"Executing: {nodeId} taskId = {taskId}");
+            //Thread.Sleep(_serviceView.PolokusMaster.SettingsProvider.DelayForNodeHandlerMs); // delay execution
+            Thread.Sleep(500); // TODO
 
-            if (node.XmlType == typeof(tManualTask))
+
+            Type nodeXmlType = _serviceView.RemoteProcessInstancesService.GetNodeXmlType(wfId, piId, nodeId);
+            if (nodeXmlType == typeof(tManualTask))
             {
-                MessageBox.Show($"Waiting for manual task: {node.Name}");
+                string nodeName = _serviceView.RemoteProcessInstancesService.GetNodeName(wfId, piId, nodeId);
+                MessageBox.Show($"Waiting for manual task: {nodeName}");
             }
-            else if (node.XmlType == typeof(tUserTask))
+            else if (nodeXmlType == typeof(tUserTask))
             {
-                var dialog = new UserTaskDialog(node.Name);
-                if (dialog.ShowDialog() == DialogResult.OK)
+                string nodeName = _serviceView.RemoteProcessInstancesService.GetNodeName(wfId, piId, nodeId);
+
+                var dialog = new UserTaskDialog(nodeName);
+                if (dialog.ShowDialog() == DialogResult.OK && dialog.Answer != null)
                 {
-                    string answer = dialog.Answer;
-                    var instance = GetProcessInstanceById(wfId, piId);
-
-                    var nodeHandler = instance.GetNodeHandlerForNodeIfExists(node);
-
-                    if (nodeHandler is UserTaskNodeHandler nh)
-                    {
-                        nh.SetUserDecision(answer);
-                    }
+                    _serviceView.RemoteProcessInstancesService
+                        .SetUserDecisionForUserTaskNH(wfId, piId, nodeId, dialog.Answer);
                 }
 
             }
 
         }
 
-        public void BeforeStartNewSequence(string wfId, string piId, IFlowNode firstNode, INodeCaller? caller)
+        public void BeforeStartNewSequence(string wfId, string piId, string nodeId, string? nodeCallerId)
         {
 
         }
@@ -87,8 +85,7 @@ namespace Polokus.App.Utils
                 return;
             }
 
-            var workflow = GetWorkflowById(wfId);
-            _serviceView.UpdateProcessInstancesListSafe(workflow);
+            _serviceView.UpdateProcessInstancesListSafe(wfId);
         }
 
         public void OnTasksChanged(string wfId, string piId)
@@ -98,8 +95,7 @@ namespace Polokus.App.Utils
                 return;
             }
 
-            var workflow = GetWorkflowById(wfId);
-            _serviceView.UpdateProcessInstancesListSafe(workflow);
+            _serviceView.UpdateProcessInstancesListSafe(wfId);
         }
 
         public void OnTimeout(string wfId, string piId)
@@ -109,11 +105,8 @@ namespace Polokus.App.Utils
 
         private void Log(string wfId, string piId, string message)
         {
-            string globalInstanceId = Helpers.GetGlobalProcessInstanceId(wfId, piId);
-
-            var logger = _serviceView.PolokusMaster.GetOrCreateLogger(globalInstanceId);
-
-            logger.Log(message);
+            string globalPiId = Helpers.GetGlobalProcessInstanceId(wfId, piId);
+            _serviceView.RemoteLogsService.Log(globalPiId, Logger.MsgType.Simple, message);
 
             if (IsWorkflowActive(wfId))
             {
@@ -128,18 +121,17 @@ namespace Polokus.App.Utils
                 return;
             }
 
-            var instance = GetProcessInstanceById(wfId, piId);
-
-            HashSet<string> activeNodesIds = instance.AvailableNodeHandlers.Values.Select(nh => nh.Node.Id).ToHashSet();
-
-            var allNodesIds = instance.BpmnProcess.GetNodesIds();
+            HashSet<string> activeNodesIds = _serviceView.RemoteProcessInstancesService
+                .GetActiveNodesIds(wfId, piId).ToHashSet();
+            
+            var allNodesIds = _serviceView.RemoteProcessInstancesService.GetAllNodesIds(wfId, piId);
             var inactiveNodesIds = allNodesIds.Where(x => !activeNodesIds.Contains(x));
 
             BpmnioClient.SetColours(_serviceView.chromiumWindow, activeNodesIds, inactiveNodesIds);
 
         }
 
-        public void OnCallerChanged(string callerId, CallerChangedType type)
+        public void OnCallerChanged(string callerId, string callerChangedType)
         {
             var wfId = CallersIds.GetWorkflowIdFromCaller(callerId);
             if (!IsWorkflowActive(wfId))
@@ -147,39 +139,14 @@ namespace Polokus.App.Utils
                 return;
             }
 
-            var wf = GetWorkflowById(wfId);
-
-            _serviceView.UpdateNodeHandlerWaitersListSafe(wf);
-            _serviceView.UpdateProcessStartersListSafe(wf);
-        }
-
-        private Workflow GetWorkflowFromCaller(string callerId)
-        {
-            string wfId = CallersIds.GetWorkflowIdFromCaller(callerId);
-            Workflow workflow = (Workflow)_serviceView.PolokusMaster.GetWorkflow(wfId);
-            return workflow;
+            _serviceView.UpdateNodeHandlerWaitersListSafe(wfId);
+            _serviceView.UpdateProcessStartersListSafe(wfId);
         }
 
         private bool IsWorkflowActive(string wfId)
         {
-            return string.Equals(wfId, _serviceView.GetActiveWorkflow()?.Id);
+            return string.Equals(wfId, _serviceView.ActiveWorkflow);
         }
 
-        private Workflow GetWorkflowById(string wfId)
-        {
-            return (Workflow)_serviceView.PolokusMaster.GetWorkflow(wfId);
-        }
-
-        private ProcessInstance GetProcessInstanceById(string wfId, string piId)
-        {
-            Workflow wf = GetWorkflowById(wfId);
-            var pi = wf.GetProcessInstanceById(piId);
-            if (pi == null)
-            {
-                throw new Exception("Process instance not found");
-            }
-
-            return (ProcessInstance)pi;
-        }
     }
 }
