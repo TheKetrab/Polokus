@@ -1,80 +1,116 @@
 ﻿using Polokus.Core.Interfaces;
+using Polokus.Core.Models.BpmnObjects.Xsd;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Polokus.Core.Hooks
 {
     public class HooksManager : IHooksManager
     {
-        private List<IHooksProvider> _hooksProviders = new();
-
-        public void RegisterHooksProvider(IHooksProvider hookProvider)
+        private struct HooksProviderInfo
         {
-            _hooksProviders.Add(hookProvider);
+            public IHooksProvider Object { get; }
+            public bool WaitFor { get; }
+
+            public HooksProviderInfo(IHooksProvider @object, bool waitFor)
+            {
+                Object = @object;
+                WaitFor = waitFor;
+            }
         }
 
-        public void DeregisterHooksProvider(IHooksProvider hookProvider)
+        private List<HooksProviderInfo> _hooksProviders = new();
+
+        public void RegisterHooksProvider(IHooksProvider hooksProvider, bool waitFor = true)
         {
-            _hooksProviders.Remove(hookProvider);
+            _hooksProviders.Add(new HooksProviderInfo(hooksProvider, waitFor));
+        }
+
+        public void DeregisterHooksProvider(IHooksProvider hooksProvider)
+        {
+            _hooksProviders.RemoveAll(x => x.Object == hooksProvider);
         }
 
         public IEnumerable<IHooksProvider> GetHooksProviders()
         {
-            return _hooksProviders;
+            return _hooksProviders.Select(x => x.Object);
+        }
+
+        private void ExecuteAction(bool waitFor, Action action)
+        {
+            if (waitFor)
+            {
+                action();
+            }
+            else
+            {
+                Task.Run(() => action);
+            }
         }
 
         #region IHooksProviderImpl
         public void AfterExecuteNodeFailure(string wfId, string piId, IFlowNode node, int taskId)
         {
-            _hooksProviders.ForEach(x => x.AfterExecuteNodeFailure(wfId, piId, node, taskId));
+            _hooksProviders.ForEach(x => ExecuteAction(x.WaitFor,
+                () => x.Object.AfterExecuteNodeFailure(wfId, piId, node, taskId)));
         }
 
         public void AfterExecuteNodeSuccess(string wfId, string piId, IFlowNode node, int taskId)
         {
-            _hooksProviders.ForEach(x => x.AfterExecuteNodeSuccess(wfId, piId, node, taskId));
+            _hooksProviders.ForEach(x => ExecuteAction(x.WaitFor,
+                () => x.Object.AfterExecuteNodeSuccess(wfId, piId, node, taskId)));
         }
 
         public void AfterExecuteNodeSuspension(string wfId, string piId, IFlowNode node, int taskId)
         {
-            _hooksProviders.ForEach(x => x.AfterExecuteNodeSuspension(wfId, piId, node, taskId));
+            _hooksProviders.ForEach(x => ExecuteAction(x.WaitFor,
+                () => x.Object.AfterExecuteNodeSuspension(wfId, piId, node, taskId)));
         }
 
         public void BeforeExecuteNode(string wfId, string piId, IFlowNode node, int taskId, INodeCaller? caller)
         {
-            _hooksProviders.ForEach(x => x.BeforeExecuteNode(wfId, piId, node, taskId, caller));
+            _hooksProviders.ForEach(x => ExecuteAction(x.WaitFor,
+                () => x.Object.BeforeExecuteNode(wfId, piId, node, taskId, caller)));
         }
 
         public void BeforeStartNewSequence(string wfId, string piId, IFlowNode firstNode, INodeCaller? caller)
         {
-            _hooksProviders.ForEach(x => x.BeforeStartNewSequence(wfId, piId, firstNode, caller));
+            _hooksProviders.ForEach(x => ExecuteAction(x.WaitFor,
+                () => x.Object.BeforeStartNewSequence(wfId, piId, firstNode, caller)));
         }
 
         public void OnProcessFinished(string wfId, string piId, string result)
         {
-            _hooksProviders.ForEach(x => x.OnProcessFinished(wfId, piId, result));
+            _hooksProviders.ForEach(x => ExecuteAction(x.WaitFor,
+                () => x.Object.OnProcessFinished(wfId, piId, result)));
         }
 
         public void OnStatusChanged(string wfId, string piId)
         {
-            _hooksProviders.ForEach(x => x.OnStatusChanged(wfId, piId));
+            _hooksProviders.ForEach(x => ExecuteAction(x.WaitFor,
+                () => x.Object.OnStatusChanged(wfId, piId)));
         }
 
         public void OnTasksChanged(string wfId, string piId)
         {
-            _hooksProviders.ForEach(x => x.OnTasksChanged(wfId, piId));
+            _hooksProviders.ForEach(x => ExecuteAction(x.WaitFor,
+                () => x.Object.OnTasksChanged(wfId, piId)));
         }
 
         public void OnTimeout(string wfId, string piId)
         {
-            _hooksProviders.ForEach(x => x.OnTimeout(wfId, piId));
+            _hooksProviders.ForEach(x => ExecuteAction(x.WaitFor,
+                () => x.Object.OnTimeout(wfId, piId)));
         }
 
         public void OnCallerChanged(string callerId, CallerChangedType type)
         {
-            _hooksProviders.ForEach(x => x.OnCallerChanged(callerId, type));
+            _hooksProviders.ForEach(x => ExecuteAction(x.WaitFor,
+                () => x.Object.OnCallerChanged(callerId, type)));
         }
         #endregion
     }
