@@ -1,6 +1,7 @@
 ﻿using Polokus.Core.Execution;
 using Polokus.Core.Interfaces;
 using Polokus.Core.Remote.Models;
+using Polokus.Core.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Polokus.Core.Remote
 {
-    public class RemoteWorkflowsService
+    public class RemoteWorkflowsService : IWorkflowsService
     {
         public IEnumerable<string> GetBpmnProcessesIds(string wfId)
         {
@@ -21,12 +22,12 @@ namespace Polokus.Core.Remote
             throw new NotImplementedException();
         }
 
-        public IEnumerable<RemoteProcessInstance> GetProcessInstancesInfos(string wfId)
+        public IEnumerable<RawProcessInstance> GetProcessInstancesInfos(string wfId)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<RemoteProcessStarter> GetProcessStarters(string wfId)
+        public IEnumerable<RawProcessStarter> GetProcessStarters(string wfId)
         {
             throw new NotImplementedException();
             //waiters.AddRange(workflow.TimeManager.GetWaiters().Select(x => Tuple.Create("Time", x)));
@@ -39,7 +40,7 @@ namespace Polokus.Core.Remote
             throw new NotImplementedException();
         }
 
-        public IEnumerable<RemoteNodeHandlerWaiter> GetNodeHandlerWaiters(string wfId)
+        public IEnumerable<RawNodeHandlerWaiter> GetNodeHandlerWaiters(string wfId)
         {
             throw new NotImplementedException();
         }
@@ -49,7 +50,7 @@ namespace Polokus.Core.Remote
             throw new NotImplementedException();
         }
 
-        public string PingListener(string wfId, string listenerId)
+        public void PingListener(string wfId, string listenerId)
         {
             throw new NotImplementedException();
         }

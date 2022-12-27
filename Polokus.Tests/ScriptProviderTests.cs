@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Polokus.Core;
 using Microsoft.CodeAnalysis.Scripting;
 using Polokus.Core.Scripting;
+using Microsoft.VisualStudio.TestPlatform.Utilities;
 
 namespace Polokus.Tests
 {
@@ -54,6 +55,22 @@ namespace Polokus.Tests
             Assert.AreEqual(output, marked);
         }
 
+        [Test]
+        [TestCase("$a",true)]
+        [TestCase("$_vlmq", true)]
+        [TestCase("$a + 13", false)]
+        [TestCase("", false)]
+        public void IsValidOutgoingVariable_Tests(string str, bool valid)
+        {
+            // Arrange
+            var scriptProvider = new ScriptProvider();
+
+            // Act
+            bool result = scriptProvider.IsValidOutgoingVariable(str);
+
+            // Assert
+            Assert.AreEqual(valid, result);
+        }
 
 
     }

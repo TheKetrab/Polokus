@@ -1,4 +1,5 @@
 ﻿using Polokus.Core.Helpers;
+using Polokus.Core.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Polokus.Core.Remote
 {
-    public class RemoteLogsService
+    public class RemoteLogsService : ILogsService
     {
         public List<Tuple<Logger.MsgType,string>> GetMessages(string wfId, string piId)
         {

@@ -1,4 +1,5 @@
 ﻿using Polokus.Core.Execution;
+using Polokus.Core.Helpers;
 
 namespace Polokus.Core.Interfaces
 {
@@ -25,7 +26,7 @@ namespace Polokus.Core.Interfaces
         void StartNewSequence(IFlowNode firstNode, INodeCaller? caller);
         IProcessInstance CreateSubProcessInstance(IBpmnProcess bpmnProcess);
 
-
+        void Log(string info, Logger.MsgType type);
     }
 
    

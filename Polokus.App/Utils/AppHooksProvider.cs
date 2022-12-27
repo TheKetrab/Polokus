@@ -6,6 +6,7 @@ using Polokus.Core.Hooks;
 using Polokus.Core.Interfaces;
 using Polokus.Core.Models.BpmnObjects.Xsd;
 using Polokus.Core.NodeHandlers;
+using Polokus.Core.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,10 +18,12 @@ namespace Polokus.App.Utils
     public class AppHooksProvider : IHooksProvider
     {
         private ServiceView _serviceView;
+        private IServicesProvider _services;
 
-        public AppHooksProvider(ServiceView serviceView)
+        public AppHooksProvider(ServiceView serviceView, IServicesProvider services)
         {
             _serviceView = serviceView;
+            _services = services;
         }        
 
         public void AfterExecuteNodeFailure(string wfId, string piId, string nodeId, int taskId)
@@ -40,7 +43,7 @@ namespace Polokus.App.Utils
 
         public void OnProcessFinished(string wfId, string piId, string result)
         {
-            string time = _serviceView.RemoteProcessInstancesService.GetTotalTime(wfId, piId);
+            string time = _services.ProcessInstancesService.GetTotalTime(wfId, piId);
             Log(wfId, piId, $"Process finished with result: {result}. Time: {time}");
         }
 
@@ -52,20 +55,20 @@ namespace Polokus.App.Utils
             Thread.Sleep(500); // TODO
 
 
-            Type nodeXmlType = _serviceView.RemoteProcessInstancesService.GetNodeXmlType(wfId, piId, nodeId);
+            Type nodeXmlType = _services.ProcessInstancesService.GetNodeXmlType(wfId, piId, nodeId);
             if (nodeXmlType == typeof(tManualTask))
             {
-                string nodeName = _serviceView.RemoteProcessInstancesService.GetNodeName(wfId, piId, nodeId);
+                string nodeName = _services.ProcessInstancesService.GetNodeName(wfId, piId, nodeId);
                 MessageBox.Show($"Waiting for manual task: {nodeName}");
             }
             else if (nodeXmlType == typeof(tUserTask))
             {
-                string nodeName = _serviceView.RemoteProcessInstancesService.GetNodeName(wfId, piId, nodeId);
+                string nodeName = _services.ProcessInstancesService.GetNodeName(wfId, piId, nodeId);
 
                 var dialog = new UserTaskDialog(nodeName);
                 if (dialog.ShowDialog() == DialogResult.OK && dialog.Answer != null)
                 {
-                    _serviceView.RemoteProcessInstancesService
+                    _services.ProcessInstancesService
                         .SetUserDecisionForUserTaskNH(wfId, piId, nodeId, dialog.Answer);
                 }
 
@@ -106,7 +109,7 @@ namespace Polokus.App.Utils
         private void Log(string wfId, string piId, string message)
         {
             string globalPiId = Helpers.GetGlobalProcessInstanceId(wfId, piId);
-            _serviceView.RemoteLogsService.Log(globalPiId, Logger.MsgType.Simple, message);
+            _services.LogsService.Log(globalPiId, Logger.MsgType.Simple, message);
 
             if (IsWorkflowActive(wfId))
             {
@@ -121,10 +124,10 @@ namespace Polokus.App.Utils
                 return;
             }
 
-            HashSet<string> activeNodesIds = _serviceView.RemoteProcessInstancesService
+            HashSet<string> activeNodesIds = _services.ProcessInstancesService
                 .GetActiveNodesIds(wfId, piId).ToHashSet();
             
-            var allNodesIds = _serviceView.RemoteProcessInstancesService.GetAllNodesIds(wfId, piId);
+            var allNodesIds = _services.ProcessInstancesService.GetAllNodesIds(wfId, piId);
             var inactiveNodesIds = allNodesIds.Where(x => !activeNodesIds.Contains(x));
 
             BpmnioClient.SetColours(_serviceView.chromiumWindow, activeNodesIds, inactiveNodesIds);

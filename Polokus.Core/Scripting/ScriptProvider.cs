@@ -38,9 +38,15 @@ namespace Polokus.Core.Scripting
             return string.Join('\n', splitted);
         }
 
+        public bool IsValidOutgoingVariable(string str)
+        {
+            string pattern = @"^\$([a-zA-Z0-9_])+$";
+            return Regex.IsMatch(str, pattern);
+        }
+
         public string MarkVariablesSingleLine(string script)
         {
-            string pattern = @"^.*\$([a-zA-Z0-9_]*)((;|\s+).*|$)";
+            string pattern = @"^.*\$([a-zA-Z0-9_]+)((;|\s+).*|$)";
 
             string result = script;
             while (Regex.IsMatch(result, pattern))

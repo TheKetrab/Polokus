@@ -1,6 +1,7 @@
 ﻿using Polokus.Core.Execution;
 using Polokus.Core.Externals;
 using Polokus;
+using Polokus.Core.Helpers;
 
 namespace Polokus.Core.Interfaces
 {
@@ -36,7 +37,7 @@ namespace Polokus.Core.Interfaces
         /// <summary>
         /// Object that provides dynamic injection of many hooks and invokes all of them.
         /// </summary>
-        IHooksManager? HooksManager { get; set; }
+        IHooksManager HooksManager { get; set; }
 
         /// <summary>
         /// Object that reprezents externals and manages them. Can be null if externals.json not found.
@@ -64,6 +65,23 @@ namespace Polokus.Core.Interfaces
         /// <param name="signal">Name of signal.</param>
         /// <param name="parameters">Parameters of signal.</param>
         void EmitSignal(object? sender, string signal, string? parameters);
+
+        /// <summary>
+        /// Logs an info.
+        /// </summary>
+        /// <param name="piId">Workflow id.</param>
+        /// <param name="piId">Process instance id.</param>
+        /// <param name="info">Message to log.</param>
+        /// <param name="type">Importance of message.</param>
+        void Log(string wfId, string piId, string info, Logger.MsgType type);
+
+        /// <summary>
+        /// Logs an info.
+        /// </summary>
+        /// <param name="globalPiId">Global process instane id (wfId/piId).</param>
+        /// <param name="info">Message to log.</param>
+        /// <param name="type">Importance of message.</param>
+        void Log(string globalPiId, string info, Logger.MsgType type);
 
     }
 }

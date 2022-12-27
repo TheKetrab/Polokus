@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Polokus.Core.Remote.Models
 {
-    public class RemoteProcessStarter
+    public class RawProcessInstance
     {
-        public string Id { get; }
-        public string StartNode { get; }
-        public string StarterType { get; }
+        public string Id { get; set;  }
+        public string Status { get; set;  }
+        public string ActiveTasks { get; set; }
     }
 }

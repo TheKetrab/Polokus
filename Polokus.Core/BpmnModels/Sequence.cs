@@ -25,7 +25,7 @@ namespace Polokus.Core.Models
         public Sequence(BpmnProcess bpmnProcess, tSequenceFlow xmlElement)
         {
             XmlElement = xmlElement;
-            Name = xmlElement.name;
+            Name = xmlElement.name ?? "";
             Id = xmlElement.id;
             BpmnProcess = bpmnProcess;
         }

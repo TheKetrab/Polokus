@@ -28,5 +28,12 @@ namespace Polokus.Core.Interfaces
         /// </summary>
         /// <param name="script">C# script to evaluate.</param>
         Task EvalCSharpScriptAsync(string script);
+
+        /// <summary>
+        /// Decides if given string is valid variable name (for outgoing edges).
+        /// For example: '$x' is valid, '$x + abc' is invalid.
+        /// </summary>
+        /// <param name="str">Variable name with '$'.</param>
+        bool IsValidOutgoingVariable(string str);
     }
 }

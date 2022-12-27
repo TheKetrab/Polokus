@@ -5,6 +5,7 @@ using Polokus.Core.Models;
 using Polokus.Core.NodeHandlers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,6 +31,11 @@ namespace Polokus.Core.Execution
         public bool AnyRunning()
         {
             return ActiveTasks.Any();
+        }
+
+        public int Count()
+        {
+            return ActiveTasks.Count;
         }
 
         public Tuple<int, CancellationToken> AddNewTask(INodeHandler nh)

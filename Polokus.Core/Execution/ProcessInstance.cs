@@ -78,6 +78,10 @@ namespace Polokus.Core.Execution
 
         }
 
+        public void Log(string info, Logger.MsgType type)
+        {
+            Workflow.Log(Id, info, type);
+        }
 
         public INodeHandler? GetNodeHandlerForNodeIfExists(IFlowNode node)
         {
@@ -112,7 +116,7 @@ namespace Polokus.Core.Execution
             INodeHandler nodeHandler = GetNodeHandlerForNode(node);
             ActiveTasksManager.AssignTaskToAnotherNodeHandler(taskId, nodeHandler);
 
-            HooksProvider?.BeforeExecuteNode(Workflow.Id, Id, node.Id, taskId, caller.Id);
+            HooksProvider?.BeforeExecuteNode(Workflow.Id, Id, node.Id, taskId, caller?.Id);
             var executionResult = await nodeHandler.Execute(caller, taskId);
             lock (TasksMutex)
             {
@@ -148,7 +152,7 @@ namespace Polokus.Core.Execution
 
         public void StartNewSequence(IFlowNode firstNode, INodeCaller? caller)
         {
-            HooksProvider?.BeforeStartNewSequence(Workflow.Id, Id, firstNode.Id, caller.Id);
+            HooksProvider?.BeforeStartNewSequence(Workflow.Id, Id, firstNode.Id, caller?.Id);
             var newTask = ActiveTasksManager.AddNewTask(GetNodeHandlerForNode(firstNode));
             int taskId = newTask.Item1;
             CancellationToken ctoken = newTask.Item2;
@@ -180,7 +184,6 @@ namespace Polokus.Core.Execution
             }
 
         }
-
 
     }
 

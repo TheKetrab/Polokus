@@ -7,11 +7,9 @@ using System.Threading.Tasks;
 
 namespace Polokus.Core.Remote.Models
 {
-    public class RemoteWorkflow
+    public class RawWorkflow
     {
         string Id { get; }
         string BpmnRawString { get; }
-        ICollection<IProcessInstance> ProcessInstances { get; }
-        ICollection<IProcessInstance> History { get; }
     }
 }

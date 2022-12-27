@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Polokus.Core.NodeHandlers.Abstract;
 using Polokus.Core.Interfaces;
 using Polokus.Core.Execution;
+using Microsoft.Extensions.Logging;
 
 namespace Polokus.Core.NodeHandlers
 {
@@ -43,9 +44,18 @@ namespace Polokus.Core.NodeHandlers
                         userDecision = $@"""{_userDecision}"""; // string requires quotes
                     }
 
-                    // perform: $x = decision
-                    string script = $"{outgoing.Name} = {userDecision};";
-                    await ScriptProvider.EvalCSharpScriptAsync(script);
+                    if (ScriptProvider.IsValidOutgoingVariable(outgoing.Name))
+                    {
+                        // perform: $x = decision
+                        string script = $"{outgoing.Name} = {userDecision};";
+                        await ScriptProvider.EvalCSharpScriptAsync(script);
+                    }
+                    else
+                    {
+                        this.ProcessInstance.Log(
+                            $"Node {this.Node.Id} has outgoing edge with invalid name {outgoing.Name}. Unable to evaluate as variable.",
+                            Helpers.Logger.MsgType.Warning);
+                    }
                 }
             }
         }

@@ -1,4 +1,6 @@
-﻿namespace Polokus.Core.Interfaces
+﻿using Polokus.Core.Helpers;
+
+namespace Polokus.Core.Interfaces
 {
     /// <summary>
     /// IWorkflow is a running instance of its definition: IBpmnWorkflow.
@@ -76,5 +78,22 @@
         /// <param name="bpmnProcessId">Id of BPMN process.</param>
         IProcessInstance StartProcessManually(string bpmnProcessId);
 
+        /// <summary>
+        /// This method retrieves all waiters now available with their type.
+        /// </summary>
+        IEnumerable<Tuple<string,INodeHandlerWaiter>> GetAllWaiters();
+
+        /// <summary>
+        /// This method retrieves all process starters for current workflow with their type.
+        /// </summary>
+        IEnumerable<Tuple<string,IProcessStarter>> GetAllProcessStarters();
+
+        /// <summary>
+        /// Logs an info.
+        /// </summary>
+        /// <param name="piId">Process instance id.</param>
+        /// <param name="info">Message to log.</param>
+        /// <param name="type">Importance of message.</param>
+        void Log(string piId, string info, Logger.MsgType type);
     }
 }

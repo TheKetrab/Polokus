@@ -2,6 +2,7 @@
 using Polokus.Core.Helpers;
 using Polokus.Core.Interfaces;
 using Polokus.Core.Scripting;
+using System.Collections.Generic;
 
 namespace Polokus.Core.Execution
 {
@@ -68,6 +69,12 @@ namespace Polokus.Core.Execution
 
             NodeHandlerFactory = nhFactory;
         }
+
+        public void Log(string piId, string info, Logger.MsgType type)
+        {
+            PolokusMaster.Log(Id, piId, info, type);
+        }
+
 
         private bool IsTimeout(DateTime start, int? timeout)
         {
@@ -162,5 +169,26 @@ namespace Polokus.Core.Execution
             return StartProcessInstance(bpmnProcess, startNode, -1);
         }
 
+        public IEnumerable<Tuple<string, INodeHandlerWaiter>> GetAllWaiters()
+        {
+            var result = new List<Tuple<string, INodeHandlerWaiter>>();
+
+            result.AddRange(TimeManager.GetWaiters().Select(x => Tuple.Create("Time", x)));
+            result.AddRange(MessageManager.GetWaiters().Select(x => Tuple.Create("Message", x)));
+            result.AddRange(SignalManager.GetWaiters().Select(x => Tuple.Create("Signal", x)));
+
+            return result;
+        }
+
+        public IEnumerable<Tuple<string, IProcessStarter>> GetAllProcessStarters()
+        {
+            var result = new List<Tuple<string, IProcessStarter>>();
+
+            result.AddRange(TimeManager.GetStarters().Select(x => Tuple.Create("Time", x)));
+            result.AddRange(MessageManager.GetStarters().Select(x => Tuple.Create("Message", x)));
+            result.AddRange(SignalManager.GetStarters().Select(x => Tuple.Create("Signal", x)));
+
+            return result;
+        }
     }
 }

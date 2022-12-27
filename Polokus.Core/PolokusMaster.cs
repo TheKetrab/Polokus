@@ -25,7 +25,7 @@ namespace Polokus.Core
 
         public ISettingsProvider SettingsProvider { get; set; }
 
-        public IHooksManager? HooksManager { get; set; } = new HooksManager();
+        public IHooksManager HooksManager { get; set; } = new HooksManager();
 
         public Externals.Externals? Externals { get; }
 
@@ -36,6 +36,11 @@ namespace Polokus.Core
         private Dictionary<string, Logger> _logs = new();
 
         public event EventHandler<Signal>? Signal;
+
+        public Logger GetOrCreateLogger(string wfId, string piId)
+        {
+            return GetOrCreateLogger($"{wfId}/{piId}");
+        }
 
         public Logger GetOrCreateLogger(string globalPiId)
         {
@@ -59,6 +64,29 @@ namespace Polokus.Core
 
             return node;
         }
+
+        public void Log(string wfId, string piId, string info, Logger.MsgType type)
+        {
+            Log($"{wfId}/{piId}", info, type);
+        }
+
+        public void Log(string globalPiId, string info, Logger.MsgType type)
+        {
+            var logger = GetOrCreateLogger(globalPiId);
+            switch (type)
+            {
+                case Logger.MsgType.Simple:
+                    logger.Log(info);
+                    break;
+                case Logger.MsgType.Warning:
+                    logger.LogWarning(info);
+                    break;
+                case Logger.MsgType.Error:
+                    logger.LogError(info);
+                    break;
+            }
+        }
+
 
         public PolokusMaster()
         {

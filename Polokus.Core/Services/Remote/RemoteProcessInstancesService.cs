@@ -1,4 +1,5 @@
 ﻿using Polokus.Core.Models.BpmnObjects.Xsd;
+using Polokus.Core.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Polokus.Core.Remote
 {
-    public class RemoteProcessInstancesService
+    public class RemoteProcessInstancesService : IProcessInstancesService
     {
         public IEnumerable<string> GetActiveNodesIds(string wfId, string piId)
         {
@@ -35,7 +36,7 @@ namespace Polokus.Core.Remote
             throw new NotImplementedException();
         }
 
-        public string SetUserDecisionForUserTaskNH(string wfId, string piId, string nodeId, string answer)
+        public void SetUserDecisionForUserTaskNH(string wfId, string piId, string nodeId, string answer)
         {
             throw new NotImplementedException();
         }

@@ -6,6 +6,8 @@ using Polokus.Core.Execution;
 using Polokus.Core.Helpers;
 using Polokus.Core.Interfaces;
 using Polokus.Core.Remote;
+using Polokus.Core.Services.Interfaces;
+using Polokus.Core.Services.OnPremise;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Reflection;
@@ -15,18 +17,18 @@ namespace Polokus.App.Views
     public partial class ServiceView : UserControl
     {
         private MainWindow _mainWindow;
-        //public PolokusMaster PolokusMaster;
         public ChromiumWindow chromiumWindow;
 
-        public RemoteLogsService RemoteLogsService = new(); // TODO service
-        public RemoteProcessInstancesService RemoteProcessInstancesService = new(); // TODO
-        public RemotePolokusService RemotePolokusService = new(); // TODO
-        public RemoteWorkflowsService RemoteWorkflowsService = new(); // TODO
+        public IServicesProvider _services;
 
         public ServiceView(MainWindow mainWindow)
         {
             _mainWindow = mainWindow;
             InitializeComponent();
+
+            _services = new OnPremiseServicesProvider(); // TODO wybor
+            var appHooksProvider = new AppHooksProvider(this, _services);
+            _services.PolokusService.RegisterHooksProvider(appHooksProvider);
 
             chromiumWindow = new ChromiumWindow(_mainWindow,"viewer");
             chromiumWindow.Parent = panelBpmnio;
@@ -90,7 +92,7 @@ namespace Polokus.App.Views
 
         private void LoadViewForFirstWorkflow()
         {
-            var wfId = RemotePolokusService.GetWorkflowsIds().FirstOrDefault();
+            var wfId = _services.PolokusService.GetWorkflowsIds().FirstOrDefault();
             if (wfId == null)
             {
                 return;
@@ -188,7 +190,9 @@ namespace Polokus.App.Views
         private void LoadXmlFile(string file)
         {
             string str = File.ReadAllText(file);
-            RemotePolokusService.LoadXmlString(str, new FileInfo(file).Name);
+            string name = new FileInfo(file).Name;
+            _services.PolokusService.LoadXmlString(str, name);
+            _loadedWorkflows.Add(name);
         }
 
         /// <summary>
@@ -206,20 +210,20 @@ namespace Polokus.App.Views
             LoadGraphForProcessInstance(activeGlobalPiId);
         }
 
-
+        private List<string> _loadedWorkflows = new();
         private void InitializeComboBoxWorkflows()
         {
-            // TODO: comboBoxWorkflows.DataSource = new BindingSource(PolokusMaster._workflows, null);
-            comboBoxWorkflows.DisplayMember = "Key";
-            comboBoxWorkflows.ValueMember = "Value";
+            comboBoxWorkflows.DataSource = new BindingSource(this._loadedWorkflows, null);
+            //comboBoxWorkflows.DisplayMember = "Key";
+            //comboBoxWorkflows.ValueMember = "Value";
             comboBoxWorkflows.SelectedIndexChanged += comboBoxWorkflows_SelectedIndexChanged;
         }
 
         private void comboBoxWorkflows_SelectedIndexChanged(object? sender, EventArgs e)
         {
-            if (comboBoxWorkflows.SelectedItem is KeyValuePair<string, IWorkflow> wf)
+            if (comboBoxWorkflows.SelectedItem is string wf)
             {
-                ActiveWorkflow = wf.Key;
+                ActiveWorkflow = wf;
             }
 
             if (ActiveWorkflow == null)
@@ -238,14 +242,14 @@ namespace Polokus.App.Views
             UpdateProcessStartersList(wfId);
             UpdateNodeHandlerWaitersList(wfId);
 
-            string rawString = RemoteWorkflowsService.GetRawString(wfId);
+            string rawString = _services.WorkflowsService.GetRawString(wfId);
             LoadBpmnGraph(rawString);
         }
 
         private void UpdateBpmnProcessesList(string wfId)
         {
             listViewProcesses.Items.Clear();
-            var processes = RemoteWorkflowsService.GetManualBpmnProcessesIds(wfId);
+            var processes = _services.WorkflowsService.GetManualBpmnProcessesIds(wfId);
             foreach (var processId in processes)
             {
                 this.listViewProcesses.Items.Add(processId);
@@ -261,7 +265,7 @@ namespace Polokus.App.Views
         {
             listViewStarters.Items.Clear();
 
-            var starters = RemoteWorkflowsService.GetProcessStarters(wfId);
+            var starters = _services.WorkflowsService.GetProcessStarters(wfId);
 
             foreach (var starter in starters)
             {
@@ -282,7 +286,7 @@ namespace Polokus.App.Views
         {
             listViewWaiters.Items.Clear();
 
-            var waiters = RemoteWorkflowsService.GetNodeHandlerWaiters(wfId);
+            var waiters = _services.WorkflowsService.GetNodeHandlerWaiters(wfId);
             foreach (var waiter in waiters)
             {
                 var item = new ListViewItem(waiter.Id);
@@ -301,7 +305,7 @@ namespace Polokus.App.Views
         private void UpdateProcessInstancesList(string wfId)
         {
             listViewInstances.Items.Clear();
-            var processInstances = RemoteWorkflowsService.GetProcessInstancesInfos(wfId);
+            var processInstances = _services.WorkflowsService.GetProcessInstancesInfos(wfId);
 
             foreach (var instance in processInstances)
             {
@@ -362,12 +366,12 @@ namespace Polokus.App.Views
         public void LoadGraphForProcessInstance(string globalPiId)
         {
             Helpers.GetWfPiIDs(globalPiId, out string wfId, out string piId);
-            string rawString = RemoteWorkflowsService.GetRawString(wfId);
+            string rawString = _services.WorkflowsService.GetRawString(wfId);
             LoadBpmnGraph(rawString);
 
-            HashSet<string> activeNodesIds = RemoteProcessInstancesService.GetActiveNodesIds(wfId, piId).ToHashSet();
+            HashSet<string> activeNodesIds = _services.ProcessInstancesService.GetActiveNodesIds(wfId, piId).ToHashSet();
 
-            var allNodesIds = RemoteProcessInstancesService.GetAllNodesIds(wfId, piId);
+            var allNodesIds = _services.ProcessInstancesService.GetAllNodesIds(wfId, piId);
             var inactiveNodesIds = allNodesIds.Where(x => !activeNodesIds.Contains(x));
 
             BpmnioClient.SetColours(chromiumWindow, activeNodesIds, inactiveNodesIds);
@@ -378,7 +382,7 @@ namespace Polokus.App.Views
             this.readOnlyRichTextBox1.Text = "";
 
             Helpers.GetWfPiIDs(globalPiId, out string wfId, out string piId);
-            var messages = RemoteLogsService.GetMessages(wfId, piId);
+            var messages = _services.LogsService.GetMessages(wfId, piId);
             foreach (var message in messages)
             {
                 string br = string.IsNullOrEmpty(this.readOnlyRichTextBox1.Text) ? "" : "\n";
@@ -411,7 +415,7 @@ namespace Polokus.App.Views
             }
 
 
-            string piId = RemoteWorkflowsService.StartProcessManually(wfId, bpmnProcessId);
+            string piId = _services.WorkflowsService.StartProcessManually(wfId, bpmnProcessId);
             Task.Run(async () => // TODO: usunac to brzydkie rozwiazanie! musi byc to robione od razu jak sie item doda przez hooks providera
             {
                 await Task.Delay(500);
@@ -476,7 +480,7 @@ namespace Polokus.App.Views
             }
 
             string listenerId = this.textBoxPingWaiter.Text;
-            RemoteWorkflowsService.PingListener(ActiveWorkflow, listenerId);
+            _services.WorkflowsService.PingListener(ActiveWorkflow, listenerId);
         }
 
     }
