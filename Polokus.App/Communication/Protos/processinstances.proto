@@ -1,0 +1,71 @@
+﻿syntax = "proto3";
+
+import "Communication/Protos/common.proto";
+
+option csharp_namespace = "RemoteServices";
+
+package processinstances;
+
+service RemoteProcessInstanceService {
+  rpc GetActiveNodesIds (GetActiveNodesIdsRequest) returns (GetActiveNodesIdsReply);
+  rpc GetAllNodesIds (GetAllNodesIdsRequest) returns (GetAllNodesIdsReply);
+  rpc GetNodeName (GetNodeNameRequest) returns (GetNodeNameReply);
+  rpc GetNodeXmlType (GetNodeXmlTypeRequest) returns (GetNodeXmlTypeReply);
+  rpc GetTotalTime (GetTotalTimeRequest) returns (GetTotalTimeReply);
+  rpc SetUserDecisionForUserTaskNH (SetUserDecisionRequest) returns (Empty);
+}
+
+
+message GetActiveNodesIdsRequest {
+  string wfId = 1;
+  string piId = 2;
+}
+
+message GetActiveNodesIdsReply {
+  repeated string activeNodesIds = 1;
+}
+
+message GetAllNodesIdsRequest {
+  string wfId = 1;
+  string piId = 2;
+}
+
+message GetAllNodesIdsReply {
+  repeated string allNodesIds = 1;
+}
+
+message GetNodeNameRequest {
+  string wfId = 1;
+  string piId = 2;
+  string nodeId = 3;
+}
+
+message GetNodeNameReply {
+  string nodeName = 1;
+}
+
+message GetNodeXmlTypeRequest {
+  string wfId = 1;
+  string piId = 2;
+  string nodeId = 3;
+}
+
+message GetNodeXmlTypeReply {
+  string typeName = 1;
+}
+
+message GetTotalTimeRequest {
+  string wfId = 1;
+  string piId = 2;
+}
+
+message GetTotalTimeReply {
+  string time = 1;
+}
+
+message SetUserDecisionRequest {
+  string wfId = 1;
+  string piId = 2;
+  string nodeId = 3;
+  string answer = 4;
+}

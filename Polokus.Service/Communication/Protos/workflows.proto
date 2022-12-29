@@ -1,0 +1,79 @@
+﻿syntax = "proto3";
+
+import "Communication/Protos/common.proto";
+
+option csharp_namespace = "RemoteServices";
+
+package workflows;
+
+service RemoteWorkflowsService {
+  rpc GetBpmnProcessesIds (WorkflowIdRequest) returns (GetBpmnProcessesIdsReply);
+  rpc GetManualBpmnProcessesIds (WorkflowIdRequest) returns (GetManualBpmnProcessesIdsReply);
+  rpc GetProcessInstancesInfos (WorkflowIdRequest) returns (GetProcessInstancesInfosReply);
+  rpc GetProcessStarters (WorkflowIdRequest) returns (GetProcessStartersReply);
+  rpc GetRawString (WorkflowIdRequest) returns (GetRawStringReply);
+  rpc GetNodeHandlerWaiters (WorkflowIdRequest) returns (GetNodeHandlerWaitersReply);
+  rpc StartProcessManually (StartProcessManuallyRequest) returns (StartProcessManuallyReply);
+  rpc PingListener (PingListenerRequest) returns (Empty);
+}
+
+
+message RawProcessInstance {
+  string id = 1;
+  string status = 2;
+  string activeTasks = 3;
+}
+
+message RawProcessStarter {
+  string id = 1;
+  string startNodeId = 2;
+  string starterType = 3;
+}
+
+message RawNodeHandlerWaiter {
+  string id = 1;
+  string nodeToCallId = 2;
+  string waiterType = 3;
+}
+
+message WorkflowIdRequest {
+  string wfId = 1;
+}
+
+message GetBpmnProcessesIdsReply {
+  repeated string ids = 1;
+}
+
+message GetManualBpmnProcessesIdsReply {
+  repeated string ids = 1;
+}
+
+message GetProcessInstancesInfosReply {
+  repeated RawProcessInstance instancesInfos = 1;
+}
+
+message GetProcessStartersReply {
+  repeated RawProcessStarter starters = 1;
+}
+
+message GetRawStringReply {
+  string rawString = 1;
+}
+
+message GetNodeHandlerWaitersReply {
+  repeated RawNodeHandlerWaiter waiters = 1;
+}
+
+message StartProcessManuallyRequest {
+  string wfId = 1;
+  string bpmnProcessId = 2;
+}
+
+message StartProcessManuallyReply {
+  string piId = 1;
+}
+
+message PingListenerRequest {
+  string wfId = 1;
+  string listenerId = 2;
+}

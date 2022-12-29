@@ -1,11 +1,11 @@
 ﻿using Polokus.Service;
 using Topshelf;
 
-Console.WriteLine("Hello, World!");
-
+PrintHelper.PrintHeader();
 
 var exitCode = HostFactory.Run(x =>
 {
+    PrintHelper.PrintInfo("Initializing service...");
     x.Service<PolokusService>(s =>
     {
         s.ConstructUsing(polokus => new PolokusService());
@@ -20,7 +20,10 @@ var exitCode = HostFactory.Run(x =>
     x.SetDisplayName("Polokus Service");
     x.SetDescription("This service is an instance of BPMN 2.0 Polokus Engine that provides execution of BPMN Workflows.");
 
+    PrintHelper.PrintInfo("Service initialized.");
 });
 
 int exitCodeValue = (int)Convert.ChangeType(exitCode, exitCode.GetTypeCode());
 Environment.ExitCode = exitCodeValue;
+
+

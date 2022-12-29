@@ -1,0 +1,21 @@
+﻿syntax = "proto3";
+
+import "Communication/Protos/common.proto";
+
+option csharp_namespace = "RemoteServices";
+
+package polokus;
+
+service RemotePolokusService {
+  rpc LoadXmlString (LoadXmlStringRequest) returns (Empty);
+  rpc GetWorkflowsIds (Empty) returns (WorkflowsIdsReply);
+}
+
+message WorkflowsIdsReply {
+  repeated string ids = 1;
+}
+
+message LoadXmlStringRequest {
+  string str = 1;
+  string wfName = 2;
+}

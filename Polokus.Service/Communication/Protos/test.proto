@@ -1,0 +1,19 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "Abc";
+
+package test;
+
+service MyTestService {
+  rpc GetMessages (GetMessagesRequest) returns (GetMessagesReply);
+}
+
+
+message GetMessagesRequest {
+  string wfId = 1;
+  string piId = 2;
+}
+
+message GetMessagesReply {
+  string messages = 1;
+}

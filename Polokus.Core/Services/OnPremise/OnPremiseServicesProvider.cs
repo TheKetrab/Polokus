@@ -11,9 +11,9 @@ namespace Polokus.Core.Services.OnPremise
     {
         private PolokusMaster _polokus;
 
-        public OnPremiseServicesProvider()
+        public OnPremiseServicesProvider(PolokusMaster polokus)
         {
-            _polokus = new PolokusMaster();
+            _polokus = polokus;
         }
 
         public ILogsService LogsService => new OnPremiseLogsService(_polokus);

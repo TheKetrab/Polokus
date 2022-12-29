@@ -22,6 +22,12 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CefSharp.WinForms.NETCore" Version="104.4.240" />
+    <PackageReference Include="Google.Protobuf" Version="3.21.12" />
+    <PackageReference Include="Grpc.Net.Client" Version="2.50.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.51.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Svg" Version="3.4.4" />
   </ItemGroup>
   <ItemGroup>
@@ -57,9 +63,13 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Communication\" />
-  </ItemGroup>
+	<ItemGroup>
+		<Protobuf Include="Communication\Protos\common.proto" GrpcServices="Client" />
+		<Protobuf Include="Communication\Protos\logs.proto" GrpcServices="Client" />
+		<Protobuf Include="Communication\Protos\polokus.proto" GrpcServices="Client" />
+		<Protobuf Include="Communication\Protos\processinstances.proto" GrpcServices="Client" />
+		<Protobuf Include="Communication\Protos\workflows.proto" GrpcServices="Client" />
+	</ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="echo xcopy &quot;$(SolutionDir)Polokus.Bpmnio\public&quot; &quot;$(ProjectDir)$(OutDir)editor&quot; /E/I/Y&#xD;&#xA;xcopy &quot;$(SolutionDir)Polokus.Bpmnio\public&quot; &quot;$(ProjectDir)$(OutDir)editor&quot; /E/I/Y&#xD;&#xA;" />
   </Target>

@@ -8,6 +8,7 @@ using Polokus.Core.Interfaces;
 using Polokus.Core.Remote;
 using Polokus.Core.Services.Interfaces;
 using Polokus.Core.Services.OnPremise;
+using Polokus.Core.Services.Remote;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Reflection;
@@ -26,9 +27,16 @@ namespace Polokus.App.Views
             _mainWindow = mainWindow;
             InitializeComponent();
 
-            _services = new OnPremiseServicesProvider(); // TODO wybor
-            var appHooksProvider = new AppHooksProvider(this, _services);
-            _services.PolokusService.RegisterHooksProvider(appHooksProvider);
+            //{
+            //    PolokusMaster polokus = new PolokusMaster();
+            //    _services = new OnPremiseServicesProvider(polokus); // TODO wybor
+            //    var appHooksProvider = new AppHooksProvider(this, _services);
+            //    _services.PolokusService.RegisterHooksProvider(appHooksProvider);
+            //}
+            {
+                const string uri = "https://localhost:5022";
+                _services = new GrpcRemoteServiceProvider(uri);
+            }
 
             chromiumWindow = new ChromiumWindow(_mainWindow,"viewer");
             chromiumWindow.Parent = panelBpmnio;

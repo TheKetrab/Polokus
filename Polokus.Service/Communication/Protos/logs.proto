@@ -1,0 +1,32 @@
+﻿syntax = "proto3";
+
+import "Communication/Protos/common.proto";
+
+option csharp_namespace = "RemoteServices";
+
+package logs;
+
+service RemoteLogsService {
+  rpc GetMessages (GetMessagesRequest) returns (GetMessagesReply);
+  rpc Log (LogRequest) returns (Empty);
+}
+
+message GetMessagesRequest {
+  string wfId = 1;
+  string piId = 2;
+}
+
+message GetMessagesReply {
+  repeated MsgReply messages = 1;
+}
+
+message MsgReply {
+  string msgType = 1;
+  string msgInfo = 2;
+}
+
+message LogRequest {
+    string globalPiId = 1;
+    string msgType = 2;
+    string msgInfo = 3;
+}
