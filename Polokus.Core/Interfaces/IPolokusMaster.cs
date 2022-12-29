@@ -83,5 +83,10 @@ namespace Polokus.Core.Interfaces
         /// <param name="type">Importance of message.</param>
         void Log(string globalPiId, string info, Logger.MsgType type);
 
+        /// <summary>
+        /// This property returns true iff Polokus.App client is connected.
+        /// </summary>
+        bool ClientConnected { get; }
+
     }
 }

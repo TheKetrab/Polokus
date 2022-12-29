@@ -2,6 +2,9 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup />
   <ItemGroup>
+    <Compile Update="Communication\StreamingHooksProvider.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="PrintHelper.cs">
       <SubType>Code</SubType>
     </Compile>

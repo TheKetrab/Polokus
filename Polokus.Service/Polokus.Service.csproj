@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Communication\Protos\hooks.proto" />
     <None Remove="Communication\Protos\test.proto" />
   </ItemGroup>
 
@@ -28,6 +29,7 @@
 
   <ItemGroup>
 	<Protobuf Include="Communication\Protos\common.proto" GrpcServices="Server" />
+	<Protobuf Include="Communication\Protos\hooks.proto" GrpcServices="Server" />
 	<Protobuf Include="Communication\Protos\logs.proto" GrpcServices="Server" />
     <Protobuf Include="Communication\Protos\polokus.proto" GrpcServices="Server" />
     <Protobuf Include="Communication\Protos\processinstances.proto" GrpcServices="Server" />

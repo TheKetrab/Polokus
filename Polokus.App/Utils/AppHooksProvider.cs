@@ -52,7 +52,7 @@ namespace Polokus.App.Utils
             UpdateActiveNodesInGraphIfNeeded(wfId, piId);
             Log(wfId, piId, $"Executing: {nodeId} taskId = {taskId}");
             //Thread.Sleep(_serviceView.PolokusMaster.SettingsProvider.DelayForNodeHandlerMs); // delay execution
-            Thread.Sleep(500); // TODO
+            //Thread.Sleep(500); // TODO
 
 
             Type nodeXmlType = _services.ProcessInstancesService.GetNodeXmlType(wfId, piId, nodeId);
@@ -126,7 +126,7 @@ namespace Polokus.App.Utils
 
             HashSet<string> activeNodesIds = _services.ProcessInstancesService
                 .GetActiveNodesIds(wfId, piId).ToHashSet();
-            
+
             var allNodesIds = _services.ProcessInstancesService.GetAllNodesIds(wfId, piId);
             var inactiveNodesIds = allNodesIds.Where(x => !activeNodesIds.Contains(x));
 

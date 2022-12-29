@@ -1,4 +1,5 @@
 ﻿using CefSharp;
+using Grpc.Net.Client;
 using Polokus.App.Forms;
 using Polokus.App.Utils;
 using Polokus.Core;
@@ -9,8 +10,10 @@ using Polokus.Core.Remote;
 using Polokus.Core.Services.Interfaces;
 using Polokus.Core.Services.OnPremise;
 using Polokus.Core.Services.Remote;
+using RemoteServices;
 using System.Collections.ObjectModel;
 using System.Data;
+using System.Drawing.Text;
 using System.Reflection;
 
 namespace Polokus.App.Views
@@ -27,15 +30,33 @@ namespace Polokus.App.Views
             _mainWindow = mainWindow;
             InitializeComponent();
 
-            //{
-            //    PolokusMaster polokus = new PolokusMaster();
-            //    _services = new OnPremiseServicesProvider(polokus); // TODO wybor
-            //    var appHooksProvider = new AppHooksProvider(this, _services);
-            //    _services.PolokusService.RegisterHooksProvider(appHooksProvider);
-            //}
+            if (Properties.Settings.Default.UseRemotePolokus)
             {
-                const string uri = "https://localhost:5022";
-                _services = new GrpcRemoteServiceProvider(uri);
+                string uri = Properties.Settings.Default.RemotePolokusUri;
+                //const string uri = "https://localhost:5022";
+                var channel = GrpcChannel.ForAddress(uri);
+                _services = new GrpcRemoteServiceProvider(channel);
+                Task.Run(async () =>
+                {
+                    var appHooksProvider = new AppHooksProvider(this, _services);
+                    var hooksClient = new RemoteHooksService.RemoteHooksServiceClient(channel);
+                    using (var call = hooksClient.WaitForEvents(new Empty()))
+                    {
+                        CancellationToken ct = new();
+                        while (await call.ResponseStream.MoveNext(ct))
+                        {
+                            var current = call.ResponseStream.Current;
+                            CallAppHooksProvider(appHooksProvider, current);
+                        }
+                    }
+                });
+            }
+            else
+            {
+                PolokusMaster polokus = new PolokusMaster();
+                _services = new OnPremiseServicesProvider(polokus);
+                var appHooksProvider = new AppHooksProvider(this, _services);
+                _services.PolokusService.RegisterHooksProvider(appHooksProvider);
             }
 
             chromiumWindow = new ChromiumWindow(_mainWindow,"viewer");
@@ -489,6 +510,51 @@ namespace Polokus.App.Views
 
             string listenerId = this.textBoxPingWaiter.Text;
             _services.WorkflowsService.PingListener(ActiveWorkflow, listenerId);
+        }
+
+        private void CallAppHooksProvider(AppHooksProvider hooksProvider, HookReply reply)
+        {
+            switch (reply.Type)
+            {
+                case HookType.OnProcessFinished:
+                    hooksProvider.OnProcessFinished(reply.WfId, reply.PiId, reply.Args[0]);
+                    break;
+                case HookType.AfterExecuteNodeSuccess:
+                    hooksProvider.AfterExecuteNodeSuccess(reply.WfId, reply.PiId, reply.NodeId, int.Parse(reply.Args[0]));
+                    break;
+                case HookType.AfterExecuteNodeFailure:
+                    hooksProvider.AfterExecuteNodeFailure(reply.WfId, reply.PiId, reply.NodeId, int.Parse(reply.Args[0]));
+                    break;
+                case HookType.AfterExecuteNodeSuspension:
+                    hooksProvider.AfterExecuteNodeSuspension(reply.WfId, reply.PiId, reply.NodeId, int.Parse(reply.Args[0]));
+                    break;
+                case HookType.OnTimeout:
+                    hooksProvider.OnTimeout(reply.WfId, reply.PiId);
+                    break;
+                case HookType.OnTasksChanged:
+                    hooksProvider.OnTasksChanged(reply.WfId, reply.PiId);
+                    break;
+                case HookType.OnCallerChanged:
+                    hooksProvider.OnCallerChanged(reply.Args[0], reply.Args[1]);
+                    break;
+                case HookType.OnStatusChanged:
+                    hooksProvider.OnStatusChanged(reply.WfId, reply.PiId);
+                    break;
+                case HookType.BeforeStartNewSequence:
+                    hooksProvider.BeforeStartNewSequence(reply.WfId, reply.PiId, reply.NodeId, FromSaveString(reply.Args[0]));
+                    break;
+                case HookType.BeforeExecuteNode:
+                    hooksProvider.BeforeExecuteNode(reply.WfId, reply.PiId, reply.NodeId, int.Parse(reply.Args[0]), FromSaveString(reply.Args[1]));
+                    break;
+            }
+
+            
+        }
+
+        private string? FromSaveString(string str)
+        {
+            if (string.Equals(str,"null")) return null;
+            return str;
         }
 
     }

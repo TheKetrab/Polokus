@@ -1,0 +1,34 @@
+﻿syntax = "proto3";
+
+import "Communication/Protos/common.proto";
+
+option csharp_namespace = "RemoteServices";
+
+package hooks;
+
+service RemoteHooksService {
+  rpc WaitForEvents (Empty) returns (stream HookReply);
+}
+
+enum HookType {
+  AfterExecuteNodeSuccess = 0;
+  AfterExecuteNodeFailure = 1;
+  AfterExecuteNodeSuspension = 2;
+  BeforeStartNewSequence = 3;
+  BeforeExecuteNode = 4;
+  OnStatusChanged = 5;
+  OnTasksChanged = 6;
+  OnTimeout = 7;
+  OnProcessFinished = 8;
+  OnCallerChanged = 9;
+}
+
+message HookReply {
+  HookType type = 1;
+  string wfId = 2;
+  string piId = 3;
+  string nodeId = 4;
+  repeated string args = 5;
+}
+
+

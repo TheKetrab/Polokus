@@ -11,19 +11,15 @@ namespace Polokus.Core.Services.Remote
 {
     public class GrpcRemoteServiceProvider : IServicesProvider
     {
-        GrpcChannel _channel;
-
-        public GrpcRemoteServiceProvider(string uri)
+        public GrpcRemoteServiceProvider(GrpcChannel channel)
         {
-            _channel = GrpcChannel.ForAddress(uri);
+            LogsService = new GrpcRemoteLogsService(channel);
 
-            LogsService = new GrpcRemoteLogsService(_channel);
+            PolokusService = new GrpcRemotePolokusService(channel);
 
-            PolokusService = new GrpcRemotePolokusService(_channel);
+            ProcessInstancesService = new GrpcRemoteProcessInstancesService(channel);
 
-            ProcessInstancesService = new GrpcRemoteProcessInstancesService(_channel);
-
-            WorkflowsService = new GrpcRemoteWorkflowsService(_channel);
+            WorkflowsService = new GrpcRemoteWorkflowsService(channel);
 
         }
 

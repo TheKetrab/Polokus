@@ -106,5 +106,29 @@ namespace Polokus.App.Properties {
                 this["Setting"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool UseRemotePolokus {
+            get {
+                return ((bool)(this["UseRemotePolokus"]));
+            }
+            set {
+                this["UseRemotePolokus"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string RemotePolokusUri {
+            get {
+                return ((string)(this["RemotePolokusUri"]));
+            }
+            set {
+                this["RemotePolokusUri"] = value;
+            }
+        }
     }
 }

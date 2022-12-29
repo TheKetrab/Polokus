@@ -73,6 +73,8 @@ namespace Polokus.Core.Hooks
 
         public void BeforeExecuteNode(string wfId, string piId, string nodeId, int taskId, string? callerNodeId)
         {
+            Thread.Sleep(1000); // TODO: settings provider
+
             _hooksProviders.ForEach(x => ExecuteAction(x.WaitFor,
                 () => x.Object.BeforeExecuteNode(wfId, piId, nodeId, taskId, callerNodeId)));
         }

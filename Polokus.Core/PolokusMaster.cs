@@ -20,8 +20,8 @@ namespace Polokus.Core
 {
     public class PolokusMaster : IPolokusMaster
     {
-        internal IDictionary<string, IWorkflow> _workflows 
-            = new Dictionary<string,IWorkflow>();
+        internal IDictionary<string, IWorkflow> _workflows
+            = new Dictionary<string, IWorkflow>();
 
         public ISettingsProvider SettingsProvider { get; set; }
 
@@ -86,6 +86,8 @@ namespace Polokus.Core
                     break;
             }
         }
+
+        public bool ClientConnected { get; } = false; // TODO
 
 
         public PolokusMaster()

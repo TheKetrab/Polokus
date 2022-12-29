@@ -47,6 +47,7 @@ namespace Polokus.Service
             app.MapGrpcService<GrpcPolokusService>();
             app.MapGrpcService<GrpcProcessInstanceService>();
             app.MapGrpcService<GrpcWorkflowsService>();
+            app.MapGrpcService<GrpcHooksService>();
 
             app.MapGet("/", () => "Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
 
