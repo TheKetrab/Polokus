@@ -15,6 +15,7 @@ using System.Collections.ObjectModel;
 using System.Data;
 using System.Drawing.Text;
 using System.Reflection;
+using System.Threading.Channels;
 
 namespace Polokus.App.Views
 {
@@ -25,39 +26,49 @@ namespace Polokus.App.Views
 
         public IServicesProvider _services;
 
+
+        private void RegisterAppHooksProviderRemote()
+        {
+            Task.Run(async () =>
+            {
+                var appHooksProvider = new AppHooksProvider(this, _services);
+                var hooksClient = new RemoteHooksService.RemoteHooksServiceClient(Program.GrpcChannel);
+                using (var call = hooksClient.WaitForEvents(new Empty()))
+                {
+                    CancellationToken ct = new();
+                    while (await call.ResponseStream.MoveNext(ct))
+                    {
+                        var current = call.ResponseStream.Current;
+                        CallAppHooksProvider(appHooksProvider, current);
+                    }
+                }
+            });
+        }
+        private void RegisterAppHooksProviderLocal()
+        {
+            var appHooksProvider = new AppHooksProvider(this, _services);
+            _services.PolokusService.RegisterHooksProvider(appHooksProvider);
+        }
+        private void RegisterAppHooksProvider()
+        {
+            switch (Program.ApplicationMode)
+            {
+                case Program.AppMode.Remote:
+                    RegisterAppHooksProviderRemote();
+                    break;
+                case Program.AppMode.Local:
+                    RegisterAppHooksProviderLocal();
+                    break;
+            }
+        }
+
         public ServiceView(MainWindow mainWindow)
         {
             _mainWindow = mainWindow;
             InitializeComponent();
 
-            if (Properties.Settings.Default.UseRemotePolokus)
-            {
-                string uri = Properties.Settings.Default.RemotePolokusUri;
-                //const string uri = "https://localhost:5022";
-                var channel = GrpcChannel.ForAddress(uri);
-                _services = new GrpcRemoteServiceProvider(channel);
-                Task.Run(async () =>
-                {
-                    var appHooksProvider = new AppHooksProvider(this, _services);
-                    var hooksClient = new RemoteHooksService.RemoteHooksServiceClient(channel);
-                    using (var call = hooksClient.WaitForEvents(new Empty()))
-                    {
-                        CancellationToken ct = new();
-                        while (await call.ResponseStream.MoveNext(ct))
-                        {
-                            var current = call.ResponseStream.Current;
-                            CallAppHooksProvider(appHooksProvider, current);
-                        }
-                    }
-                });
-            }
-            else
-            {
-                PolokusMaster polokus = new PolokusMaster();
-                _services = new OnPremiseServicesProvider(polokus);
-                var appHooksProvider = new AppHooksProvider(this, _services);
-                _services.PolokusService.RegisterHooksProvider(appHooksProvider);
-            }
+            _services = Program.SP;
+            RegisterAppHooksProvider();
 
             chromiumWindow = new ChromiumWindow(_mainWindow,"viewer");
             chromiumWindow.Parent = panelBpmnio;

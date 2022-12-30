@@ -2,12 +2,29 @@ using CefSharp.WinForms;
 using CefSharp;
 using Polokus.App.Forms;
 using Polokus.Core.Helpers;
+using Grpc.Net.Client;
+using Polokus.App.Utils;
+using Polokus.Core.Services.OnPremise;
+using Polokus.Core.Services.Remote;
+using Polokus.Core;
+using Polokus.Core.Services.Interfaces;
+using Grpc.Core;
 
 namespace Polokus.App
 {
     internal static class Program
     {
         public static MainWindow MainWindow;
+        public static IServicesProvider SP;
+        public static GrpcChannel? GrpcChannel;
+
+        public enum AppMode
+        {
+            Local,
+            Remote
+        }
+
+        public static AppMode ApplicationMode;
 
         /// <summary>
         ///  The main entry point for the application.
@@ -39,8 +56,12 @@ namespace Polokus.App
             CefSettings settings = new CefSettings();
             Cef.Initialize(settings);
 
-            MainWindow = new MainWindow();
-            Application.Run(MainWindow);
+            bool success = InitializeMaster();
+            if (success)
+            {
+                MainWindow = new MainWindow();
+                Application.Run(MainWindow);
+            }
 
 
             // ----- EXIT -----
@@ -77,6 +98,60 @@ namespace Polokus.App
             {
                 File.WriteAllText(Path.Combine(logsPath, filename), logText);
             }
+        }
+
+        static bool InitializeMaster()
+        {
+            if (Properties.Settings.Default.UseRemotePolokus)
+            {
+                try
+                {
+                    RegisterRemotePolokus();
+                    return true;
+                }
+                catch (RpcException e)
+                {
+                    var result = MessageBox.Show("Failed to connect to remote server. Do you want to start PolokusMaster within GUI App?", "Error", MessageBoxButtons.YesNo);
+                    if (result == DialogResult.Yes)
+                    {
+                        RegisterLocalPolokus();
+                        return true;
+                    }   
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+            else
+            {
+                RegisterLocalPolokus();
+                return true;
+            }
+        }
+
+        static void RegisterRemotePolokus()
+        {
+            string uri = Properties.Settings.Default.RemotePolokusUri;
+            uri = "http://localhost:3000";
+            //const string uri = "https://localhost:5022";
+            var channel = GrpcChannel.ForAddress(uri);
+            GrpcChannel = channel;
+            SP = new GrpcRemoteServiceProvider(channel);
+            
+            // test connection
+            SP.PolokusService.GetWorkflowsIds();
+
+
+            ApplicationMode = AppMode.Remote;
+        }
+
+        static void RegisterLocalPolokus()
+        {
+            PolokusMaster polokus = new PolokusMaster();
+            SP = new OnPremiseServicesProvider(polokus);
+
+            ApplicationMode = AppMode.Local;
         }
     }
 }

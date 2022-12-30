@@ -12,6 +12,8 @@ using Grpc.Net.Client;
 using Polokus.Core.Remote;
 using Polokus.Core.Services.Remote;
 using Polokus.Service.Communication.Services;
+using Microsoft.AspNetCore.Hosting;
+using log4net;
 
 namespace Polokus.Service
 {
@@ -20,17 +22,14 @@ namespace Polokus.Service
         public static PolokusMaster Master { get; } = new PolokusMaster();
         public static OnPremiseServicesProvider SP { get; } = new OnPremiseServicesProvider(Master);
 
+        private static readonly ILog _log = LogManager.GetLogger(typeof(PolokusService));
 
 
         WebApplication _server;
 
         public PolokusService()
         {
-            //_polokus = new PolokusMaster();
-            //_servicesProvider = new OnPremiseServicesProvider(_polokus);
-
             _server = CreateGrpcServer();
-            _server.Run();
         }
 
         private WebApplication CreateGrpcServer()
@@ -38,10 +37,21 @@ namespace Polokus.Service
             PrintHelper.PrintInfo("Initializing Grpc Server...");
 
             var builder = WebApplication.CreateBuilder();
+
+            // Service listens on http://localhost:3000
+            // --> to communicate with gRPC by http, server must enforce HTTP2 communication
+            builder.WebHost.ConfigureKestrel((context, options) =>
+            {
+                options.ListenLocalhost(3000, listenOptions =>
+                {
+                    listenOptions.Protocols = Microsoft.AspNetCore.Server.Kestrel.Core.HttpProtocols.Http2;
+                });
+            });
+
             builder.Services.AddGrpc();
-
+            
             var app = builder.Build();
-
+            
             // Configure the HTTP request pipeline.
             app.MapGrpcService<GrpcLogsService>();
             app.MapGrpcService<GrpcPolokusService>();
@@ -58,12 +68,30 @@ namespace Polokus.Service
 
         public void Start()
         {
-            _server.Start();
+            Task.Run(() => StartServer());
+            PrintHelper.PrintInfo("Service started.");
         }
-        public void Stop()
-        {            
-            _server.StopAsync();
+
+        private async Task StartServer()
+        {
+            try
+            {
+                await _server.StartAsync();
+                _log.Info($"Server is listening on: {string.Join(" , ", _server.Urls)}");
+            }
+            catch (Exception e)
+            {
+                _log.Error("Failed to start server.", e);
+            }
+        }
+
+        public async void Stop()
+        {
+            PrintHelper.PrintInfo("Service stopped.");
+            await _server.StopAsync();
+            _log.Info($"Server is no more listening.");
         }
 
     }
+
 }
