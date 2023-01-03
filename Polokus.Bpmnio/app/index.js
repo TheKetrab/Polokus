@@ -2,6 +2,9 @@ import $ from 'jquery';
 import BpmnModeler from 'bpmn-js/lib/Modeler';
 import BpmnViewer from 'bpmn-js/lib/NavigatedViewer';
 
+
+import ResizeTaskModule from 'bpmn-js-task-resize/lib';
+
 import {
   BpmnPropertiesPanelModule,
   BpmnPropertiesProviderModule
@@ -224,11 +227,15 @@ function initialize(mode) {
       additionalModules: [
         BpmnPropertiesPanelModule,
         BpmnPropertiesProviderModule,
-        PolokusPropertiesProviderModule
+        PolokusPropertiesProviderModule,
+        ResizeTaskModule,
       ],
       moddleExtensions: {
     
-      }
+      },
+      taskResizingEnabled: true,
+      eventResizingEnabled: false,
+      // gate resizing -> not supported by this lib
     });
 
     $('#js-download-diagram').on('click', function(e) {
