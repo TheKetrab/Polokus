@@ -220,16 +220,19 @@
             this.panelLogo.Padding = new System.Windows.Forms.Padding(10);
             this.panelLogo.Size = new System.Drawing.Size(364, 100);
             this.panelLogo.TabIndex = 0;
+            this.panelLogo.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panelLogo_MouseDown);
             // 
             // panelPolokusHeader
             // 
             this.panelPolokusHeader.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelPolokusHeader.Frozen = false;
             this.panelPolokusHeader.Location = new System.Drawing.Point(10, 10);
             this.panelPolokusHeader.Margin = new System.Windows.Forms.Padding(10);
             this.panelPolokusHeader.Name = "panelPolokusHeader";
             this.panelPolokusHeader.Padding = new System.Windows.Forms.Padding(5);
             this.panelPolokusHeader.Size = new System.Drawing.Size(344, 80);
             this.panelPolokusHeader.TabIndex = 2;
+            this.panelPolokusHeader.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panelLogo_MouseDown);
             // 
             // MainWindowSideMenu
             // 

@@ -73,7 +73,10 @@ namespace Polokus.App.Forms
 
         }
 
-
+        public void SetConnectionToLabelText(string text)
+        {
+            this.labelConnectionTo.Text = text;
+        }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {

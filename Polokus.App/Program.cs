@@ -111,6 +111,8 @@ namespace Polokus.App
                 }
                 catch (RpcException e)
                 {
+                    GrpcChannel = null;
+
                     var result = MessageBox.Show("Failed to connect to remote server. Do you want to start PolokusMaster within GUI App?", "Error", MessageBoxButtons.YesNo);
                     if (result == DialogResult.Yes)
                     {

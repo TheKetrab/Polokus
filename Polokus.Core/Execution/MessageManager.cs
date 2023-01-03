@@ -1,6 +1,7 @@
 ﻿using Polokus.Core.Hooks;
 using Polokus.Core.Interfaces;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -13,8 +14,13 @@ namespace Polokus.Core.Execution
     {
         public int ListeningPort { get; }
 
-        private Dictionary<string, IProcessStarter> _starters = new();
-        private Dictionary<string, INodeHandlerWaiter> _waiters = new();
+        private IDictionary<string, IProcessStarter> _starters
+            = new ConcurrentDictionary<string, IProcessStarter>();
+        private IDictionary<string, INodeHandlerWaiter> _waiters
+            = new ConcurrentDictionary<string, INodeHandlerWaiter>();
+
+        private object _startersDictionaryLock = new object();
+        private object _waitersDictionaryLock = new object();
 
         public MessageManager(int port)
         {

@@ -46,6 +46,7 @@ namespace Polokus.App.Forms
             this.panelSettings = new System.Windows.Forms.Panel();
             this.panelHome = new System.Windows.Forms.Panel();
             this.panelTaskBar = new Polokus.App.Controls.PolokusGradientPanel();
+            this.labelConnectionTo = new Polokus.App.Controls.PolokusLabel();
             this.iconBtnMinimize = new Polokus.App.Controls.IconBtn();
             this.iconBtnSize = new Polokus.App.Controls.IconBtn();
             this.iconBtnExit = new Polokus.App.Controls.IconBtn();
@@ -181,6 +182,7 @@ namespace Polokus.App.Forms
             // 
             // panelTaskBar
             // 
+            this.panelTaskBar.Controls.Add(this.labelConnectionTo);
             this.panelTaskBar.Controls.Add(this.iconBtnMinimize);
             this.panelTaskBar.Controls.Add(this.iconBtnSize);
             this.panelTaskBar.Controls.Add(this.iconBtnExit);
@@ -194,6 +196,20 @@ namespace Polokus.App.Forms
             this.panelTaskBar.Size = new System.Drawing.Size(1073, 43);
             this.panelTaskBar.TabIndex = 2;
             this.panelTaskBar.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panelTitleBar_MouseDown);
+            // 
+            // labelConnectionTo
+            // 
+            this.labelConnectionTo.BackColor = System.Drawing.Color.Transparent;
+            this.labelConnectionTo.Dock = System.Windows.Forms.DockStyle.Left;
+            this.labelConnectionTo.Font = new System.Drawing.Font("Montserrat", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.labelConnectionTo.ForeColor = System.Drawing.Color.White;
+            this.labelConnectionTo.Location = new System.Drawing.Point(0, 0);
+            this.labelConnectionTo.Name = "labelConnectionTo";
+            this.labelConnectionTo.Padding = new System.Windows.Forms.Padding(5, 0, 0, 0);
+            this.labelConnectionTo.Size = new System.Drawing.Size(660, 43);
+            this.labelConnectionTo.TabIndex = 6;
+            this.labelConnectionTo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.labelConnectionTo.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panelTitleBar_MouseDown);
             // 
             // iconBtnMinimize
             // 
@@ -306,6 +322,7 @@ namespace Polokus.App.Forms
         private IconBtn iconBtnExit;
         private IconBtn iconBtnMinimize;
         private IconBtn iconBtnSize;
+        private PolokusLabel labelConnectionTo;
     }
 }
 

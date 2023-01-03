@@ -1,4 +1,5 @@
-﻿using Polokus.Core.Helpers;
+﻿using Grpc.Net.Client;
+using Polokus.Core.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Drawing.Printing;
@@ -48,6 +49,8 @@ namespace Polokus.App.Forms
 
         private PanelView _activePanelView;
         private Dictionary<PanelView, Panel> _map = new();
+
+        private bool _serviceViewVisitedOneTime = false;
         public PanelView ActivePanelView
         {
             get
@@ -65,6 +68,27 @@ namespace Polokus.App.Forms
                 {
                     view.Visible = true;
                 }
+
+                if (value == PanelView.Service && !_serviceViewVisitedOneTime)
+                {
+                    _serviceViewVisitedOneTime = true;
+                    View.MainPanel.ServiceView.LoadViewForFirstWorkflowSafe();
+                }
+
+                ToggleConnectionToLabel(value);
+            }
+        }
+
+        private void ToggleConnectionToLabel(PanelView view)
+        {
+            if (view == PanelView.Service)
+            {
+                string masterUri = Program.GrpcChannel?.Target ?? "App";
+                this.View.SetConnectionToLabelText($"Polokus Master: {masterUri}");
+            }
+            else
+            {
+                this.View.SetConnectionToLabelText("");
             }
         }
 

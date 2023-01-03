@@ -74,7 +74,6 @@ namespace Polokus.App.Views
             chromiumWindow.Parent = panelBpmnio;
             chromiumWindow.Dock = DockStyle.Fill;
 
-            
             LoadBpmnFiles();
 
             this.listViewProcesses.SizeChanged += ListViewProcesses_SizeChanged;
@@ -90,7 +89,6 @@ namespace Polokus.App.Views
 
             InitializeComboBoxWorkflows();
 
-            LoadViewForFirstWorkflow();
         }
 
         private void ListViewProcesses_SelectedIndexChanged(object? sender, EventArgs e)
@@ -128,6 +126,11 @@ namespace Polokus.App.Views
                 this.buttonDelete.Enabled = value;
                 this.buttonStart.Enabled = value;
             }
+        }
+
+        public void LoadViewForFirstWorkflowSafe()
+        {
+            this.chromiumWindow.BeginInvoke(() => LoadViewForFirstWorkflow());
         }
 
         private void LoadViewForFirstWorkflow()
@@ -399,8 +402,16 @@ namespace Polokus.App.Views
                 return;
             }
 
-            this.chromiumWindow.chromeBrowser.ExecuteScriptAsync(
-                $"window.api.openInViewerAsync('{rawString}');");
+            Task.Run(async () =>
+            {
+                var res = await this.chromiumWindow.chromeBrowser.EvaluateScriptAsync(
+                    $"window.api.openInViewerAsync('{rawString}');");
+
+                if (!res.Success)
+                {
+                    Logger.Global.LogError(res.Message);
+                }
+            });
         }
 
         public void LoadGraphForProcessInstance(string globalPiId)
