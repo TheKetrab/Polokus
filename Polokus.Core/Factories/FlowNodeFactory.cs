@@ -1,4 +1,5 @@
-﻿using Polokus.Core.Interfaces;
+﻿using Polokus.Core.BpmnModels;
+using Polokus.Core.Interfaces;
 using Polokus.Core.Models;
 using Polokus.Core.Models.BpmnObjects.Xsd;
 using System;
@@ -27,6 +28,7 @@ namespace Polokus.Core.Factories
                 ?? CreateTypedFlowNode<tIntermediateThrowEvent>(process, xmlElement)
                 ?? CreateTypedFlowNode<tReceiveTask>(process, xmlElement)
                 ?? CreateTypedFlowNode<tSubProcess>(process, xmlElement)
+                ?? CreateBoundaryEvent(process, xmlElement)
                 ?? throw new Exception($"Unable to create FlowNode for type: {xmlElement.GetType().Name}.");
 
         }
@@ -38,5 +40,13 @@ namespace Polokus.Core.Factories
                 return new FlowNode<T>(process, (T)xmlElement);
             return null;
         }
+
+        private IFlowNode? CreateBoundaryEvent(BpmnProcess process, tFlowNode xmlElement)
+        {
+            if (xmlElement.GetType() == typeof(tBoundaryEvent))
+                return new BoundaryEvent(process, (tBoundaryEvent)xmlElement);
+            return null;
+        }
+
     }
 }

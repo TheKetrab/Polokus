@@ -19,19 +19,23 @@ namespace Polokus.Tests
         public async Task ProcessStarters_StartProcessViaMessage()
         {
             // Arrange
-            var visitor = new VisitorHooks(VisitTime.AfterExecuteSuccess);
-            var wfManager = BpmnLoader.LoadBpmnXmlIntoWorkflowsManager(Resources.MsgStart,visitor);
+            var master = BpmnLoader.LoadBpmnXmlIntoMaster(Resources.MsgStart);
+            var visitor = new VisitorHooks(master, VisitTime.AfterExecuteSuccess);
+            master.HooksManager.RegisterHooksProvider(visitor);
+
+            var wf = master.GetFirstWorkflow();
+
             await Task.Delay(1000);
-            string listenerId = wfManager.GetFirstWorkflow().MessageManager.GetStarters().First().Id;
+            string listenerId = wf.MessageManager.GetStarters().First().Id;
 
             // Act
-            await wfManager.GetFirstWorkflow().MessageManager.PingListener(listenerId);
+            await wf.MessageManager.PingListener(listenerId);
             await Task.Delay(1000);
 
             while (true)
             {
                 await Task.Delay(100);
-                var running = wfManager.GetWorkflows().SelectMany(x => x.ProcessInstances);
+                var running = master.GetWorkflows().SelectMany(x => x.ProcessInstances);
                 if (!running.Any())
                 {
                     break;

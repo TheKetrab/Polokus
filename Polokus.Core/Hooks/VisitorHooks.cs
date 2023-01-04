@@ -27,9 +27,11 @@ namespace Polokus.Core.Hooks
         const string separator = ";";
         private uint _visitMask;
         StringBuilder sb = new StringBuilder();
+        IPolokusMaster _master;
 
-        public VisitorHooks(VisitTime visitTime = VisitTime.BeforeExecute)
+        public VisitorHooks(IPolokusMaster master, VisitTime visitTime = VisitTime.BeforeExecute)
         {
+            _master = master;
             _visitMask = (uint)visitTime;
         }
 
@@ -38,12 +40,18 @@ namespace Polokus.Core.Hooks
             return (_visitMask & (uint)visitTime) != 0;
         }
 
-        private void LogActionSafe(string nodeId, VisitTime visitTime)
+        private void LogActionSafe(IFlowNode node, VisitTime visitTime)
         {
             lock(sb)
             {
-                LogAction(nodeId, visitTime);
+                LogAction(node, visitTime);
             }
+        }
+
+        private IFlowNode GetFlowNode(string wfId, string piId, string nodeId)
+        {
+            return _master.GetFlowNode(wfId, piId, nodeId)
+                ?? throw new Exception("Can find node by id");
         }
 
         private void LogMarked(IFlowNode node, bool withDetails)
@@ -66,54 +74,53 @@ namespace Polokus.Core.Hooks
             }
         }
 
-        private void LogAction(string nodeId, VisitTime visitTime)
-        {            
-            // TODO
+        private void LogAction(IFlowNode node, VisitTime visitTime)
+        {
+            if (!FitWithMask(visitTime))
+            {
+                return;
+            }
 
-            //if (!FitWithMask(visitTime))
-            //{
-            //    return;
-            //}
+            if (((_visitMask & (uint)VisitTime.MarkNameForSpecialNodes) != 0)
+                &&
+                 (node.XmlType == typeof(tScriptTask)
+                 || node.XmlType == typeof(tIntermediateCatchEvent)
+                 || node.XmlType == typeof(tBoundaryEvent)))
+            {
+                bool withDetails = (_visitMask & (uint)VisitTime.PutNameInParenthesis) != 0;
 
-            //if (((_visitMask & (uint)VisitTime.MarkNameForSpecialNodes) != 0)
-            //    &&
-            //     (node.XmlType == typeof(tScriptTask)
-            //     || node.XmlType == typeof(tIntermediateCatchEvent)))
-            //{
-            //    bool withDetails = (_visitMask & (uint)VisitTime.PutNameInParenthesis) != 0;
+                LogMarked(node, withDetails);
 
-            //    LogMarked(node, withDetails);
+                return;
+            }
 
-            //    return;
-            //}
+            if (sb.Length != 0)
+            {
+                sb.Append(separator);
+            }
 
-            //if (sb.Length != 0)
-            //{
-            //    sb.Append(separator);
-            //}
-
-            //sb.Append(node.Name);
+            sb.Append(node.Name);
         }
 
 
         public override void BeforeExecuteNode(string wfId, string piId, string nodeId, int taskId, string? nodeCaller)
         {
-            LogActionSafe(nodeId, VisitTime.BeforeExecute);
+            LogActionSafe(GetFlowNode(wfId,piId,nodeId), VisitTime.BeforeExecute);
         }
 
         public override void AfterExecuteNodeSuccess(string wfId, string piId, string nodeId, int taskId)
         {
-            LogActionSafe(nodeId, VisitTime.AfterExecuteSuccess);
+            LogActionSafe(GetFlowNode(wfId, piId, nodeId), VisitTime.AfterExecuteSuccess);
         }
 
         public override void AfterExecuteNodeFailure(string wfId, string piId, string nodeId, int taskId)
         {
-            LogActionSafe(nodeId, VisitTime.AfterExecuteFailure);
+            LogActionSafe(GetFlowNode(wfId, piId, nodeId), VisitTime.AfterExecuteFailure);
         }
 
         public override void AfterExecuteNodeSuspension(string wfId, string piId, string nodeId, int taskId)
         {
-            LogActionSafe(nodeId, VisitTime.AfterExecuteSuspension);
+            LogActionSafe(GetFlowNode(wfId, piId, nodeId), VisitTime.AfterExecuteSuspension);
         }
 
         public override void BeforeStartNewSequence(string wfId, string piId, string nodeId, string? nodeCallerId)

@@ -37,16 +37,19 @@ namespace Polokus.Tests.NodeHandlersTests
         public async Task DefaultServiceTask()
         {
             // Arrange
-            VisitorHooks visitor = new VisitorHooks();
-            var pi = BpmnLoader.LoadBpmnXmlIntoSimpleProcessInstance(Resources.ServiceTask1);
-            pi.Workflow.NodeHandlerFactory
-                .RegisterNodeHandlerForServiceTask<CustomServiceTaskNodeHandler>("CustomServiceTask");
+            var master = TestHelper.ReadBpmn(Resources.ServiceTask1,
+                out IWorkflow wf, out IProcessInstance pi, out IFlowNode startNode);
+
+            var visitor = new VisitorHooks(master);
+            master.HooksManager.RegisterHooksProvider(visitor);
+            wf.NodeHandlerFactory.RegisterNodeHandlerForServiceTask
+                <CustomServiceTaskNodeHandler>("CustomServiceTask");
 
             // Act
-            await pi.RunSimple(visitor);
+            await wf.RunProcessAsync(pi, startNode);
 
             // Assert
-            Assert.AreEqual(2, pi.Workflow.ScriptProvider.Globals.globals.Count);
+            Assert.AreEqual(2, wf.ScriptProvider.Globals.globals.Count);
             Assert.AreEqual("start;CustomServiceTask;exclusive;end2", visitor.GetResult());
 
 

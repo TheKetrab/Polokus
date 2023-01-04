@@ -15,6 +15,8 @@
 
         ICollection<ISequence> Incoming { get; }
         ICollection<ISequence> Outgoing { get; }
+
+        ICollection<IBoundaryEvent> BoundaryEvents { get; }
     }
 
 

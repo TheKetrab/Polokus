@@ -25,6 +25,8 @@ namespace Polokus.Core.NodeHandlers.Abstract
         public bool IsJoining => Node.Incoming.Count > 1;
         public IScriptProvider ScriptProvider => ProcessInstance.Workflow.ScriptProvider;
 
+        private List<INodeHandlerWaiter> boundaryEventsWaiters;
+
 
         public NodeHandler(IProcessInstance processInstance, FlowNode<T> typedNode)
         {
@@ -74,8 +76,11 @@ namespace Polokus.Core.NodeHandlers.Abstract
                 }
 
                 CancellationToken.ThrowIfCancellationRequested();
+                AddWaitersForBoundaryEvents();
                 var resultInfo = await Process(caller);
                 CancellationToken.ThrowIfCancellationRequested();
+                RemoveWaitersForBoundaryEvents();
+
                 return resultInfo;
             }
             catch (OperationCanceledException)
@@ -84,6 +89,15 @@ namespace Polokus.Core.NodeHandlers.Abstract
             }
             catch (Exception exc)
             {
+                var boundaryEvtHandler = this.Node.BoundaryEvents
+                    .FirstOrDefault(x => x.Type == BoundaryEventType.Error);
+                if (boundaryEvtHandler != null)
+                {
+                    Logger.Global.LogError(exc.Message);
+                    var sequence = Sequence.CreateFakeSequence(boundaryEvtHandler);
+                    return new SuccessProcessResultInfo(sequence);
+                }
+
                 Logger.Global.LogError(exc.Message);
                 return new ProcessResultInfo(ProcessResultState.Failure, exc.Message);
             }
@@ -95,6 +109,36 @@ namespace Polokus.Core.NodeHandlers.Abstract
             copy.CancellationToken = new CancellationToken();
 
             return copy;
+        }
+
+        private void AddWaitersForBoundaryEvents()
+        {
+            if (this.Node.BoundaryEvents.Count > 0)
+            {
+                boundaryEventsWaiters = new List<INodeHandlerWaiter>();
+
+                foreach (var be in this.Node.BoundaryEvents)
+                {
+                    INodeHandlerWaiter waiter = null;
+                    switch (be.Type)
+                    {
+                        // TODO timer, signal, message
+                    }
+                    boundaryEventsWaiters.Add(waiter); // cache to remember what to remove
+                }
+
+            }
+        }
+
+        private void RemoveWaitersForBoundaryEvents()
+        {
+            if (boundaryEventsWaiters != null)
+            {
+                foreach (var waiter in boundaryEventsWaiters)
+                {
+                    // TODO remove from timemanager, signalmanager, messagemanager
+                }
+            }
         }
     }
 }

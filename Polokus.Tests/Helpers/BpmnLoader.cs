@@ -10,28 +10,22 @@ namespace Polokus.Tests.Helpers
 {
     internal static class BpmnLoader
     {
-        private static int _cnt = 0;
+        //private static int _cnt = 0;
 
-        public static SimpleProcessInstance LoadBpmnXmlIntoSimpleProcessInstance(string bpmnString)
-        {
-            var polokus = LoadBpmnXmlIntoWorkflowsManager(bpmnString);
+        //public static SimpleProcessInstance LoadBpmnXmlIntoSimpleProcessInstance(string bpmnString)
+        //{
+        //    var polokus = LoadBpmnXmlIntoWorkflowsManager(bpmnString);
 
-            var workflow = polokus.GetFirstWorkflow();
-            var bpmnProcess = workflow.BpmnWorkflow.BpmnProcesses.First();
+        //    var workflow = polokus.GetFirstWorkflow();
+        //    var bpmnProcess = workflow.BpmnWorkflow.BpmnProcesses.First();
 
-            return new SimpleProcessInstance($"pi{_cnt++}", workflow, bpmnProcess);
-        }
+        //    return new SimpleProcessInstance($"pi{_cnt++}", workflow, bpmnProcess);
+        //}
 
-        public static PolokusMaster LoadBpmnXmlIntoWorkflowsManager(string bpmnString, IHooksProvider? hooksProvider = null)
+        public static PolokusMaster LoadBpmnXmlIntoMaster(string bpmnString)
         {
             var polokus = new PolokusMaster();
-
-            if (hooksProvider != null)
-            {
-                polokus.HooksManager.RegisterHooksProvider(hooksProvider);
-            }
-
-            polokus.LoadXmlString(bpmnString, "pr");
+            polokus.LoadXmlString(bpmnString, "WF");
             return polokus;
         }
 

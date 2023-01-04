@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Polokus.Tests.Helpers;
+using Polokus.Core.Interfaces;
 
 namespace Polokus.Tests.NodeHandlersTests
 {
@@ -16,15 +17,21 @@ namespace Polokus.Tests.NodeHandlersTests
         public async Task TimerEventNodeHandler_Wait3s()
         {
             // Arrange
-            var visitor = new VisitorHooks(VisitTime.BeforeExecute | VisitTime.PutNameInParenthesis | VisitTime.MarkNameForSpecialNodes);
-            var pi = BpmnLoader.LoadBpmnXmlIntoSimpleProcessInstance(Resources.TimerEvent1);
+            var master = TestHelper.ReadBpmn(Resources.TimerEvent1,
+                out IWorkflow wf, out IProcessInstance pi, out IFlowNode startNode);
+
+            var visitor = new VisitorHooks(master, VisitTime.BeforeExecute | VisitTime.PutNameInParenthesis | VisitTime.MarkNameForSpecialNodes);
+            master.HooksManager.RegisterHooksProvider(visitor);
 
             // Act
-            await pi.RunSimple(visitor);
+            await wf.RunProcessAsync(pi, startNode);
 
             // Assert
-            Assert.That(visitor.GetResult(), Is.EqualTo("start;taskA;tIntermediateCatchEvent(3s);taskB;end"));
-            Assert.IsTrue(pi.StatusManager.TotalTime > TimeSpan.FromSeconds(3) && pi.StatusManager.TotalTime < TimeSpan.FromSeconds(4));
+            Assert.That(visitor.GetResult(),
+                Is.EqualTo("start;taskA;tIntermediateCatchEvent(3s);taskB;end"));
+            Assert.IsTrue(
+                pi.StatusManager.TotalTime > TimeSpan.FromSeconds(3)
+                && pi.StatusManager.TotalTime < TimeSpan.FromSeconds(4));
 
         }
 
@@ -33,11 +40,14 @@ namespace Polokus.Tests.NodeHandlersTests
         public async Task TimerEventNodeHandler_OrderOfInvocation()
         {
             // Arrange
-            var visitor = new VisitorHooks(VisitTime.BeforeExecute | VisitTime.MarkNameForSpecialNodes);
-            var pi = BpmnLoader.LoadBpmnXmlIntoSimpleProcessInstance(Resources.TimerEvent2);
+            var master = TestHelper.ReadBpmn(Resources.TimerEvent2,
+                out IWorkflow wf, out IProcessInstance pi, out IFlowNode startNode);
+
+            var visitor = new VisitorHooks(master, VisitTime.BeforeExecute | VisitTime.MarkNameForSpecialNodes);
+            master.HooksManager.RegisterHooksProvider(visitor);
 
             // Act
-            await pi.RunSimple(visitor);
+            await wf.RunProcessAsync(pi, startNode);
 
             // Assert
             CustomAsserts.MatchAnyRegex(visitor.GetResult(),
@@ -51,17 +61,19 @@ namespace Polokus.Tests.NodeHandlersTests
         public async Task TimerEventNodeHandler_Cron()
         {
             // Arrange
-            var visitor = new VisitorHooks(VisitTime.StartNewSequence);
-            var pi = BpmnLoader.LoadBpmnXmlIntoSimpleProcessInstance(Resources.TimerEvent3);
+            var master = TestHelper.ReadBpmn(Resources.TimerEvent3,
+                out IWorkflow wf, out IProcessInstance pi, out IFlowNode startNode);
+            var visitor = new VisitorHooks(master, VisitTime.StartNewSequence);
+            master.HooksManager.RegisterHooksProvider(visitor);
 
             // Act
-            await pi.RunSimple(visitor);
+            await wf.RunProcessAsync(pi, startNode);
 
             // Assert
             Assert.IsTrue(DateTime.Now.Second % 10 == 0);
             CustomAsserts.MatchRegex(
                 visitor.GetResult(),
-                @"^null;Waiter_\(pr\)_\(pi.*\)_\(Process_0ez9rd5\)_\(Event_0sy3nhf\)$");
+                @"^null;Waiter_\(WF\)_\(pi.*\)_\(Process_0ez9rd5\)_\(Event_0sy3nhf\)$");
 
         }
 

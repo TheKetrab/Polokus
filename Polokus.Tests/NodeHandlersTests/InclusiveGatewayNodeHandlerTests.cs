@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Polokus.Tests.Helpers;
+using Polokus.Core.Interfaces;
 
 namespace Polokus.Tests.NodeHandlersTests
 {
@@ -15,11 +16,14 @@ namespace Polokus.Tests.NodeHandlersTests
         public async Task InclusiveGatewayNodeHandler_BaseBehaviour_1()
         {
             // Arrange
-            var visitor = new VisitorHooks(VisitTime.AfterExecuteSuccess | VisitTime.MarkNameForSpecialNodes);
-            var pi = BpmnLoader.LoadBpmnXmlIntoSimpleProcessInstance(Resources.Inclusive1);
+            var master = TestHelper.ReadBpmn(Resources.Inclusive1,
+                out IWorkflow wf, out IProcessInstance pi, out IFlowNode startNode);
+
+            var visitor = new VisitorHooks(master, VisitTime.AfterExecuteSuccess | VisitTime.MarkNameForSpecialNodes);
+            master.HooksManager.RegisterHooksProvider(visitor);
 
             // Act
-            await pi.RunSimple(visitor);
+            await wf.RunProcessAsync(pi, startNode);
 
             // Assert
             CustomAsserts.MatchAnyRegex(visitor.GetResult(),

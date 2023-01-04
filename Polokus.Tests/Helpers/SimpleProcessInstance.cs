@@ -1,4 +1,6 @@
-﻿using Polokus.Core.Execution;
+﻿using Polokus.Core;
+using Polokus.Core.Execution;
+using Polokus.Core.Hooks;
 using Polokus.Core.Interfaces;
 using Polokus.Core.Models;
 using System;
@@ -9,38 +11,17 @@ using System.Threading.Tasks;
 
 namespace Polokus.Tests.Helpers
 {
-    internal class SimpleProcessInstance : ProcessInstance
+    internal static class TestHelper
     {
-        public SimpleProcessInstance(string id, IWorkflow workflow, IBpmnProcess bpmnProcess,
-            IHooksProvider? hooksProvider = null)
-            : base(id, workflow, bpmnProcess)
+        public static PolokusMaster ReadBpmn(string bpmnXml,
+            out IWorkflow wf, out IProcessInstance pi, out IFlowNode startNode)
         {
-        }
-
-        public async Task<bool> RunSimple(IHooksProvider? hooksProvider = null, IFlowNode? startNode = null, int? timeout = null)
-        {
-            startNode ??= BpmnProcess.GetStartNodes().First();
-            if (hooksProvider != null)
-            {
-                this.HooksProvider = hooksProvider;
-            }
-
-            StatusManager.Begin(startNode);
-
-            var start = DateTime.Now;
-            while (StatusManager.IsRunning())
-            {
-                await Task.Delay(100);
-
-                if (timeout.HasValue && DateTime.Now - start > TimeSpan.FromSeconds(timeout.Value))
-                {
-                    HooksProvider?.OnTimeout("","");
-                    return false;
-                }
-            }
-
-            return true;
-
+            var master = BpmnLoader.LoadBpmnXmlIntoMaster(bpmnXml);
+            wf = master.GetFirstWorkflow();
+            var bpmnProcess = wf.BpmnWorkflow.BpmnProcesses.First();
+            startNode = bpmnProcess.GetManualStartNode();
+            pi = wf.CreateProcessInstance(bpmnProcess);
+            return master;
         }
 
 

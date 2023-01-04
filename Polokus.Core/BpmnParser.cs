@@ -88,10 +88,12 @@ namespace Polokus.Core
         {
             var sequences = items.Where(x => x is tSequenceFlow).Cast<tSequenceFlow>();
             var flowNodes = items.Where(x => x is tFlowNode).Cast<tFlowNode>();
+            var boundaryEvents = items.Where(x => x is tBoundaryEvent).Cast<tBoundaryEvent>();
 
             var process = new BpmnProcess(Workflow, processId);
             process.SourceDefinitions = definitions;
             FillProcessConnections(process, sequences, flowNodes);
+            SetUpBoundaryEvents(process, boundaryEvents);
 
             processes.Add(process);
 
@@ -99,6 +101,20 @@ namespace Polokus.Core
             foreach (var sp in subProcesses)
             {
                 ReadFlowElementsInProcess(Workflow, definitions, sp.Items1, sp.id, processes);
+            }
+        }
+
+        private void SetUpBoundaryEvents(BpmnProcess process, IEnumerable<tBoundaryEvent> boundaryEvents)
+        {
+            foreach (var evt in boundaryEvents)
+            {
+                string attachedToId = evt.attachedToRef.Name;
+                var node = process.GetNodeById(attachedToId);
+                var boundaryEvt = process.GetNodeById(evt.id) as BoundaryEvent;
+
+                // TODO null checks
+                boundaryEvt.AttachedTo = node;
+                node.BoundaryEvents.Add(boundaryEvt);
             }
         }
 

@@ -56,13 +56,23 @@ namespace Polokus.Core
             }
         }
 
-        public IFlowNode GetFlowNode(string wfId, string piId, string nodeId)
+        public IFlowNode? GetFlowNode(string wfId, string piId, string nodeId)
         {
-            IWorkflow workflow = _workflows[wfId];
-            IProcessInstance processInstance = workflow.GetProcessInstanceById(piId);
-            IFlowNode node = processInstance.BpmnProcess.GetNodeById(nodeId);
+            if (!_workflows.ContainsKey(wfId))
+            {
+                return null;
+            }
 
-            return node;
+            IWorkflow workflow = _workflows[wfId];
+            
+            IProcessInstance? processInstance = workflow.GetProcessInstanceById(piId);
+
+            if (processInstance == null)
+            {
+                return null;
+            }
+
+            return processInstance.BpmnProcess.GetNodeById(nodeId) ?? null;
         }
 
         public void Log(string wfId, string piId, string info, Logger.MsgType type)

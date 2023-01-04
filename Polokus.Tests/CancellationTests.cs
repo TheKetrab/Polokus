@@ -39,8 +39,12 @@ namespace Polokus.Tests
         {
             // Arrange
             Logger.Global.ClearLog();
-            var pi = BpmnLoader.LoadBpmnXmlIntoSimpleProcessInstance(Resources.DelayTask);
-            pi.Workflow.NodeHandlerFactory
+            var master = TestHelper.ReadBpmn(Resources.DelayTask,
+                out IWorkflow wf, out IProcessInstance pi, out IFlowNode startNode);
+            var visitor = new VisitorHooks(master);
+            master.HooksManager.RegisterHooksProvider(visitor);
+
+            wf.NodeHandlerFactory
                 .RegisterNodeHandlerForServiceTask<CustomServiceTaskNodeHandler>("DelayTask");
 
             // Act
@@ -50,7 +54,7 @@ namespace Polokus.Tests
                 pi.StatusManager.Stop();
             }).Start();
 
-            await pi.RunSimple();
+            await wf.RunProcessAsync(pi, startNode);
             Thread.Sleep(2000); // wait till end
 
             // Assert
@@ -92,9 +96,14 @@ namespace Polokus.Tests
         {
             // Arrange
             Logger.Global.ClearLog();
-            var visitor = new VisitorHooks(VisitTime.BeforeExecute);
-            var pi = BpmnLoader.LoadBpmnXmlIntoSimpleProcessInstance(Resources.DelayTask);
-            pi.Workflow.NodeHandlerFactory
+
+
+            var master = TestHelper.ReadBpmn(Resources.DelayTask,
+                out IWorkflow wf, out IProcessInstance pi, out IFlowNode startNode);
+            var visitor = new VisitorHooks(master);
+            master.HooksManager.RegisterHooksProvider(visitor);
+
+            wf.NodeHandlerFactory
                 .RegisterNodeHandlerForServiceTask<CustomServiceTaskNodeHandler2>("DelayTask");
 
             // Act
@@ -110,7 +119,7 @@ namespace Polokus.Tests
 
             }).Start();
 
-            await pi.RunSimple(visitor);
+            await wf.RunProcessAsync(pi, startNode);
             Thread.Sleep(3000); // wait till end
 
             // Assert

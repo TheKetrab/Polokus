@@ -22,7 +22,7 @@ namespace Polokus.Core.Models
         public ICollection<ISequence> Outgoing { get; set; } = new List<ISequence>();
         public ICollection<IMessageFlow> OutgoingMessages { get; set; } = new List<IMessageFlow>();
         public ICollection<IMessageFlow> IncommingMessages { get; set; } = new List<IMessageFlow>();
-
+        public ICollection<IBoundaryEvent> BoundaryEvents { get; set; } = new List<IBoundaryEvent>();
 
         public FlowNode(BpmnProcess bpmnProcess, T xmlElement) 
         {

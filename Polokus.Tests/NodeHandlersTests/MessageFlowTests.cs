@@ -18,15 +18,13 @@ namespace Polokus.Tests.NodeHandlersTests
         public async Task MessageBetweenProcesses_TwoProcessesCommunication_ReachEnd()
         {
             // Arrange
-            VisitorHooks visitor = new VisitorHooks(VisitTime.BeforeExecute);
-            var wfm = BpmnLoader.LoadBpmnXmlIntoWorkflowsManager(Resources.MsgBetweenProcesses1, visitor);
-            var wf = wfm.GetFirstWorkflow();
-            var bpmnProcess = wf.BpmnWorkflow.BpmnProcesses.First(x => x.Id == "Process_1fqg2b6");
-            var startNode = bpmnProcess.GetManualStartNode();
-            var pi = wf.CreateProcessInstance(bpmnProcess);
+            var master = TestHelper.ReadBpmn(Resources.MsgBetweenProcesses1,
+                out IWorkflow wf, out IProcessInstance pi, out IFlowNode startNode);
+            var visitor = new VisitorHooks(master);
+            master.HooksManager.RegisterHooksProvider(visitor);
 
             // Act
-            await wf.RunProcessAsync(pi, startNode, null);
+            await wf.RunProcessAsync(pi, startNode);
 
             // Assert
             Assert.AreEqual("start;;;;;;;;;;;;;;;end", visitor.GetResult()); // every node visited and end achieved
@@ -51,7 +49,6 @@ namespace Polokus.Tests.NodeHandlersTests
             // NOTE: processes ids are the same in both files
 
             // Arrange
-
             string bpmnString = bpmnTestFile switch
             {
                 2 => Resources.MsgBetweenProcesses2,
@@ -59,9 +56,10 @@ namespace Polokus.Tests.NodeHandlersTests
                 _ => throw new Exception("bpmn process undefined")
             };
 
-            VisitorHooks visitor = new VisitorHooks(VisitTime.BeforeExecute);
-            var wfm = BpmnLoader.LoadBpmnXmlIntoWorkflowsManager(bpmnString, visitor);
-            var wf = wfm.GetFirstWorkflow();
+            var master = BpmnLoader.LoadBpmnXmlIntoMaster(bpmnString);
+            var visitor = new VisitorHooks(master);
+            master.HooksManager.RegisterHooksProvider(visitor);
+            var wf = master.GetFirstWorkflow();
 
             string[] processIds = new string[3] { "Process_1pq1cix", "Process_0p4rtg3", "Process_1ylxybt" };
             IBpmnProcess[] bpmnProcesses = processIds.Select(pid => wf.BpmnWorkflow.BpmnProcesses.First(pr => pr.Id == pid)).ToArray();
@@ -81,7 +79,7 @@ namespace Polokus.Tests.NodeHandlersTests
                 await Task.Delay(1000);
             }
 
-            await Task.Delay(timeout);
+            await Task.Delay(timeout * 1000);
 
             // Assert
             for (int i = 0; i < permutation.Length; i++)
@@ -95,14 +93,13 @@ namespace Polokus.Tests.NodeHandlersTests
         public async Task MessageBetweenProcesses_SendingData_VariableSent()
         {
             // Arrange
-            var wfm = BpmnLoader.LoadBpmnXmlIntoWorkflowsManager(Resources.MsgBetweenProcesses4);
-            var wf = wfm.GetFirstWorkflow();
-            var bpmnProcess = wf.BpmnWorkflow.BpmnProcesses.First(x => x.Id == "Process_05l3o9f");
-            var startNode = bpmnProcess.GetManualStartNode();
-            var pi = wf.CreateProcessInstance(bpmnProcess);
+            var master = TestHelper.ReadBpmn(Resources.MsgBetweenProcesses4,
+                 out IWorkflow wf, out IProcessInstance pi, out IFlowNode startNode);
+            var visitor = new VisitorHooks(master);
+            master.HooksManager.RegisterHooksProvider(visitor);
 
             // Act
-            await wf.RunProcessAsync(pi, startNode, null);
+            await wf.RunProcessAsync(pi, startNode);
 
             // Assert
             Assert.AreEqual(12, wf.ScriptProvider.Globals.globals["z"]);

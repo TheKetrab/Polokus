@@ -19,8 +19,13 @@ namespace Polokus.Core.Models
         public IBpmnProcess BpmnProcess { get; }
 
         public IFlowNode? Source => _source ??= BpmnProcess.GetNodeById(XmlElement.sourceRef);
-        public IFlowNode? Target => _target ??= BpmnProcess.GetNodeById(XmlElement.targetRef);
+        public IFlowNode? Target
+        {
+            get { return _target ??= BpmnProcess.GetNodeById(XmlElement.targetRef); }
+            private set { _target = value; }
+        }
 
+        private Sequence() { }
 
         public Sequence(BpmnProcess bpmnProcess, tSequenceFlow xmlElement)
         {
@@ -28,6 +33,13 @@ namespace Polokus.Core.Models
             Name = xmlElement.name ?? "";
             Id = xmlElement.id;
             BpmnProcess = bpmnProcess;
+        }
+
+        public static Sequence CreateFakeSequence(IFlowNode target)
+        {
+            var sequence = new Sequence();
+            sequence.Target = target;
+            return sequence;
         }
 
     }

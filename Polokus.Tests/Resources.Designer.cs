@@ -73,6 +73,17 @@ namespace Polokus.Tests {
         
         /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+        ///&lt;bpmn2:definitions xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:bpmn2=&quot;http://www.omg.org/spec/BPMN/20100524/MODEL&quot; xmlns:bpmndi=&quot;http://www.omg.org/spec/BPMN/20100524/DI&quot; xmlns:dc=&quot;http://www.omg.org/spec/DD/20100524/DC&quot; xmlns:di=&quot;http://www.omg.org/spec/DD/20100524/DI&quot; id=&quot;sample-diagram&quot; targetNamespace=&quot;http://bpmn.io/schema/bpmn&quot; xsi:schemaLocation=&quot;http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd&quot;&gt;
+        ///  &lt;bpmn2:process id=&quot;Process_1&quot; isExecutable [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string ExceptionBoundaryEvent {
+            get {
+                return ResourceManager.GetString("ExceptionBoundaryEvent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
         ///&lt;bpmn:definitions xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:bpmn=&quot;http://www.omg.org/spec/BPMN/20100524/MODEL&quot; xmlns:bpmndi=&quot;http://www.omg.org/spec/BPMN/20100524/DI&quot; xmlns:dc=&quot;http://www.omg.org/spec/DD/20100524/DC&quot; xmlns:di=&quot;http://www.omg.org/spec/DD/20100524/DI&quot; id=&quot;Definitions_1jzw7sx&quot; targetNamespace=&quot;http://bpmn.io/schema/bpmn&quot; exporter=&quot;bpmn-js (https://demo.bpmn.io)&quot; exporterVersion=&quot;9.3.2&quot;&gt;
         ///  &lt;bpmn:process id=&quot;Process_1gat3xk&quot; isExecutable=&quot; [rest of string was truncated]&quot;;.
         /// </summary>

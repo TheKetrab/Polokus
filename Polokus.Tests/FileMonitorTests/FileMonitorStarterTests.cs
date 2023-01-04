@@ -28,7 +28,7 @@ namespace Polokus.Tests.FileMonitorTests
             // Arrange
             PolokusMaster master = new PolokusMaster();
 
-            VisitorHooks visitor = new VisitorHooks(VisitTime.BeforeExecute);
+            VisitorHooks visitor = new VisitorHooks(master, VisitTime.BeforeExecute);
             master.HooksManager!.RegisterHooksProvider(visitor);
             master.LoadXmlString(Resources.SignalProcessStarter1, "SignalProcessStarter");
 

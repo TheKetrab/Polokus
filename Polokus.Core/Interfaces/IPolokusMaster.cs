@@ -88,5 +88,12 @@ namespace Polokus.Core.Interfaces
         /// </summary>
         bool ClientConnected { get; }
 
+        /// <summary>
+        /// Returns instance of FlowNode searched by id.
+        /// </summary>
+        /// <param name="wfId">Id of workflow.</param>
+        /// <param name="piId">Id of process instance.</param>
+        /// <param name="nodeId">Id of node.</param>
+        IFlowNode? GetFlowNode(string wfId, string piId, string nodeId);
     }
 }
