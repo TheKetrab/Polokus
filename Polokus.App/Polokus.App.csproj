@@ -8,12 +8,17 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Platforms>x64</Platforms>
 		<CefSharpAnyCpuSupport>true</CefSharpAnyCpuSupport>
+		<ApplicationIcon>Resources\Polokus.ico</ApplicationIcon>
 
 	</PropertyGroup>
 
   <ItemGroup>
     <None Remove="Communication\Protos\hooks.proto" />
     <None Remove="Fonts\segmdl2.ttf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\PolokusIco.ico" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Polokus.Core\Polokus.Core.csproj" />
@@ -74,6 +79,7 @@
 	</ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="echo xcopy &quot;$(SolutionDir)Polokus.Bpmnio\public&quot; &quot;$(ProjectDir)$(OutDir)editor&quot; /E/I/Y&#xD;&#xA;xcopy &quot;$(SolutionDir)Polokus.Bpmnio\public&quot; &quot;$(ProjectDir)$(OutDir)editor&quot; /E/I/Y&#xD;&#xA;" />
+	<Exec Command="copy &quot;$(ProjectDir)Resources\Polokus.ico&quot; &quot;$(ProjectDir)$(OutDir)Polokus.ico&quot; /y" />
   </Target>
 
 </Project>

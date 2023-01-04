@@ -14,3 +14,6 @@ Polokus.Bpmnio/node_modules/
 Polokus.Bpmnio/public/
 
 Examples/PathToMonitor/
+
+Installer/bin/
+Installer/*.exe
