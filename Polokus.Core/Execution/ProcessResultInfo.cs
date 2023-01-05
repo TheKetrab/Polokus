@@ -13,7 +13,8 @@ namespace Polokus.Core.Execution
         Success,
         Failure,
         Suspension,
-        Cancellation
+        Cancellation,
+        ErrorBoundaryEvent
     }
 
     public class SuccessProcessResultInfo : ProcessResultInfo

@@ -25,7 +25,7 @@ namespace Polokus.Core
 
         public ISettingsProvider SettingsProvider { get; set; }
 
-        public IHooksManager HooksManager { get; set; } = new HooksManager();
+        public IHooksManager HooksManager { get; set; }
 
         public Externals.Externals? Externals { get; }
 
@@ -97,11 +97,12 @@ namespace Polokus.Core
             }
         }
 
-        public bool ClientConnected { get; } = false; // TODO
+        public bool ClientConnected { get; } = true; // TODO
 
 
         public PolokusMaster()
         {
+            HooksManager = new HooksManager(this);
             Externals = ExternalsManager.TryLoadExternals("./externals.json");
             if (Externals != null)
             {

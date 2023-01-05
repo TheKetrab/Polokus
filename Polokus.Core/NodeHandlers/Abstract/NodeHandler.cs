@@ -96,7 +96,7 @@ namespace Polokus.Core.NodeHandlers.Abstract
                     Logger.Global.LogError(exc.Message);
                     this.ProcessInstance.ActiveTasksManager.CancellNodeHandler(this);
                     var sequence = Sequence.CreateFakeSequence(boundaryEvtHandler);
-                    return new SuccessProcessResultInfo(sequence);
+                    return new SuccessProcessResultInfo(new Sequence[] { sequence }, "forceAllNewSequences");
                 }
 
                 Logger.Global.LogError(exc.Message);

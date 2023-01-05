@@ -20,6 +20,7 @@ namespace Polokus.Core.Interfaces
         ICollection<IProcessInstance> ChildrenProcessInstances { get; }
         ICollection<INodeHandlerWaiter> Waiters { get; }
         IDictionary<string,INodeHandler> AvailableNodeHandlers { get; }
+        ICollection<string> FailedExecutionNodeIds { get; }
 
 
         bool ExistsAnotherTaskAbleToCallTarget(IFlowNode target, List<string> callers);

@@ -27,7 +27,12 @@ namespace Polokus.Core.NodeHandlers
             var manualStartNode = bpmnProcess.GetManualStartNode();
 
             SubProcessInstance = this.ProcessInstance.CreateSubProcessInstance(bpmnProcess);
-            await wf.RunProcessAsync(SubProcessInstance, manualStartNode, null);
+            bool success = await wf.RunProcessAsync(SubProcessInstance, manualStartNode, null);
+
+            if (!success)
+            {
+                throw new Exception();
+            }
         }
     }
 }

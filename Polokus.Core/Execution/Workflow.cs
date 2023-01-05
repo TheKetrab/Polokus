@@ -104,7 +104,10 @@ namespace Polokus.Core.Execution
             ProcessInstances.Remove(instance);
             History.Add(instance);
             HooksProvider?.OnProcessFinished(instance.Workflow.Id, instance.Id, "success");
-            return true;
+
+            bool processSucceed = !instance.FailedExecutionNodeIds.Any();
+
+            return processSucceed;
         }
 
         public IProcessInstance CreateProcessInstance(IBpmnProcess bpmnProcess, IProcessInstance? parent = null)

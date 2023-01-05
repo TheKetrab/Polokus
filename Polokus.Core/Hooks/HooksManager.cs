@@ -11,6 +11,8 @@ namespace Polokus.Core.Hooks
 {
     public class HooksManager : IHooksManager
     {
+        public PolokusMaster Master { get; }
+
         private struct HooksProviderInfo
         {
             public IHooksProvider Object { get; }
@@ -21,6 +23,11 @@ namespace Polokus.Core.Hooks
                 Object = @object;
                 WaitFor = waitFor;
             }
+        }
+
+        public HooksManager(PolokusMaster master)
+        {
+            Master = master;
         }
 
         private List<HooksProviderInfo> _hooksProviders = new();
@@ -73,7 +80,10 @@ namespace Polokus.Core.Hooks
 
         public void BeforeExecuteNode(string wfId, string piId, string nodeId, int taskId, string? callerNodeId)
         {
-            //Thread.Sleep(1000); // TODO: settings provider
+            if (Master.ClientConnected)
+            {
+                Thread.Sleep(1000); // TODO: settings provider
+            }
 
             _hooksProviders.ForEach(x => ExecuteAction(x.WaitFor,
                 () => x.Object.BeforeExecuteNode(wfId, piId, nodeId, taskId, callerNodeId)));

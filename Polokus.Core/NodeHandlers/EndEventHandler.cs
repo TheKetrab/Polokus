@@ -16,6 +16,8 @@ namespace Polokus.Core.NodeHandlers
     public class EndEventHandler : NodeHandler<tEndEvent>
     {
         private NodeHandler<tEndEvent>? _subhandler = null;
+        public bool ErrorEndEvent { get; } = false;
+
         public EndEventHandler(ProcessInstance processInstance, FlowNode<tEndEvent> node)
             : base(processInstance, node)
         {
@@ -33,6 +35,10 @@ namespace Polokus.Core.NodeHandlers
             {
                 _subhandler = new MessageSendingNodeHandler<tEndEvent>(ProcessInstance, TypedNode);
             }
+            else if (eventDefinition is tErrorEventDefinition)
+            {
+                ErrorEndEvent = true;
+            }
             else
             {
                 throw new Exception($"Unknown definition of node {this.Node.Name}: {eventDefinition.id}");
@@ -42,6 +48,11 @@ namespace Polokus.Core.NodeHandlers
 
         public override async Task Action(INodeCaller? caller)
         {
+            if (ErrorEndEvent)
+            {
+                throw new Exception();
+            }
+
             if (_subhandler == null)
             {
                 return;

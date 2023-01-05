@@ -24,7 +24,7 @@ namespace Polokus.Core.Execution
         public IDictionary<string, INodeHandler> AvailableNodeHandlers { get; set; }
             = new Dictionary<string, INodeHandler>();
 
-
+        public ICollection<string> FailedExecutionNodeIds { get; } = new List<string>();
 
         public ProcessInstance(string id, IWorkflow workflow,
             IBpmnProcess bpmnProcess, IProcessInstance? parent = null)
@@ -131,9 +131,11 @@ namespace Polokus.Core.Execution
                 case ProcessResultState.Success:
                     HooksProvider?.AfterExecuteNodeSuccess(Workflow.Id, Id, node.Id, taskId);
                     AvailableNodeHandlers.Remove(node.Id);
-                    RunFurtherNodes(node, taskId, resultInfo.SequencesToInvoke!.ToArray());
+                    bool forceAllNewSequences = (resultInfo.Message == "forceAllNewSequences");
+                    RunFurtherNodes(node, taskId, resultInfo.SequencesToInvoke!.ToArray(), forceAllNewSequences);
                     break;
                 case ProcessResultState.Failure:
+                    this.FailedExecutionNodeIds.Add(node.Id);
                     HooksProvider?.AfterExecuteNodeFailure(Workflow.Id, Id, node.Id, taskId);
                     ActiveTasksManager.RemoveRunningTask(taskId);
                     AvailableNodeHandlers.Remove(node.Id);
@@ -160,7 +162,7 @@ namespace Polokus.Core.Execution
             task.Start();
         }
 
-        private void RunFurtherNodes(IFlowNode node, int taskId, ISequence[] sequences)
+        private void RunFurtherNodes(IFlowNode node, int taskId, ISequence[] sequences, bool forceAllNewSequences = false)
         {
             if (sequences.Length == 0)
             {
@@ -168,7 +170,9 @@ namespace Polokus.Core.Execution
                 return;
             }
 
-            for (int i = 1; i < sequences.Length; i++)
+            int start = forceAllNewSequences ? 0 : 1;
+
+            for (int i = start; i < sequences.Length; i++)
             {
                 var nextNode = sequences[i]?.Target;
                 if (nextNode != null)
@@ -177,10 +181,14 @@ namespace Polokus.Core.Execution
                 }
             }
 
-            var nn = sequences[0]?.Target;
-            if (nn != null)
+            if (!forceAllNewSequences)
             {
-                ExecuteNode(nn, taskId, node);
+                var nn = sequences[0]?.Target;
+                if (nn != null)
+                {
+                    ExecuteNode(nn, taskId, node);
+                }
+
             }
 
         }
