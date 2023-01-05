@@ -25,7 +25,7 @@ namespace Polokus.Core.NodeHandlers.Abstract
         public bool IsJoining => Node.Incoming.Count > 1;
         public IScriptProvider ScriptProvider => ProcessInstance.Workflow.ScriptProvider;
 
-        private List<INodeHandlerWaiter> boundaryEventsWaiters;
+        private Dictionary<BoundaryEventType, INodeHandlerWaiter> boundaryEventsWaiters;
 
 
         public NodeHandler(IProcessInstance processInstance, FlowNode<T> typedNode)
@@ -94,6 +94,7 @@ namespace Polokus.Core.NodeHandlers.Abstract
                 if (boundaryEvtHandler != null)
                 {
                     Logger.Global.LogError(exc.Message);
+                    this.ProcessInstance.ActiveTasksManager.CancellNodeHandler(this);
                     var sequence = Sequence.CreateFakeSequence(boundaryEvtHandler);
                     return new SuccessProcessResultInfo(sequence);
                 }
@@ -115,16 +116,52 @@ namespace Polokus.Core.NodeHandlers.Abstract
         {
             if (this.Node.BoundaryEvents.Count > 0)
             {
-                boundaryEventsWaiters = new List<INodeHandlerWaiter>();
+                boundaryEventsWaiters = new Dictionary<BoundaryEventType,INodeHandlerWaiter>();
 
                 foreach (var be in this.Node.BoundaryEvents)
                 {
-                    INodeHandlerWaiter waiter = null;
+                    if (be.Type == BoundaryEventType.Error)
+                    {
+                        continue;
+                    }
+
+                    INodeHandlerWaiter? waiter = null;
                     switch (be.Type)
                     {
-                        // TODO timer, signal, message
+                        case BoundaryEventType.Timer:
+                            if (TimeString.IsTimeString(be.Name))
+                            {
+                                waiter = new NodeHandlerWaiter(this.ProcessInstance, be);
+                                this.ProcessInstance.Workflow.TimeManager.RegisterWaiterNotCrone(be.Name, waiter, () =>
+                                {
+                                    this.ProcessInstance.ActiveTasksManager.CancellNodeHandler(this);
+                                });
+                                boundaryEventsWaiters.Add(BoundaryEventType.Timer, waiter);
+                            }
+                            else if (TimeString.IsCroneString(be.Name))
+                            {
+                                waiter = new NodeHandlerWaiter(this.ProcessInstance, be);
+                                this.ProcessInstance.Workflow.TimeManager.RegisterWaiter(be.Name, waiter, true);
+                                boundaryEventsWaiters.Add(BoundaryEventType.Timer, waiter);
+                            }
+                            else
+                            {
+                                throw new Exception($"Invalid time string: {be.Name} of boundary event: {be.Id}");
+                            }
+                            break;
+                        case BoundaryEventType.Message:
+                            waiter = new NodeHandlerWaiter(this.ProcessInstance, be);
+                            this.ProcessInstance.Workflow.MessageManager.RegisterMessageListener(waiter);
+                            boundaryEventsWaiters.Add(BoundaryEventType.Message, waiter);
+                            break;
+                        case BoundaryEventType.Signal:
+                            waiter = new NodeHandlerWaiter(this.ProcessInstance, be);
+                            this.ProcessInstance.Workflow.SignalManager.RegisterSignalListener(waiter);
+                            boundaryEventsWaiters.Add(BoundaryEventType.Signal, waiter);
+                            break;
+                        default:
+                            throw new Exception("Undefined boundary event type.");
                     }
-                    boundaryEventsWaiters.Add(waiter); // cache to remember what to remove
                 }
 
             }
@@ -134,9 +171,17 @@ namespace Polokus.Core.NodeHandlers.Abstract
         {
             if (boundaryEventsWaiters != null)
             {
-                foreach (var waiter in boundaryEventsWaiters)
+                foreach (var waiterKV in boundaryEventsWaiters)
                 {
-                    // TODO remove from timemanager, signalmanager, messagemanager
+                    switch (waiterKV.Key)
+                    {
+                        case BoundaryEventType.Timer:
+                            this.ProcessInstance.Workflow.TimeManager.CancellWaiter(waiterKV.Value.Id);
+                            break;
+                        default:
+                            throw new Exception("Undefined boundary type to remove waiter.");
+
+                    }
                 }
             }
         }

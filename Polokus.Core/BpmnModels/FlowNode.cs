@@ -27,7 +27,7 @@ namespace Polokus.Core.Models
         public FlowNode(BpmnProcess bpmnProcess, T xmlElement) 
         {
             XmlElement = xmlElement;
-            Name = xmlElement.name;
+            Name = xmlElement.name ?? "";
             Id = xmlElement.id;
             BpmnProcess = bpmnProcess;
         }

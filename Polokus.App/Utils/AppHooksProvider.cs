@@ -28,23 +28,23 @@ namespace Polokus.App.Utils
 
         public void AfterExecuteNodeFailure(string wfId, string piId, string nodeId, int taskId)
         {
-
+            Log(wfId, piId, $"Node {nodeId} finished with failure. task: {taskId}");
         }
 
         public void AfterExecuteNodeSuccess(string wfId, string piId, string nodeId, int taskId)
         {
-
+            Log(wfId, piId, $"Node {nodeId} finished with success. task: {taskId}");
         }
 
         public void AfterExecuteNodeSuspension(string wfId, string piId, string nodeId, int taskId)
         {
-
+            Log(wfId, piId, $"Node {nodeId} finished with suspension. task: {taskId}");
         }
 
         public void OnProcessFinished(string wfId, string piId, string result)
         {
             string time = _services.ProcessInstancesService.GetTotalTime(wfId, piId);
-            Log(wfId, piId, $"Process finished with result: {result}. Time: {time}");
+            Log(wfId, piId, $"Process {piId} finished with result: {result}. Time: {time}");
         }
 
         public void BeforeExecuteNode(string wfId, string piId, string nodeId, int taskId, string? nodeCallerId)

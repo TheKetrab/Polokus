@@ -28,6 +28,25 @@ namespace Polokus.Core.Execution
             ProcessInstance = processInstance;
         }
 
+        public void CancellNodeHandler(INodeHandler nh)
+        {
+            var toCancell = ActiveTasks.FirstOrDefault(x => x.Value.Item2 == nh);
+            if (toCancell.Value != null)
+            {
+                ActiveTasks.Remove(toCancell.Key);
+
+                toCancell.Value.Item1.Cancel();
+                if (nh is SubProcessNodeHandler spnh && spnh.SubProcessInstance != null)
+                {
+                    spnh.SubProcessInstance.StatusManager.Stop();
+                    spnh.SubProcessInstance.HooksProvider?.OnProcessFinished(
+                        spnh.SubProcessInstance.Workflow.Id, spnh.SubProcessInstance.Id, "cancell");
+
+                }
+
+            }
+        }
+
         public bool AnyRunning()
         {
             return ActiveTasks.Any();

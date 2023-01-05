@@ -9,6 +9,8 @@ namespace Polokus.Core.Interfaces
 {
     public enum BoundaryEventType
     {
+        Undefined,
+        Signal,
         Message,
         Timer,
         Error

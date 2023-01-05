@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using static Quartz.Logging.OperationName;
 using Polokus.Core.Interfaces;
 using Polokus.Core.Hooks;
+using Polokus.Core.Helpers;
 
 namespace Polokus.Core.Execution
 {
@@ -22,6 +23,8 @@ namespace Polokus.Core.Execution
 
         Dictionary<string, IProcessStarter> _starters = new();
         Dictionary<string, INodeHandlerWaiter> _waiters = new();
+        Dictionary<string, CancellationTokenSource> _cancellationWaitersTokens = new();
+        private object _ctokenslock = new object();
 
         public IEnumerable<IProcessStarter> GetStarters()
         {
@@ -74,6 +77,64 @@ namespace Polokus.Core.Execution
             waiter.HooksProvider?.OnCallerChanged(waiter.Id, nameof(CallerChangedType.WaiterRemoved));
         }
 
+        public void RegisterWaiterNotCrone(string timeString, INodeHandlerWaiter waiter, Action afterInvokeAction)
+        {
+            
+            CancellationTokenSource ctSrc = new();
+            CancellationToken token = ctSrc.Token;
+            
+            Task task = new Task(async () =>
+            {
+                int waitTime = TimeString.ParseToMiliseconds(timeString);
+                await Task.Delay(waitTime);
+                if (!token.IsCancellationRequested)
+                {
+                    waiter.Invoke(); // first invoke waiter, then 'kill anc cancell', otherwise for a little time there will be no active task, process will finish, and then another task will occur, error!
+                    afterInvokeAction();
+                }
+                lock (_ctokenslock)
+                {
+                    if (_cancellationWaitersTokens.ContainsKey(waiter.Id))
+                    {
+                        _cancellationWaitersTokens.Remove(waiter.Id);
+                    }
+                }
+            });
+
+            _cancellationWaitersTokens.Add(waiter.Id, ctSrc);
+            task.Start();
+        }
+
+        public void CancellWaiter(string waiterId)
+        {
+            lock (_ctokenslock)
+            {
+                if (_cancellationWaitersTokens.ContainsKey(waiterId))
+                {
+                    var ctSrc = _cancellationWaitersTokens[waiterId];
+                    ctSrc.Cancel();
+                    _cancellationWaitersTokens.Remove(waiterId);
+                }
+            }
+        }
+
+        public bool IsWaiterCancelled(string waiterId)
+        {
+            lock (_ctokenslock)
+            {
+                if (_cancellationWaitersTokens.ContainsKey(waiterId))
+                {
+                    var ctSrc = _cancellationWaitersTokens[waiterId];
+                    return ctSrc.Token.IsCancellationRequested;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+
+        }
+
 
     }
 
@@ -84,6 +145,12 @@ namespace Polokus.Core.Execution
             bool oneTime = (bool)context.JobDetail.JobDataMap["OneTime"];
             INodeHandlerWaiter waiter = (INodeHandlerWaiter)context.JobDetail.JobDataMap["Waiter"];
             TimeManager timeManager = (TimeManager)context.JobDetail.JobDataMap["TimeManager"];
+
+            if (timeManager.IsWaiterCancelled(waiter.Id))
+            {
+                timeManager.RemoveWaiter(waiter);
+                return;
+            }
 
             if (oneTime)
             {

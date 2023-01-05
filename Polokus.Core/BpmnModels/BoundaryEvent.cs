@@ -21,13 +21,32 @@ namespace Polokus.Core.BpmnModels
             : base(bpmnProcess, xmlElement)
         {
             Interrupting = XmlElement.cancelActivity;
+            Type = DetermineType(XmlElement.Items[0].GetType());
+        }
 
-            var type = XmlElement.Items[0].GetType();
+        private BoundaryEventType DetermineType(Type type)
+        {
             if (type == typeof(tErrorEventDefinition))
             {
-                Type = BoundaryEventType.Error;
+                return BoundaryEventType.Error;
             }
-            // TODO rest, or exception
+            else if (type == typeof(tTimerEventDefinition))
+            {
+                return BoundaryEventType.Timer;
+            }
+            else if (type == typeof(tMessageEventDefinition))
+            {
+                return BoundaryEventType.Message;
+            }
+            else if (type == typeof(tSignalEventDefinition))
+            {
+                return BoundaryEventType.Signal;
+            }
+            else
+            {
+                return BoundaryEventType.Undefined;
+            }
+
         }
     }
 }

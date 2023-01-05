@@ -110,7 +110,7 @@ namespace Polokus.Core.Execution
         public IProcessInstance CreateProcessInstance(IBpmnProcess bpmnProcess, IProcessInstance? parent = null)
         {
             string processId = $"pi{GetAnotherProcessId()}/{bpmnProcess.Id}";
-            var instance = new ProcessInstance(processId, this, bpmnProcess);
+            var instance = new ProcessInstance(processId, this, bpmnProcess, parent);
             instance.HooksProvider = this.HooksProvider;
             
             if (parent != null)
