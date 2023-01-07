@@ -22,8 +22,31 @@ namespace Polokus.Core.Execution
         public IEnumerable<INodeHandlerWaiter> Waiters
         {
             get
-            {return
-                this.Workflow.TimeManager.GetWaiters(Id); // todo
+            {
+                List<INodeHandlerWaiter> res = new();
+                res.AddRange(this.Workflow.TimeManager.GetWaiters(Id));
+                res.AddRange(this.Workflow.MessageManager.GetWaiters(Id));
+                res.AddRange(this.Workflow.SignalManager.GetWaiters(Id));
+                return res;
+            }
+        }
+
+        /// <summary>
+        /// Removes waiters for this process instance including cancelling them.
+        /// </summary>
+        public void KillWaiters()
+        {
+            {
+                var waiters = this.Workflow.TimeManager.GetWaiters(Id);
+                waiters.ForEach(x => this.Workflow.TimeManager.RemoveWaiter(x.Id));
+            }
+            {
+                var waiters = this.Workflow.MessageManager.GetWaiters(Id);
+                waiters.ForEach(x => this.Workflow.MessageManager.RemoveWaiter(x.Id));
+            }
+            {
+                var waiters = this.Workflow.SignalManager.GetWaiters(Id);
+                waiters.ForEach(x => this.Workflow.SignalManager.RemoveWaiter(x.Id));
             }
         }
 
@@ -170,6 +193,11 @@ namespace Polokus.Core.Execution
 
         private void RunFurtherNodes(IFlowNode node, int taskId, ISequence[] sequences, bool forceAllNewSequences = false)
         {
+            if (StatusManager.IsStopped || StatusManager.IsPaused)
+            {
+                return;
+            }
+
             if (sequences.Length == 0)
             {
                 ActiveTasksManager.RemoveRunningTask(taskId);

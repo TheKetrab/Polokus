@@ -15,6 +15,8 @@ namespace Polokus.Core.Execution
         public bool IsStarted => !IS(ProcessStatus.Initialized);
         public bool IsFinished => IS(ProcessStatus.Finished) || IS(ProcessStatus.Stopped);
         public bool IsActive => IsStarted && !IsFinished;
+        public bool IsStopped => IS(ProcessStatus.Stopped);
+        public bool IsPaused => IS(ProcessStatus.Paused);
 
         private bool IS(ProcessStatus status)
         {
@@ -54,7 +56,7 @@ namespace Polokus.Core.Execution
         public void Stop()
         {
             _pi.ActiveTasksManager.Stop();
-            // TODO: kill all tasks and waiters
+            _pi.KillWaiters();
             Status = ProcessStatus.Stopped;
         }
 
@@ -89,7 +91,11 @@ namespace Polokus.Core.Execution
             }
 
             _finishTime = DateTime.Now;
-            Status = ProcessStatus.Finished;
+
+            if (!IsFinished)
+            {
+                Status = ProcessStatus.Finished;
+            }
         }
 
         public void Restore(IPolokusMaster master, string source)

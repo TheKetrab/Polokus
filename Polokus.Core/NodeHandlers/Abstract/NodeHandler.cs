@@ -69,6 +69,7 @@ namespace Polokus.Core.NodeHandlers.Abstract
         {
             try
             {
+                CancellationToken.ThrowIfCancellationRequested();
                 bool canProcess = await CanProcess(caller);
                 if (!canProcess)
                 {
@@ -85,6 +86,7 @@ namespace Polokus.Core.NodeHandlers.Abstract
             }
             catch (OperationCanceledException)
             {
+                RemoveWaitersForBoundaryEvents();
                 return new ProcessResultInfo(ProcessResultState.Cancellation);
             }
             catch (Exception exc)

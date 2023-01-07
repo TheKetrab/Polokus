@@ -11,6 +11,8 @@ namespace Polokus.Core.Interfaces
     {
         ProcessStatus Status { get; }
         bool IsStarted { get; }
+        bool IsStopped { get; }
+        bool IsPaused { get; }
         bool IsFinished { get; }
         bool IsActive { get; }
         TimeSpan TotalTime { get; }

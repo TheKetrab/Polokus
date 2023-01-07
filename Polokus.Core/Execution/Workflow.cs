@@ -103,7 +103,7 @@ namespace Polokus.Core.Execution
             instance.StatusManager.Finish();
             ProcessInstances.Remove(instance);
             History.Add(instance);
-            HooksProvider?.OnProcessFinished(instance.Workflow.Id, instance.Id, "success");
+            HooksProvider?.OnProcessFinished(instance.Workflow.Id, instance.Id, instance.StatusManager.Status.ToString());
 
             bool processSucceed = !instance.FailedExecutionNodeIds.Any();
 
