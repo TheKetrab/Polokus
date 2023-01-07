@@ -79,15 +79,41 @@ namespace Polokus.Core.Services.OnPremise
             return _polokus.GetWorkflow(wfId).BpmnWorkflow.RawString;
         }
 
+        public void PauseProcessInstance(string wfId, string piId)
+        {
+            _polokus.GetWorkflow(wfId)
+                .GetProcessInstanceById(piId)
+                .StatusManager.Pause();
+        }
+
         public void PingListener(string wfId, string listenerId)
         {
             _polokus.GetWorkflow(wfId).MessageManager.PingListener(listenerId);
+        }
+
+        public void ResumeProcessInstance(string wfId, string piId)
+        {
+            _polokus.GetWorkflow(wfId)
+                .GetProcessInstanceById(piId)
+                .StatusManager.Resume();
+        }
+
+        public void RaiseSignal(string wfId, string signal)
+        {
+            _polokus.GetWorkflow(wfId).SignalManager.EmitSignal(signal);
         }
 
         public string StartProcessManually(string wfId, string bpmnProcessId)
         {
             var pi = _polokus.GetWorkflow(wfId).StartProcessManually(bpmnProcessId);
             return pi.Id;
+        }
+
+        public void StopProcessInstance(string wfId, string piId)
+        {
+            _polokus.GetWorkflow(wfId)
+                .GetProcessInstanceById(piId)
+                .StatusManager.Stop();
         }
     }
 }

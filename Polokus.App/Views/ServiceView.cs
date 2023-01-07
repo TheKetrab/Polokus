@@ -121,9 +121,8 @@ namespace Polokus.App.Views
             set
             {
                 _anyProcessInstanceSelected = value;
-                this.buttonRestart.Enabled = value;
+                this.buttonPause.Enabled = value;
                 this.buttonStop.Enabled = value;
-                this.buttonDelete.Enabled = value;
                 this.buttonStart.Enabled = value;
             }
         }
@@ -465,22 +464,7 @@ namespace Polokus.App.Views
                 throw new Exception("None BPMN process is selected.");
             }
 
-
-            string piId = _services.WorkflowsService.StartProcessManually(wfId, bpmnProcessId);
-            Task.Run(async () => // TODO: usunac to brzydkie rozwiazanie! musi byc to robione od razu jak sie item doda przez hooks providera
-            {
-                await Task.Delay(500);
-                listViewInstances.BeginInvoke(() =>
-                {
-                    var item = this.listViewInstances.FindItemWithText(piId);
-                    int idx = this.listViewInstances.Items.IndexOf(item);
-                    if (idx != -1)
-                    {
-                        this.listViewInstances.Items[idx].Focused = true;
-                        this.listViewInstances.Items[idx].Selected = true;
-                    }
-                });
-            });
+            _services.WorkflowsService.StartProcessManually(wfId, bpmnProcessId);
         }
 
         private void buttonLoadWorkflow_Click(object sender, EventArgs e)
@@ -503,24 +487,44 @@ namespace Polokus.App.Views
             }
         }
 
-        private void buttonRestart_Click(object sender, EventArgs e)
+        private void buttonPause_Click(object sender, EventArgs e)
         {
+            var wfId = ActiveWorkflow;
+            var piId = ActiveProcessInstance;
 
+            if (wfId == null || piId == null)
+            {
+                throw new Exception("None process instance is selected.");
+            }
+
+            _services.WorkflowsService.PauseProcessInstance(wfId, piId);
         }
 
         private void buttonStop_Click(object sender, EventArgs e)
         {
+            var wfId = ActiveWorkflow;
+            var piId = ActiveProcessInstance;
+
+            if (wfId == null || piId == null)
+            {
+                throw new Exception("None process instance is selected.");
+            }
+
+            _services.WorkflowsService.StopProcessInstance(wfId, piId);
 
         }
 
         private void buttonStart_Click(object sender, EventArgs e)
         {
+            var wfId = ActiveWorkflow;
+            var piId = ActiveProcessInstance;
 
-        }
+            if (wfId == null || piId == null)
+            {
+                throw new Exception("None process instance is selected.");
+            }
 
-        private void button4_Click(object sender, EventArgs e)
-        {
-
+            _services.WorkflowsService.ResumeProcessInstance(wfId, piId);
         }
 
         private void buttonPingWaiter_Click(object sender, EventArgs e)
@@ -577,6 +581,19 @@ namespace Polokus.App.Views
         {
             if (string.Equals(str,"null")) return null;
             return str;
+        }
+
+
+        private void buttonRaiseSignal_Click(object sender, EventArgs e)
+        {
+            if (ActiveWorkflow == null)
+            {
+                throw new Exception("None workflow is active.");
+            }
+
+            string signal = this.textBoxRaiseSignal.Text;
+            _services.WorkflowsService.RaiseSignal(ActiveWorkflow, signal);
+
         }
 
     }

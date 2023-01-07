@@ -8,12 +8,9 @@ using System.Threading.Tasks;
 
 namespace Polokus.Core.Execution
 {
-    public class SignalManager : ISignalManager
+    public class SignalManager : BaseCallersManager, ISignalManager
     {
-        private Dictionary<string, IProcessStarter> _starters = new();
-        private Dictionary<string, INodeHandlerWaiter> _waiters = new();
-
-        public IWorkflow Workflow { get; }
+        public override IWorkflow Workflow { get; }
 
         public SignalManager(IWorkflow workflow)
         {
@@ -25,32 +22,11 @@ namespace Polokus.Core.Execution
             Workflow.PolokusMaster.EmitSignal(Workflow, signal, parameters);
         }
 
-        public IEnumerable<IProcessStarter> GetStarters()
+        private void RegisterSignalListener(INodeHandlerWaiter waiter, bool oneTime, Action? continuation = null)
         {
-            return _starters.Values;
-        }
+            AddWaiter(waiter.Id, waiter, continuation);
 
-        public IEnumerable<INodeHandlerWaiter> GetWaiters()
-        {
-            return _waiters.Values;
-        }
-
-        public bool IsAnyWaiting()
-        {
-            return _waiters.Any() || _starters.Any();
-        }
-
-        public bool IsWaiting(string listenerId)
-        {
-            return _waiters.Where(x => string.Equals(listenerId, x.Key)).Any()
-                || _starters.Where(x => string.Equals(listenerId, x.Key)).Any();
-        }
-
-        public void RegisterSignalListener(INodeHandlerWaiter waiter)
-        {
-            _waiters.Add(waiter.Id, waiter);
-
-            // one time event only
+            // one time event only | TODO: make it not ignoring one time
             EventHandler<Signal>? action = null;
             Workflow.PolokusMaster.Signal += action = (s, e) =>
             {
@@ -60,17 +36,22 @@ namespace Polokus.Core.Execution
 
                     // TODO: passing parameters to signal?
 
-                    _waiters.Remove(waiter.Id);
-                    waiter.HooksProvider?.OnCallerChanged(waiter.Id, nameof(CallerChangedType.WaiterRemoved));
-                    waiter.Invoke();
+                    if (!IsWaiterCancelled(waiter.Id))
+                    {
+                        waiter.Invoke();
+                        continuation?.Invoke();
+
+                        RemoveWaiter(waiter.Id);
+                        waiter.HooksProvider?.OnCallerChanged(waiter.Id, nameof(CallerChangedType.WaiterRemoved));
+                    }
                 }
             };
 
         }
 
-        public void RegisterSignalListener(IProcessStarter starter)
+        private void RegisterSignalListener(IProcessStarter starter)
         {
-            _starters.Add(starter.Id, starter);
+            AddStarter(starter.Id, starter);
             Workflow.PolokusMaster.Signal += (s, e) =>
             {
                 if (e.Name == starter.StartNode.Name)
@@ -79,6 +60,20 @@ namespace Polokus.Core.Execution
                     starter.Workflow.StartProcessInstance(starter.BpmnProcess, starter.StartNode, null);
                 }
             };
+        }
+
+        public override INodeHandlerWaiter RegisterWaiter(IProcessInstance pi, IFlowNode node, bool oneTime, Action? continuation = null)
+        {
+            var waiter = new NodeHandlerWaiter(pi, node);
+            RegisterSignalListener(waiter, oneTime, continuation);
+            return waiter;
+        }
+
+        public override IProcessStarter RegisterStarter(IBpmnProcess bpmnProcess, IFlowNode startNode)
+        {
+            var starter = new ProcessStarter(Workflow, bpmnProcess, startNode);
+            RegisterSignalListener(starter);
+            return starter;
         }
     }
 }

@@ -254,29 +254,30 @@ namespace Polokus.Core
                     if (startFlowNode.XmlElement.Items?.Any() ?? false)
                     {
                         var eventDefinition = startFlowNode.XmlElement.Items[0];
-                        if (eventDefinition is tTimerEventDefinition)
-                        {
-                            string timeDefinition = startFlowNode.Name;
-                            var processStarter = new ProcessStarter(workflow, startFlowNode.BpmnProcess, startNode);
-                            workflow.TimeManager.RegisterStarter(timeDefinition, processStarter);
-                        }
-                        else if (eventDefinition is tMessageEventDefinition)
-                        {
-                            var processStarter = new ProcessStarter(workflow, startFlowNode.BpmnProcess, startNode);
-                            workflow.MessageManager.RegisterMessageListener(processStarter);
-                        }
-                        else if (eventDefinition is tSignalEventDefinition)
-                        {
-                            var processStarter = new ProcessStarter(workflow, startFlowNode.BpmnProcess, startNode);
-                            workflow.SignalManager.RegisterSignalListener(processStarter);
-                        }
-
+                        var manager = GetManagerByType(workflow, eventDefinition);
+                        manager.RegisterStarter(startFlowNode.BpmnProcess, startNode);
                     }
 
                 }
 
             }
         }
+
+        private ICallersManager GetManagerByType(Workflow workflow, tEventDefinition def)
+        {
+            switch (def)
+            {
+                case tTimerEventDefinition ted:
+                    return workflow.TimeManager;
+                case tMessageEventDefinition med:
+                    return workflow.MessageManager;
+                case tSignalEventDefinition sed:
+                    return workflow.SignalManager;
+                default:
+                    throw new Exception("Not defined manager for this type.");
+            };
+        }
+
 
         public void EmitSignal(object? sender, string signal, string? parameters)
         {

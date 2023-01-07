@@ -12,28 +12,15 @@ using Polokus.Core.Helpers;
 
 namespace Polokus.Core.Execution
 {
-    public class TimeManager : ITimeManager
+    public class TimeManager : BaseCallersManager, ITimeManager
     {
         StdSchedulerFactory factory = new StdSchedulerFactory();
 
+        public override IWorkflow Workflow { get; }
 
-        public TimeManager()
+        public TimeManager(IWorkflow workflow)
         {
-        }
-
-        Dictionary<string, IProcessStarter> _starters = new();
-        Dictionary<string, INodeHandlerWaiter> _waiters = new();
-        Dictionary<string, CancellationTokenSource> _cancellationWaitersTokens = new();
-        private object _ctokenslock = new object();
-
-        public IEnumerable<IProcessStarter> GetStarters()
-        {
-            return _starters.Values;
-        }
-
-        public IEnumerable<INodeHandlerWaiter> GetWaiters()
-        {
-            return _waiters.Values;
+            Workflow = workflow;
         }
 
         public async void RegisterStarter(string timeString, IProcessStarter starter)
@@ -49,11 +36,13 @@ namespace Polokus.Core.Execution
             await scheduler.ScheduleJob(job, trigger);
             await scheduler.Start();
 
-            _starters.Add(starter.Id, starter);
+            AddStarter(starter.Id, starter);
             starter.HooksProvider?.OnCallerChanged(starter.Id, nameof(CallerChangedType.StarterStartedProcess));
         }
 
-        public async void RegisterWaiter(string timeString, INodeHandlerWaiter waiter, bool oneTime)
+        public async Task RegisterWaiterCrone(
+            string timeString, INodeHandlerWaiter waiter, bool oneTime,
+            Action? continuation = null)
         {
             IScheduler scheduler = await factory.GetScheduler();
 
@@ -61,81 +50,72 @@ namespace Polokus.Core.Execution
             job.JobDataMap.Add("OneTime", oneTime);
             job.JobDataMap.Add("Waiter", waiter);
             job.JobDataMap.Add("TimeManager", this);
+            job.JobDataMap.Add("Continuation", continuation);
 
             ITrigger trigger = TriggerBuilder.Create().WithCronSchedule(timeString).Build();
 
             await scheduler.ScheduleJob(job, trigger);
             await scheduler.Start();
 
-            _waiters.Add(waiter.Id, waiter);
+            AddWaiter(waiter.Id, waiter);
             waiter.HooksProvider?.OnCallerChanged(waiter.Id, nameof(CallerChangedType.WaiterInserted));
         }
 
-        public void RemoveWaiter(INodeHandlerWaiter waiter)
+        public void RegisterWaiterNotCrone(string timeString, INodeHandlerWaiter waiter, bool oneTime, Action? continuation = null)
         {
-            _waiters.Remove(waiter.Id);
-            waiter.HooksProvider?.OnCallerChanged(waiter.Id, nameof(CallerChangedType.WaiterRemoved));
-        }
-
-        public void RegisterWaiterNotCrone(string timeString, INodeHandlerWaiter waiter, Action afterInvokeAction)
-        {
-            
-            CancellationTokenSource ctSrc = new();
-            CancellationToken token = ctSrc.Token;
-            
             Task task = new Task(async () =>
             {
+                AddWaiter(waiter.Id, waiter, continuation);
                 int waitTime = TimeString.ParseToMiliseconds(timeString);
                 await Task.Delay(waitTime);
-                if (!token.IsCancellationRequested)
+                if (!IsWaiterCancelled(waiter.Id))
                 {
-                    waiter.Invoke(); // first invoke waiter, then 'kill anc cancell', otherwise for a little time there will be no active task, process will finish, and then another task will occur, error!
-                    afterInvokeAction();
+                    waiter.Invoke();
+                    continuation?.Invoke();
                 }
-                lock (_ctokenslock)
-                {
-                    if (_cancellationWaitersTokens.ContainsKey(waiter.Id))
-                    {
-                        _cancellationWaitersTokens.Remove(waiter.Id);
-                    }
-                }
-            });
 
-            _cancellationWaitersTokens.Add(waiter.Id, ctSrc);
-            task.Start();
-        }
-
-        public void CancellWaiter(string waiterId)
-        {
-            lock (_ctokenslock)
-            {
-                if (_cancellationWaitersTokens.ContainsKey(waiterId))
+                if (oneTime)
                 {
-                    var ctSrc = _cancellationWaitersTokens[waiterId];
-                    ctSrc.Cancel();
-                    _cancellationWaitersTokens.Remove(waiterId);
-                }
-            }
-        }
-
-        public bool IsWaiterCancelled(string waiterId)
-        {
-            lock (_ctokenslock)
-            {
-                if (_cancellationWaitersTokens.ContainsKey(waiterId))
-                {
-                    var ctSrc = _cancellationWaitersTokens[waiterId];
-                    return ctSrc.Token.IsCancellationRequested;
+                    RemoveWaiter(waiter.Id);
                 }
                 else
                 {
-                    return true;
+                    RegisterWaiterNotCrone(timeString, waiter, oneTime, continuation);
                 }
-            }
+            });
 
+            task.Start();
         }
 
+        public override INodeHandlerWaiter RegisterWaiter(
+            IProcessInstance pi, IFlowNode node, bool oneTime,
+            Action? continuation = null)
+        {
+            string timedef = node.Name;
+            if (TimeString.IsTimeString(timedef))
+            {
+                var waiter = new NodeHandlerWaiter(pi, node);
+                RegisterWaiterNotCrone(timedef, waiter, oneTime, continuation);
+                return waiter;
+            }
+            else if (TimeString.IsCroneString(timedef))
+            {
+                var waiter = new NodeHandlerWaiter(pi, node);
+                Task t = new Task(async () =>
+                    await RegisterWaiterCrone(timedef, waiter, true, continuation));
+                t.Start();
+                return waiter;
+            }
+            else
+            {
+                throw new Exception($"Invalid time string: {timedef} of node {node.Id}.");
+            }
+        }
 
+        public override IProcessStarter RegisterStarter(IBpmnProcess bpmnProcess, IFlowNode startNode)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public class WaiterJob : IJob
@@ -145,20 +125,22 @@ namespace Polokus.Core.Execution
             bool oneTime = (bool)context.JobDetail.JobDataMap["OneTime"];
             INodeHandlerWaiter waiter = (INodeHandlerWaiter)context.JobDetail.JobDataMap["Waiter"];
             TimeManager timeManager = (TimeManager)context.JobDetail.JobDataMap["TimeManager"];
+            Action? continuation = (Action?)context.JobDetail.JobDataMap["Continuation"];
 
             if (timeManager.IsWaiterCancelled(waiter.Id))
             {
-                timeManager.RemoveWaiter(waiter);
+                timeManager.RemoveWaiter(waiter.Id);
                 return;
             }
 
             if (oneTime)
             {
                 await context.Scheduler.DeleteJob(context.JobDetail.Key);
-                timeManager.RemoveWaiter(waiter);
+                timeManager.RemoveWaiter(waiter.Id);
             }
 
             waiter.Invoke();
+            continuation?.Invoke();
         }
     }
 

@@ -125,38 +125,24 @@ namespace Polokus.Core.NodeHandlers.Abstract
                         continue;
                     }
 
+                    Action continuation = () => this.ProcessInstance.ActiveTasksManager.CancellNodeHandler(this);
+
                     INodeHandlerWaiter? waiter = null;
                     switch (be.Type)
                     {
                         case BoundaryEventType.Timer:
-                            if (TimeString.IsTimeString(be.Name))
-                            {
-                                waiter = new NodeHandlerWaiter(this.ProcessInstance, be);
-                                this.ProcessInstance.Workflow.TimeManager.RegisterWaiterNotCrone(be.Name, waiter, () =>
-                                {
-                                    this.ProcessInstance.ActiveTasksManager.CancellNodeHandler(this);
-                                });
-                                boundaryEventsWaiters.Add(BoundaryEventType.Timer, waiter);
-                            }
-                            else if (TimeString.IsCroneString(be.Name))
-                            {
-                                waiter = new NodeHandlerWaiter(this.ProcessInstance, be);
-                                this.ProcessInstance.Workflow.TimeManager.RegisterWaiter(be.Name, waiter, true);
-                                boundaryEventsWaiters.Add(BoundaryEventType.Timer, waiter);
-                            }
-                            else
-                            {
-                                throw new Exception($"Invalid time string: {be.Name} of boundary event: {be.Id}");
-                            }
+                            waiter = this.ProcessInstance.Workflow.TimeManager
+                                .RegisterWaiter(ProcessInstance, be, true, continuation);
+                            boundaryEventsWaiters.Add(BoundaryEventType.Timer, waiter);
                             break;
                         case BoundaryEventType.Message:
-                            waiter = new NodeHandlerWaiter(this.ProcessInstance, be);
-                            this.ProcessInstance.Workflow.MessageManager.RegisterMessageListener(waiter);
+                            waiter = this.ProcessInstance.Workflow.MessageManager
+                                .RegisterWaiter(ProcessInstance, be, true, continuation);
                             boundaryEventsWaiters.Add(BoundaryEventType.Message, waiter);
                             break;
                         case BoundaryEventType.Signal:
-                            waiter = new NodeHandlerWaiter(this.ProcessInstance, be);
-                            this.ProcessInstance.Workflow.SignalManager.RegisterSignalListener(waiter);
+                            waiter = this.ProcessInstance.Workflow.SignalManager
+                                .RegisterWaiter(ProcessInstance, be, true, continuation);
                             boundaryEventsWaiters.Add(BoundaryEventType.Signal, waiter);
                             break;
                         default:
@@ -176,7 +162,7 @@ namespace Polokus.Core.NodeHandlers.Abstract
                     switch (waiterKV.Key)
                     {
                         case BoundaryEventType.Timer:
-                            this.ProcessInstance.Workflow.TimeManager.CancellWaiter(waiterKV.Value.Id);
+                            this.ProcessInstance.Workflow.TimeManager.RemoveWaiter(waiterKV.Value.Id);
                             break;
                         default:
                             throw new Exception("Undefined boundary type to remove waiter.");

@@ -3,7 +3,8 @@ using Polokus.Core.Interfaces;
 
 namespace Polokus.Core.Execution
 {
-    public class ProcessInstance : IProcessInstance
+    public class ProcessInstance : IProcessInstance,
+        IRestorable<ProcessInstanceSnapShot>, IDumpable<ProcessInstanceSnapShot>
     {
         public string Id { get; set; }
         public IWorkflow Workflow { get; }
@@ -18,13 +19,18 @@ namespace Polokus.Core.Execution
         public ICollection<IProcessInstance> ChildrenProcessInstances { get; }
             = new List<IProcessInstance>();
 
-        public ICollection<INodeHandlerWaiter> Waiters { get; }
-            = new List<INodeHandlerWaiter>();
+        public IEnumerable<INodeHandlerWaiter> Waiters
+        {
+            get
+            {return
+                this.Workflow.TimeManager.GetWaiters(Id); // todo
+            }
+        }
 
         public IDictionary<string, INodeHandler> AvailableNodeHandlers { get; set; }
             = new Dictionary<string, INodeHandler>();
 
-        public ICollection<string> FailedExecutionNodeIds { get; } = new List<string>();
+        public ICollection<string> FailedExecutionNodeIds { get; private set; } = new List<string>();
 
         public ProcessInstance(string id, IWorkflow workflow,
             IBpmnProcess bpmnProcess, IProcessInstance? parent = null)
@@ -193,6 +199,61 @@ namespace Polokus.Core.Execution
 
         }
 
+        public void Restore(IPolokusMaster master, ProcessInstanceSnapShot source)
+        {
+            var id = source.Id;
+            var wf = master.GetWorkflow(source.WorkflowId);
+            var bpmn = wf.BpmnWorkflow.BpmnProcesses.FirstOrDefault(x => x.Id == source.BpmnProcessId);
+
+            var pi = new ProcessInstance(id, wf, bpmn, null);
+
+            if (!string.IsNullOrEmpty(source.ParentProcessInstanceId))
+            {
+                pi.ParentProcessInstance = wf.GetProcessInstanceById(source.ParentProcessInstanceId);
+                pi.ParentProcessInstance?.ChildrenProcessInstances.Add(pi);
+            }
+
+            ((StatusManager)pi.StatusManager).Restore(master, source.Status);
+            pi.FailedExecutionNodeIds = source.FailedExecutionNodeIds;
+
+            // this creates nodehandlers, because they not exist
+            source.AciveNodes.ForEach(x => pi.GetNodeHandlerForNode(bpmn.GetNodeById(x)));
+
+            // restore waiters
+            foreach (var nodeId in source.IdsOfNodesThatHadWaiters)
+            {
+                var node = bpmn.GetNodeById(nodeId);
+                switch (node.RequireWaiter)
+                {
+                    case WaiterType.Timer:
+                        wf.TimeManager.RegisterWaiter(this, node, true); // TODO nie da sie przywracac wiecznych waiterow
+                        break;
+                    case WaiterType.Message:
+                        wf.MessageManager.RegisterWaiter(this, node, true);
+                        break;
+                    case WaiterType.Signal:
+                        wf.SignalManager.RegisterWaiter(this, node, true);
+                        break;
+                    default:
+                        throw new Exception("Not handled situation");
+                }
+            }
+        }
+
+        public ProcessInstanceSnapShot Dump()
+        {
+            return new ProcessInstanceSnapShot()
+            {
+                Id = this.Id,
+                WorkflowId = this.Workflow.Id,
+                BpmnProcessId = this.BpmnProcess.Id,
+                AciveNodes = this.ActiveTasksManager.Dump(),
+                Status = this.StatusManager.Status.ToString(),
+                FailedExecutionNodeIds = this.FailedExecutionNodeIds.ToArray(),
+                IdsOfNodesThatHadWaiters = this.Waiters.Select(x => x.NodeToCall.Id).ToArray(),
+                ParentProcessInstanceId = this.ParentProcessInstance?.Id ?? ""
+            };
+        }
     }
 
 }

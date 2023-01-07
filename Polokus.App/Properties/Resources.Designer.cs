@@ -103,6 +103,16 @@ namespace Polokus.App.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap BtnPause64 {
+            get {
+                object obj = ResourceManager.GetObject("BtnPause64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap BtnPlay64 {
             get {
                 object obj = ResourceManager.GetObject("BtnPlay64", resourceCulture);

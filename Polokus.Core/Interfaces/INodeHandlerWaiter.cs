@@ -10,4 +10,13 @@
         IHooksProvider? HooksProvider { get; }
         void Invoke();
     }
+
+    public enum WaiterType
+    {
+        None,
+        Timer,
+        Message,
+        Signal
+    }
+
 }

@@ -18,7 +18,7 @@ namespace Polokus.Core.Interfaces
 
 
         ICollection<IProcessInstance> ChildrenProcessInstances { get; }
-        ICollection<INodeHandlerWaiter> Waiters { get; }
+        IEnumerable<INodeHandlerWaiter> Waiters { get; }
         IDictionary<string,INodeHandler> AvailableNodeHandlers { get; }
         ICollection<string> FailedExecutionNodeIds { get; }
 

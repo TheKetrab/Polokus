@@ -22,14 +22,11 @@ namespace Polokus.Core.NodeHandlers.Special
         {
             if (caller is NodeHandlerWaiter w)
             {
-                ProcessInstance.Waiters.Remove(w);
                 return Task.FromResult(true);
             }
 
-            var waiter = new NodeHandlerWaiter(ProcessInstance, Node);
-            ProcessInstance.Waiters.Add(waiter);
-            ProcessInstance.Workflow.SignalManager
-                .RegisterSignalListener(waiter);
+            ProcessInstance.Workflow.SignalManager.RegisterWaiter(
+                ProcessInstance, Node, true);
 
             return Task.FromResult(false);
         }

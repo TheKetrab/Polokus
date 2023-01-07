@@ -17,7 +17,8 @@
         ICollection<ISequence> Outgoing { get; }
 
         ICollection<IBoundaryEvent> BoundaryEvents { get; }
-    }
 
+        WaiterType RequireWaiter { get; }
+    }
 
 }

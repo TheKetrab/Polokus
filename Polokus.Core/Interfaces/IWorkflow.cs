@@ -16,6 +16,7 @@ namespace Polokus.Core.Interfaces
         IScriptProvider ScriptProvider { get; }
         IPolokusMaster PolokusMaster { get; }
         INodeHandlerFactory NodeHandlerFactory { get; }
+        IHooksProvider? HooksProvider { get; }
 
         /// <summary>
         /// List of active instances of processes, defined in BpmnWorkflow.

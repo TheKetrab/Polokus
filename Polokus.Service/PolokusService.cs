@@ -10,7 +10,7 @@ using Topshelf;
 using Grpc.Core;
 using Grpc.Net.Client;
 using Polokus.Core.Remote;
-using Polokus.Core.Services.Remote;
+using Polokus.Core.Services;
 using Polokus.Service.Communication.Services;
 using Microsoft.AspNetCore.Hosting;
 using log4net;

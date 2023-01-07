@@ -10,20 +10,16 @@ using System.Threading.Tasks;
 
 namespace Polokus.Core.Execution
 {
-    public class MessageManager : IMessageManager
+    public class MessageManager : BaseCallersManager, IMessageManager
     {
         public int ListeningPort { get; }
 
-        private IDictionary<string, IProcessStarter> _starters
-            = new ConcurrentDictionary<string, IProcessStarter>();
-        private IDictionary<string, INodeHandlerWaiter> _waiters
-            = new ConcurrentDictionary<string, INodeHandlerWaiter>();
+        public override IWorkflow Workflow { get; }
 
-        private object _startersDictionaryLock = new object();
-        private object _waitersDictionaryLock = new object();
-
-        public MessageManager(int port)
+        public MessageManager(IWorkflow workflow, int port)
         {
+            Workflow = workflow;
+
             if (!HttpListener.IsSupported)
             {
                 throw new Exception("HttpListener is not supported");
@@ -32,66 +28,70 @@ namespace Polokus.Core.Execution
             ListeningPort = port;
         }
 
-        public void RegisterMessageListener(INodeHandlerWaiter waiter)
+        private async Task WaitForMessage(INodeHandlerWaiter waiter, bool oneTime, Action? continuation = null)
         {
-            Task t = new Task(async () => { await WaitForMessage(waiter); });
-            t.Start();
-        }
-
-        public void RegisterMessageListener(IProcessStarter starter)
-        {
-            Task t = new Task(async () => { await WaitForMessage(starter); });
-            t.Start(); // TODO: czy to nie dziala przypadkiem tylko raz?
-        }
-
-
-        private async Task WaitForMessage(INodeHandlerWaiter waiter)
-        {
-            using (var listener = new HttpListener())
+            bool waiting = true;
+            while (waiting)
             {
-                _waiters.Add(waiter.Id, waiter);
-                waiter.HooksProvider?.OnCallerChanged(waiter.Id, nameof(CallerChangedType.WaiterInserted));
+                using (var listener = new HttpListener())
+                {
+                    AddWaiter(waiter.Id, waiter);
+                    waiter.HooksProvider?.OnCallerChanged(waiter.Id, nameof(CallerChangedType.WaiterInserted));
 
-                listener.Prefixes.Add($"http://localhost:{ListeningPort}/{waiter.Id}/");
-                listener.Start();
+                    listener.Prefixes.Add($"http://localhost:{ListeningPort}/{waiter.Id}/");
+                    listener.Start();
 
-                var context = await listener.GetContextAsync();
+                    var context = await listener.GetContextAsync();
 
-                _waiters.Remove(waiter.Id);
-                waiter.HooksProvider?.OnCallerChanged(waiter.Id, nameof(CallerChangedType.WaiterRemoved));
+                    if (!IsWaiterCancelled(waiter.Id))
+                    {
+                        waiter.Invoke();
+                        continuation?.Invoke();
 
-                waiter.Invoke();
+                        if (oneTime)
+                        {
+                            RemoveWaiter(waiter.Id);
+                            waiter.HooksProvider?.OnCallerChanged(waiter.Id, nameof(CallerChangedType.WaiterRemoved));
+                            waiting = false;
+                        }
+                    }
+                    else
+                    {
+                        waiting = false;
+                    }
+                }
             }
         }
 
         private async Task WaitForMessage(IProcessStarter starter)
         {
-            using (var listener = new HttpListener())
+            bool waiting = true;
+            while (waiting)
             {
-                _starters.Add(starter.Id, starter);
-                starter.HooksProvider?.OnCallerChanged(starter.Id, nameof(CallerChangedType.StarterRegistered));
-
-                listener.Prefixes.Add($"http://localhost:{ListeningPort}/{starter.Id}/");
-                listener.Start();
-
-                var context = await listener.GetContextAsync();
-                starter.HooksProvider?.OnCallerChanged(starter.Id, nameof(CallerChangedType.StarterStartedProcess));
-
-                // TODO: czy to nie jest tak, ze jak raz starter wystartuje proces, to juz drugi raz nie umie?
-
-                string? parentProcessId = context.Request.QueryString["parent"];
-                if (parentProcessId != null)
+                using (var listener = new HttpListener())
                 {
-                    var processInstance = starter.Workflow.GetProcessInstanceById(parentProcessId)
-                        ?? throw new Exception($"Process instance with id {parentProcessId} doesn't exist.");
-                    var subProcessInstance = processInstance.CreateSubProcessInstance(starter.BpmnProcess);
-                    starter.Workflow.StartProcessInstance(subProcessInstance, starter.StartNode, null);
-                }
-                else
-                {
-                    starter.Workflow.StartProcessInstance(starter.BpmnProcess, starter.StartNode, null);
-                }
+                    AddStarter(starter.Id, starter);
+                    starter.HooksProvider?.OnCallerChanged(starter.Id, nameof(CallerChangedType.StarterRegistered));
 
+                    listener.Prefixes.Add($"http://localhost:{ListeningPort}/{starter.Id}/");
+                    listener.Start();
+
+                    var context = await listener.GetContextAsync();
+                    starter.HooksProvider?.OnCallerChanged(starter.Id, nameof(CallerChangedType.StarterStartedProcess));
+
+                    string? parentProcessId = context.Request.QueryString["parent"];
+                    if (parentProcessId != null)
+                    {
+                        var processInstance = starter.Workflow.GetProcessInstanceById(parentProcessId)
+                            ?? throw new Exception($"Process instance with id {parentProcessId} doesn't exist.");
+                        var subProcessInstance = processInstance.CreateSubProcessInstance(starter.BpmnProcess);
+                        starter.Workflow.StartProcessInstance(subProcessInstance, starter.StartNode, null);
+                    }
+                    else
+                    {
+                        starter.Workflow.StartProcessInstance(starter.BpmnProcess, starter.StartNode, null);
+                    }
+                }
             }
         }
 
@@ -125,25 +125,35 @@ namespace Polokus.Core.Execution
 
         }
 
-        public IEnumerable<IProcessStarter> GetStarters()
-        {
-            return _starters.Values;
-        }
-
-        public IEnumerable<INodeHandlerWaiter> GetWaiters()
-        {
-            return _waiters.Values;
-        }
-
-        public bool IsAnyWaiting()
-        {
-            return _waiters.Any() || _starters.Any();
-        }
-
         public bool IsWaiting(string listenerId)
         {
-            return _waiters.Where(x => string.Equals(listenerId, x.Key)).Any()
-                || _starters.Where(x => string.Equals(listenerId, x.Key)).Any();
+            return GetWaiters().Where(x => string.Equals(listenerId, x.Id)).Any()
+                || GetStarters().Where(x => string.Equals(listenerId, x.Id)).Any();
         }
+
+        public override INodeHandlerWaiter RegisterWaiter(IProcessInstance pi, IFlowNode node, bool oneTime, Action? continuation = null)
+        {
+            var waiter = new NodeHandlerWaiter(pi, node);
+            Task t = new Task(async () => 
+            {
+                await WaitForMessage(waiter, oneTime, continuation);
+            });
+            t.Start();
+
+            return waiter;
+        }
+
+        public override IProcessStarter RegisterStarter(IBpmnProcess bpmnProcess, IFlowNode startNode)
+        {
+            var starter = new ProcessStarter(Workflow, bpmnProcess, startNode);
+            Task t = new Task(async () => 
+            {
+                await WaitForMessage(starter);
+            });
+            t.Start();
+
+            return starter;
+        }
+
     }
 }

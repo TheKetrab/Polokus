@@ -8,14 +8,18 @@ using System.Threading.Tasks;
 
 namespace Polokus.Core.Execution
 {
-    public class StatusManager : IStatusManager
+    public class StatusManager : IStatusManager, IRestorable<string>
     {
         private ProcessInstance _pi;
 
-        public bool IsStarted { get; private set; }
-        public bool IsFinished { get; private set; }
-        public bool IsActive { get; private set; }
+        public bool IsStarted => !IS(ProcessStatus.Initialized);
+        public bool IsFinished => IS(ProcessStatus.Finished) || IS(ProcessStatus.Stopped);
+        public bool IsActive => IsStarted && !IsFinished;
 
+        private bool IS(ProcessStatus status)
+        {
+            return ((uint)_status & (uint)status) > 0;
+        }
 
         private ProcessStatus _status = ProcessStatus.Initialized;
         public ProcessStatus Status
@@ -50,13 +54,13 @@ namespace Polokus.Core.Execution
         public void Stop()
         {
             _pi.ActiveTasksManager.Stop();
+            // TODO: kill all tasks and waiters
             Status = ProcessStatus.Stopped;
-            IsActive = false;
         }
 
         public bool IsRunning()
         {
-            return IsActive && (_pi.ActiveTasksManager.AnyRunning() || _pi.Waiters.Any());
+            return _pi.ActiveTasksManager.AnyRunning() || _pi.Waiters.Any();
         }
 
         public void Begin(IFlowNode startNode)
@@ -67,7 +71,6 @@ namespace Polokus.Core.Execution
             }
 
             _beginTime = DateTime.Now;
-            IsActive = true;
             Status = ProcessStatus.Running;
             _pi.StartNewSequence(startNode, null);
         }
@@ -85,10 +88,13 @@ namespace Polokus.Core.Execution
                 throw new Exception("Unable to finish running process.");
             }
 
-            IsFinished = true;
             _finishTime = DateTime.Now;
             Status = ProcessStatus.Finished;
         }
 
+        public void Restore(IPolokusMaster master, string source)
+        {
+            _status = Enum.Parse<ProcessStatus>(source);
+        }
     }
 }

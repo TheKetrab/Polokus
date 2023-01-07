@@ -136,5 +136,25 @@ namespace Polokus.Core.Remote
 
             _serviceClient.PingListener(request);
         }
+
+        public void RaiseSignal(string wfId, string signal)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void StopProcessInstance(string wfId, string piId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void PauseProcessInstance(string wfId, string piId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ResumeProcessInstance(string wfId, string piId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

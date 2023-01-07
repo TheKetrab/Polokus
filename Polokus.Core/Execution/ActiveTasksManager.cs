@@ -16,7 +16,7 @@ namespace Polokus.Core.Execution
     /// Goal of this object is to manage currently working objects (eg. nodehandlers),
     /// add new workers, remove them or move responsibility for task to another object.
     /// </summary>
-    public class ActiveTasksManager
+    public class ActiveTasksManager : IDumpable<string[]>
     {
         private int _cnt = 0;
         private Dictionary<int, Tuple<CancellationTokenSource, INodeHandler>> ActiveTasks = new(); // taskId;<cts,worker>
@@ -121,6 +121,10 @@ namespace Polokus.Core.Execution
             return PausedNodeHandlers;
         }
 
+        public string[] Dump()
+        {
+            return ActiveTasks.Values.Select(x => x.Item2.Node.Id).ToArray();
+        }
 
     }
 }

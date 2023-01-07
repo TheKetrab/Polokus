@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Polokus.Core.Interfaces
 {
-    public interface ITimeManager : ICallersManager
+    public interface IDumpable<T>
     {
+        T Dump();
     }
 }

@@ -26,29 +26,13 @@ namespace Polokus.Core.NodeHandlers
         {
             if (caller is NodeHandlerWaiter w)
             {
-                ProcessInstance.Waiters.Remove(w);
                 return true;
             }
 
-            if (TimeString.IsTimeString(TimeDefinitions))
-            {
-                int waitTime = TimeString.ParseToMiliseconds(TimeDefinitions);
-                await Task.Delay(waitTime);
-                return true;
-            }
-            else if (TimeString.IsCroneString(TimeDefinitions))
-            {
-                var waiter = new NodeHandlerWaiter(ProcessInstance, this.Node);
-                ProcessInstance.Waiters.Add(waiter);
-                ProcessInstance.Workflow.TimeManager
-                    .RegisterWaiter(TimeDefinitions, waiter, true);
-
-                return false;
-            }
-            else
-            {
-                throw new Exception($"Invalid TimeString: {TimeDefinitions}");
-            }
+            this.ProcessInstance.Workflow.TimeManager
+                .RegisterWaiter(ProcessInstance, Node, true);
+            
+            return false;
         }
 
     }
