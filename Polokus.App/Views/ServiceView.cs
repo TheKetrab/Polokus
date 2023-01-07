@@ -423,7 +423,7 @@ namespace Polokus.App.Views
 
             var allNodesIds = _services.ProcessInstancesService.GetAllNodesIds(wfId, piId);
             var inactiveNodesIds = allNodesIds.Where(x => !activeNodesIds.Contains(x));
-
+            Thread.Sleep(100); // strage behaviour: without this colours were not set
             BpmnioClient.SetColours(chromiumWindow, activeNodesIds, inactiveNodesIds);
         }
 

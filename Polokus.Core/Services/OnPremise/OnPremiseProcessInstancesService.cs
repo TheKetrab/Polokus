@@ -20,8 +20,14 @@ namespace Polokus.Core.Services.OnPremise
 
         public IEnumerable<string> GetActiveNodesIds(string wfId, string piId)
         {
-            return GetProcessInstance(wfId,piId)
-                .ActiveTasksManager.GetNodeHandlers().Select(x => x.Node.Id);
+            var results = new List<string>();
+            
+            var pi = GetProcessInstance(wfId, piId);
+
+            results.AddRange(pi.ActiveTasksManager.GetNodeHandlers().Select(x => x.Node.Id));
+            results.AddRange(pi.Waiters.Select(x => x.NodeToCall.Id));
+
+            return results;
         }
 
         public IEnumerable<string> GetAllNodesIds(string wfId, string piId)
