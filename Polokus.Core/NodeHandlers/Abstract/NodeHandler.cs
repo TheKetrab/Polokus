@@ -130,26 +130,9 @@ namespace Polokus.Core.NodeHandlers.Abstract
                     Action continuation = () => this.ProcessInstance.ActiveTasksManager.CancellNodeHandler(this);
 
                     INodeHandlerWaiter? waiter = null;
-                    switch (be.Type)
-                    {
-                        case BoundaryEventType.Timer:
-                            waiter = this.ProcessInstance.Workflow.TimeManager
-                                .RegisterWaiter(ProcessInstance, be, true, continuation);
-                            boundaryEventsWaiters.Add(BoundaryEventType.Timer, waiter);
-                            break;
-                        case BoundaryEventType.Message:
-                            waiter = this.ProcessInstance.Workflow.MessageManager
-                                .RegisterWaiter(ProcessInstance, be, true, continuation);
-                            boundaryEventsWaiters.Add(BoundaryEventType.Message, waiter);
-                            break;
-                        case BoundaryEventType.Signal:
-                            waiter = this.ProcessInstance.Workflow.SignalManager
-                                .RegisterWaiter(ProcessInstance, be, true, continuation);
-                            boundaryEventsWaiters.Add(BoundaryEventType.Signal, waiter);
-                            break;
-                        default:
-                            throw new Exception("Undefined boundary event type.");
-                    }
+                    var manager = GetManagerByType(this.ProcessInstance.Workflow, be.Type);
+                    waiter = manager.RegisterWaiter(ProcessInstance, be, true, continuation);
+                    boundaryEventsWaiters.Add(be.Type, waiter);
                 }
 
             }
@@ -161,17 +144,25 @@ namespace Polokus.Core.NodeHandlers.Abstract
             {
                 foreach (var waiterKV in boundaryEventsWaiters)
                 {
-                    switch (waiterKV.Key)
-                    {
-                        case BoundaryEventType.Timer:
-                            this.ProcessInstance.Workflow.TimeManager.RemoveWaiter(waiterKV.Value.Id);
-                            break;
-                        default:
-                            throw new Exception("Undefined boundary type to remove waiter.");
-
-                    }
+                    var manager = GetManagerByType(this.ProcessInstance.Workflow, waiterKV.Key);
+                    manager.RemoveWaiter(waiterKV.Value.Id);
                 }
             }
+        }
+
+        private ICallersManager GetManagerByType(IWorkflow workflow, BoundaryEventType beType)
+        {
+            switch (beType)
+            {
+                case BoundaryEventType.Timer:
+                    return workflow.TimeManager;
+                case BoundaryEventType.Message:
+                    return workflow.MessageManager;
+                case BoundaryEventType.Signal:
+                    return workflow.SignalManager;
+                default:
+                    throw new Exception("Not defined manager for this type.");
+            };
         }
     }
 }
