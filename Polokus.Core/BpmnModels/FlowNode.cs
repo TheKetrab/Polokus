@@ -33,6 +33,7 @@ namespace Polokus.Core.Models
             BpmnProcess = bpmnProcess;
 
             RequireWaiter = WaiterType.None;
+            SetDetailedWaiterType();
         }
 
         protected void SetDetailedWaiterType()

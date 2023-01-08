@@ -244,8 +244,7 @@ namespace Polokus.Core.Execution
             ((StatusManager)pi.StatusManager).Restore(master, source.Status);
             pi.FailedExecutionNodeIds = source.FailedExecutionNodeIds;
 
-            // this creates nodehandlers, because they not exist
-            source.AciveNodes.ForEach(x => pi.GetNodeHandlerForNode(bpmn.GetNodeById(x)));
+            source.AciveNodes.ForEach(x => pi.StartNewSequence(bpmn.GetNodeById(x), null));
 
             // restore waiters
             foreach (var nodeId in source.IdsOfNodesThatHadWaiters)
@@ -254,7 +253,7 @@ namespace Polokus.Core.Execution
                 switch (node.RequireWaiter)
                 {
                     case WaiterType.Timer:
-                        wf.TimeManager.RegisterWaiter(this, node, true); // TODO nie da sie przywracac wiecznych waiterow
+                        wf.TimeManager.RegisterWaiter(this, node, true);
                         break;
                     case WaiterType.Message:
                         wf.MessageManager.RegisterWaiter(this, node, true);

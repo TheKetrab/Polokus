@@ -1,4 +1,5 @@
-﻿using Polokus.Core.Helpers;
+﻿using Polokus.Core.Execution;
+using Polokus.Core.Helpers;
 
 namespace Polokus.Core.Interfaces
 {
@@ -28,7 +29,10 @@ namespace Polokus.Core.Interfaces
         /// </summary>
         ICollection<IProcessInstance> History { get; }
 
-
+        /// <summary>
+        /// Collection of paused processes, with information to restore them.
+        /// </summary>
+        IDictionary<IProcessInstance, ProcessInstanceSnapShot> Paused { get; }
 
         /// <summary>
         /// This method returns instance of BPMN process by id (active or inactive) or null if not found.

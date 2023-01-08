@@ -27,8 +27,8 @@ namespace Polokus.Core.Execution
 
         public ICollection<IProcessInstance> History { get; } = new List<IProcessInstance>();
         public ICollection<IProcessInstance> ProcessInstances { get; } = new List<IProcessInstance>();
-
-
+        public IDictionary<IProcessInstance, ProcessInstanceSnapShot> Paused { get; }
+            = new Dictionary<IProcessInstance, ProcessInstanceSnapShot>();
 
         public IPolokusMaster PolokusMaster { get; }
         public IBpmnWorkflow BpmnWorkflow { get; }

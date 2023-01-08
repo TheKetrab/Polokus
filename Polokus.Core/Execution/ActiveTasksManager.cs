@@ -81,34 +81,12 @@ namespace Polokus.Core.Execution
             ProcessInstance.HooksProvider?.OnTasksChanged(ProcessInstance.Workflow.Id, ProcessInstance.Id);
         }
 
-
-        public void Pause()
-        {
-            PausedNodeHandlers = ActiveTasks.Values.Select(x => x.Item2.Clone()).ToList();
-            ActiveTasks.Values.ForEach(x => x.Item1.Cancel(true));
-            ActiveTasks.Clear();
-            ProcessInstance.AvailableNodeHandlers.Clear();
-            ProcessInstance.HooksProvider?.OnTasksChanged(ProcessInstance.Workflow.Id, ProcessInstance.Id);
-        }
         public void Stop()
         {
             ActiveTasks.Values.ForEach(x => x.Item1.Cancel(true));
             ActiveTasks.Clear();
             ProcessInstance.AvailableNodeHandlers.Clear();
             ProcessInstance.HooksProvider?.OnTasksChanged(ProcessInstance.Workflow.Id, ProcessInstance.Id);
-        }
-        public void Resume()
-        {
-            foreach (var nh in PausedNodeHandlers)
-            {
-                ProcessInstance.AvailableNodeHandlers.Add(nh.Node.Name, nh);
-            }
-            foreach (var x in PausedNodeHandlers)
-            {
-                ProcessInstance.StartNewSequence(x.Node, null);
-            }
-
-            PausedNodeHandlers.Clear();
         }
 
         public IEnumerable<INodeHandler> GetNodeHandlers()

@@ -49,8 +49,13 @@ namespace Polokus.Core.Execution
 
         public void Pause()
         {
-            _pi.ActiveTasksManager.Pause();
+            var snapshot = _pi.Dump();
+
+            _pi.ActiveTasksManager.Stop();
+            _pi.KillWaiters();
             Status = ProcessStatus.Paused;
+
+            _pi.Workflow.Paused.Add(_pi, snapshot);
         }
 
         public void Stop()
@@ -62,7 +67,7 @@ namespace Polokus.Core.Execution
 
         public bool IsRunning()
         {
-            return _pi.ActiveTasksManager.AnyRunning() || _pi.Waiters.Any();
+            return _pi.ActiveTasksManager.AnyRunning() || _pi.Waiters.Any() || _pi.StatusManager.IsPaused;
         }
 
         public void Begin(IFlowNode startNode)
@@ -79,7 +84,10 @@ namespace Polokus.Core.Execution
 
         public void Resume()
         {
-            _pi.ActiveTasksManager.Resume();
+            var snapshot = _pi.Workflow.Paused[_pi];
+            _pi.Workflow.Paused.Remove(_pi);
+
+            _pi.Restore(_pi.Workflow.PolokusMaster, snapshot);
             Status = ProcessStatus.Running;
         }
 

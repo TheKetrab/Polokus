@@ -60,7 +60,6 @@ namespace Polokus.Core.Services.OnPremise
                     Status = x.StatusManager.Status.ToString()
                 }));
 
-
             return result;
         }
 
