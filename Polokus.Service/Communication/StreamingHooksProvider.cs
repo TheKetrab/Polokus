@@ -148,6 +148,21 @@ namespace Polokus.Service.Communication
             _stream.WriteAsync(reply);
         }
 
+        public void OnAwaitingTokenCreated(string wfId, string piId, string nodeId, string token)
+        {
+            var reply = new HookReply()
+            {
+                Type = HookType.OnAwaitingTokenCreated,
+                WfId = wfId,
+                PiId = piId,
+                NodeId = nodeId,
+            };
+
+            reply.Args.Add(token);
+
+            _stream.WriteAsync(reply);
+        }
+
         private string SaveString(object? o)
         {
             return o?.ToString() ?? "null";

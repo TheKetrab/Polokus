@@ -124,6 +124,12 @@ namespace Polokus.Core.Hooks
             _hooksProviders.ForEach(x => ExecuteAction(x.WaitFor,
                 () => x.Object.OnCallerChanged(callerId, callerChangedType)));
         }
+
+        public void OnAwaitingTokenCreated(string wfId, string piId, string nodeId, string token) 
+        {
+            _hooksProviders.ForEach(x => ExecuteAction(x.WaitFor,
+                () => x.Object.OnAwaitingTokenCreated(wfId, piId, nodeId, token)));
+        }
         #endregion
     }
 }

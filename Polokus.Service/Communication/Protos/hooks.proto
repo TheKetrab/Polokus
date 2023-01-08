@@ -21,6 +21,7 @@ enum HookType {
   OnTimeout = 7;
   OnProcessFinished = 8;
   OnCallerChanged = 9;
+  OnAwaitingTokenCreated = 10;
 }
 
 message HookReply {

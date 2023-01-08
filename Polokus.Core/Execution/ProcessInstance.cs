@@ -54,6 +54,8 @@ namespace Polokus.Core.Execution
             = new Dictionary<string, INodeHandler>();
 
         public ICollection<string> FailedExecutionNodeIds { get; private set; } = new List<string>();
+        public ICollection<string> AwaitingTokens { get; } = new List<string>();
+
 
         public ProcessInstance(string id, IWorkflow workflow,
             IBpmnProcess bpmnProcess, IProcessInstance? parent = null)
@@ -280,6 +282,14 @@ namespace Polokus.Core.Execution
                 IdsOfNodesThatHadWaiters = this.Waiters.Select(x => x.NodeToCall.Id).ToArray(),
                 ParentProcessInstanceId = this.ParentProcessInstance?.Id ?? ""
             };
+        }
+
+        public void RemoveAwaitingToken(string token)
+        {
+            if (AwaitingTokens.Contains(token))
+            {
+                AwaitingTokens.Remove(token);
+            }
         }
     }
 

@@ -14,5 +14,6 @@ namespace Polokus.Core.Services.Interfaces
         public Type GetNodeXmlType(string wfId, string piId, string nodeId);
         public string GetTotalTime(string wfId, string piId);
         public void SetUserDecisionForUserTaskNH(string wfId, string piId, string nodeId, string answer);
+        public void RemoveAwaitingToken(string wfId, string piId, string token);
     }
 }

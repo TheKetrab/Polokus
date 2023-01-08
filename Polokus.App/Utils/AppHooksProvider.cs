@@ -55,24 +55,6 @@ namespace Polokus.App.Utils
             //Thread.Sleep(500); // TODO
 
 
-            Type nodeXmlType = _services.ProcessInstancesService.GetNodeXmlType(wfId, piId, nodeId);
-            if (nodeXmlType == typeof(tManualTask))
-            {
-                string nodeName = _services.ProcessInstancesService.GetNodeName(wfId, piId, nodeId);
-                MessageBox.Show($"Waiting for manual task: {nodeName}");
-            }
-            else if (nodeXmlType == typeof(tUserTask))
-            {
-                string nodeName = _services.ProcessInstancesService.GetNodeName(wfId, piId, nodeId);
-
-                var dialog = new UserTaskDialog(nodeName);
-                if (dialog.ShowDialog() == DialogResult.OK && dialog.Answer != null)
-                {
-                    _services.ProcessInstancesService
-                        .SetUserDecisionForUserTaskNH(wfId, piId, nodeId, dialog.Answer);
-                }
-
-            }
 
         }
 
@@ -151,5 +133,27 @@ namespace Polokus.App.Utils
             return string.Equals(wfId, _serviceView.ActiveWorkflow);
         }
 
+        public void OnAwaitingTokenCreated(string wfId, string piId, string nodeId, string token)
+        {
+            Type nodeXmlType = _services.ProcessInstancesService.GetNodeXmlType(wfId, piId, nodeId);
+            if (nodeXmlType == typeof(tManualTask))
+            {
+                string nodeName = _services.ProcessInstancesService.GetNodeName(wfId, piId, nodeId);
+                MessageBox.Show($"Waiting for manual task: {nodeName}");
+                _services.ProcessInstancesService.RemoveAwaitingToken(wfId,piId,token);
+            }
+            else if (nodeXmlType == typeof(tUserTask))
+            {
+                string nodeName = _services.ProcessInstancesService.GetNodeName(wfId, piId, nodeId);
+
+                var dialog = new UserTaskDialog(nodeName);
+                if (dialog.ShowDialog() == DialogResult.OK && dialog.Answer != null)
+                {
+                    _services.ProcessInstancesService
+                        .SetUserDecisionForUserTaskNH(wfId, piId, nodeId, dialog.Answer);
+                }
+                _services.ProcessInstancesService.RemoveAwaitingToken(wfId, piId, token);
+            }
+        }
     }
 }

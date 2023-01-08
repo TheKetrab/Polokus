@@ -18,11 +18,20 @@ namespace Polokus.Core.NodeHandlers
         {
         }
 
-        public override Task Action(INodeCaller? caller)
+        public override async Task Action(INodeCaller? caller)
         {
-            Console.WriteLine($"Waiting for manual task: {Node.Name}. Press enter.");
-            Console.ReadLine();
-            return Task.CompletedTask;
+            if (Master.ClientConnected)
+            {
+                string token = AwaitingTokensHelper.CreateAwaitingToken(
+                    Workflow.Id, ProcessInstance.Id, Node.Id);
+
+                ProcessInstance.AwaitingTokens.Add(token);
+                Master.HooksManager.OnAwaitingTokenCreated(Workflow.Id, ProcessInstance.Id, Node.Id, token);
+                while (Master.ClientConnected && ProcessInstance.AwaitingTokens.Contains(token))
+                {
+                    await Task.Delay(100);
+                }
+            }
         }
     }
 }

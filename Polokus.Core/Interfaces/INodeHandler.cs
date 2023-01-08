@@ -20,6 +20,8 @@ namespace Polokus.Core.Interfaces
         IFlowNode Node { get; }
 
         IProcessInstance ProcessInstance { get; }
+        IWorkflow Workflow { get; }
+        IPolokusMaster Master { get; }
 
         CancellationToken CancellationToken { get; set; }
 

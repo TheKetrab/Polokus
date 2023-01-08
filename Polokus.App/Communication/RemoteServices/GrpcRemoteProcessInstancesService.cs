@@ -82,6 +82,18 @@ namespace Polokus.Core.Remote
             return reply.Time;
         }
 
+        public void RemoveAwaitingToken(string wfId, string piId, string token)
+        {
+            var request = new RemoveAwaitingTokenRequest()
+            {
+                WfId = wfId,
+                PiId = piId,
+                Token = token
+            };
+
+            _serviceClient.RemoveAwaitingToken(request);
+        }
+
         public void SetUserDecisionForUserTaskNH(string wfId, string piId, string nodeId, string answer)
         {
             var request = new SetUserDecisionRequest()
@@ -94,6 +106,7 @@ namespace Polokus.Core.Remote
 
             _serviceClient.SetUserDecisionForUserTaskNH(request);
         }
+
 
     }
 }

@@ -19,6 +19,8 @@ namespace Polokus.Core.NodeHandlers.Abstract
         where T : tFlowNode
     {
         public IProcessInstance ProcessInstance { get; set; }
+        public IWorkflow Workflow => ProcessInstance.Workflow;
+        public IPolokusMaster Master => Workflow.PolokusMaster;
         public FlowNode<T> TypedNode { get; }
         public IFlowNode Node => TypedNode;
         public CancellationToken CancellationToken { get; set; }

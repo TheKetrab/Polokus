@@ -65,6 +65,12 @@ namespace Polokus.Core.Services.OnPremise
             }
         }
 
+        public void RemoveAwaitingToken(string wfId, string piId, string token)
+        {
+            var pi = GetProcessInstance(wfId, piId);
+            pi.RemoveAwaitingToken(token);
+        }
+
         private ProcessInstance GetProcessInstance(string wfId, string piId)
         {
             return (ProcessInstance)_polokus.GetWorkflow(wfId).GetProcessInstanceById(piId);

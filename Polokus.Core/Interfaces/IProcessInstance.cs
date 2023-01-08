@@ -21,11 +21,13 @@ namespace Polokus.Core.Interfaces
         IEnumerable<INodeHandlerWaiter> Waiters { get; }
         IDictionary<string,INodeHandler> AvailableNodeHandlers { get; }
         ICollection<string> FailedExecutionNodeIds { get; }
+        ICollection<string> AwaitingTokens { get; }
 
 
         bool ExistsAnotherTaskAbleToCallTarget(IFlowNode target, List<string> callers);
         void StartNewSequence(IFlowNode firstNode, INodeCaller? caller);
         IProcessInstance CreateSubProcessInstance(IBpmnProcess bpmnProcess);
+        void RemoveAwaitingToken(string token);
 
         void Log(string info, Logger.MsgType type);
     }

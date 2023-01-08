@@ -13,6 +13,7 @@ service RemoteProcessInstanceService {
   rpc GetNodeXmlType (GetNodeXmlTypeRequest) returns (GetNodeXmlTypeReply);
   rpc GetTotalTime (GetTotalTimeRequest) returns (GetTotalTimeReply);
   rpc SetUserDecisionForUserTaskNH (SetUserDecisionRequest) returns (Empty);
+  rpc RemoveAwaitingToken (RemoveAwaitingTokenRequest) returns (Empty);
 }
 
 
@@ -68,4 +69,10 @@ message SetUserDecisionRequest {
   string piId = 2;
   string nodeId = 3;
   string answer = 4;
+}
+
+message RemoveAwaitingTokenRequest {
+  string wfId = 1;
+  string piId = 2;
+  string token = 3;
 }

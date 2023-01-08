@@ -19,5 +19,6 @@ namespace Polokus.Core.Hooks
         public virtual void OnTimeout(string wfId, string piId) { }
         public virtual void OnProcessFinished(string wfId, string piId, string result) { }
         public virtual void OnCallerChanged(string callerId, string callerChangedType) { }
+        public virtual void OnAwaitingTokenCreated(string wfId, string piId, string nodeId, string token) { }
     }
 }

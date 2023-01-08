@@ -83,5 +83,11 @@ namespace Polokus.Service.Communication.Services
             return Task.FromResult(new Empty());
         }
 
+        public override Task<Empty> RemoveAwaitingToken(RemoveAwaitingTokenRequest request, ServerCallContext context)
+        {
+            _servicesProvider.ProcessInstancesService.RemoveAwaitingToken(request.WfId, request.PiId, request.Token);
+            return Task.FromResult(new Empty());
+        }
+
     }
 }

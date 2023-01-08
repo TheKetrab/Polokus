@@ -17,5 +17,6 @@ namespace Polokus.Core.Interfaces
         void OnTimeout(string wfId, string piId);
         void OnProcessFinished(string wfId, string piId, string result);
         void OnCallerChanged(string callerId, string callerChangedType);
+        void OnAwaitingTokenCreated(string wfId, string piId, string nodeId, string token);
     }
 }
