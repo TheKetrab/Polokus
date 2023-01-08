@@ -65,12 +65,13 @@ namespace Polokus.Core.Execution
 
         private async Task WaitForMessage(IProcessStarter starter)
         {
+            AddStarter(starter.Id, starter);
+
             bool waiting = true;
             while (waiting)
             {
                 using (var listener = new HttpListener())
                 {
-                    AddStarter(starter.Id, starter);
                     starter.HooksProvider?.OnCallerChanged(starter.Id, nameof(CallerChangedType.StarterRegistered));
 
                     listener.Prefixes.Add($"http://localhost:{ListeningPort}/{starter.Id}/");

@@ -24,6 +24,9 @@ namespace Polokus.Core.Services.OnPremise
             
             var pi = GetProcessInstance(wfId, piId);
 
+            results.AddRange(
+                pi.ChildrenProcessInstances.SelectMany(x => GetActiveNodesIds(wfId, x.Id)));
+
             results.AddRange(pi.ActiveTasksManager.GetNodeHandlers().Select(x => x.Node.Id));
             results.AddRange(pi.Waiters.Select(x => x.NodeToCall.Id));
 
