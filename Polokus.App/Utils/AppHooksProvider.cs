@@ -118,7 +118,7 @@ namespace Polokus.App.Utils
 
         public void OnCallerChanged(string callerId, string callerChangedType)
         {
-            var wfId = CallersIds.GetWorkflowIdFromCaller(callerId);
+            var wfId = EncodingIds.GetWorkflowIdFromCaller(callerId);
             if (!IsWorkflowActive(wfId))
             {
                 return;

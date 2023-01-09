@@ -9,10 +9,11 @@ using System.Threading.Tasks;
 
 namespace Polokus.Core.Helpers
 {
-    public static class CallersIds
+    public static class EncodingIds
     {
         const string WaiterPattern = @"Waiter_\((.*)\)_\((.*)\)_\((.*)\)_\((.*)\)";
         const string StarterPattern = @"Starter_\((.*)\)_\((.*)\)_\((.*)\)";
+        const string StatePattern = @"State_\((.*)\)_\((.*)\)";
 
         public static string GetStarterId(string workflowId, string bpmnProcessId, string flowNodeId)
         {
@@ -88,6 +89,21 @@ namespace Polokus.Core.Helpers
             }
 
             throw new Exception("Not found");
+        }
+
+        public static string GetStateString(string wfId, string piId)
+        {
+            return $"State_({wfId})_({piId})";
+        }
+
+        public static string GetWorkflowIdFromStateString(string stateString)
+        {
+            return GetGroup(stateString, StatePattern, 1);
+        }
+
+        public static string GetProcessInstanceIdFromStateString(string stateString)
+        {
+            return GetGroup(stateString, StatePattern, 2);
         }
     }
 }

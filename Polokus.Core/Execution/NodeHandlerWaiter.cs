@@ -25,7 +25,7 @@ namespace Polokus.Core.Execution
         {
             ProcessInstance = processInstance;
             NodeToCall = nodeToCall;
-            Id = CallersIds.GetWaiterId(
+            Id = EncodingIds.GetWaiterId(
                 ProcessInstance.Workflow.Id, ProcessInstance.Id,
                 ProcessInstance.BpmnProcess.Id, NodeToCall.Id);
 

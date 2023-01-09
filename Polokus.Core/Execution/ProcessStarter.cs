@@ -23,7 +23,7 @@ namespace Polokus.Core.Execution
             Workflow = workflow;
             BpmnProcess = bpmnProcess;
             StartNode = startNode;
-            Id = CallersIds.GetStarterId(Workflow.Id, BpmnProcess.Id, StartNode.Id);
+            Id = EncodingIds.GetStarterId(Workflow.Id, BpmnProcess.Id, StartNode.Id);
         }
     }
 }
