@@ -9,6 +9,7 @@ using Polokus.Core.Services.Remote;
 using Polokus.Core;
 using Polokus.Core.Services.Interfaces;
 using Grpc.Core;
+using Polokus.App.Views;
 
 namespace Polokus.App
 {
@@ -17,6 +18,7 @@ namespace Polokus.App
         public static MainWindow MainWindow;
         public static IServicesProvider SP;
         public static GrpcChannel? GrpcChannel;
+        public static bool TunnelWorks = false;
 
         public enum AppMode
         {
@@ -146,11 +148,24 @@ namespace Polokus.App
 
 
             ApplicationMode = AppMode.Remote;
+
+            // send info that we are connected (once per sec)
+            var timer = new System.Timers.Timer(500);
+            timer.Elapsed += (s, e) => 
+            {
+                if (!TunnelWorks) {
+                    // create another tunnel
+                    ServiceView.SV?.RegisterAppHooksProviderRemote();
+                }
+                SP.PolokusService.SetClientConnected(); 
+            };
+            timer.AutoReset = true;
+            timer.Enabled = true;
         }
 
         static void RegisterLocalPolokus()
         {
-            PolokusMaster polokus = new PolokusMaster();
+            PolokusMaster polokus = new PolokusMaster(true);
             SP = new OnPremiseServicesProvider(polokus);
 
             ApplicationMode = AppMode.Local;

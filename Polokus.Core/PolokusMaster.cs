@@ -99,10 +99,11 @@ namespace Polokus.Core
             }
         }
 
-        public bool ClientConnected { get; } = true; // TODO
+        public ConnectionManager ConnectionManager { get; }
+        public bool ClientConnected => ConnectionManager.ClientConnected;
 
 
-        public PolokusMaster()
+        public PolokusMaster(bool isGUIAppManaged = false)
         {
             HooksManager = new HooksManager(this);
             Externals = ExternalsManager.TryLoadExternals("./externals.json");
@@ -135,6 +136,8 @@ namespace Polokus.Core
                 }
 
             }
+
+            ConnectionManager = new ConnectionManager(isGUIAppManaged);
 
             StateSerializerManager = new StateSerializerManager(this);
             StateSerializerHooks stateSerializer = new StateSerializerHooks(this);

@@ -36,5 +36,10 @@ namespace Polokus.Core.Services.OnPremise
         {
             _polokus.HooksManager.RegisterHooksProvider(hooksProvider);
         }
+
+        public void SetClientConnected()
+        {
+            _polokus.ConnectionManager.SetHaveConnection();
+        }
     }
 }

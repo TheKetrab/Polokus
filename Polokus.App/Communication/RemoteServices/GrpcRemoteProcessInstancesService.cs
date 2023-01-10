@@ -5,6 +5,7 @@ using RemoteServices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -66,8 +67,11 @@ namespace Polokus.Core.Remote
             };
 
             var reply = _serviceClient.GetNodeXmlType(request);
-            // TODO: type from reply.TypeName
-            return typeof(string);
+
+            Assembly assem = typeof(PolokusMaster).Assembly;
+            var type = assem.GetType(reply.TypeName);
+
+            return type;
         }
 
         public string GetTotalTime(string wfId, string piId)

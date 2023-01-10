@@ -25,9 +25,10 @@ namespace Polokus.App.Views
         public ChromiumWindow chromiumWindow;
 
         public IServicesProvider _services;
+        public static ServiceView? SV; // TODO przerobic to
 
 
-        private void RegisterAppHooksProviderRemote()
+        public void RegisterAppHooksProviderRemote()
         {
             Task.Run(async () =>
             {
@@ -36,11 +37,14 @@ namespace Polokus.App.Views
                 using (var call = hooksClient.WaitForEvents(new Empty()))
                 {
                     CancellationToken ct = new();
+                    Program.TunnelWorks = true;
                     while (await call.ResponseStream.MoveNext(ct))
                     {
                         var current = call.ResponseStream.Current;
                         CallAppHooksProvider(appHooksProvider, current);
                     }
+                    Program.TunnelWorks = false;
+                    Console.WriteLine("END");
                 }
             });
         }
@@ -64,6 +68,8 @@ namespace Polokus.App.Views
 
         public ServiceView(MainWindow mainWindow)
         {
+            SV = this;
+
             _mainWindow = mainWindow;
             InitializeComponent();
 
@@ -572,6 +578,11 @@ namespace Polokus.App.Views
                 case HookType.BeforeExecuteNode:
                     hooksProvider.BeforeExecuteNode(reply.WfId, reply.PiId, reply.NodeId, int.Parse(reply.Args[0]), FromSaveString(reply.Args[1]));
                     break;
+                case HookType.OnAwaitingTokenCreated:
+                    hooksProvider.OnAwaitingTokenCreated(reply.WfId, reply.PiId, reply.NodeId, reply.Args[0]);
+                    break;
+                default:
+                    throw new Exception($"Unknown HookType: {reply.Type}");
             }
 
             

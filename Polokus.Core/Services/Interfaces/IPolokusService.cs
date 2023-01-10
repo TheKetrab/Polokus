@@ -13,5 +13,6 @@ namespace Polokus.Core.Services.Interfaces
         public IEnumerable<string> GetWorkflowsIds();
         public void RegisterHooksProvider(IHooksProvider hooksProvider);
         public void DeregisterHooksProvider(IHooksProvider hooksProvider);
+        public void SetClientConnected();
     }
 }

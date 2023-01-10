@@ -19,11 +19,12 @@ namespace Polokus.Service.Communication.Services
         public override async Task WaitForEvents(Empty request,
             IServerStreamWriter<HookReply> responseStream, ServerCallContext context)
         {
+            PolokusService.Proxy(request, context);
+
             var streamingHooksProvider = new StreamingHooksProvider(responseStream);
             PolokusService.Master.HooksManager.RegisterHooksProvider(streamingHooksProvider);
 
-            while(true)
-            //while (PolokusService.Master.ClientConnected)
+            while (PolokusService.Master.ClientConnected)
             {
                 await Task.Delay(1000);
             }

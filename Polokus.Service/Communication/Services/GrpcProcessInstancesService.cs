@@ -23,6 +23,8 @@ namespace Polokus.Service.Communication.Services
 
         public override Task<GetActiveNodesIdsReply> GetActiveNodesIds(GetActiveNodesIdsRequest request, ServerCallContext context)
         {
+            PolokusService.Proxy(request, context);
+
             var ids = _servicesProvider.ProcessInstancesService.GetActiveNodesIds(request.WfId, request.PiId);
 
             var reply = new GetActiveNodesIdsReply();
@@ -33,6 +35,8 @@ namespace Polokus.Service.Communication.Services
 
         public override Task<GetAllNodesIdsReply> GetAllNodesIds(GetAllNodesIdsRequest request, ServerCallContext context)
         {
+            PolokusService.Proxy(request, context);
+
             var ids = _servicesProvider.ProcessInstancesService.GetAllNodesIds(request.WfId, request.PiId);
 
             var reply = new GetAllNodesIdsReply();
@@ -43,6 +47,8 @@ namespace Polokus.Service.Communication.Services
 
         public override Task<GetNodeNameReply> GetNodeName(GetNodeNameRequest request, ServerCallContext context)
         {
+            PolokusService.Proxy(request, context);
+
             var name = _servicesProvider.ProcessInstancesService.GetNodeName(request.WfId, request.PiId, request.NodeId);
 
             var reply = new GetNodeNameReply()
@@ -55,6 +61,8 @@ namespace Polokus.Service.Communication.Services
 
         public override Task<GetNodeXmlTypeReply> GetNodeXmlType(GetNodeXmlTypeRequest request, ServerCallContext context)
         {
+            PolokusService.Proxy(request, context);
+
             var type = _servicesProvider.ProcessInstancesService.GetNodeXmlType(request.WfId, request.PiId, request.NodeId);
 
             var reply = new GetNodeXmlTypeReply()
@@ -67,6 +75,8 @@ namespace Polokus.Service.Communication.Services
 
         public override Task<GetTotalTimeReply> GetTotalTime(GetTotalTimeRequest request, ServerCallContext context)
         {
+            PolokusService.Proxy(request, context);
+
             var time = _servicesProvider.ProcessInstancesService.GetTotalTime(request.WfId, request.PiId);
 
             var reply = new GetTotalTimeReply()
@@ -79,12 +89,16 @@ namespace Polokus.Service.Communication.Services
 
         public override Task<Empty> SetUserDecisionForUserTaskNH(SetUserDecisionRequest request, ServerCallContext context)
         {
+            PolokusService.Proxy(request, context);
+
             _servicesProvider.ProcessInstancesService.SetUserDecisionForUserTaskNH(request.WfId, request.PiId, request.NodeId, request.Answer);
             return Task.FromResult(new Empty());
         }
 
         public override Task<Empty> RemoveAwaitingToken(RemoveAwaitingTokenRequest request, ServerCallContext context)
         {
+            PolokusService.Proxy(request, context);
+
             _servicesProvider.ProcessInstancesService.RemoveAwaitingToken(request.WfId, request.PiId, request.Token);
             return Task.FromResult(new Empty());
         }

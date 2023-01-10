@@ -49,5 +49,11 @@ namespace Polokus.Core.Remote
         {
             // TODO
         }
+
+        public void SetClientConnected()
+        {
+            var request = new Empty();
+            _serviceClient.SetClientConnected(request);
+        }
     }
 }

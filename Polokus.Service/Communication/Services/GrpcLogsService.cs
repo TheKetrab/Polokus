@@ -24,6 +24,8 @@ namespace Polokus.Service.Communication.Services
 
         public override Task<GetMessagesReply> GetMessages(GetMessagesRequest request, ServerCallContext context)
         {
+            PolokusService.Proxy(request, context);
+
             var messages = _servicesProvider.LogsService.GetMessages(request.WfId, request.PiId);
 
             var msgreply = messages.Select(x => new MsgReply()
@@ -40,6 +42,8 @@ namespace Polokus.Service.Communication.Services
 
         public override Task<Empty> Log(LogRequest request, ServerCallContext context)
         {
+            PolokusService.Proxy(request, context);
+
             var msgType = (Logger.MsgType)Enum.Parse(typeof(Logger.MsgType), request.MsgType);
             _servicesProvider.LogsService.Log(request.GlobalPiId, msgType, request.MsgInfo);
             return Task.FromResult(new Empty());

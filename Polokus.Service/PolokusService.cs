@@ -24,6 +24,11 @@ namespace Polokus.Service
 
         private static readonly ILog _log = LogManager.GetLogger(typeof(PolokusService));
 
+        public static void Proxy(object request, ServerCallContext context)
+        {
+            Master.ConnectionManager.SetHaveConnection();
+        }
+
 
         WebApplication _server;
 

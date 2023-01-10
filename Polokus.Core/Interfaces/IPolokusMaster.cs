@@ -40,6 +40,11 @@ namespace Polokus.Core.Interfaces
         IHooksManager HooksManager { get; set; }
 
         /// <summary>
+        /// An object to manage client connection. Monitors if client is connected to server via GUI App.
+        /// </summary>
+        ConnectionManager ConnectionManager { get; }
+
+        /// <summary>
         /// Object that reprezents externals and manages them. Can be null if externals.json not found.
         /// </summary>
         Externals.Externals? Externals { get; }
@@ -95,5 +100,6 @@ namespace Polokus.Core.Interfaces
         /// <param name="piId">Id of process instance.</param>
         /// <param name="nodeId">Id of node.</param>
         IFlowNode? GetFlowNode(string wfId, string piId, string nodeId);
+
     }
 }

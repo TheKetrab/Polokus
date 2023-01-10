@@ -9,6 +9,7 @@ package polokus;
 service RemotePolokusService {
   rpc LoadXmlString (LoadXmlStringRequest) returns (Empty);
   rpc GetWorkflowsIds (Empty) returns (WorkflowsIdsReply);
+  rpc SetClientConnected (Empty) returns (Empty);
 }
 
 message WorkflowsIdsReply {
