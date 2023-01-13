@@ -18,12 +18,12 @@ namespace Polokus.App.Utils
     public class AppHooksProvider : IHooksProvider
     {
         private ServiceView _serviceView;
-        private IServicesProvider _services;
 
-        public AppHooksProvider(ServiceView serviceView, IServicesProvider services)
+        private IServicesProvider _services => PolokusApp.ServicesProvider;
+
+        public AppHooksProvider(ServiceView serviceView)
         {
             _serviceView = serviceView;
-            _services = services;
         }        
 
         public void AfterExecuteNodeFailure(string wfId, string piId, string nodeId, int taskId)

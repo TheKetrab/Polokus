@@ -24,57 +24,13 @@ namespace Polokus.App.Views
         private MainWindow _mainWindow;
         public ChromiumWindow chromiumWindow;
 
-        public IServicesProvider _services;
-        public static ServiceView? SV; // TODO przerobic to
+        IServicesProvider _services => PolokusApp.ServicesProvider;
 
-
-        public void RegisterAppHooksProviderRemote()
-        {
-            Task.Run(async () =>
-            {
-                var appHooksProvider = new AppHooksProvider(this, _services);
-                var hooksClient = new RemoteHooksService.RemoteHooksServiceClient(Program.GrpcChannel);
-                using (var call = hooksClient.WaitForEvents(new Empty()))
-                {
-                    CancellationToken ct = new();
-                    Program.TunnelWorks = true;
-                    while (await call.ResponseStream.MoveNext(ct))
-                    {
-                        var current = call.ResponseStream.Current;
-                        CallAppHooksProvider(appHooksProvider, current);
-                    }
-                    Program.TunnelWorks = false;
-                    Console.WriteLine("END");
-                }
-            });
-        }
-        private void RegisterAppHooksProviderLocal()
-        {
-            var appHooksProvider = new AppHooksProvider(this, _services);
-            _services.PolokusService.RegisterHooksProvider(appHooksProvider);
-        }
-        private void RegisterAppHooksProvider()
-        {
-            switch (Program.ApplicationMode)
-            {
-                case Program.AppMode.Remote:
-                    RegisterAppHooksProviderRemote();
-                    break;
-                case Program.AppMode.Local:
-                    RegisterAppHooksProviderLocal();
-                    break;
-            }
-        }
 
         public ServiceView(MainWindow mainWindow)
         {
-            SV = this;
-
             _mainWindow = mainWindow;
             InitializeComponent();
-
-            _services = Program.SP;
-            RegisterAppHooksProvider();
 
             chromiumWindow = new ChromiumWindow(_mainWindow,"viewer");
             chromiumWindow.Parent = panelBpmnio;
@@ -544,55 +500,7 @@ namespace Polokus.App.Views
             _services.WorkflowsService.PingListener(ActiveWorkflow, listenerId);
         }
 
-        private void CallAppHooksProvider(AppHooksProvider hooksProvider, HookReply reply)
-        {
-            switch (reply.Type)
-            {
-                case HookType.OnProcessFinished:
-                    hooksProvider.OnProcessFinished(reply.WfId, reply.PiId, reply.Args[0]);
-                    break;
-                case HookType.AfterExecuteNodeSuccess:
-                    hooksProvider.AfterExecuteNodeSuccess(reply.WfId, reply.PiId, reply.NodeId, int.Parse(reply.Args[0]));
-                    break;
-                case HookType.AfterExecuteNodeFailure:
-                    hooksProvider.AfterExecuteNodeFailure(reply.WfId, reply.PiId, reply.NodeId, int.Parse(reply.Args[0]));
-                    break;
-                case HookType.AfterExecuteNodeSuspension:
-                    hooksProvider.AfterExecuteNodeSuspension(reply.WfId, reply.PiId, reply.NodeId, int.Parse(reply.Args[0]));
-                    break;
-                case HookType.OnTimeout:
-                    hooksProvider.OnTimeout(reply.WfId, reply.PiId);
-                    break;
-                case HookType.OnTasksChanged:
-                    hooksProvider.OnTasksChanged(reply.WfId, reply.PiId);
-                    break;
-                case HookType.OnCallerChanged:
-                    hooksProvider.OnCallerChanged(reply.Args[0], reply.Args[1]);
-                    break;
-                case HookType.OnStatusChanged:
-                    hooksProvider.OnStatusChanged(reply.WfId, reply.PiId);
-                    break;
-                case HookType.BeforeStartNewSequence:
-                    hooksProvider.BeforeStartNewSequence(reply.WfId, reply.PiId, reply.NodeId, FromSaveString(reply.Args[0]));
-                    break;
-                case HookType.BeforeExecuteNode:
-                    hooksProvider.BeforeExecuteNode(reply.WfId, reply.PiId, reply.NodeId, int.Parse(reply.Args[0]), FromSaveString(reply.Args[1]));
-                    break;
-                case HookType.OnAwaitingTokenCreated:
-                    hooksProvider.OnAwaitingTokenCreated(reply.WfId, reply.PiId, reply.NodeId, reply.Args[0]);
-                    break;
-                default:
-                    throw new Exception($"Unknown HookType: {reply.Type}");
-            }
 
-            
-        }
-
-        private string? FromSaveString(string str)
-        {
-            if (string.Equals(str,"null")) return null;
-            return str;
-        }
 
 
         private void buttonRaiseSignal_Click(object sender, EventArgs e)

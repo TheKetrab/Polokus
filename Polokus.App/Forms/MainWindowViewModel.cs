@@ -83,7 +83,7 @@ namespace Polokus.App.Forms
         {
             if (view == PanelView.Service)
             {
-                string masterUri = Program.GrpcChannel?.Target ?? "App";
+                string masterUri = PolokusApp.GrpcChannel?.Target ?? "App";
                 this.View.SetConnectionToLabelText($"Polokus Master: {masterUri}");
             }
             else

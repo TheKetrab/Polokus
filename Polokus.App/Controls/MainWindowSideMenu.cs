@@ -155,7 +155,7 @@ namespace Polokus.App.Controls
         private void panelLogo_MouseDown(object sender, MouseEventArgs e)
         {
             ReleaseCapture();
-            SendMessage(Program.MainWindow.Handle, 0x112, 0xf012, 0);
+            SendMessage(PolokusApp.MainWindow.Handle, 0x112, 0xf012, 0);
         }
     }
 }
