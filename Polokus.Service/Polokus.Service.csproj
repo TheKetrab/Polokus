@@ -21,10 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Polokus.Core\Polokus.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
 	<Protobuf Include="Communication\Protos\common.proto" GrpcServices="Server" />
 	<Protobuf Include="Communication\Protos\hooks.proto" GrpcServices="Server" />
 	<Protobuf Include="Communication\Protos\logs.proto" GrpcServices="Server" />
@@ -35,6 +31,11 @@
 
   <ItemGroup>
     <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Polokus.Core.Interfaces\Polokus.Core.Interfaces.csproj" />
+    <ProjectReference Include="..\Polokus.Core\Polokus.Core.csproj" />
   </ItemGroup>
 
 </Project>

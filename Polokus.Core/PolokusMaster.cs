@@ -4,17 +4,10 @@ using Polokus.Core.Helpers;
 using Polokus.Core.Hooks;
 using Polokus.Core.Interfaces;
 using Polokus.Core.Models;
-using Polokus.Core.Models.BpmnObjects.Xsd;
-using Polokus.Core.NodeHandlers;
-using Polokus.Core.Scripting;
-using Polokus;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
+using Polokus.Core.Interfaces.Managers;
+using Polokus.Core.Interfaces.BpmnModels;
+using Polokus.Core.Interfaces.Xsd;
+using Polokus.Core.Interfaces.Execution;
 
 namespace Polokus.Core
 {
@@ -27,15 +20,19 @@ namespace Polokus.Core
 
         public IHooksManager HooksManager { get; set; }
 
+        /// <summary>
+        /// Object that reprezents externals and manages them. Can be null if externals.json not found.
+        /// </summary>
+
         public Externals.Externals? Externals { get; }
 
-        public ICollection<FileMonitor> FileMonitors { get; }
-            = new List<FileMonitor>();
+        public ICollection<IFileMonitor> FileMonitors { get; }
+            = new List<IFileMonitor>();
 
 
         private Dictionary<string, Logger> _logs = new();
 
-        public event EventHandler<Signal>? Signal;
+        public event EventHandler<ISignal>? Signal;
 
         public StateSerializerManager StateSerializerManager { get; }
 
@@ -77,29 +74,29 @@ namespace Polokus.Core
             return processInstance.BpmnProcess.GetNodeById(nodeId) ?? null;
         }
 
-        public void Log(string wfId, string piId, string info, Logger.MsgType type)
+        public void Log(string wfId, string piId, string info, MsgType type)
         {
             Log($"{wfId}/{piId}", info, type);
         }
 
-        public void Log(string globalPiId, string info, Logger.MsgType type)
+        public void Log(string globalPiId, string info, MsgType type)
         {
             var logger = GetOrCreateLogger(globalPiId);
             switch (type)
             {
-                case Logger.MsgType.Simple:
+                case MsgType.Simple:
                     logger.Log(info);
                     break;
-                case Logger.MsgType.Warning:
+                case MsgType.Warning:
                     logger.LogWarning(info);
                     break;
-                case Logger.MsgType.Error:
+                case MsgType.Error:
                     logger.LogError(info);
                     break;
             }
         }
 
-        public ConnectionManager ConnectionManager { get; }
+        public IConnectionManager ConnectionManager { get; }
         public bool ClientConnected => ConnectionManager.ClientConnected;
 
 

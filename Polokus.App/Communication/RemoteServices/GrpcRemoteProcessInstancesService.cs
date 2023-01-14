@@ -1,5 +1,4 @@
 ﻿using Grpc.Net.Client;
-using Polokus.Core.Models.BpmnObjects.Xsd;
 using Polokus.Core.Services.Interfaces;
 using RemoteServices;
 using System;

@@ -1,6 +1,7 @@
 ﻿using Polokus.Core.Interfaces;
+using Polokus.Core.Interfaces.BpmnModels;
+using Polokus.Core.Interfaces.Xsd;
 using Polokus.Core.Models;
-using Polokus.Core.Models.BpmnObjects.Xsd;
 using System;
 using System.Collections.Generic;
 using System.Linq;

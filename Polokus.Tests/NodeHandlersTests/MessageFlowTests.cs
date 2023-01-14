@@ -1,6 +1,7 @@
 ﻿using Polokus.Core.Execution;
 using Polokus.Core.Hooks;
 using Polokus.Core.Interfaces;
+using Polokus.Core.Interfaces.BpmnModels;
 using Polokus.Core.Models;
 using Polokus.Tests.Helpers;
 using Quartz;
@@ -102,7 +103,7 @@ namespace Polokus.Tests.NodeHandlersTests
             await wf.RunProcessAsync(pi, startNode);
 
             // Assert
-            Assert.AreEqual(12, wf.ScriptProvider.Globals.globals["z"]);
+            Assert.AreEqual(12, wf.ScriptProvider.Globals.TryGetValue<int>("z"));
         }
     }
 }

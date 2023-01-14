@@ -1,5 +1,4 @@
 ﻿using Polokus.Core.Models;
-using Polokus.Core.Models.BpmnObjects.Xsd;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +11,8 @@ using Polokus.Core.Factories;
 using Polokus.Core.Interfaces;
 using Polokus.Core.Helpers;
 using Polokus.Core.BpmnModels;
+using Polokus.Core.Interfaces.BpmnModels;
+using Polokus.Core.Interfaces.Xsd;
 
 namespace Polokus.Core
 {

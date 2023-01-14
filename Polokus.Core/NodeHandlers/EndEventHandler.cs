@@ -1,8 +1,8 @@
 ﻿using Polokus.Core.Execution;
 using Polokus.Core.Helpers;
 using Polokus.Core.Interfaces;
+using Polokus.Core.Interfaces.Xsd;
 using Polokus.Core.Models;
-using Polokus.Core.Models.BpmnObjects.Xsd;
 using Polokus.Core.NodeHandlers.Abstract;
 using Polokus.Core.NodeHandlers.Special;
 using System;

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Polokus.Core.Interfaces.Managers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +10,7 @@ using System.Timers;
 
 namespace Polokus.Core
 {
-    public class ConnectionManager
+    public class ConnectionManager : IConnectionManager
     {
 
         private bool _clientConnected;

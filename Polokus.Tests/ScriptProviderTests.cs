@@ -1,5 +1,4 @@
-﻿using Polokus.Core.Models.BpmnObjects.Xsd;
-using Polokus.Core.Models;
+﻿using Polokus.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

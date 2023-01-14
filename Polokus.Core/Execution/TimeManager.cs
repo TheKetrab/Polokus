@@ -9,6 +9,8 @@ using static Quartz.Logging.OperationName;
 using Polokus.Core.Interfaces;
 using Polokus.Core.Hooks;
 using Polokus.Core.Helpers;
+using Polokus.Core.Interfaces.Managers;
+using Polokus.Core.Interfaces.BpmnModels;
 
 namespace Polokus.Core.Execution
 {

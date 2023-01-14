@@ -1,5 +1,7 @@
 ﻿using Polokus.Core.Hooks;
 using Polokus.Core.Interfaces;
+using Polokus.Core.Interfaces.BpmnModels;
+using Polokus.Core.Interfaces.Managers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +29,8 @@ namespace Polokus.Core.Execution
             AddWaiter(waiter.Id, waiter, continuation);
 
             // one time event only | TODO: make it not ignoring one time
-            EventHandler<Signal>? action = null;
+            EventHandler<ISignal>? action = null;
+
             Workflow.PolokusMaster.Signal += action = (s, e) =>
             {
                 if (e.Name == waiter.NodeToCall.Name)

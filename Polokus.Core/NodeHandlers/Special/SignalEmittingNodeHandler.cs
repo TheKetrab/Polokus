@@ -1,7 +1,6 @@
 ﻿using Polokus.Core.Execution;
 using Polokus.Core.Helpers;
 using Polokus.Core.Interfaces;
-using Polokus.Core.Models.BpmnObjects.Xsd;
 using Polokus.Core.Models;
 using System;
 using System.Collections.Generic;
@@ -9,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Polokus.Core.NodeHandlers.Abstract;
+using Polokus.Core.Interfaces.Xsd;
 
 namespace Polokus.Core.NodeHandlers.Special
 {

@@ -4,7 +4,7 @@ using Polokus.Core.Execution;
 using Polokus.Core.Helpers;
 using Polokus.Core.Hooks;
 using Polokus.Core.Interfaces;
-using Polokus.Core.Models.BpmnObjects.Xsd;
+using Polokus.Core.Interfaces.Xsd;
 using Polokus.Core.NodeHandlers;
 using Polokus.Core.Services.Interfaces;
 using System;
@@ -91,7 +91,7 @@ namespace Polokus.App.Utils
         private void Log(string wfId, string piId, string message)
         {
             string globalPiId = Helpers.GetGlobalProcessInstanceId(wfId, piId);
-            _services.LogsService.Log(globalPiId, Logger.MsgType.Simple, message);
+            _services.LogsService.Log(globalPiId, MsgType.Simple, message);
 
             if (IsWorkflowActive(wfId))
             {

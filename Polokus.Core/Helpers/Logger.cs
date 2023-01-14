@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Polokus.Core.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,12 +12,7 @@ namespace Polokus.Core.Helpers
         private static Logger _global = new();
         public static Logger Global => _global;
 
-        public enum MsgType
-        {
-            Simple,
-            Warning,
-            Error,
-        }
+
 
         private List<Tuple<MsgType, string>> messages = new();
 

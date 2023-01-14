@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Google.Protobuf.Collections;
 using Polokus.Core.Helpers;
+using Polokus.Core.Interfaces;
 
 namespace Polokus.Service.Communication.Services
 {
@@ -44,7 +45,7 @@ namespace Polokus.Service.Communication.Services
         {
             PolokusService.Proxy(request, context);
 
-            var msgType = (Logger.MsgType)Enum.Parse(typeof(Logger.MsgType), request.MsgType);
+            var msgType = (MsgType)Enum.Parse(typeof(MsgType), request.MsgType);
             _servicesProvider.LogsService.Log(request.GlobalPiId, msgType, request.MsgInfo);
             return Task.FromResult(new Empty());
         }

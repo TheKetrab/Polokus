@@ -1,5 +1,6 @@
 ﻿using Polokus.Core.Helpers;
 using Polokus.Core.Interfaces;
+using Polokus.Core.Interfaces.BpmnModels;
 using Polokus.Core.Models;
 using System;
 using System.Collections.Generic;

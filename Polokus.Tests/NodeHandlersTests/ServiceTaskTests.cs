@@ -6,11 +6,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Polokus.Core.Models.BpmnObjects.Xsd;
 using Polokus.Core.NodeHandlers;
 using Polokus.Core.Interfaces;
 using Polokus.Tests.Helpers;
 using Polokus.Core.Execution;
+using Polokus.Core.Interfaces.Xsd;
+using Polokus.Core.Interfaces.BpmnModels;
 
 namespace Polokus.Tests.NodeHandlersTests
 {
@@ -49,7 +50,7 @@ namespace Polokus.Tests.NodeHandlersTests
             await wf.RunProcessAsync(pi, startNode);
 
             // Assert
-            Assert.AreEqual(2, wf.ScriptProvider.Globals.globals.Count);
+            Assert.AreEqual(2, wf.ScriptProvider.Globals.Values.Count);
             Assert.AreEqual("start;CustomServiceTask;exclusive;end2", visitor.GetResult());
 
 

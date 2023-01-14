@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Polokus.Core.Interfaces\Polokus.Core.Interfaces.csproj" />
     <ProjectReference Include="..\Polokus.Core\Polokus.Core.csproj" />
   </ItemGroup>
 

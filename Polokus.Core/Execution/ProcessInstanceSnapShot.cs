@@ -1,4 +1,5 @@
 ﻿using Polokus.Core.Interfaces;
+using Polokus.Core.Interfaces.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Polokus.Core.Execution
 {
-    public class ProcessInstanceSnapShot
+    public class ProcessInstanceSnapShot : IProcessInstanceSnapShot
     {
         public string Id { get; set; }
         public string WorkflowId { get; set; }

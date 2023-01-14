@@ -1,5 +1,4 @@
-﻿using Polokus.Core.Models.BpmnObjects.Xsd;
-using Polokus.Core.Models;
+﻿using Polokus.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +8,7 @@ using Polokus.Core.NodeHandlers.Abstract;
 using Polokus.Core.Interfaces;
 using Polokus.Core.Execution;
 using Microsoft.Extensions.Logging;
+using Polokus.Core.Interfaces.Xsd;
 
 namespace Polokus.Core.NodeHandlers
 {
@@ -67,7 +67,7 @@ namespace Polokus.Core.NodeHandlers
                     {
                         this.ProcessInstance.Log(
                             $"Node {this.Node.Id} has outgoing edge with invalid name {outgoing.Name}. Unable to evaluate as variable.",
-                            Helpers.Logger.MsgType.Warning);
+                            MsgType.Warning);
                     }
                 }
             }

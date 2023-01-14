@@ -1,6 +1,10 @@
 ﻿using Polokus.Core.Factories;
 using Polokus.Core.Helpers;
 using Polokus.Core.Interfaces;
+using Polokus.Core.Interfaces.BpmnModels;
+using Polokus.Core.Interfaces.Managers;
+using Polokus.Core.Interfaces.NodeHandlers;
+using Polokus.Core.Interfaces.Serialization;
 using Polokus.Core.Scripting;
 using System.Collections.Generic;
 
@@ -27,8 +31,8 @@ namespace Polokus.Core.Execution
 
         public ICollection<IProcessInstance> History { get; } = new List<IProcessInstance>();
         public ICollection<IProcessInstance> ProcessInstances { get; } = new List<IProcessInstance>();
-        public IDictionary<IProcessInstance, ProcessInstanceSnapShot> Paused { get; }
-            = new Dictionary<IProcessInstance, ProcessInstanceSnapShot>();
+        public IDictionary<IProcessInstance, IProcessInstanceSnapShot> Paused { get; }
+            = new Dictionary<IProcessInstance, IProcessInstanceSnapShot>();
 
         public IPolokusMaster PolokusMaster { get; }
         public IBpmnWorkflow BpmnWorkflow { get; }
@@ -70,7 +74,7 @@ namespace Polokus.Core.Execution
             NodeHandlerFactory = nhFactory;
         }
 
-        public void Log(string piId, string info, Logger.MsgType type)
+        public void Log(string piId, string info, MsgType type)
         {
             PolokusMaster.Log(Id, piId, info, type);
         }

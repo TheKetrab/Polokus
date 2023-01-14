@@ -21,9 +21,6 @@
     <Content Include="Resources\PolokusIco.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Polokus.Core\Polokus.Core.csproj" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Fonts\segmdl2.ttf" />
   </ItemGroup>
   <ItemGroup>
@@ -35,6 +32,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Svg" Version="3.4.4" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Polokus.Core.Interfaces\Polokus.Core.Interfaces.csproj" />
+    <ProjectReference Include="..\Polokus.Core\Polokus.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Forms\UserTaskDialog.cs">

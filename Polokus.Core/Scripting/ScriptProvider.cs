@@ -10,6 +10,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using Polokus.Core.Interfaces;
+using Polokus.Core.Interfaces.Execution;
 using Polokus.Core.Models;
 
 namespace Polokus.Core.Scripting
@@ -24,7 +25,7 @@ namespace Polokus.Core.Scripting
             .AddReferences("Microsoft.CSharp");
 
 
-        public ScriptVariables Globals { get; } = new();
+        public IScriptVariables Globals { get; } = new ScriptVariables();
 
         public string MarkVariables(string script)
         {

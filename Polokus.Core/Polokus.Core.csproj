@@ -25,6 +25,10 @@
     <PackageReference Include="Quartz" Version="3.5.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Polokus.Core.Interfaces\Polokus.Core.Interfaces.csproj" />
+  </ItemGroup>
+
 	<Target Name="OnCleanOnly" AfterTargets="Clean">
 		<Message Text="OnCleanOnly" Importance="High" />
 	</Target>

@@ -1,4 +1,5 @@
 ﻿using Polokus.Core.Helpers;
+using Polokus.Core.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace Polokus.Core.Services.Interfaces
 {
     public interface ILogsService
     {
-        public List<Tuple<Logger.MsgType, string>> GetMessages(string wfId, string piId);
-        public void Log(string globalPiId, Logger.MsgType type, string info);
+        public List<Tuple<MsgType, string>> GetMessages(string wfId, string piId);
+        public void Log(string globalPiId, MsgType type, string info);
     }
 }

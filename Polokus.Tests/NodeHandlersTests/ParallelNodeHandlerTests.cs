@@ -2,6 +2,7 @@
 using Polokus.Core;
 using Polokus.Core.Hooks;
 using Polokus.Core.Interfaces;
+using Polokus.Core.Interfaces.BpmnModels;
 using Polokus.Tests.Helpers;
 using System;
 using System.Collections.Generic;

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using Polokus.Core.Interfaces.Execution;
+using System.IO;
 using System.Security.Cryptography;
 
 namespace Polokus
@@ -6,7 +7,7 @@ namespace Polokus
     /// <summary>
     /// File monitor inspects single directory and provides some events.
     /// </summary>
-    public class FileMonitor : IDisposable
+    public class FileMonitor : IFileMonitor, IDisposable
     {
         private string _path;
         private FileSystemWatcher _watcher;

@@ -1,7 +1,6 @@
 ﻿using Polokus.Core.Hooks;
 using Polokus.Core.Interfaces;
 using Polokus.Core.Models;
-using Polokus.Core.Models.BpmnObjects.Xsd;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,6 +11,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Polokus.Core.Execution;
 using Polokus.Core.Helpers;
+using Polokus.Core.Interfaces.NodeHandlers;
+using Polokus.Core.Interfaces.Xsd;
+using Polokus.Core.Interfaces.BpmnModels;
+using Polokus.Core.Interfaces.Managers;
+using Polokus.Core.Interfaces.Execution;
 
 namespace Polokus.Core.NodeHandlers.Abstract
 {
@@ -67,7 +71,7 @@ namespace Polokus.Core.NodeHandlers.Abstract
         /// Main execution of nodehandler. It provides mechanism to handle exceptions.
         /// Note that JUST BEFORE real execution (after 'can process') active task manager switch worker for concrete taskId.
         /// </summary>
-        public virtual async Task<ProcessResultInfo> Execute(INodeCaller? caller, int taskId)
+        public virtual async Task<IProcessResultInfo> Execute(INodeCaller? caller, int taskId)
         {
             try
             {

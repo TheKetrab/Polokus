@@ -1,5 +1,6 @@
 ﻿using Grpc.Net.Client;
 using Polokus.Core.Helpers;
+using Polokus.Core.Interfaces;
 using Polokus.Core.Services.Interfaces;
 using RemoteServices;
 using System;
@@ -19,7 +20,7 @@ namespace Polokus.Core.Remote
             _serviceClient = new RemoteServices.RemoteLogsService.RemoteLogsServiceClient(channel);
         }
 
-        public List<Tuple<Logger.MsgType,string>> GetMessages(string wfId, string piId)
+        public List<Tuple<MsgType,string>> GetMessages(string wfId, string piId)
         {
             var request = new GetMessagesRequest()
             {
@@ -30,13 +31,13 @@ namespace Polokus.Core.Remote
             var reply = _serviceClient.GetMessages(request);
 
             var result = reply.Messages.Select(x => Tuple.Create(
-                Enum.Parse<Logger.MsgType>(x.MsgType),
+                Enum.Parse<MsgType>(x.MsgType),
                 x.MsgInfo));
 
             return result.ToList();
         }
 
-        public void Log(string globalPiId, Logger.MsgType type, string info)
+        public void Log(string globalPiId, MsgType type, string info)
         {
             var request = new LogRequest()
             {

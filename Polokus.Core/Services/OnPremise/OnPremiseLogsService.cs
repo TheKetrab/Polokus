@@ -1,4 +1,5 @@
 ﻿using Polokus.Core.Helpers;
+using Polokus.Core.Interfaces;
 using Polokus.Core.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -17,24 +18,24 @@ namespace Polokus.Core.Services.OnPremise
             _polokus = polokus;
         }
 
-        public List<Tuple<Logger.MsgType, string>> GetMessages(string wfId, string piId)
+        public List<Tuple<MsgType, string>> GetMessages(string wfId, string piId)
         {
             var logger = _polokus.GetOrCreateLogger(wfId, piId);
             return logger.GetMessages().ToList();
         }
 
-        public void Log(string globalPiId, Logger.MsgType type, string info)
+        public void Log(string globalPiId, MsgType type, string info)
         {
             var logger = _polokus.GetOrCreateLogger(globalPiId);
             switch (type)
             {
-                case Logger.MsgType.Simple:
+                case MsgType.Simple:
                     logger.Log(info);
                     break;
-                case Logger.MsgType.Warning:
+                case MsgType.Warning:
                     logger.LogWarning(info);
                     break;
-                case Logger.MsgType.Error:
+                case MsgType.Error:
                     logger.LogError(info);
                     break;
             }

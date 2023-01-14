@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Polokus.Core.Interfaces.Execution;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Polokus.Core.Scripting
 {
-    public class ScriptVariables
+    public class ScriptVariables : IScriptVariables
     {
         public Dictionary<string, dynamic> globals = new();
 

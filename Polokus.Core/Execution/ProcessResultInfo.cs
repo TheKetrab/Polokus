@@ -4,18 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Polokus.Core.Interfaces;
+using Polokus.Core.Interfaces.BpmnModels;
+using Polokus.Core.Interfaces.Execution;
 using Polokus.Core.Models;
 
 namespace Polokus.Core.Execution
 {
-    public enum ProcessResultState
-    {
-        Success,
-        Failure,
-        Suspension,
-        Cancellation,
-        ErrorBoundaryEvent
-    }
+    
 
     public class SuccessProcessResultInfo : ProcessResultInfo
     {
@@ -41,7 +36,7 @@ namespace Polokus.Core.Execution
         }
     }
 
-    public class ProcessResultInfo
+    public class ProcessResultInfo : IProcessResultInfo
     {
         public ProcessResultState State { get; protected set; }
         public IEnumerable<ISequence>? SequencesToInvoke { get; protected set; }

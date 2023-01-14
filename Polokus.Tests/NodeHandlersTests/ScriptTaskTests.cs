@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Polokus.Tests.Helpers;
 using Polokus.Core.Interfaces;
+using Polokus.Core.Interfaces.BpmnModels;
 
 namespace Polokus.Tests.NodeHandlersTests
 {
@@ -26,7 +27,7 @@ namespace Polokus.Tests.NodeHandlersTests
             await wf.RunProcessAsync(pi, startNode);
 
             // Assert
-            Assert.AreEqual(720 + 222, wf.ScriptProvider.Globals.globals["a"]);
+            Assert.AreEqual(720 + 222, wf.ScriptProvider.Globals.TryGetValue<int>("a"));
             Assert.AreEqual("start;tScriptTask;tScriptTask;exclusive;end1", visitor.GetResult());
 
         }

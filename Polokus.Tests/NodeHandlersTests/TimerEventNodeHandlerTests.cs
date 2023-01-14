@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Polokus.Tests.Helpers;
 using Polokus.Core.Interfaces;
+using Polokus.Core.Interfaces.BpmnModels;
 
 namespace Polokus.Tests.NodeHandlersTests
 {

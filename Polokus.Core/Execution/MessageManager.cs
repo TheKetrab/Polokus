@@ -1,5 +1,7 @@
 ﻿using Polokus.Core.Hooks;
 using Polokus.Core.Interfaces;
+using Polokus.Core.Interfaces.BpmnModels;
+using Polokus.Core.Interfaces.Managers;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;

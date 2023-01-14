@@ -1,6 +1,9 @@
 ﻿using Polokus.Core.Helpers;
 using Polokus.Core.Hooks;
 using Polokus.Core.Interfaces;
+using Polokus.Core.Interfaces.Execution;
+using Polokus.Core.Interfaces.NodeHandlers;
+using Polokus.Core.Interfaces.Utils;
 using Polokus.Core.Models;
 using Polokus.Core.NodeHandlers;
 using Polokus.Core.NodeHandlers.Abstract;
@@ -17,7 +20,7 @@ namespace Polokus.Core.Execution
     /// Goal of this object is to manage currently working objects (eg. nodehandlers),
     /// add new workers, remove them or move responsibility for task to another object.
     /// </summary>
-    public class ActiveTasksManager : IDumpable<string[]>
+    public class ActiveTasksManager : IActiveTasksManager
     {
         private int _cnt = 0;
         private Dictionary<int, Tuple<CancellationTokenSource, INodeHandler>> ActiveTasks = new(); // taskId;<cts,worker>

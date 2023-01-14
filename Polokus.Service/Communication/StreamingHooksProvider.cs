@@ -1,6 +1,5 @@
 ﻿using Grpc.Core;
 using Polokus.Core.Interfaces;
-using Polokus.Core.Models.BpmnObjects.Xsd;
 using RemoteServices;
 using System;
 using System.Threading.Tasks;

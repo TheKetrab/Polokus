@@ -1,16 +1,22 @@
 ﻿using Polokus.Core.Helpers;
 using Polokus.Core.Interfaces;
+using Polokus.Core.Interfaces.BpmnModels;
+using Polokus.Core.Interfaces.Execution;
+using Polokus.Core.Interfaces.Managers;
+using Polokus.Core.Interfaces.NodeHandlers;
+using Polokus.Core.Interfaces.Serialization;
+using Polokus.Core.Interfaces.Utils;
 
 namespace Polokus.Core.Execution
 {
     public class ProcessInstance : IProcessInstance,
-        IRestorable<ProcessInstanceSnapShot>, IDumpable<ProcessInstanceSnapShot>
+        IRestorable<IProcessInstanceSnapShot>, IDumpable<ProcessInstanceSnapShot>
     {
         public string Id { get; set; }
         public IWorkflow Workflow { get; }
         public IBpmnProcess BpmnProcess { get; }
         public object TasksMutex { get; } = new object();
-        public ActiveTasksManager ActiveTasksManager { get; private set; }
+        public IActiveTasksManager ActiveTasksManager { get; private set; }
         public IStatusManager StatusManager { get; private set; }
 
         public IHooksProvider? HooksProvider { get; set; }
@@ -109,7 +115,7 @@ namespace Polokus.Core.Execution
 
         }
 
-        public void Log(string info, Logger.MsgType type)
+        public void Log(string info, MsgType type)
         {
             Workflow.Log(Id, info, type);
         }
@@ -155,7 +161,7 @@ namespace Polokus.Core.Execution
             }
         }
 
-        public void HandleExecutionResult(IFlowNode node, ProcessResultInfo resultInfo, int taskId)
+        public void HandleExecutionResult(IFlowNode node, IProcessResultInfo resultInfo, int taskId)
         {
             switch (resultInfo.State)
             {
@@ -229,7 +235,7 @@ namespace Polokus.Core.Execution
 
         }
 
-        public void Restore(IPolokusMaster master, ProcessInstanceSnapShot source)
+        public void Restore(IPolokusMaster master, IProcessInstanceSnapShot source)
         {
             var id = source.Id;
             var wf = master.GetWorkflow(source.WorkflowId);

@@ -401,13 +401,13 @@ namespace Polokus.App.Views
 
                 switch (message.Item1)
                 {
-                    case Logger.MsgType.Simple:
+                    case MsgType.Simple:
                         readOnlyRichTextBox1.AppendText(br + message.Item2);
                         break;
-                    case Logger.MsgType.Warning:
+                    case MsgType.Warning:
                         readOnlyRichTextBox1.AppendFormattedText(br + message.Item2, Color.Orange, false);
                         break;
-                    case Logger.MsgType.Error:
+                    case MsgType.Error:
                         readOnlyRichTextBox1.AppendFormattedText(br + message.Item2, Color.Red, true);
                         break;
                 }
