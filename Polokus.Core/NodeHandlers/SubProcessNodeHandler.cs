@@ -11,28 +11,21 @@ using System.Threading.Tasks;
 
 namespace Polokus.Core.NodeHandlers
 {
-    public class SubProcessNodeHandler : NodeHandler<tSubProcess>
-    {
-        public IProcessInstance? SubProcessInstance { get; private set; }
-
+    public class SubProcessNodeHandler : SubprocessingNodeHandler<tSubProcess>
+    {        
         public SubProcessNodeHandler(IProcessInstance processInstance, FlowNode<tSubProcess> typedNode)
             : base(processInstance, typedNode)
         {
         }
 
-        public override async Task Action(INodeCaller? caller)
+        protected override IBpmnProcess GetBpmnProcess()
         {
-            var wf = this.ProcessInstance.Workflow;
-            var bpmnProcess = wf.BpmnWorkflow.BpmnProcesses.First(x => x.Id == this.Node.Id);
-            var manualStartNode = bpmnProcess.GetManualStartNode();
+            return Workflow.BpmnWorkflow.BpmnProcesses.First(x => x.Id == this.Node.Id);
+        }
 
-            SubProcessInstance = this.ProcessInstance.CreateSubProcessInstance(bpmnProcess);
-            bool success = await wf.RunProcessAsync(SubProcessInstance, manualStartNode, null);
-
-            if (!success)
-            {
-                throw new Exception();
-            }
+        protected override IWorkflow GetWorkflow()
+        {
+            return this.Workflow;
         }
     }
 }

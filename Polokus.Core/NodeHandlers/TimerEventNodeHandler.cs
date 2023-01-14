@@ -22,17 +22,17 @@ namespace Polokus.Core.NodeHandlers
             TimeDefinitions = timeDefinitions;
         }
 
-        public override async Task<bool> CanProcess(INodeCaller? caller)
+        public override Task<bool> CanProcess(INodeCaller? caller)
         {
             if (caller is NodeHandlerWaiter w)
             {
-                return true;
+                return Task.FromResult(true);
             }
 
             this.ProcessInstance.Workflow.TimeManager
                 .RegisterWaiter(ProcessInstance, Node, true);
             
-            return false;
+            return Task.FromResult(false);
         }
 
     }

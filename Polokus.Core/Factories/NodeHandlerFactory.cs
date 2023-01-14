@@ -49,6 +49,7 @@ namespace Polokus.Core.Factories
             RegisterNodeHandlerType<tReceiveTask, ReceiveTaskNodeHandler>();
             RegisterNodeHandlerType<tSendTask, SendTaskNodeHandler>();
             RegisterNodeHandlerType<tSubProcess, SubProcessNodeHandler>();
+            RegisterNodeHandlerType<tCallActivity, CallActivityNodeHandler>();
             RegisterNodeHandlerType<tBoundaryEvent, BoundaryEventNodeHandler>();
         }
 

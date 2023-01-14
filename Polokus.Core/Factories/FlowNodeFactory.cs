@@ -28,6 +28,7 @@ namespace Polokus.Core.Factories
                 ?? CreateTypedFlowNode<tIntermediateThrowEvent>(process, xmlElement)
                 ?? CreateTypedFlowNode<tReceiveTask>(process, xmlElement)
                 ?? CreateTypedFlowNode<tSubProcess>(process, xmlElement)
+                ?? CreateTypedFlowNode<tCallActivity>(process, xmlElement)
                 ?? CreateBoundaryEvent(process, xmlElement)
                 ?? throw new Exception($"Unable to create FlowNode for type: {xmlElement.GetType().Name}.");
 

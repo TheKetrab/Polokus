@@ -3,6 +3,7 @@ using Polokus.Core.Hooks;
 using Polokus.Core.Interfaces;
 using Polokus.Core.Models;
 using Polokus.Core.NodeHandlers;
+using Polokus.Core.NodeHandlers.Abstract;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -36,7 +37,7 @@ namespace Polokus.Core.Execution
                 ActiveTasks.Remove(toCancell.Key);
 
                 toCancell.Value.Item1.Cancel();
-                if (nh is SubProcessNodeHandler spnh && spnh.SubProcessInstance != null)
+                if (nh is ISubprocessingNodeHandler spnh && spnh.SubProcessInstance != null)
                 {
                     spnh.SubProcessInstance.StatusManager.Stop();
                     spnh.SubProcessInstance.HooksProvider?.OnProcessFinished(
