@@ -60,9 +60,14 @@ namespace Polokus.Core.Execution
 
         public void Stop()
         {
+            KillEverythingRunning();
+            Status = ProcessStatus.Stopped;
+        }
+
+        public void KillEverythingRunning()
+        {
             _pi.ActiveTasksManager.Stop();
             _pi.KillWaiters();
-            Status = ProcessStatus.Stopped;
         }
 
         public bool IsRunning()

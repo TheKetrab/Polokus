@@ -24,6 +24,7 @@ namespace Polokus.Core.Interfaces
         void Finish();
         bool IsRunning();
 
+        void KillEverythingRunning();
 
     }
 }
