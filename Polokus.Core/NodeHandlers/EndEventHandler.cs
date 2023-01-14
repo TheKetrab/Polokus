@@ -36,6 +36,10 @@ namespace Polokus.Core.NodeHandlers
             {
                 _subhandler = new MessageSendingNodeHandler<tEndEvent>(ProcessInstance, TypedNode);
             }
+            else if (eventDefinition is tSignalEventDefinition)
+            {
+                _subhandler = new SignalEmittingNodeHandler<tEndEvent>(ProcessInstance, TypedNode);
+            }
             else if (eventDefinition is tErrorEventDefinition)
             {
                 ErrorEndEvent = true;
