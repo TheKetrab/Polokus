@@ -49,17 +49,5 @@ namespace Polokus.App.Views
             this.Controls.Add(chromeBrowser);
         }
 
-
-
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void panelLogo_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
     }
 }

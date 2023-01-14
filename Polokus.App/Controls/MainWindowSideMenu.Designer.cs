@@ -59,8 +59,9 @@
             this.panelSideMenu.Controls.Add(this.panelLogo);
             this.panelSideMenu.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelSideMenu.Location = new System.Drawing.Point(0, 0);
+            this.panelSideMenu.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.panelSideMenu.Name = "panelSideMenu";
-            this.panelSideMenu.Size = new System.Drawing.Size(364, 560);
+            this.panelSideMenu.Size = new System.Drawing.Size(318, 420);
             this.panelSideMenu.TabIndex = 2;
             // 
             // buttonSettings
@@ -72,11 +73,11 @@
             this.buttonSettings.ForeColor = System.Drawing.Color.Gainsboro;
             this.buttonSettings.Image = ((System.Drawing.Image)(resources.GetObject("buttonSettings.Image")));
             this.buttonSettings.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.buttonSettings.Location = new System.Drawing.Point(0, 515);
-            this.buttonSettings.Margin = new System.Windows.Forms.Padding(0, 10, 0, 10);
+            this.buttonSettings.Location = new System.Drawing.Point(0, 375);
+            this.buttonSettings.Margin = new System.Windows.Forms.Padding(0, 8, 0, 8);
             this.buttonSettings.Name = "buttonSettings";
-            this.buttonSettings.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);
-            this.buttonSettings.Size = new System.Drawing.Size(364, 45);
+            this.buttonSettings.Padding = new System.Windows.Forms.Padding(9, 0, 0, 0);
+            this.buttonSettings.Size = new System.Drawing.Size(318, 45);
             this.buttonSettings.TabIndex = 4;
             this.buttonSettings.Text = "   Settings";
             this.buttonSettings.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -89,17 +90,19 @@
             this.panelProcesses.Controls.Add(this.treeView1);
             this.panelProcesses.Controls.Add(this.panelProcessesButtons);
             this.panelProcesses.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelProcesses.Location = new System.Drawing.Point(0, 280);
+            this.panelProcesses.Location = new System.Drawing.Point(0, 210);
+            this.panelProcesses.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.panelProcesses.Name = "panelProcesses";
-            this.panelProcesses.Size = new System.Drawing.Size(364, 280);
+            this.panelProcesses.Size = new System.Drawing.Size(318, 210);
             this.panelProcesses.TabIndex = 3;
             // 
             // treeView1
             // 
             this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treeView1.Location = new System.Drawing.Point(0, 53);
+            this.treeView1.Location = new System.Drawing.Point(0, 45);
+            this.treeView1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(364, 227);
+            this.treeView1.Size = new System.Drawing.Size(318, 165);
             this.treeView1.TabIndex = 1;
             // 
             // panelProcessesButtons
@@ -109,17 +112,19 @@
             this.panelProcessesButtons.Controls.Add(this.buttonGraphView);
             this.panelProcessesButtons.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelProcessesButtons.Location = new System.Drawing.Point(0, 0);
+            this.panelProcessesButtons.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.panelProcessesButtons.Name = "panelProcessesButtons";
-            this.panelProcessesButtons.Size = new System.Drawing.Size(364, 53);
+            this.panelProcessesButtons.Size = new System.Drawing.Size(318, 45);
             this.panelProcessesButtons.TabIndex = 0;
             // 
             // buttonScriptView
             // 
             this.buttonScriptView.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonScriptView.Image = ((System.Drawing.Image)(resources.GetObject("buttonScriptView.Image")));
-            this.buttonScriptView.Location = new System.Drawing.Point(121, 9);
+            this.buttonScriptView.Location = new System.Drawing.Point(93, 2);
+            this.buttonScriptView.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.buttonScriptView.Name = "buttonScriptView";
-            this.buttonScriptView.Size = new System.Drawing.Size(35, 35);
+            this.buttonScriptView.Size = new System.Drawing.Size(39, 39);
             this.buttonScriptView.TabIndex = 2;
             this.buttonScriptView.UseVisualStyleBackColor = true;
             this.buttonScriptView.Click += new System.EventHandler(this.buttonScriptView_Click);
@@ -128,9 +133,10 @@
             // 
             this.buttonXmlView.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonXmlView.Image = ((System.Drawing.Image)(resources.GetObject("buttonXmlView.Image")));
-            this.buttonXmlView.Location = new System.Drawing.Point(80, 9);
+            this.buttonXmlView.Location = new System.Drawing.Point(48, 3);
+            this.buttonXmlView.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.buttonXmlView.Name = "buttonXmlView";
-            this.buttonXmlView.Size = new System.Drawing.Size(35, 35);
+            this.buttonXmlView.Size = new System.Drawing.Size(39, 39);
             this.buttonXmlView.TabIndex = 1;
             this.buttonXmlView.UseVisualStyleBackColor = true;
             this.buttonXmlView.Click += new System.EventHandler(this.buttonXmlView_Click);
@@ -139,9 +145,10 @@
             // 
             this.buttonGraphView.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonGraphView.Image = ((System.Drawing.Image)(resources.GetObject("buttonGraphView.Image")));
-            this.buttonGraphView.Location = new System.Drawing.Point(39, 9);
+            this.buttonGraphView.Location = new System.Drawing.Point(3, 3);
+            this.buttonGraphView.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.buttonGraphView.Name = "buttonGraphView";
-            this.buttonGraphView.Size = new System.Drawing.Size(35, 35);
+            this.buttonGraphView.Size = new System.Drawing.Size(39, 39);
             this.buttonGraphView.TabIndex = 0;
             this.buttonGraphView.UseVisualStyleBackColor = true;
             this.buttonGraphView.Click += new System.EventHandler(this.buttonGraphView_Click);
@@ -155,11 +162,11 @@
             this.buttonProcesses.ForeColor = System.Drawing.Color.Gainsboro;
             this.buttonProcesses.Image = ((System.Drawing.Image)(resources.GetObject("buttonProcesses.Image")));
             this.buttonProcesses.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.buttonProcesses.Location = new System.Drawing.Point(0, 220);
-            this.buttonProcesses.Margin = new System.Windows.Forms.Padding(0, 13, 0, 13);
+            this.buttonProcesses.Location = new System.Drawing.Point(0, 165);
+            this.buttonProcesses.Margin = new System.Windows.Forms.Padding(0, 10, 0, 10);
             this.buttonProcesses.Name = "buttonProcesses";
-            this.buttonProcesses.Padding = new System.Windows.Forms.Padding(11, 0, 0, 0);
-            this.buttonProcesses.Size = new System.Drawing.Size(364, 60);
+            this.buttonProcesses.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);
+            this.buttonProcesses.Size = new System.Drawing.Size(318, 45);
             this.buttonProcesses.TabIndex = 2;
             this.buttonProcesses.Text = "   Processes";
             this.buttonProcesses.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -177,11 +184,11 @@
             this.buttonEditor.ForeColor = System.Drawing.Color.Gainsboro;
             this.buttonEditor.Image = ((System.Drawing.Image)(resources.GetObject("buttonEditor.Image")));
             this.buttonEditor.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.buttonEditor.Location = new System.Drawing.Point(0, 160);
-            this.buttonEditor.Margin = new System.Windows.Forms.Padding(0, 13, 0, 13);
+            this.buttonEditor.Location = new System.Drawing.Point(0, 120);
+            this.buttonEditor.Margin = new System.Windows.Forms.Padding(0, 10, 0, 10);
             this.buttonEditor.Name = "buttonEditor";
-            this.buttonEditor.Padding = new System.Windows.Forms.Padding(11, 0, 0, 0);
-            this.buttonEditor.Size = new System.Drawing.Size(364, 60);
+            this.buttonEditor.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);
+            this.buttonEditor.Size = new System.Drawing.Size(318, 45);
             this.buttonEditor.TabIndex = 5;
             this.buttonEditor.Text = "   Editor";
             this.buttonEditor.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -198,12 +205,12 @@
             this.buttonService.ForeColor = System.Drawing.Color.Gainsboro;
             this.buttonService.Image = ((System.Drawing.Image)(resources.GetObject("buttonService.Image")));
             this.buttonService.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.buttonService.Location = new System.Drawing.Point(0, 100);
-            this.buttonService.Margin = new System.Windows.Forms.Padding(0, 13, 0, 13);
+            this.buttonService.Location = new System.Drawing.Point(0, 75);
+            this.buttonService.Margin = new System.Windows.Forms.Padding(0, 10, 0, 10);
             this.buttonService.Name = "buttonService";
-            this.buttonService.Padding = new System.Windows.Forms.Padding(11, 0, 0, 0);
+            this.buttonService.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);
             this.buttonService.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.buttonService.Size = new System.Drawing.Size(364, 60);
+            this.buttonService.Size = new System.Drawing.Size(318, 45);
             this.buttonService.TabIndex = 1;
             this.buttonService.Text = "   Service";
             this.buttonService.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -216,9 +223,10 @@
             this.panelLogo.Controls.Add(this.panelPolokusHeader);
             this.panelLogo.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelLogo.Location = new System.Drawing.Point(0, 0);
+            this.panelLogo.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.panelLogo.Name = "panelLogo";
-            this.panelLogo.Padding = new System.Windows.Forms.Padding(10);
-            this.panelLogo.Size = new System.Drawing.Size(364, 100);
+            this.panelLogo.Padding = new System.Windows.Forms.Padding(9, 8, 9, 8);
+            this.panelLogo.Size = new System.Drawing.Size(318, 75);
             this.panelLogo.TabIndex = 0;
             this.panelLogo.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panelLogo_MouseDown);
             // 
@@ -226,21 +234,22 @@
             // 
             this.panelPolokusHeader.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelPolokusHeader.Frozen = false;
-            this.panelPolokusHeader.Location = new System.Drawing.Point(10, 10);
-            this.panelPolokusHeader.Margin = new System.Windows.Forms.Padding(10);
+            this.panelPolokusHeader.Location = new System.Drawing.Point(9, 8);
+            this.panelPolokusHeader.Margin = new System.Windows.Forms.Padding(9, 8, 9, 8);
             this.panelPolokusHeader.Name = "panelPolokusHeader";
-            this.panelPolokusHeader.Padding = new System.Windows.Forms.Padding(5);
-            this.panelPolokusHeader.Size = new System.Drawing.Size(344, 80);
+            this.panelPolokusHeader.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.panelPolokusHeader.Size = new System.Drawing.Size(300, 59);
             this.panelPolokusHeader.TabIndex = 2;
             this.panelPolokusHeader.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panelLogo_MouseDown);
             // 
             // MainWindowSideMenu
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.panelSideMenu);
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "MainWindowSideMenu";
-            this.Size = new System.Drawing.Size(364, 560);
+            this.Size = new System.Drawing.Size(318, 420);
             this.panelSideMenu.ResumeLayout(false);
             this.panelProcesses.ResumeLayout(false);
             this.panelProcessesButtons.ResumeLayout(false);

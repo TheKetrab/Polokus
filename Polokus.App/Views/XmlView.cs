@@ -24,7 +24,6 @@ namespace Polokus.App.Views
             readOnlyRichTextBox1.WordWrap = false;
             readOnlyRichTextBox1.Font = new Font(FontFamily.GenericMonospace, readOnlyRichTextBox1.Font.Size);
 
-
             _mainWindow.Menu.TVIndexChanged += (s, e) =>
             {
                 if (_mainWindow.ViewModel.ActivePanelView != MainWindowViewModel.PanelView.ProcessesXml)
@@ -36,7 +35,6 @@ namespace Polokus.App.Views
 
             };
 
-
         }
 
         public void LoadBpmnXml(string filepath)
@@ -47,8 +45,8 @@ namespace Polokus.App.Views
             string filename = Path.GetFileName(filepath);
             int processesCnt = CountProcesses(bpmnContent);
 
-            this.labelFilename.Text = filename;
-            this.labelProcessesCount.Text = $"Processes: {processesCnt}";
+            this.labelFilenameVal.Text = filename;
+            this.labelProcessesCountVal.Text = processesCnt.ToString();
         }
 
         public int CountProcesses(string bpmn)
@@ -72,9 +70,5 @@ namespace Polokus.App.Views
             }
         }
 
-        private void readOnlyRichTextBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
     }
 }

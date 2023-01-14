@@ -1,6 +1,7 @@
 ﻿using Grpc.Core;
 using Grpc.Net.Client;
 using Polokus.App.Forms;
+using Polokus.App.Properties;
 using Polokus.App.Utils;
 using Polokus.App.Views;
 using Polokus.Core;
@@ -23,6 +24,7 @@ namespace Polokus.App
     /// </summary>
     public static class PolokusApp
     {
+        public static string BpmnPath => Settings.Default.BpmnPath;
         public static MainWindow MainWindow => Program._mainWindow!;
 
         private static IServicesProvider? _servicesProvider;

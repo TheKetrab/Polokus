@@ -9,6 +9,7 @@ namespace Polokus.App.Controls
     {
         private MainWindow _mainWindow;
         private bool _processPanelVisible = false;
+        private MainWindowViewModel.PanelView _lastOpenedViewInProcessesView = MainWindowViewModel.PanelView.None;
 
         public PolokusHeader Header => this.panelPolokusHeader;
 
@@ -31,13 +32,13 @@ namespace Polokus.App.Controls
 
         private void InitializeTreeView()
         {
-            var files = Directory.GetFiles(_mainWindow.ViewModel.MainDirPath).Select(x => new FileInfo(x).Name);
+            var files = Directory.GetFiles(PolokusApp.BpmnPath).Select(x => new FileInfo(x).Name);
             this.treeView1.Nodes.AddRange(files.Select(x => new TreeNode(x)).ToArray());
 
             this.treeView1.AfterSelect += (s, e) =>
             {
                 var node = treeView1.SelectedNode;
-                TVIndexChanged?.Invoke(this, new TVIndexChangedEventArgs(Path.Combine(_mainWindow.ViewModel.MainDirPath, node.Text)));
+                TVIndexChanged?.Invoke(this, new TVIndexChangedEventArgs(Path.Combine(PolokusApp.BpmnPath, node.Text)));
             };
 
         }
@@ -112,6 +113,18 @@ namespace Polokus.App.Controls
 
         private async void buttonProcesses_Click(object sender, EventArgs e)
         {
+            switch (_lastOpenedViewInProcessesView)
+            {
+                case MainWindowViewModel.PanelView.ProcessesGraph:
+                    _mainWindow.ViewModel.ActivePanelView = MainWindowViewModel.PanelView.ProcessesGraph;
+                    break;
+                case MainWindowViewModel.PanelView.ProcessesXml:
+                    _mainWindow.ViewModel.ActivePanelView = MainWindowViewModel.PanelView.ProcessesXml;
+                    break;
+                case MainWindowViewModel.PanelView.ProcessesScript:
+                    _mainWindow.ViewModel.ActivePanelView = MainWindowViewModel.PanelView.ProcessesScript;
+                    break;
+            }
             await ShowProcessesPanel();
         }
 
@@ -123,16 +136,19 @@ namespace Polokus.App.Controls
 
         private void buttonGraphView_Click(object sender, EventArgs e)
         {
+            _lastOpenedViewInProcessesView = MainWindowViewModel.PanelView.ProcessesGraph;
             _mainWindow.ViewModel.ActivePanelView = MainWindowViewModel.PanelView.ProcessesGraph;
         }
 
         private void buttonXmlView_Click(object sender, EventArgs e)
         {
+            _lastOpenedViewInProcessesView = MainWindowViewModel.PanelView.ProcessesXml;
             _mainWindow.ViewModel.ActivePanelView = MainWindowViewModel.PanelView.ProcessesXml;
         }
 
         private void buttonScriptView_Click(object sender, EventArgs e)
         {
+            _lastOpenedViewInProcessesView = MainWindowViewModel.PanelView.ProcessesScript;
             _mainWindow.ViewModel.ActivePanelView = MainWindowViewModel.PanelView.ProcessesScript;
         }
 

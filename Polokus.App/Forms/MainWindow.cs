@@ -140,14 +140,12 @@ namespace Polokus.App.Forms
         }
 
 
-
-
         private void AdjustForm()
         {
             switch (this.WindowState)
             {
                 case FormWindowState.Maximized: // Maximized form (After)
-                    this.Padding = new Padding(8, 8, 8, 0);
+                    this.Padding = new Padding(8, 8, 8, 8);
                     break;
                 case FormWindowState.Normal: // Restored form (After)
                     if (this.Padding.Top != ViewModel.BorderSize)
@@ -165,7 +163,7 @@ namespace Polokus.App.Forms
                 Win32Manager.HandleMsgResize(this, ref m);                
                 return;
             }
-
+            
             if (m.Msg == Win32Manager.WM_NCCALCSIZE && m.WParam.ToInt32() == 1)
             {
                 // Remove border and keep snap window

@@ -34,7 +34,6 @@ namespace Polokus.App.Controls
             GraphView.ResumeLayout(true);
             XmlView.ResumeLayout(true);
             SettingsView.ResumeLayout(true);
-
         }
 
         public MainWindowMainPanel(MainWindow mainWindow)
