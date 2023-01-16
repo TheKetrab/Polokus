@@ -1,5 +1,5 @@
 ﻿using Polokus.Core.Interfaces;
-using Polokus.Core.Services.Interfaces;
+using Polokus.Core.Interfaces.Communication;
 using System;
 using System.Collections.Generic;
 using System.Linq;

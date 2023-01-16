@@ -5,7 +5,7 @@ using Polokus.App.Properties;
 using Polokus.App.Utils;
 using Polokus.App.Views;
 using Polokus.Core;
-using Polokus.Core.Services.Interfaces;
+using Polokus.Core.Interfaces.Communication;
 using Polokus.Core.Services.OnPremise;
 using Polokus.Core.Services.Remote;
 using RemoteServices;

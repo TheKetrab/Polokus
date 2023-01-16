@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Polokus.Core.Services.Interfaces
+﻿namespace Polokus.Core.Interfaces.Communication
 {
     public interface IProcessInstancesService
     {

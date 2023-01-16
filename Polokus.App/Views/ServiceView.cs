@@ -2,16 +2,9 @@
 using Grpc.Net.Client;
 using Polokus.App.Forms;
 using Polokus.App.Utils;
-using Polokus.Core;
-using Polokus.Core.Execution;
 using Polokus.Core.Helpers;
 using Polokus.Core.Interfaces;
-using Polokus.Core.Remote;
-using Polokus.Core.Services.Interfaces;
-using Polokus.Core.Services.OnPremise;
-using Polokus.Core.Services.Remote;
-using RemoteServices;
-using System.Collections.ObjectModel;
+using Polokus.Core.Interfaces.Communication;
 using System.Data;
 using System.Drawing.Text;
 using System.Reflection;

@@ -1,6 +1,6 @@
 ﻿using Polokus.Core.Helpers;
-using Polokus.Core.Remote.Models;
-using Polokus.Core.Services.Interfaces;
+using Polokus.Core.Interfaces.Communication;
+using Polokus.Core.Interfaces.Communication.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

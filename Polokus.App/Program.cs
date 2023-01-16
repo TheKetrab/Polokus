@@ -2,14 +2,6 @@ using CefSharp.WinForms;
 using CefSharp;
 using Polokus.App.Forms;
 using Polokus.Core.Helpers;
-using Grpc.Net.Client;
-using Polokus.App.Utils;
-using Polokus.Core.Services.OnPremise;
-using Polokus.Core.Services.Remote;
-using Polokus.Core;
-using Polokus.Core.Services.Interfaces;
-using Grpc.Core;
-using Polokus.App.Views;
 
 namespace Polokus.App
 {

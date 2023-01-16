@@ -1,6 +1,6 @@
 ﻿using Grpc.Net.Client;
+using Polokus.Core.Interfaces.Communication;
 using Polokus.Core.Remote;
-using Polokus.Core.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
