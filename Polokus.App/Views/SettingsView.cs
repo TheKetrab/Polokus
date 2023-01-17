@@ -2,6 +2,7 @@
 using Polokus.App.Forms;
 using Polokus.App.Utils;
 using Polokus.Core;
+using Polokus.Core.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -53,18 +54,23 @@ namespace Polokus.App.Views
 
         public void InitBindings()
         {
-            // TODO
-            //textBoxBpmnPath.DataBindings.Add("Text", Properties.Settings.Default, "BpmnPath");
-            //checkBoxEnableLogs.DataBindings.Add("Checked", Properties.Settings.Default, "EnableLogs");
-            //numericUpDownMessageListenerPort.DataBindings.Add("Value", Properties.Settings.Default, "MessageListenerPort");
-            //textBoxBpmnServiceNodeHandlers.DataBindings.Add("Text", Properties.Settings.Default, "ServiceTasksExternals");
+            // Main
+            textBoxBpmnPath.DataBindings.Add("Text", Settings.Instance, "bpmnPath", true, DataSourceUpdateMode.OnPropertyChanged);
+            checkBoxEnableLogs.DataBindings.Add("Checked", Settings.Instance, "enableLogs", true, DataSourceUpdateMode.OnPropertyChanged);
 
-            //numericUpDownDelayPerNodeHandler.DataBindings.Add("Value", Properties.Settings.Default, "DelayPerNodeHandlerMs", true, DataSourceUpdateMode.OnPropertyChanged);
-            //trackBarDelayPerNodeHandler.DataBindings.Add("Value", Properties.Settings.Default, "DelayPerNodeHandlerMs", true, DataSourceUpdateMode.OnPropertyChanged);
+            // App
+            numericUpDownDelayPerNodeHandler.DataBindings.Add("Value", Settings.Instance, "delayPerNodeHandlerMs", true, DataSourceUpdateMode.OnPropertyChanged);
+            trackBarDelayPerNodeHandler.DataBindings.Add("Value", Settings.Instance, "delayPerNodeHandlerMs", true, DataSourceUpdateMode.OnPropertyChanged);
 
-            //numericUpDownTimeoutForManualProcesses.DataBindings.Add("Value", Properties.Settings.Default, "TimeoutForProcessSec", true, DataSourceUpdateMode.OnPropertyChanged);
-            //trackBarTimeOutForManualProcesses.DataBindings.Add("Value", Properties.Settings.Default, "TimeoutForProcessSec", true, DataSourceUpdateMode.OnPropertyChanged);
-               
+            textBoxRemotePolokusUri.DataBindings.Add("Text", Settings.Instance, "remotePolokusUri", true, DataSourceUpdateMode.OnPropertyChanged);
+            checkBoxUseRemotePolokus.DataBindings.Add("Checked", Settings.Instance, "useRemotePolokus", true, DataSourceUpdateMode.OnPropertyChanged);
+
+            // Service
+            numericUpDownMessageListenerPort.DataBindings.Add("Value", Settings.Instance, "messageListenerPort", true, DataSourceUpdateMode.OnPropertyChanged);
+            textBoxExternalsPath.DataBindings.Add("Text", Settings.Instance, "externalsPath", true, DataSourceUpdateMode.OnPropertyChanged);
+
+            numericUpDownTimeoutForManualProcesses.DataBindings.Add("Value", Settings.Instance, "timeoutForProcessSec", true, DataSourceUpdateMode.OnPropertyChanged);
+            trackBarTimeOutForManualProcesses.DataBindings.Add("Value", Settings.Instance, "timeoutForProcessSec", true, DataSourceUpdateMode.OnPropertyChanged);
 
         }
 
@@ -81,9 +87,9 @@ namespace Polokus.App.Views
             }
         }
 
-        private void buttonSaveSettings_Click(object sender, EventArgs e)
+        private void buttonResetSettings_Click(object sender, EventArgs e)
         {
-            // TODO ?
+            Settings.ResetSettings();
         }
 
         private void buttonServiceNodeHandlers_Click(object sender, EventArgs e)
@@ -96,8 +102,8 @@ namespace Polokus.App.Views
 
                 if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(ofd.FileName))
                 {
-                    this.textBoxBpmnServiceNodeHandlers.Text = ofd.FileName;
-                    this.textBoxBpmnServiceNodeHandlers.DataBindings["Text"].BindingManagerBase.EndCurrentEdit();
+                    this.textBoxExternalsPath.Text = ofd.FileName;
+                    this.textBoxExternalsPath.DataBindings["Text"].BindingManagerBase.EndCurrentEdit();
                 }
             }
         }

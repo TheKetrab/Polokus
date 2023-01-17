@@ -20,7 +20,7 @@ namespace Polokus.Core.Interfaces
 
         private static Settings? _instance;
         private static object _lock = new object();
-        private static Settings Instance
+        public static Settings Instance
         {
             get
             {
@@ -50,6 +50,18 @@ namespace Polokus.Core.Interfaces
 
 
         public static void ResetSettings()
+        {
+            BpmnPath = "./BPMN";
+            EnableLogs = true;
+            MessageListenerPort = 8085;
+            ExternalsPath = "./externals.json";
+            TimeoutForProcessSec = -1;
+            DelayPerNodeHandlerMs = 0;
+            UseRemotePolokus = false;
+            RemotePolokusUri = "http://localhost:3000";
+        }
+
+        public static void ReloadSettings()
         {
             Instance.LoadSettings();
         }
@@ -138,91 +150,132 @@ namespace Polokus.Core.Interfaces
         #region Settings
 
         private string? _bpmnPath;
-        public static string BpmnPath
+        public string bpmnPath
         {
-            get => Instance._bpmnPath ?? throw new SettingNotFoundException("BpmnPath");
+            get => _bpmnPath ?? throw new SettingNotFoundException("BpmnPath");
             set
             {
-                Instance._bpmnPath = value;
-                Instance.UpdateSetting(MainSection, "BpmnPath", value);
+                _bpmnPath = value;
+                UpdateSetting(MainSection, "BpmnPath", value);
             }
+        }
+        public static string BpmnPath
+        {
+            get => Instance.bpmnPath;
+            set => Instance.bpmnPath = value;
         }
 
         private bool? _enableLogs;
-        public static bool EnableLogs
+        public bool enableLogs
         {
-            get => Instance._enableLogs ?? true;
+            get => _enableLogs ?? true;
             set
             {
-                Instance._enableLogs = value;
-                Instance.UpdateSetting(MainSection, "EnableLogs", value.ToString());
+                _enableLogs = value;
+                UpdateSetting(MainSection, "EnableLogs", value.ToString());
             }
+        }
+        public static bool EnableLogs 
+        {
+            get => Instance.enableLogs;
+            set => Instance.enableLogs = value;
         }
 
         private int? _messageListenerPort;
-        public static int MessageListenerPort
+        public int messageListenerPort
         {
-            get => Instance._messageListenerPort ?? throw new SettingNotFoundException("MessageListenerPort");
+            get => _messageListenerPort ?? throw new SettingNotFoundException("MessageListenerPort");
             set
             {
-                Instance._messageListenerPort = value;
-                Instance.UpdateSetting(ServiceSection, "MessageListenerPort", value.ToString());
+                _messageListenerPort = value;
+                UpdateSetting(ServiceSection, "MessageListenerPort", value.ToString());
             }
+        }
+        public static int MessageListenerPort
+        {
+            get => Instance.messageListenerPort;
+            set => Instance.messageListenerPort = value;
         }
 
         private string? _externalsPath;
-        public static string? ExternalsPath
+        public string? externalsPath
         {
-            get => Instance._externalsPath;
+            get => _externalsPath;
             set
             {
-                Instance._externalsPath = value;
-                Instance.UpdateSetting(ServiceSection, "ExternalsPath", value ?? "");
+                _externalsPath = value;
+                UpdateSetting(ServiceSection, "ExternalsPath", value ?? "");
             }
+        }
+        public static string? ExternalsPath
+        {
+            get => Instance.externalsPath;
+            set => Instance.externalsPath = value;
         }
 
         private int? _timeoutForProcessSec;
-        public static int TimeoutForProcessSec
+        public int timeoutForProcessSec
         {
-            get => Instance._timeoutForProcessSec ?? -1;
+            get => _timeoutForProcessSec ?? -1;
             set
             {
-                Instance._timeoutForProcessSec = value;
-                Instance.UpdateSetting(ServiceSection, "TimeoutForProcessSec", value.ToString());
+                _timeoutForProcessSec = value;
+                UpdateSetting(ServiceSection, "TimeoutForProcessSec", value.ToString());
             }
         }
+        public static int TimeoutForProcessSec
+        {
+            get => Instance.timeoutForProcessSec;
+            set => Instance.timeoutForProcessSec = value;
+        }
+        
 
         private int? _delayPerNodeHandlerMs;
-        public static int DelayPerNodeHandlerMs 
+        public int delayPerNodeHandlerMs 
         {
-            get => Instance._delayPerNodeHandlerMs ?? 0;
+            get => _delayPerNodeHandlerMs ?? 0;
             set
             {
-                Instance._delayPerNodeHandlerMs = value;
-                Instance.UpdateSetting(AppSection, "DelayPerNodeHandlerMs", value.ToString());
+                _delayPerNodeHandlerMs = value;
+                UpdateSetting(AppSection, "DelayPerNodeHandlerMs", value.ToString());
             }
+        }
+        public static int DelayPerNodeHandlerMs
+        {
+            get => Instance.delayPerNodeHandlerMs;
+            set => Instance.delayPerNodeHandlerMs = value;
         }
 
         private bool? _useRemotePolokus;
-        public static bool UseRemotePolokus 
+        public bool useRemotePolokus 
         {
-            get => Instance._useRemotePolokus ?? false;
+            get => _useRemotePolokus ?? false;
             set
             {
-                Instance._useRemotePolokus = value;
-                Instance.UpdateSetting(AppSection, "UseRemotePolokus", value.ToString());
+                _useRemotePolokus = value;
+                UpdateSetting(AppSection, "UseRemotePolokus", value.ToString());
             }
+        }
+        public static bool UseRemotePolokus
+        {
+            get => Instance.useRemotePolokus;
+            set => Instance.useRemotePolokus = true;
         }
 
         private string? _remotePolokusUri;
-        public static string? RemotePolokusUri 
+        public string? remotePolokusUri 
         {
-            get => Instance._remotePolokusUri;
+            get => _remotePolokusUri;
             set
             {
-                Instance._remotePolokusUri = value;
-                Instance.UpdateSetting(AppSection, "RemotePolokusUri", value ?? "");
+                _remotePolokusUri = value;
+                UpdateSetting(AppSection, "RemotePolokusUri", value ?? "");
             }
+        }
+        public static string RemotePolokusUri
+        {
+            get => Instance.remotePolokusUri;
+            set => Instance.remotePolokusUri = value;
         }
 
         #endregion

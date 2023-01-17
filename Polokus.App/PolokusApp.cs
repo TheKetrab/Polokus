@@ -26,7 +26,23 @@ namespace Polokus.App
     /// </summary>
     public static class PolokusApp
     {
-        public static string BpmnPath => Settings.BpmnPath;
+        public static string BpmnPath
+        {
+            get
+            {
+                if (Settings.BpmnPath.StartsWith("./"))
+                {
+                    string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Settings.BpmnPath.Substring(2));
+                    if (!Directory.Exists(path))
+                    {
+                        Directory.CreateDirectory(path);
+                    }
+                    return path;
+                }
+                return Settings.BpmnPath;
+            }
+        }
+
         public static MainWindow MainWindow => Program._mainWindow!;
 
         private static IServicesProvider? _servicesProvider;
