@@ -17,3 +17,5 @@ Examples/PathToMonitor/
 
 Installer/bin/
 Installer/*.exe
+
+Auth/

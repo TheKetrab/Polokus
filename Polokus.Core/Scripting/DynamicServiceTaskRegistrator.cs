@@ -27,19 +27,6 @@ namespace Polokus.Core.Scripting
             _factory = Workflow.NodeHandlerFactory;
         }
 
-        private static bool IsServiceNH(Type type)
-        {
-            for (Type tempType = type; tempType.BaseType != null; tempType = tempType.BaseType)
-            {
-                if (tempType == typeof(ServiceTaskNodeHandler))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
         public void RegisterServiceTask(string assemblyPath, string className, string name)
         {
             var asm = Assembly.LoadFile(assemblyPath);

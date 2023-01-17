@@ -3,6 +3,7 @@ using Polokus.Core.Helpers;
 using Polokus.Core.Hooks;
 using Polokus.Core.Interfaces;
 using Polokus.Core.Interfaces.BpmnModels;
+using Polokus.Core.Interfaces.NodeHandlers;
 using Polokus.Core.Interfaces.Xsd;
 using Polokus.Core.Models;
 using Polokus.Core.NodeHandlers;
@@ -17,14 +18,16 @@ namespace Polokus.Tests
 
         private class CustomServiceTaskNodeHandler : ServiceTaskNodeHandler
         {
-            public static int Test1 { get; private set; } = 1;
-
             public CustomServiceTaskNodeHandler(ProcessInstance processInstance, FlowNode<tServiceTask> typedNode)
                 : base(processInstance, typedNode)
             {
             }
 
-            public override async Task Action(INodeCaller? caller)
+            public static int Test1 { get; private set; } = 1;
+
+            public override string TaskName => "Test1";
+
+            public async Task Action(INodeCaller? caller)
             {
                 await Task.Delay(2000); // 2s
                 CancellationToken.ThrowIfCancellationRequested(); // cancell further action

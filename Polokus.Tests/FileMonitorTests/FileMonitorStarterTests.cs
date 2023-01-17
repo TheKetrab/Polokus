@@ -32,7 +32,9 @@ namespace Polokus.Tests.FileMonitorTests
             master.HooksManager!.RegisterHooksProvider(visitor);
             master.LoadXmlString(Resources.SignalProcessStarter1, "SignalProcessStarter");
 
-            master.RegisterFileMonitor(_dirToMonitor, FileMonitor.FileEvtType.FileCreated, "FileCreated");
+            string dirToAssembly = "../../../Polokus.ExternalsExample\\bin\\Debug\\net6.0/Polokus.ExternalsExample.dll";
+            master.RegisterMonitor(dirToAssembly, "Polokus.ExternalsExample.FileMonitor", new string[] { _dirToMonitor });
+            //master.RegisterMonitor(_dirToMonitor, FileMonitor.FileEvtType.FileCreated, "FileCreated");
             
             // Act
             string filePath = Path.Combine(_dirToMonitor, "file.txt");

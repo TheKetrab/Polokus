@@ -31,8 +31,9 @@ namespace Polokus.Tests.FileMonitorTests
             VisitorHooks visitor = new VisitorHooks(master, VisitTime.BeforeExecute);
             master.HooksManager!.RegisterHooksProvider(visitor);
             master.LoadXmlString(Resources.SignalWaiter1, "SignalWaiter");
-            master.RegisterFileMonitor(_dirToMonitor, FileMonitor.FileEvtType.FileCreated, "FileCreated");
 
+            string dirToAssembly = "../../../Polokus.ExternalsExample\\bin\\Debug\\net6.0/Polokus.ExternalsExample.dll";
+            master.RegisterMonitor(dirToAssembly, "Polokus.ExternalsExample.FileMonitor", new string[] { _dirToMonitor });
 
             var wf = master.GetFirstWorkflow();
             string bpmnProcessId = wf.BpmnWorkflow.BpmnProcesses.First().Id;

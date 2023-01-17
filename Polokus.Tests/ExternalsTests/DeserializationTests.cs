@@ -32,7 +32,7 @@ namespace Polokus.Tests.ExternalsTests
         }
 
         [Test]
-        public void LoadExternals_LoadFileMonitors()
+        public void LoadExternals_LoadMonitors()
         {
             // Arrange
 
@@ -40,20 +40,11 @@ namespace Polokus.Tests.ExternalsTests
             var externals = ExternalsManager.LoadExternals(Resources.TestExternals);
 
             // Assert
-            Assert.AreEqual(1, externals.FileMonitors.Count);
-
-            Assert.AreEqual("path/to/monitor1", externals.FileMonitors[0].Path);
-            Assert.AreEqual(2, externals.FileMonitors[0].Actions.Count);
-            var action1 = externals.FileMonitors[0].Actions[0];
-            var action2 = externals.FileMonitors[0].Actions[1];
-
-            Assert.AreEqual(FileMonitor.FileEvtType.FileCreated, action1.Event);
-            Assert.AreEqual("SIGNAL_NAME1", action1.Signal);
-            Assert.AreEqual("parameters1", action1.Params);
-
-            Assert.AreEqual(FileMonitor.FileEvtType.ItemDeleted, action2.Event);
-            Assert.AreEqual("SIGNAL_NAME2", action2.Signal);
-            Assert.AreEqual("parameters2", action2.Params);
+            Assert.AreEqual(1, externals.Monitors.Count);
+            Assert.AreEqual("ass1", externals.Monitors[0].Assembly);
+            Assert.AreEqual("namespace.class.type", externals.Monitors[0].ClassName);
+            Assert.AreEqual(1, externals.Monitors[0].Arguments.Length);
+            Assert.AreEqual("arg1", externals.Monitors[0].Arguments[0]);
 
         }
 

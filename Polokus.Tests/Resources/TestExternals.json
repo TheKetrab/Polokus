@@ -31,22 +31,12 @@
             ]
         }
     ],
-    "FileMonitors": [
-        {
-            "Path": "path/to/monitor1",
-            "Actions": [
-                {
-                    "Event": "FileCreated",
-                    "Signal": "SIGNAL_NAME1",
-                    "Params": "parameters1"
-                },
-                {
-                    "Event": "ItemDeleted",
-                    "Signal": "SIGNAL_NAME2",
-                    "Params": "parameters2"
-                }
-            ]
-        }
+    "Monitors": [
+		{
+			"Assembly": "ass1",
+			"ClassName": "namespace.class.type",
+			"Arguments": [ "arg1" ]
+		}
     ],
     "HooksProviders": [
         {

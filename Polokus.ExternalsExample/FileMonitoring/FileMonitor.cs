@@ -1,29 +1,20 @@
-﻿using Polokus.Core.Interfaces.Execution;
-using System.IO;
-using System.Security.Cryptography;
+﻿using Polokus.Core.Interfaces;
+using Polokus.Core.Interfaces.Execution;
 
-namespace Polokus
+namespace Polokus.ExternalsExample.FileMonitoring
 {
     /// <summary>
     /// File monitor inspects single directory and provides some events.
     /// </summary>
-    public class FileMonitor : IFileMonitor, IDisposable
+    public class FileMonitor : IMonitor
     {
         private string _path;
         private FileSystemWatcher _watcher;
+        private IPolokusMaster _master;
 
-        public enum FileEvtType
+        public FileMonitor(IPolokusMaster master, string path)
         {
-            FileCreated,
-            FileModified,
-            FileRenamed,
-            DirectoryCreated,
-            DirectoryRenamed,
-            ItemDeleted
-        }
-
-        public FileMonitor(string path)
-        {
+            _master = master;
             _path = path;
 
             _watcher = new FileSystemWatcher(_path);
@@ -46,18 +37,18 @@ namespace Polokus
 
         private void _watcher_Deleted(object sender, FileSystemEventArgs e)
         {
-            ItemDeleted?.Invoke(this, e.FullPath);
+            _master.EmitSignal(this, FileEvtType.ItemDeleted.ToString(), e.FullPath);
         }
 
         private void _watcher_Created(object sender, FileSystemEventArgs e)
         {
             if (File.Exists(e.FullPath))
             {
-                FileCreated?.Invoke(this, e.FullPath);
+                _master.EmitSignal(this, FileEvtType.FileCreated.ToString(), e.FullPath);
             }
             else if (Directory.Exists(e.FullPath))
             {
-                DirectoryCreated?.Invoke(this, e.FullPath);
+                _master.EmitSignal(this, FileEvtType.DirectoryCreated.ToString(), e.FullPath);
             }
         }
 
@@ -65,7 +56,7 @@ namespace Polokus
         {
             if (File.Exists(e.FullPath))
             {
-                FileModified?.Invoke(this, e.FullPath);
+                _master.EmitSignal(this, FileEvtType.FileModified.ToString(), e.FullPath);
             }
         }
 
@@ -73,22 +64,13 @@ namespace Polokus
         {
             if (File.Exists(e.FullPath))
             {
-                FileRenamed?.Invoke(this, e.FullPath);
+                _master.EmitSignal(this, FileEvtType.FileRenamed.ToString(), e.FullPath);
             }
             else if (Directory.Exists(e.FullPath))
             {
-                DirectoryRenamed?.Invoke(this, e.FullPath);
+                _master.EmitSignal(this, FileEvtType.DirectoryCreated.ToString(), e.FullPath);
             }
         }
-
-        public event EventHandler<string>? FileCreated;
-        public event EventHandler<string>? FileModified;
-        public event EventHandler<string>? FileRenamed;
-
-        public event EventHandler<string>? DirectoryCreated;
-        public event EventHandler<string>? DirectoryRenamed;
-
-        public event EventHandler<string>? ItemDeleted;
 
         public bool IsMonitoring { get; private set; }
         public void StartMonitoring()

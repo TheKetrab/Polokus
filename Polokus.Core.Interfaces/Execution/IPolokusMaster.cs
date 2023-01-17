@@ -44,9 +44,9 @@ namespace Polokus.Core.Interfaces
         IConnectionManager ConnectionManager { get; }
 
         /// <summary>
-        /// List of objects that monitors some directories.
+        /// List of objects that monitors some actions that raise events.
         /// </summary>
-        ICollection<IFileMonitor> FileMonitors { get; }
+        ICollection<IMonitor> Monitors { get; }
 
         /// <summary>
         /// Parses BPMN XML string and adds workflow to collecion.

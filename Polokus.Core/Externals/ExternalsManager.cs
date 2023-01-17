@@ -9,6 +9,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Polokus.Core.Interfaces.Execution;
 
 namespace Polokus.Core.Externals
 {
@@ -28,7 +29,6 @@ namespace Polokus.Core.Externals
         public static Externals LoadExternals(string jsonString)
         {
             var options = new JsonSerializerOptions();
-            options.Converters.Add(new EnumJsonConverter<FileMonitor.FileEvtType>());
 
             return JsonSerializer.Deserialize<Externals>(jsonString,options)
                 ?? throw new SerializationException("Failed to load externals.");
@@ -61,7 +61,18 @@ namespace Polokus.Core.Externals
             return Instantiate<IHooksProvider>(externalHooksProvider.Assembly, externalHooksProvider.ClassName);
         }
 
-        private static T Instantiate<T>(string assembly, string className)
+        public static IMonitor InstantiateMonitor(IPolokusMaster master, ExternalMonitor externalMonitor)
+        {
+            foreach (var dependency in externalMonitor.Dependencies)
+            {
+                Assembly.LoadFrom(dependency);
+            }
+
+            object?[]? args = externalMonitor.Arguments.ToList<object>().Prepend(master).ToArray();
+            return Instantiate<IMonitor>(externalMonitor.Assembly, externalMonitor.ClassName, args);
+        }
+
+        private static T Instantiate<T>(string assembly, string className, object?[]? arguments = null)
         {
             var asm = Assembly.LoadFile(assembly);
             var type = asm.GetType(className);
@@ -70,7 +81,7 @@ namespace Polokus.Core.Externals
                 throw new Exception($"Cannot find type {className} in assembly: {assembly}");
             }
 
-            object? obj = Activator.CreateInstance(type);
+            object? obj = Activator.CreateInstance(type, arguments);
             if (obj == null)
             {
                 throw new Exception("Failed to instantiate object.");

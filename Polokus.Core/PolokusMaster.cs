@@ -8,6 +8,8 @@ using Polokus.Core.Interfaces.Managers;
 using Polokus.Core.Interfaces.BpmnModels;
 using Polokus.Core.Interfaces.Xsd;
 using Polokus.Core.Interfaces.Execution;
+using Polokus.Core.Factories;
+using System.Security.Claims;
 
 namespace Polokus.Core
 {
@@ -26,8 +28,8 @@ namespace Polokus.Core
 
         public Externals.Externals? Externals { get; }
 
-        public ICollection<IFileMonitor> FileMonitors { get; }
-            = new List<IFileMonitor>();
+        public ICollection<IMonitor> Monitors { get; }
+            = new List<IMonitor>();
 
 
         private Dictionary<string, Logger> _logs = new();
@@ -103,7 +105,7 @@ namespace Polokus.Core
         public PolokusMaster(bool isGUIAppManaged = false)
         {
             HooksManager = new HooksManager(this);
-            Externals = ExternalsManager.TryLoadExternals("./externals.json");
+            Externals = ExternalsManager.TryLoadExternals("C:\\Custom\\BPMN\\Polokus\\Examples\\Programmatibility\\externals.json");
             if (Externals != null)
             {
                 // ----- Register Hooks Providers -----
@@ -122,13 +124,13 @@ namespace Polokus.Core
                     SettingsProvider = ExternalsManager.InstantiateSettingsProvider(Externals.SettingsProvider);
                 }
 
-                // ----- Register File Monitors -----
-                if (Externals.FileMonitors != null)
+                // ----- Register Monitors -----
+                if (Externals.Monitors != null)
                 {
-                    foreach (var fileMonitor in Externals.FileMonitors)
+                    foreach (var monitor in Externals.Monitors)
                     {
-                        RegisterFileMonitor(fileMonitor.Path,
-                            fileMonitor.Actions.Select(x => Tuple.Create(x.Event, x.Signal, x.Params)));
+                        var m = ExternalsManager.InstantiateMonitor(this, monitor);
+                        RegisterMonitor(m);
                     }
                 }
 
@@ -148,65 +150,10 @@ namespace Polokus.Core
 
         }
 
-        private void RegisterActionForFileMonitor(FileMonitor fm,
-            FileMonitor.FileEvtType evtType, string signal, string? parameters)
+        public void RegisterMonitor(IMonitor monitor)
         {
-            EventHandler<string> evt = (s, e) =>
-            {
-                string queryString = string.IsNullOrEmpty(parameters)
-                    ? $"path={e}"
-                    : $"{parameters}&path={e}";
-
-                Signal?.Invoke(this, new Signal(signal, queryString));
-            };
-
-            switch (evtType)
-            {
-                case FileMonitor.FileEvtType.FileCreated:
-                    fm.FileCreated += evt;
-                    break;
-                case FileMonitor.FileEvtType.FileRenamed:
-                    fm.FileRenamed += evt;
-                    break;
-                case FileMonitor.FileEvtType.FileModified:
-                    fm.FileModified += evt;
-                    break;
-                case FileMonitor.FileEvtType.DirectoryRenamed:
-                    fm.DirectoryRenamed += evt;
-                    break;
-                case FileMonitor.FileEvtType.DirectoryCreated:
-                    fm.DirectoryCreated += evt;
-                    break;
-                case FileMonitor.FileEvtType.ItemDeleted:
-                    fm.ItemDeleted += evt;
-                    break;
-            }
-        }
-
-        public void RegisterFileMonitor(string pathToMonitor,
-            FileMonitor.FileEvtType evtType, string signal, string? parameters = null)
-        {
-            var fm = new FileMonitor(pathToMonitor);
-            RegisterActionForFileMonitor(fm, evtType, signal, parameters);
-            fm.StartMonitoring();
-            FileMonitors.Add(fm);
-        }
-
-        public void RegisterFileMonitor(string pathToMonitor,
-            IEnumerable<Tuple<FileMonitor.FileEvtType,string,string>> actions)
-        {
-            var fm = new FileMonitor(pathToMonitor);
-            foreach (var action in actions) 
-            {
-                var evtType = action.Item1;
-                string signal = action.Item2;
-                string parameters = action.Item3;
-
-                RegisterActionForFileMonitor(fm, evtType, signal, parameters);
-            }
-
-            fm.StartMonitoring();
-            FileMonitors.Add(fm);
+            monitor.StartMonitoring();
+            Monitors.Add(monitor);
         }
 
         public void AddWorkflow(string id, IWorkflow workflow)
