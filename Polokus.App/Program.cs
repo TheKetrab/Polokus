@@ -2,6 +2,7 @@ using CefSharp.WinForms;
 using CefSharp;
 using Polokus.App.Forms;
 using Polokus.Core.Helpers;
+using Polokus.Core.Interfaces;
 
 namespace Polokus.App
 {
@@ -27,12 +28,10 @@ namespace Polokus.App
 
             // Load Settings
             
-            if (string.IsNullOrEmpty(Properties.Settings.Default.BpmnPath))
+            if (string.IsNullOrEmpty(Settings.BpmnPath))
             {
-                Properties.Settings.Default.BpmnPath = Path.Combine(
+                Settings.BpmnPath = Path.Combine(
                     Directory.GetCurrentDirectory(), "BPMN");
-                
-                Properties.Settings.Default.Save();
             }
 
             // CefSharp init
@@ -49,7 +48,7 @@ namespace Polokus.App
 
 
             // ----- EXIT -----
-            if (Properties.Settings.Default.EnableLogs)
+            if (Settings.EnableLogs)
             {
                 PrintLogs();
             }
@@ -86,7 +85,7 @@ namespace Polokus.App
 
         private static bool InitializeMaster()
         {
-            if (Properties.Settings.Default.UseRemotePolokus)
+            if (Settings.UseRemotePolokus)
             {
                 bool success = PolokusApp.TryRegisterRemotePolokus();
                 if (success)

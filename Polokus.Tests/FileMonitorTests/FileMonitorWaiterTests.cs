@@ -33,7 +33,7 @@ namespace Polokus.Tests.FileMonitorTests
             master.LoadXmlString(Resources.SignalWaiter1, "SignalWaiter");
 
             string dirToAssembly = "../../../Polokus.ExternalsExample\\bin\\Debug\\net6.0/Polokus.ExternalsExample.dll";
-            master.RegisterMonitor(dirToAssembly, "Polokus.ExternalsExample.FileMonitor", new string[] { _dirToMonitor });
+            //master.RegisterMonitor(dirToAssembly, "Polokus.ExternalsExample.FileMonitor", new string[] { _dirToMonitor });
 
             var wf = master.GetFirstWorkflow();
             string bpmnProcessId = wf.BpmnWorkflow.BpmnProcesses.First().Id;

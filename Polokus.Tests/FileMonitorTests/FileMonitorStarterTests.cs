@@ -33,7 +33,7 @@ namespace Polokus.Tests.FileMonitorTests
             master.LoadXmlString(Resources.SignalProcessStarter1, "SignalProcessStarter");
 
             string dirToAssembly = "../../../Polokus.ExternalsExample\\bin\\Debug\\net6.0/Polokus.ExternalsExample.dll";
-            master.RegisterMonitor(dirToAssembly, "Polokus.ExternalsExample.FileMonitor", new string[] { _dirToMonitor });
+            //master.RegisterMonitor(dirToAssembly, "Polokus.ExternalsExample.FileMonitor", new string[] { _dirToMonitor });
             //master.RegisterMonitor(_dirToMonitor, FileMonitor.FileEvtType.FileCreated, "FileCreated");
             
             // Act

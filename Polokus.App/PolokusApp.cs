@@ -5,7 +5,9 @@ using Polokus.App.Properties;
 using Polokus.App.Utils;
 using Polokus.App.Views;
 using Polokus.Core;
+using Polokus.Core.Interfaces;
 using Polokus.Core.Interfaces.Communication;
+using Polokus.Core.Interfaces.Exceptions;
 using Polokus.Core.Services.OnPremise;
 using Polokus.Core.Services.Remote;
 using RemoteServices;
@@ -24,7 +26,7 @@ namespace Polokus.App
     /// </summary>
     public static class PolokusApp
     {
-        public static string BpmnPath => Settings.Default.BpmnPath;
+        public static string BpmnPath => Settings.BpmnPath;
         public static MainWindow MainWindow => Program._mainWindow!;
 
         private static IServicesProvider? _servicesProvider;
@@ -74,8 +76,12 @@ namespace Polokus.App
         /// </summary>
         private static IServicesProvider CreateRemotePolokus(out GrpcChannel channel)
         {
-            string uri = Properties.Settings.Default.RemotePolokusUri;
-            uri = "http://localhost:3000"; // TODO
+            if (Settings.RemotePolokusUri == null)
+            {
+                throw new SettingNotFoundException();
+            }
+
+            string uri = Settings.RemotePolokusUri;
             channel = GrpcChannel.ForAddress(uri);
             var serviceProvider = new GrpcRemoteServiceProvider(channel);
 

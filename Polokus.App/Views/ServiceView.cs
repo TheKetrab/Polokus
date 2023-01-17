@@ -162,7 +162,7 @@ namespace Polokus.App.Views
 
         private void LoadBpmnFiles()
         {
-            string bpmnDir = Properties.Settings.Default.BpmnPath;
+            string bpmnDir = Settings.BpmnPath;
             if (!Directory.Exists(bpmnDir))
             {
                 string msg = $"BpmnPath {bpmnDir} does not exists. Do you want to create this directory?";
@@ -176,7 +176,7 @@ namespace Polokus.App.Views
                 }
             }
 
-            var files = Directory.GetFiles(Properties.Settings.Default.BpmnPath);
+            var files = Directory.GetFiles(Settings.BpmnPath);
             foreach (var file in files)
             {
                 LoadXmlFile(file);
@@ -435,7 +435,7 @@ namespace Polokus.App.Views
                 {
                     string filePath = openFileDialog.FileName;
                     string name = Path.GetFileName(filePath);
-                    string newFilePath = Path.Combine(Properties.Settings.Default.BpmnPath, name);
+                    string newFilePath = Path.Combine(Settings.BpmnPath, name);
                     File.Copy(filePath, newFilePath);
                     LoadXmlFile(newFilePath);
                 }

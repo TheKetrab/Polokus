@@ -1,14 +1,15 @@
-﻿using Polokus.Core.Interfaces;
+﻿using Polokus.Core;
+using Polokus.Core.Interfaces;
 using System;
 
 namespace Polokus.App.Utils
 {
     public class AppSettingsProvider : ISettingsProvider
     {
-        public int MessageListenerPort => Properties.Settings.Default.MessageListenerPort;
-        public string ServiceTasksExternals => Properties.Settings.Default.ServiceTasksExternals;
-        public int TimeOutForProcessSec => Properties.Settings.Default.TimeoutForProcessSec;
-        public int DelayForNodeHandlerMs => Properties.Settings.Default.DelayPerNodeHandlerMs;
+        public int MessageListenerPort => Settings.MessageListenerPort;
+        public string ServiceTasksExternals => Settings.ExternalsPath ?? "";
+        public int TimeOutForProcessSec => Settings.TimeoutForProcessSec;
+        public int DelayForNodeHandlerMs => Settings.DelayPerNodeHandlerMs;
     }
 
 }

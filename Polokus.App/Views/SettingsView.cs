@@ -53,16 +53,17 @@ namespace Polokus.App.Views
 
         public void InitBindings()
         {
-            textBoxBpmnPath.DataBindings.Add("Text", Properties.Settings.Default, "BpmnPath");
-            checkBoxEnableLogs.DataBindings.Add("Checked", Properties.Settings.Default, "EnableLogs");
-            numericUpDownMessageListenerPort.DataBindings.Add("Value", Properties.Settings.Default, "MessageListenerPort");
-            textBoxBpmnServiceNodeHandlers.DataBindings.Add("Text", Properties.Settings.Default, "ServiceTasksExternals");
+            // TODO
+            //textBoxBpmnPath.DataBindings.Add("Text", Properties.Settings.Default, "BpmnPath");
+            //checkBoxEnableLogs.DataBindings.Add("Checked", Properties.Settings.Default, "EnableLogs");
+            //numericUpDownMessageListenerPort.DataBindings.Add("Value", Properties.Settings.Default, "MessageListenerPort");
+            //textBoxBpmnServiceNodeHandlers.DataBindings.Add("Text", Properties.Settings.Default, "ServiceTasksExternals");
 
-            numericUpDownDelayPerNodeHandler.DataBindings.Add("Value", Properties.Settings.Default, "DelayPerNodeHandlerMs", true, DataSourceUpdateMode.OnPropertyChanged);
-            trackBarDelayPerNodeHandler.DataBindings.Add("Value", Properties.Settings.Default, "DelayPerNodeHandlerMs", true, DataSourceUpdateMode.OnPropertyChanged);
+            //numericUpDownDelayPerNodeHandler.DataBindings.Add("Value", Properties.Settings.Default, "DelayPerNodeHandlerMs", true, DataSourceUpdateMode.OnPropertyChanged);
+            //trackBarDelayPerNodeHandler.DataBindings.Add("Value", Properties.Settings.Default, "DelayPerNodeHandlerMs", true, DataSourceUpdateMode.OnPropertyChanged);
 
-            numericUpDownTimeoutForManualProcesses.DataBindings.Add("Value", Properties.Settings.Default, "TimeoutForProcessSec", true, DataSourceUpdateMode.OnPropertyChanged);
-            trackBarTimeOutForManualProcesses.DataBindings.Add("Value", Properties.Settings.Default, "TimeoutForProcessSec", true, DataSourceUpdateMode.OnPropertyChanged);
+            //numericUpDownTimeoutForManualProcesses.DataBindings.Add("Value", Properties.Settings.Default, "TimeoutForProcessSec", true, DataSourceUpdateMode.OnPropertyChanged);
+            //trackBarTimeOutForManualProcesses.DataBindings.Add("Value", Properties.Settings.Default, "TimeoutForProcessSec", true, DataSourceUpdateMode.OnPropertyChanged);
                
 
         }
@@ -82,7 +83,7 @@ namespace Polokus.App.Views
 
         private void buttonSaveSettings_Click(object sender, EventArgs e)
         {
-            Properties.Settings.Default.Save();
+            // TODO ?
         }
 
         private void buttonServiceNodeHandlers_Click(object sender, EventArgs e)
