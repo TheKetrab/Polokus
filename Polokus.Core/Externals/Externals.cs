@@ -12,7 +12,7 @@ namespace Polokus.Core.Externals
 {
     public class Externals
     {
-        public List<ExternalWorkflow> Workflows { get; set; } = new();
+        public List<ExternalServiceTask> ServiceTasks { get; set; } = new();
         public List<ExternalMonitor> Monitors { get; set; } = new();
         public List<ExternalHooksProvider>? HooksProviders { get; set; }
         public ExternalSettingsProvider? SettingsProvider { get; set; }

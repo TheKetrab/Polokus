@@ -15,6 +15,7 @@ namespace Polokus.App.Controls
         public GraphView GraphView { get; }
         public XmlView XmlView { get; }
         public SettingsView SettingsView { get; }
+        public ExternalsView ExternalsView { get; }
 
         private MainWindow _mainWindow;
 
@@ -25,6 +26,7 @@ namespace Polokus.App.Controls
             GraphView.SuspendLayout();
             XmlView.SuspendLayout();
             SettingsView.SuspendLayout();
+            ExternalsView.SuspendLayout();
         }
 
         public void ResumeLayout()
@@ -34,6 +36,7 @@ namespace Polokus.App.Controls
             GraphView.ResumeLayout(true);
             XmlView.ResumeLayout(true);
             SettingsView.ResumeLayout(true);
+            ExternalsView.ResumeLayout(true);
         }
 
         public MainWindowMainPanel(MainWindow mainWindow)
@@ -45,6 +48,7 @@ namespace Polokus.App.Controls
             GraphView = new GraphView(_mainWindow);
             XmlView = new XmlView(_mainWindow);
             SettingsView = new SettingsView(_mainWindow);
+            ExternalsView = new ExternalsView(_mainWindow);
 
             InitializeSubViews();
         }
@@ -69,6 +73,10 @@ namespace Polokus.App.Controls
             SettingsView.Dock = DockStyle.Fill;
             SettingsView.BackColor = PolokusStyle.DefaultViewColor;
             SettingsView.Parent = _mainWindow.PanelSettings;
+
+            ExternalsView.Dock = DockStyle.Fill;
+            ExternalsView.BackColor = PolokusStyle.DefaultViewColor;
+            ExternalsView.Parent = _mainWindow.PanelProcessesCSharp;
         }
 
     }

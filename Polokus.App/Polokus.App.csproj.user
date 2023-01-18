@@ -49,6 +49,9 @@
     <Compile Update="Views\ChromiumWindow.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Update="Views\ExternalsView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Update="Views\GraphView.cs">
       <SubType>UserControl</SubType>
     </Compile>
