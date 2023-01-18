@@ -1,4 +1,5 @@
-﻿using Polokus.Core.Interfaces;
+﻿using Polokus.Core.Execution;
+using Polokus.Core.Interfaces;
 using Polokus.Core.Interfaces.BpmnModels;
 using Polokus.Core.Interfaces.NodeHandlers;
 using Polokus.Core.Interfaces.Xsd;
@@ -9,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Polokus.Core.Factories
 {
@@ -18,7 +20,7 @@ namespace Polokus.Core.Factories
         private Dictionary<string, Type> _serviceTasksHandlers = new();
  
         public void RegisterNodeHandlerForServiceTask<TNodeHandler>(string serviceTask)
-            where TNodeHandler : class, INodeHandler
+            where TNodeHandler : ServiceTaskNodeHandlerImpl
         {
             _serviceTasksHandlers[serviceTask] = typeof(TNodeHandler);
         }
@@ -62,16 +64,6 @@ namespace Polokus.Core.Factories
                 throw new Exception($"NodeHandler for type {node.XmlType.Name} not registered.");
             }
 
-            if (node.XmlType == typeof(tServiceTask))
-            {
-                if (!_serviceTasksHandlers.ContainsKey(node.Name))
-                {
-                    throw new Exception($"NodeHandler for service task {node.Name} not registered.");
-                }
-
-                return _serviceTasksHandlers[node.Name];
-            }
-
             return _nodeHandlers[node.XmlType];
 
         }
@@ -94,6 +86,18 @@ namespace Polokus.Core.Factories
             }
             
             return nodeHandler ?? throw new Exception("Unable to create nodehandler.", activatorException);
+        }
+
+        public ServiceTaskNodeHandlerImpl CreateServiceTaskNodeHandlerImpl(INodeHandler parent, string serviceTaskName)
+        {
+            if (!IsNodeHandlerForServiceTaskRegistered(serviceTaskName))
+            {
+                throw new Exception($"Not registered service task for name {serviceTaskName}");
+            }
+
+            Type serviceTaskNodeHandlerImpl = _serviceTasksHandlers[serviceTaskName];
+            return Activator.CreateInstance(serviceTaskNodeHandlerImpl, new object[] { parent }) as ServiceTaskNodeHandlerImpl
+                ?? throw new Exception($"Unable to create ServiceTaskNodeHandlerImpl: {serviceTaskNodeHandlerImpl.FullName}");
         }
 
         public bool IsNodeHandlerForServiceTaskRegistered(string serviceTask)

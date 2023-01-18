@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Polokus.ExternalsExample.FileMonitoring;
 
 namespace Polokus.Tests.FileMonitorTests
 {
@@ -32,9 +33,8 @@ namespace Polokus.Tests.FileMonitorTests
             master.HooksManager!.RegisterHooksProvider(visitor);
             master.LoadXmlString(Resources.SignalProcessStarter1, "SignalProcessStarter");
 
-            string dirToAssembly = "../../../Polokus.ExternalsExample\\bin\\Debug\\net6.0/Polokus.ExternalsExample.dll";
-            //master.RegisterMonitor(dirToAssembly, "Polokus.ExternalsExample.FileMonitor", new string[] { _dirToMonitor });
-            //master.RegisterMonitor(_dirToMonitor, FileMonitor.FileEvtType.FileCreated, "FileCreated");
+            var fileMonitor = new FileMonitor(master, _dirToMonitor);
+            master.RegisterMonitor(fileMonitor);
             
             // Act
             string filePath = Path.Combine(_dirToMonitor, "file.txt");

@@ -29,7 +29,7 @@ namespace Polokus.Tests.NodeHandlersTests
 
             // Assert
             Assert.That(visitor.GetResult(),
-                Is.EqualTo("start;taskA;tIntermediateCatchEvent(3s);taskB;end"));
+                Is.EqualTo("start;taskA;tIntermediateCatchEvent(3s);tIntermediateCatchEvent(3s);taskB;end"));
             Assert.IsTrue(
                 pi.StatusManager.TotalTime > TimeSpan.FromSeconds(3)
                 && pi.StatusManager.TotalTime < TimeSpan.FromSeconds(4));
@@ -52,9 +52,10 @@ namespace Polokus.Tests.NodeHandlersTests
 
             // Assert
             CustomAsserts.MatchAnyRegex(visitor.GetResult(),
-                "start;par1;taskA;par2;tIntermediateCatchEvent;taskB;par2;end",
-                "start;par1;tIntermediateCatchEvent;taskA;par2;taskB;par2;end",
-                "start;par1;taskA;tIntermediateCatchEvent;par2;taskB;par2;end");
+                "start;par1;taskA;par2;tIntermediateCatchEvent;tIntermediateCatchEventtaskB;par2;end",
+                "start;par1;taskA;tIntermediateCatchEvent;par2;tIntermediateCatchEvent;taskB;par2;end",
+                "start;par1;tIntermediateCatchEvent;taskA;par2;tIntermediateCatchEvent;taskB;par2;end"
+                );
 
         }
 

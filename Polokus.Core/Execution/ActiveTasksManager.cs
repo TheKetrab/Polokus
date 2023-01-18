@@ -24,7 +24,6 @@ namespace Polokus.Core.Execution
     {
         private int _cnt = 0;
         private Dictionary<int, Tuple<CancellationTokenSource, INodeHandler>> ActiveTasks = new(); // taskId;<cts,worker>
-        private List<INodeHandler> PausedNodeHandlers = new();
         public ProcessInstance ProcessInstance { get; }
 
         public ActiveTasksManager(ProcessInstance processInstance)
@@ -96,11 +95,6 @@ namespace Polokus.Core.Execution
         public IEnumerable<INodeHandler> GetNodeHandlers()
         {
             return ActiveTasks.Values.Select(x => x.Item2);
-        }
-
-        public IEnumerable<INodeHandler> GetPausedNodeHandlers()
-        {
-            return PausedNodeHandlers;
         }
 
         public string[] Dump()

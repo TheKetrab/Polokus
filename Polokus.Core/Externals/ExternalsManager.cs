@@ -95,5 +95,7 @@ namespace Polokus.Core.Externals
                 throw new Exception($"Unable to cast object of type {obj?.GetType().FullName} to {typeof(T).FullName}");
             }
         }
+
+
     }
 }

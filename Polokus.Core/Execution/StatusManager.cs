@@ -13,6 +13,7 @@ namespace Polokus.Core.Execution
     public class StatusManager : IStatusManager, IRestorable<string>
     {
         private ProcessInstance _pi;
+        private object _lock = new object();
 
         public bool IsStarted => !IS(ProcessStatus.Initialized);
         public bool IsFinished => IS(ProcessStatus.Finished) || IS(ProcessStatus.Stopped);
@@ -51,6 +52,14 @@ namespace Polokus.Core.Execution
 
         public void Pause()
         {
+            lock (_lock)
+            {
+                PauseUnsafe();
+            }
+        }
+
+        private void PauseUnsafe()
+        {
             var snapshot = _pi.Dump();
 
             _pi.ActiveTasksManager.Stop();
@@ -60,10 +69,18 @@ namespace Polokus.Core.Execution
             _pi.Workflow.Paused.Add(_pi, snapshot);
         }
 
-        public void Stop()
+        private void StopUnsafe()
         {
             KillEverythingRunning();
             Status = ProcessStatus.Stopped;
+        }
+
+        public void Stop()
+        {
+            lock (_lock)
+            {
+                StopUnsafe();
+            }
         }
 
         public void KillEverythingRunning()
@@ -74,7 +91,10 @@ namespace Polokus.Core.Execution
 
         public bool IsRunning()
         {
-            return _pi.ActiveTasksManager.AnyRunning() || _pi.Waiters.Any() || _pi.StatusManager.IsPaused;
+            lock (_lock)
+            {
+                return _pi.ActiveTasksManager.AnyRunning() || _pi.Waiters.Any() || _pi.StatusManager.IsPaused;
+            }
         }
 
         public void Begin(IFlowNode startNode)
@@ -90,6 +110,14 @@ namespace Polokus.Core.Execution
         }
 
         public void Resume()
+        {
+            lock (_lock)
+            {
+                ResumeUnsafe();
+            }
+        }
+
+        private void ResumeUnsafe()
         {
             var snapshot = _pi.Workflow.Paused[_pi];
             _pi.Workflow.Paused.Remove(_pi);

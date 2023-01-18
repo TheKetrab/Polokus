@@ -1,22 +1,14 @@
-﻿using Polokus.Core.Execution;
-using Polokus.Core.Interfaces;
-using Polokus.Core.Interfaces.NodeHandlers;
-using Polokus.Core.Interfaces.Xsd;
-using Polokus.Core.Models;
-using Polokus.Core.NodeHandlers;
+﻿using Polokus.Core.Interfaces.NodeHandlers;
 
 namespace Polokus.ExternalsExample
 {
-    public class MyCustomServiceTaskNodeHandler : ServiceTaskNodeHandler
+    public class MyCustomServiceTaskNodeHandler : ServiceTaskNodeHandlerImpl
     {
-        public MyCustomServiceTaskNodeHandler(ProcessInstance processInstance, FlowNode<tServiceTask> typedNode)
-            : base(processInstance, typedNode)
+        public MyCustomServiceTaskNodeHandler(INodeHandler parent) : base(parent)
         {
         }
 
-        public override string TaskName => "Hello World";
-
-        public override Task Action(INodeCaller? caller)
+        public override Task Run()
         {
             const string path = @"C:\Custom\BPMN\Polokus\Examples\mycustomservice.txt";
             using (var fs = File.OpenWrite(path))

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Polokus.Core.Hooks
+namespace Polokus.Core.Interfaces.Execution
 {
     public class EmptyHooksProvider : IHooksProvider
     {

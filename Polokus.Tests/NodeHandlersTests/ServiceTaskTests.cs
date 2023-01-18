@@ -12,25 +12,25 @@ using Polokus.Tests.Helpers;
 using Polokus.Core.Execution;
 using Polokus.Core.Interfaces.Xsd;
 using Polokus.Core.Interfaces.BpmnModels;
+using Polokus.Core.Interfaces.NodeHandlers;
+using Polokus.Core.Scripting;
 
 namespace Polokus.Tests.NodeHandlersTests
 {
     public class ServiceTaskTests
     {
-        private class CustomServiceTaskNodeHandler : ServiceTaskNodeHandler
+        private class CustomServiceTaskNodeHandler : ServiceTaskNodeHandlerImpl
         {
-            public CustomServiceTaskNodeHandler(ProcessInstance processInstance, FlowNode<tServiceTask> typedNode)
-                : base(processInstance, typedNode)
+            public CustomServiceTaskNodeHandler(INodeHandler parent) : base(parent)
             {
             }
 
-            public override async Task Action(INodeCaller? caller)
+            public override async Task Run()
             {
-                int x1 = await ScriptProvider.EvalCSharpScriptAsync<int>("$x = -1; return (int)$x;");
-                int x2 = await ScriptProvider.EvalCSharpScriptAsync<int>("int y; y=(42+58) * (int)$x; $y = y; return y;");
-                int x3 = await ScriptProvider.EvalCSharpScriptAsync<int>("return $y;");
+                int x1 = await Parent.Workflow.ScriptProvider.EvalCSharpScriptAsync<int>("$x = -1; return (int)$x;");
+                int x2 = await Parent.Workflow.ScriptProvider.EvalCSharpScriptAsync<int>("int y; y=(42+58) * (int)$x; $y = y; return y;");
+                int x3 = await Parent.Workflow.ScriptProvider.EvalCSharpScriptAsync<int>("return $y;");
             }
-
         }
 
 

@@ -243,6 +243,9 @@ namespace Polokus.Core.Execution
 
             var pi = new ProcessInstance(id, wf, bpmn, null);
 
+            // restore hooks provider
+            pi.HooksProvider = wf.HooksProvider;
+
             if (!string.IsNullOrEmpty(source.ParentProcessInstanceId))
             {
                 pi.ParentProcessInstance = wf.GetProcessInstanceById(source.ParentProcessInstanceId);
@@ -250,9 +253,10 @@ namespace Polokus.Core.Execution
             }
 
             ((StatusManager)pi.StatusManager).Restore(master, source.Status);
-            pi.FailedExecutionNodeIds = source.FailedExecutionNodeIds;
+            pi.FailedExecutionNodeIds = source.FailedExecutionNodeIds.ToList();
 
-            source.AciveNodes.ForEach(x => pi.StartNewSequence(bpmn.GetNodeById(x), null));
+            source.AciveNodes.ForEach(x => pi.StartNewSequence(bpmn.GetNodeById(x), null)); // executes new sequences (on another threads)
+            Thread.Sleep(300);
 
             // restore waiters
             foreach (var nodeId in source.IdsOfNodesThatHadWaiters)
@@ -273,6 +277,7 @@ namespace Polokus.Core.Execution
                         throw new Exception("Not handled situation");
                 }
             }
+
         }
 
         public ProcessInstanceSnapShot Dump()

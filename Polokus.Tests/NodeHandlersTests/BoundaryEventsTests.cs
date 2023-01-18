@@ -2,6 +2,7 @@
 using Polokus.Core.Hooks;
 using Polokus.Core.Interfaces;
 using Polokus.Core.Interfaces.BpmnModels;
+using Polokus.Core.Interfaces.NodeHandlers;
 using Polokus.Core.Interfaces.Xsd;
 using Polokus.Core.Models;
 using Polokus.Core.NodeHandlers;
@@ -55,18 +56,16 @@ namespace Polokus.Tests.NodeHandlersTests
 
         }
 
-        private class CustomServiceTaskNodeHandler : ServiceTaskNodeHandler
+        private class CustomServiceTaskNodeHandler : ServiceTaskNodeHandlerImpl
         {
-            public CustomServiceTaskNodeHandler(ProcessInstance processInstance, FlowNode<tServiceTask> typedNode)
-                : base(processInstance, typedNode)
+            public CustomServiceTaskNodeHandler(INodeHandler parent) : base(parent)
             {
             }
 
-            public override async Task Action(INodeCaller? caller)
+            public override async Task Run()
             {
                 await Task.Delay(10000); // 10s
             }
-
         }
 
 

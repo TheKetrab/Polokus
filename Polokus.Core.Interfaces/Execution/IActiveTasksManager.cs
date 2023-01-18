@@ -13,7 +13,6 @@ namespace Polokus.Core.Interfaces.Execution
         void RemoveRunningTask(int taskId);
         void Stop();
         IEnumerable<INodeHandler> GetNodeHandlers();
-        IEnumerable<INodeHandler> GetPausedNodeHandlers();
         
     }
 }

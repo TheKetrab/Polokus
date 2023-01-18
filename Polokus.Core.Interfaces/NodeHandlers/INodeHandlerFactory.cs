@@ -30,7 +30,7 @@ namespace Polokus.Core.Interfaces.NodeHandlers
         /// <typeparam name="TNodeHandler">Type that derives from ServiceTaskNodeHandler.</typeparam>
         /// <param name="serviceTask">Name of ServiceTask to handling.</param>
         void RegisterNodeHandlerForServiceTask<TNodeHandler>(string serviceTask)
-            where TNodeHandler : class, INodeHandler;
+            where TNodeHandler : ServiceTaskNodeHandlerImpl;
 
         /// <summary>
         /// This method registers type to use for service task of name <paramref name="serviceTask"/>.
@@ -44,6 +44,15 @@ namespace Polokus.Core.Interfaces.NodeHandlers
         /// </summary>
         /// <param name="serviceTask">Name of service task.</param>
         bool IsNodeHandlerForServiceTaskRegistered(string serviceTask);
+
+        /// <summary>
+        /// This method creates concrete ServiceTaskNodeHandlerImpl worker for ServiceTask of name <paramref name="serviceTaskName"/>.
+        /// Object is created by constructor that refers to parent NodeHandler and has an asynchronous Run method.
+        /// The name must be registered with ExternalsManager to be used.
+        /// </summary>
+        /// <param name="parent">ServiceTask that is invoking the implementation.</param>
+        /// <param name="serviceTaskName">Name of service task.</param>
+        ServiceTaskNodeHandlerImpl CreateServiceTaskNodeHandlerImpl(INodeHandler parent, string serviceTaskName);
 
     }
 }

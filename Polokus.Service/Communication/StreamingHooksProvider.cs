@@ -3,6 +3,7 @@ using Polokus.Core.Interfaces;
 using RemoteServices;
 using System;
 using System.Threading.Tasks;
+using Polokus.Core.Interfaces.Execution;
 
 namespace Polokus.Service.Communication
 {

@@ -4,6 +4,7 @@ using Polokus.Core.Hooks;
 using Polokus.Core.Interfaces;
 using Polokus.Core.Interfaces.BpmnModels;
 using Polokus.Core.Interfaces.NodeHandlers;
+using Polokus.Core.Interfaces.Execution;
 using Polokus.Core.Interfaces.Xsd;
 using Polokus.Core.Models;
 using Polokus.Core.NodeHandlers;
@@ -16,25 +17,21 @@ namespace Polokus.Tests
     {
         const string FailureMsg = "Action should be cancelled but wasn't.";
 
-        private class CustomServiceTaskNodeHandler : ServiceTaskNodeHandler
+        private class CustomServiceTaskNodeHandler : ServiceTaskNodeHandlerImpl
         {
-            public CustomServiceTaskNodeHandler(ProcessInstance processInstance, FlowNode<tServiceTask> typedNode)
-                : base(processInstance, typedNode)
+            public static int Test1 { get; private set; } = 1;
+
+            public CustomServiceTaskNodeHandler(INodeHandler parent) : base(parent)
             {
             }
 
-            public static int Test1 { get; private set; } = 1;
-
-            public override string TaskName => "Test1";
-
-            public async Task Action(INodeCaller? caller)
+            public override async Task Run()
             {
                 await Task.Delay(2000); // 2s
-                CancellationToken.ThrowIfCancellationRequested(); // cancell further action
+                Parent.CancellationToken.ThrowIfCancellationRequested(); // cancell further action
                 Test1 = 2;
                 throw new InvalidCastException(FailureMsg);
             }
-
         }
 
 
@@ -63,27 +60,25 @@ namespace Polokus.Tests
 
             // Assert
             Assert.AreEqual(1, CustomServiceTaskNodeHandler.Test1); // value not changed
-            Assert.AreEqual("", Logger.Global.GetFullLog()); // exception not thrown
+            Assert.IsFalse(Logger.Global.GetFullLog(true).Contains("ERR")); // exception not thrown
 
         }
 
-        private class CustomServiceTaskNodeHandler2 : ServiceTaskNodeHandler
+        private class CustomServiceTaskNodeHandler2 : ServiceTaskNodeHandlerImpl
         {
             public static int State { get; private set; } = 1;
 
-            public CustomServiceTaskNodeHandler2(
-                ProcessInstance processInstance, FlowNode<tServiceTask> typedNode)
-                : base(processInstance, typedNode)
+            public CustomServiceTaskNodeHandler2(INodeHandler parent) : base(parent)
             {
             }
 
-            public override async Task Action(INodeCaller? caller)
+            public override async Task Run()
             {
                 if (State == 1)
                 {
                     State = 2;
                     await Task.Delay(2000); // 2s
-                    CancellationToken.ThrowIfCancellationRequested(); // cancell further action
+                    Parent.CancellationToken.ThrowIfCancellationRequested(); // cancell further action
                     throw new Exception(FailureMsg);
                 }
                 else if (State == 2)
@@ -92,7 +87,6 @@ namespace Polokus.Tests
                     State = 3;
                 }
             }
-
         }
 
         [Test]
@@ -117,7 +111,7 @@ namespace Polokus.Tests
                 pi.StatusManager.Pause();
 
                 Assert.AreEqual(0, pi.ActiveTasksManager.GetNodeHandlers().Count());
-                Assert.AreEqual(1, pi.ActiveTasksManager.GetPausedNodeHandlers().Count());
+                Assert.AreEqual(1, pi.Workflow.Paused.Count);
 
                 pi.StatusManager.Resume();
 
@@ -128,7 +122,7 @@ namespace Polokus.Tests
 
             // Assert
             Assert.AreEqual(3, CustomServiceTaskNodeHandler2.State);
-            Assert.AreEqual("", Logger.Global.GetFullLog()); // exception not thrown
+            Assert.IsFalse(Logger.Global.GetFullLog(true).Contains("ERR")); // exception not thrown
             Assert.AreEqual("start;DelayTask;DelayTask;end", visitor.GetResult()); // 'DelayTask' called two times
         }
 

@@ -1,4 +1,6 @@
-﻿namespace Polokus.Core.Interfaces.Managers
+﻿using Polokus.Core.Interfaces.Execution;
+
+namespace Polokus.Core.Interfaces.Managers
 {
     public interface IHooksManager : IHooksProvider
     {

@@ -7,6 +7,7 @@ using Polokus.Core.Interfaces.NodeHandlers;
 using Polokus.Core.Interfaces.Serialization;
 using Polokus.Core.Scripting;
 using System.Collections.Generic;
+using Polokus.Core.Interfaces.Execution;
 
 namespace Polokus.Core.Execution
 {
@@ -138,7 +139,6 @@ namespace Polokus.Core.Execution
 
         public void StartProcessInstance(IProcessInstance processInstance, IFlowNode startNode, int? timeout)
         {
-            LoadServiceTasksNodeHandlers(processInstance.BpmnProcess);
             Task.Run(async () => await RunProcessAsync(processInstance, startNode, timeout));
         }
 
@@ -148,26 +148,6 @@ namespace Polokus.Core.Execution
             StartProcessInstance(processInstance, startNode, timeout);
             return processInstance;
         }
-
-        private void LoadServiceTasksNodeHandlers(IBpmnProcess bpmnProcess)
-        {
-            var serviceTasks = bpmnProcess.GetServiceTasksNames();
-            if (!serviceTasks.Any())
-            {
-                return;
-            }
-
-            var registrator = new DynamicServiceTaskRegistrator(this);
-            foreach (var task in serviceTasks)
-            {
-                if (!NodeHandlerFactory.IsNodeHandlerForServiceTaskRegistered(task))
-                {
-                    registrator.RegisterServiceTask(task);
-                }
-
-            }
-        }
-
 
         public IProcessInstance StartProcessManually(string bpmnProcessId)
         {

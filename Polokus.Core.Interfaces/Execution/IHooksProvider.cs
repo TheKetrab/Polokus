@@ -1,4 +1,4 @@
-﻿namespace Polokus.Core.Interfaces
+﻿namespace Polokus.Core.Interfaces.Execution
 {
     /// <summary>
     /// HooksProvider is an object that allows to inject hooks for some actions during processing a BPMN process.

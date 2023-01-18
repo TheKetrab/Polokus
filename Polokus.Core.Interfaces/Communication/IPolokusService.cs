@@ -1,4 +1,6 @@
-﻿namespace Polokus.Core.Interfaces.Communication
+﻿using Polokus.Core.Interfaces.Execution;
+
+namespace Polokus.Core.Interfaces.Communication
 {
     public interface IPolokusService
     {

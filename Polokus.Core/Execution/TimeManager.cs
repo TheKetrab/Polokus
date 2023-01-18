@@ -103,9 +103,15 @@ namespace Polokus.Core.Execution
             else if (TimeString.IsCroneString(timedef))
             {
                 var waiter = new NodeHandlerWaiter(pi, node);
+                bool registered = false;
                 Task t = new Task(async () =>
-                    await RegisterWaiterCrone(timedef, waiter, true, continuation));
+                {
+                    await RegisterWaiterCrone(timedef, waiter, true, continuation);
+                    registered = true;
+                });
                 t.Start();
+                while (!registered) Thread.Sleep(5);
+
                 return waiter;
             }
             else

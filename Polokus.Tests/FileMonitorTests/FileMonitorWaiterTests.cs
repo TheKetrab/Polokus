@@ -7,6 +7,8 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Polokus.Tests.Helpers;
+using Polokus.Core.Interfaces.Execution;
+using Polokus.ExternalsExample.FileMonitoring;
 
 namespace Polokus.Tests.FileMonitorTests
 {
@@ -32,8 +34,8 @@ namespace Polokus.Tests.FileMonitorTests
             master.HooksManager!.RegisterHooksProvider(visitor);
             master.LoadXmlString(Resources.SignalWaiter1, "SignalWaiter");
 
-            string dirToAssembly = "../../../Polokus.ExternalsExample\\bin\\Debug\\net6.0/Polokus.ExternalsExample.dll";
-            //master.RegisterMonitor(dirToAssembly, "Polokus.ExternalsExample.FileMonitor", new string[] { _dirToMonitor });
+            var fileMonitor = new FileMonitor(master, _dirToMonitor);
+            master.RegisterMonitor(fileMonitor);
 
             var wf = master.GetFirstWorkflow();
             string bpmnProcessId = wf.BpmnWorkflow.BpmnProcesses.First().Id;
