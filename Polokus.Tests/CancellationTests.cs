@@ -28,7 +28,7 @@ namespace Polokus.Tests
             public override async Task Run()
             {
                 await Task.Delay(2000); // 2s
-                Parent.CancellationToken.ThrowIfCancellationRequested(); // cancell further action
+                Parent.CancellationTokenSource.Token.ThrowIfCancellationRequested(); // cancell further action
                 Test1 = 2;
                 throw new InvalidCastException(FailureMsg);
             }
@@ -78,7 +78,7 @@ namespace Polokus.Tests
                 {
                     State = 2;
                     await Task.Delay(2000); // 2s
-                    Parent.CancellationToken.ThrowIfCancellationRequested(); // cancell further action
+                    Parent.CancellationTokenSource.Token.ThrowIfCancellationRequested(); // cancell further action
                     throw new Exception(FailureMsg);
                 }
                 else if (State == 2)

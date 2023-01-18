@@ -63,7 +63,7 @@ namespace Polokus.Core.Execution
         {
             var ctoken = ActiveTasks[taskId].Item1;
             ActiveTasks[taskId] = Tuple.Create(ctoken, nh);
-            nh.CancellationToken = ctoken.Token;
+            nh.CancellationTokenSource = ctoken;
 
         }
 

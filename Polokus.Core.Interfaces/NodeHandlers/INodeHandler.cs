@@ -24,12 +24,8 @@ namespace Polokus.Core.Interfaces.NodeHandlers
         IWorkflow Workflow { get; }
         IPolokusMaster Master { get; }
 
-        CancellationToken CancellationToken { get; set; }
+        CancellationTokenSource CancellationTokenSource { get; set; }
 
-        /// <summary>
-        /// Creates copy of object. It is necessary because of CancellationTokens
-        /// </summary>
-        INodeHandler Clone();
 
     }
 }

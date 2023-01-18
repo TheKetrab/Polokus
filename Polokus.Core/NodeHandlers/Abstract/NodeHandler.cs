@@ -18,7 +18,7 @@ namespace Polokus.Core.NodeHandlers.Abstract
         public IPolokusMaster Master => Workflow.PolokusMaster;
         public FlowNode<T> TypedNode { get; }
         public IFlowNode Node => TypedNode;
-        public CancellationToken CancellationToken { get; set; }
+        public CancellationTokenSource CancellationTokenSource { get; set; }
         public bool IsJoining => Node.Incoming.Count > 1;
         public IScriptProvider ScriptProvider => ProcessInstance.Workflow.ScriptProvider;
 
@@ -66,17 +66,17 @@ namespace Polokus.Core.NodeHandlers.Abstract
         {
             try
             {
-                CancellationToken.ThrowIfCancellationRequested();
+                CancellationTokenSource.Token.ThrowIfCancellationRequested();
                 bool canProcess = await CanProcess(caller);
                 if (!canProcess)
                 {
                     return new ProcessResultInfo(ProcessResultState.Suspension);
                 }
 
-                CancellationToken.ThrowIfCancellationRequested();
+                CancellationTokenSource.Token.ThrowIfCancellationRequested();
                 AddWaitersForBoundaryEvents();
                 var resultInfo = await Process(caller);
-                CancellationToken.ThrowIfCancellationRequested();
+                CancellationTokenSource.Token.ThrowIfCancellationRequested();
                 RemoveWaitersForBoundaryEvents();
 
                 return resultInfo;
@@ -101,14 +101,6 @@ namespace Polokus.Core.NodeHandlers.Abstract
                 Logger.Global.LogError(exc.Message);
                 return new ProcessResultInfo(ProcessResultState.Failure, exc.Message);
             }
-        }
-
-        public virtual INodeHandler Clone()
-        {
-            INodeHandler copy = (INodeHandler)this.MemberwiseClone();
-            copy.CancellationToken = new CancellationToken();
-
-            return copy;
         }
 
         private void AddWaitersForBoundaryEvents()
