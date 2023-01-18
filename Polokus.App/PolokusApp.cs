@@ -1,24 +1,15 @@
 ﻿using Grpc.Core;
 using Grpc.Net.Client;
 using Polokus.App.Forms;
-using Polokus.App.Properties;
 using Polokus.App.Utils;
-using Polokus.App.Views;
 using Polokus.Core;
 using Polokus.Core.Interfaces;
 using Polokus.Core.Interfaces.Communication;
 using Polokus.Core.Interfaces.Exceptions;
 using Polokus.Core.Services.OnPremise;
 using Polokus.Core.Services.Remote;
-using Polokus.Core.Interfaces.Execution;
 
 using RemoteServices;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Polokus.App
 {

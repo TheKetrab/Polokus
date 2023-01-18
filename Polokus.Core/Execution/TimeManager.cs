@@ -1,16 +1,10 @@
-﻿using Quartz.Impl;
-using Quartz;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Quartz.Logging.OperationName;
-using Polokus.Core.Interfaces;
+﻿using Polokus.Core.Helpers;
 using Polokus.Core.Hooks;
-using Polokus.Core.Helpers;
-using Polokus.Core.Interfaces.Managers;
+using Polokus.Core.Interfaces;
 using Polokus.Core.Interfaces.BpmnModels;
+using Polokus.Core.Interfaces.Managers;
+using Quartz;
+using Quartz.Impl;
 
 namespace Polokus.Core.Execution
 {

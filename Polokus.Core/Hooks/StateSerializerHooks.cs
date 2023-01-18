@@ -1,12 +1,4 @@
-﻿using Polokus.Core.Execution;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Polokus.Core.Interfaces;
-using System.Text.Json;
-using Polokus.Core.Interfaces.Execution;
+﻿using Polokus.Core.Interfaces.Execution;
 
 namespace Polokus.Core.Hooks
 {

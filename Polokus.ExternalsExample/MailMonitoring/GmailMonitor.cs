@@ -1,9 +1,4 @@
-﻿using Google.Apis.Auth.OAuth2;
-using Google.Apis.Gmail.v1;
-using Google.Apis.Gmail.v1.Data;
-using Google.Apis.Services;
-using Google.Apis.Util.Store;
-using Polokus.Core.Interfaces;
+﻿using Polokus.Core.Interfaces;
 using Polokus.Core.Interfaces.Execution;
 
 namespace Polokus.ExternalsExample.MailMonitoring

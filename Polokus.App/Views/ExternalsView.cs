@@ -2,18 +2,6 @@
 using Polokus.Core.Externals;
 using Polokus.Core.Externals.Models;
 using Polokus.Core.Interfaces;
-using Polokus.Core.Interfaces.Execution;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Polokus.App.Views
 {

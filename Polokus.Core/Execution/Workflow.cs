@@ -2,12 +2,11 @@
 using Polokus.Core.Helpers;
 using Polokus.Core.Interfaces;
 using Polokus.Core.Interfaces.BpmnModels;
+using Polokus.Core.Interfaces.Execution;
 using Polokus.Core.Interfaces.Managers;
 using Polokus.Core.Interfaces.NodeHandlers;
 using Polokus.Core.Interfaces.Serialization;
 using Polokus.Core.Scripting;
-using System.Collections.Generic;
-using Polokus.Core.Interfaces.Execution;
 
 namespace Polokus.Core.Execution
 {

@@ -1,14 +1,11 @@
 ﻿using CefSharp;
-using Grpc.Net.Client;
 using Polokus.App.Forms;
 using Polokus.App.Utils;
 using Polokus.Core.Helpers;
 using Polokus.Core.Interfaces;
 using Polokus.Core.Interfaces.Communication;
 using System.Data;
-using System.Drawing.Text;
 using System.Reflection;
-using System.Threading.Channels;
 
 namespace Polokus.App.Views
 {

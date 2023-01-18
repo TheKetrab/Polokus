@@ -1,15 +1,9 @@
 ﻿using Polokus.Core.Externals.Models;
 using Polokus.Core.Interfaces;
-using Polokus;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Polokus.Core.Interfaces.Execution;
 using System.Reflection;
 using System.Runtime.Serialization;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
-using Polokus.Core.Interfaces.Execution;
 
 namespace Polokus.Core.Externals
 {

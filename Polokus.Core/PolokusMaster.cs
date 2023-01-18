@@ -3,13 +3,11 @@ using Polokus.Core.Externals;
 using Polokus.Core.Helpers;
 using Polokus.Core.Hooks;
 using Polokus.Core.Interfaces;
-using Polokus.Core.Models;
-using Polokus.Core.Interfaces.Managers;
 using Polokus.Core.Interfaces.BpmnModels;
-using Polokus.Core.Interfaces.Xsd;
 using Polokus.Core.Interfaces.Execution;
-using Polokus.Core.Factories;
-using System.Security.Claims;
+using Polokus.Core.Interfaces.Managers;
+using Polokus.Core.Interfaces.Xsd;
+using Polokus.Core.Models;
 
 namespace Polokus.Core
 {

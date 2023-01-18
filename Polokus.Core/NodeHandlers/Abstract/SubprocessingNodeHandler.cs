@@ -1,13 +1,8 @@
 ﻿using Polokus.Core.Interfaces;
-using Polokus.Core.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Polokus.Core.Interfaces.BpmnModels;
 using Polokus.Core.Interfaces.NodeHandlers;
 using Polokus.Core.Interfaces.Xsd;
-using Polokus.Core.Interfaces.BpmnModels;
+using Polokus.Core.Models;
 
 namespace Polokus.Core.NodeHandlers.Abstract
 {

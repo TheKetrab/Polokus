@@ -56,11 +56,6 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <None Update="bpmnio.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
 	<ItemGroup>
 		<Protobuf Include="Communication\Protos\common.proto" GrpcServices="Client" />
 		<Protobuf Include="Communication\Protos\hooks.proto" GrpcServices="Client" />

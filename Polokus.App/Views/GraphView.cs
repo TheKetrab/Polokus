@@ -1,17 +1,5 @@
 ﻿using CefSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Polokus.App.Controls;
 using Polokus.App.Forms;
-using Polokus.App.Utils;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace Polokus.App.Views
 {

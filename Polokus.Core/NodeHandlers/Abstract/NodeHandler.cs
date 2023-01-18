@@ -1,21 +1,12 @@
-﻿using Polokus.Core.Hooks;
-using Polokus.Core.Interfaces;
-using Polokus.Core.Models;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using Polokus.Core.Execution;
+﻿using Polokus.Core.Execution;
 using Polokus.Core.Helpers;
+using Polokus.Core.Interfaces;
+using Polokus.Core.Interfaces.BpmnModels;
+using Polokus.Core.Interfaces.Execution;
+using Polokus.Core.Interfaces.Managers;
 using Polokus.Core.Interfaces.NodeHandlers;
 using Polokus.Core.Interfaces.Xsd;
-using Polokus.Core.Interfaces.BpmnModels;
-using Polokus.Core.Interfaces.Managers;
-using Polokus.Core.Interfaces.Execution;
+using Polokus.Core.Models;
 
 namespace Polokus.Core.NodeHandlers.Abstract
 {

@@ -1,9 +1,6 @@
 ﻿using Grpc.Core;
-using Polokus.Core.Interfaces;
-using RemoteServices;
-using System;
-using System.Threading.Tasks;
 using Polokus.Core.Interfaces.Execution;
+using RemoteServices;
 
 namespace Polokus.Service.Communication
 {

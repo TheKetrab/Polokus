@@ -1,17 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Scripting;
+﻿using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using Polokus.Core.Interfaces;
 using Polokus.Core.Interfaces.Execution;
-using Polokus.Core.Models;
+using System.Net;
+using System.Text.RegularExpressions;
 
 namespace Polokus.Core.Scripting
 {

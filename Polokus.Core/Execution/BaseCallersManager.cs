@@ -2,12 +2,7 @@
 using Polokus.Core.Interfaces;
 using Polokus.Core.Interfaces.BpmnModels;
 using Polokus.Core.Interfaces.Managers;
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Polokus.Core.Execution
 {
