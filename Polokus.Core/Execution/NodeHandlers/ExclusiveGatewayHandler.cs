@@ -10,10 +10,15 @@ namespace Polokus.Core.Execution.NodeHandlers
 {
     public class ExclusiveGatewayHandler : NodeHandler<tExclusiveGateway>
     {
+        string? _defaultSequence;
+
         public ExclusiveGatewayHandler(ProcessInstance processInstance, FlowNode<tExclusiveGateway> typedNode)
             : base(processInstance, typedNode)
         {
-            
+            if (!string.IsNullOrEmpty(typedNode.XmlElement.@default))
+            {
+                _defaultSequence = typedNode.XmlElement.@default;
+            }
         }
 
         async Task<bool> IsValidSequence(ISequence sequence)
@@ -21,7 +26,12 @@ namespace Polokus.Core.Execution.NodeHandlers
             string condition = ScriptProvider.Decode(sequence.Name);
             if (string.IsNullOrEmpty(condition))
             {
-                return true; // accept by default
+                if (_defaultSequence == null)
+                {
+                    return true; // accept by default
+                }
+
+                return false; // if default sequence exists, choose it on the end
             }
             return await ScriptProvider.EvalCSharpScriptAsync<bool>(condition);
         }
@@ -33,6 +43,15 @@ namespace Polokus.Core.Execution.NodeHandlers
                 if (await IsValidSequence(sequence))
                 {
                     return new SuccessProcessResultInfo(sequence);
+                }
+            }
+
+            if (_defaultSequence != null)
+            {
+                var seq = Node.Outgoing.FirstOrDefault(x => x.Id == _defaultSequence);
+                if (seq != null)
+                {
+                    return new SuccessProcessResultInfo(seq);
                 }
             }
 

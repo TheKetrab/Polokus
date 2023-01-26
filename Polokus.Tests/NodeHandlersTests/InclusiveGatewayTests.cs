@@ -12,7 +12,7 @@ using Polokus.Core.Interfaces.Execution;
 
 namespace Polokus.Tests.NodeHandlersTests
 {
-    public class InclusiveGatewayNodeHandlerTests
+    public class InclusiveGatewayTests
     {
         [Test]
         public async Task InclusiveGatewayNodeHandler_BaseBehaviour_1()
