@@ -1,14 +1,6 @@
 ﻿using Grpc.Core;
-using Polokus.Core;
-using Polokus.Core.Services.OnPremise;
+using Polokus.Core.Communication.Services.OnPremise;
 using RemoteServices;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Google.Protobuf.Collections;
-using Polokus.Core.Helpers;
 
 namespace Polokus.Service.Communication.Services
 {

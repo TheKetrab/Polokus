@@ -1,6 +1,6 @@
 ﻿using Polokus.App.Forms;
-using Polokus.Core.Externals;
-using Polokus.Core.Externals.Models;
+using Polokus.Core.Extensibility.Externals;
+using Polokus.Core.Extensibility.Externals.Models;
 using Polokus.Core.Interfaces;
 
 namespace Polokus.App.Views

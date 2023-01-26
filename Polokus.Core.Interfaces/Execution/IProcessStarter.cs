@@ -1,7 +1,7 @@
-﻿using Polokus.Core.Interfaces.Execution;
-using Polokus.Core.Interfaces.BpmnModels;
+﻿using Polokus.Core.Interfaces.BpmnModels;
+using Polokus.Core.Interfaces.Extensibility;
 
-namespace Polokus.Core.Interfaces
+namespace Polokus.Core.Interfaces.Execution
 {
     /// <summary>
     /// Starter is an object that is responsible for starting new process instance, when an event occures.

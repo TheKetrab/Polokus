@@ -1,10 +1,9 @@
 ﻿using Polokus.Core.Interfaces.BpmnModels;
-using Polokus.Core.Interfaces.Execution;
-using Polokus.Core.Interfaces.Execution;
+using Polokus.Core.Interfaces.Execution.NodeHandlers;
+using Polokus.Core.Interfaces.Extensibility;
 using Polokus.Core.Interfaces.Managers;
-using Polokus.Core.Interfaces.NodeHandlers;
 
-namespace Polokus.Core.Interfaces
+namespace Polokus.Core.Interfaces.Execution
 {
     /// <summary>
     /// ProcessInstance is an object that is responsible for managing life of process defined via BpmnProcess.

@@ -1,4 +1,4 @@
-﻿using Polokus.Core.Hooks;
+﻿using Polokus.Core.Extensibility.Hooks;
 using Polokus.Core;
 using System;
 using System.Collections.Generic;

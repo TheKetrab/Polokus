@@ -3,10 +3,10 @@ using Grpc.Net.Client;
 using Polokus.App.Forms;
 using Polokus.App.Utils;
 using Polokus.Core;
+using Polokus.Core.Communication.Services.OnPremise;
 using Polokus.Core.Interfaces;
 using Polokus.Core.Interfaces.Communication;
 using Polokus.Core.Interfaces.Exceptions;
-using Polokus.Core.Services.OnPremise;
 using Polokus.Core.Services.Remote;
 
 using RemoteServices;

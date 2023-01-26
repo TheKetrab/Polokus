@@ -1,7 +1,7 @@
 ﻿using Polokus.Core.Interfaces.BpmnModels;
 using Polokus.Core.Interfaces.Xsd;
 
-namespace Polokus.Core.Models
+namespace Polokus.Core.BpmnModels
 {
     public class Sequence : ISequence
     {

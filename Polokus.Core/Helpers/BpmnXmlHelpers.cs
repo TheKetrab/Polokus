@@ -1,6 +1,6 @@
 ﻿using Polokus.Core.Interfaces.BpmnModels;
 using Polokus.Core.Interfaces.Xsd;
-using Polokus.Core.Models;
+using Polokus.Core.BpmnModels;
 
 namespace Polokus.Core.Helpers
 {

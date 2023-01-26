@@ -1,4 +1,6 @@
-﻿namespace Polokus.Core.Interfaces.BpmnModels
+﻿using Polokus.Core.Interfaces.Execution;
+
+namespace Polokus.Core.Interfaces.BpmnModels
 {
     /// <summary>
     /// BpmnWorkflow is an object that represents parsed XML definitions file.

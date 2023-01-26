@@ -1,10 +1,10 @@
 ﻿using Polokus.Core.Interfaces.BpmnModels;
+using Polokus.Core.Interfaces.Execution.NodeHandlers;
+using Polokus.Core.Interfaces.Extensibility;
 using Polokus.Core.Interfaces.Managers;
-using Polokus.Core.Interfaces.NodeHandlers;
 using Polokus.Core.Interfaces.Serialization;
-using Polokus.Core.Interfaces.Execution;
 
-namespace Polokus.Core.Interfaces
+namespace Polokus.Core.Interfaces.Execution
 {
     /// <summary>
     /// IWorkflow is a running instance of its definition: IBpmnWorkflow.

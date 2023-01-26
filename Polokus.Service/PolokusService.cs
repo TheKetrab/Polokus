@@ -1,7 +1,7 @@
 ﻿using Grpc.Core;
 using log4net;
 using Polokus.Core;
-using Polokus.Core.Services.OnPremise;
+using Polokus.Core.Communication.Services.OnPremise;
 using Polokus.Service.Communication.Services;
 
 namespace Polokus.Service

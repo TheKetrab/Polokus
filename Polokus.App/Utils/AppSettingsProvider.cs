@@ -1,5 +1,6 @@
 ﻿using Polokus.Core;
 using Polokus.Core.Interfaces;
+using Polokus.Core.Interfaces.Extensibility;
 using System;
 
 namespace Polokus.App.Utils

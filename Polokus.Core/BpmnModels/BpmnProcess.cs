@@ -3,7 +3,7 @@ using Polokus.Core.Interfaces.BpmnModels;
 using Polokus.Core.Interfaces.Xsd;
 using System.Linq;
 
-namespace Polokus.Core.Models
+namespace Polokus.Core.BpmnModels
 {
     public class BpmnProcess : IBpmnProcess
     {

@@ -1,4 +1,4 @@
-﻿using Polokus.Core.Interfaces.Execution;
+﻿using Polokus.Core.Interfaces.Extensibility;
 
 namespace Polokus.Core.Interfaces.Managers
 {

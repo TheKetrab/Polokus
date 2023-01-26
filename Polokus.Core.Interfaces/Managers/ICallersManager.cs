@@ -1,4 +1,5 @@
 ﻿using Polokus.Core.Interfaces.BpmnModels;
+using Polokus.Core.Interfaces.Execution;
 
 namespace Polokus.Core.Interfaces.Managers
 {

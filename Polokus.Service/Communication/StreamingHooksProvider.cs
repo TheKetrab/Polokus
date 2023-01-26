@@ -1,5 +1,5 @@
 ﻿using Grpc.Core;
-using Polokus.Core.Interfaces.Execution;
+using Polokus.Core.Interfaces.Extensibility;
 using RemoteServices;
 
 namespace Polokus.Service.Communication

@@ -1,7 +1,7 @@
 ﻿using Polokus.Core.Helpers;
 using Polokus.Core.Interfaces.Execution;
-using Polokus.Core.Interfaces.NodeHandlers;
-using Polokus.Core.NodeHandlers.Abstract;
+using Polokus.Core.Execution.NodeHandlers.Abstract;
+using Polokus.Core.Interfaces.Execution.NodeHandlers;
 
 namespace Polokus.Core.Execution
 {

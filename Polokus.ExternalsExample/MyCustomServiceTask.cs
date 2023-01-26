@@ -1,4 +1,4 @@
-﻿using Polokus.Core.Interfaces.NodeHandlers;
+﻿using Polokus.Core.Interfaces.Execution.NodeHandlers;
 
 namespace Polokus.ExternalsExample
 {

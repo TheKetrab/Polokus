@@ -1,8 +1,8 @@
-﻿using Polokus.Core.Interfaces;
+﻿using Polokus.Core.Execution.NodeHandlers;
 using Polokus.Core.Interfaces.BpmnModels;
-using Polokus.Core.Interfaces.NodeHandlers;
+using Polokus.Core.Interfaces.Execution;
+using Polokus.Core.Interfaces.Execution.NodeHandlers;
 using Polokus.Core.Interfaces.Xsd;
-using Polokus.Core.NodeHandlers;
 
 namespace Polokus.Core.Factories
 {

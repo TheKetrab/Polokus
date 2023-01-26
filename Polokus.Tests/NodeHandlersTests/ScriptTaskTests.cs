@@ -1,4 +1,4 @@
-﻿using Polokus.Core.Hooks;
+﻿using Polokus.Core.Extensibility.Hooks;
 using Polokus.Core;
 using System;
 using System.Collections.Generic;
@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Polokus.Tests.Helpers;
 using Polokus.Core.Interfaces;
 using Polokus.Core.Interfaces.BpmnModels;
+using Polokus.Core.Interfaces.Execution;
 
 namespace Polokus.Tests.NodeHandlersTests
 {

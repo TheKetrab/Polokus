@@ -1,19 +1,12 @@
 ﻿using Moq;
-using Polokus.Core.Hooks;
-using Polokus.Core.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Polokus.Core.NodeHandlers;
-using Polokus.Core.Interfaces;
 using Polokus.Tests.Helpers;
 using Polokus.Core.Execution;
 using Polokus.Core.Interfaces.Xsd;
 using Polokus.Core.Interfaces.BpmnModels;
-using Polokus.Core.Interfaces.NodeHandlers;
-using Polokus.Core.Scripting;
+using Polokus.Core.Interfaces.Execution.NodeHandlers;
+using Polokus.Core.Interfaces.Execution;
+using Polokus.Core.Extensibility.Hooks;
 
 namespace Polokus.Tests.NodeHandlersTests
 {

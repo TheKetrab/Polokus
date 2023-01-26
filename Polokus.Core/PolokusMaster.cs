@@ -1,13 +1,19 @@
-﻿using Polokus.Core.Execution;
-using Polokus.Core.Externals;
+﻿using Polokus.Core.BpmnModels;
+using Polokus.Core.Communication;
+using Polokus.Core.Execution;
+using Polokus.Core.Extensibility;
+using Polokus.Core.Extensibility.Externals;
+using Polokus.Core.Extensibility.Hooks;
 using Polokus.Core.Helpers;
-using Polokus.Core.Hooks;
 using Polokus.Core.Interfaces;
 using Polokus.Core.Interfaces.BpmnModels;
+using Polokus.Core.Interfaces.Communication;
 using Polokus.Core.Interfaces.Execution;
+using Polokus.Core.Interfaces.Extensibility;
 using Polokus.Core.Interfaces.Managers;
 using Polokus.Core.Interfaces.Xsd;
-using Polokus.Core.Models;
+using Polokus.Core.Managers;
+using Polokus.Core.Serialization;
 
 namespace Polokus.Core
 {
@@ -24,7 +30,7 @@ namespace Polokus.Core
         /// Object that reprezents externals and manages them. Can be null if externals.json not found.
         /// </summary>
 
-        public Externals.Externals? Externals { get; }
+        public Externals? Externals { get; }
 
         public ICollection<IMonitor> Monitors { get; }
             = new List<IMonitor>();

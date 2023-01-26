@@ -1,4 +1,4 @@
-﻿namespace Polokus.Core.Interfaces
+﻿namespace Polokus.Core.Interfaces.Execution
 {
     public interface INodeCaller
     {

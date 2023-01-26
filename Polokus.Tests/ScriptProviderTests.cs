@@ -1,13 +1,4 @@
-﻿using Polokus.Core.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Polokus.Core;
-using Microsoft.CodeAnalysis.Scripting;
-using Polokus.Core.Scripting;
-using Microsoft.VisualStudio.TestPlatform.Utilities;
+﻿using Polokus.Core.Execution.Scripting;
 
 namespace Polokus.Tests
 {

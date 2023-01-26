@@ -1,5 +1,4 @@
 ﻿using Polokus.Core;
-using Polokus.Core.Hooks;
 using Polokus;
 using System;
 using System.Collections.Generic;
@@ -8,6 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Polokus.ExternalsExample.FileMonitoring;
+using Polokus.Core.Extensibility.Hooks;
 
 namespace Polokus.Tests.FileMonitorTests
 {

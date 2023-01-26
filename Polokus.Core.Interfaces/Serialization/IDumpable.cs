@@ -1,4 +1,4 @@
-﻿namespace Polokus.Core.Interfaces.Utils
+﻿namespace Polokus.Core.Interfaces.Serialization
 {
     public interface IDumpable<T>
     {

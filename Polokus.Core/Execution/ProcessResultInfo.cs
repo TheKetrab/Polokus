@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Polokus.Core.Interfaces;
 using Polokus.Core.Interfaces.BpmnModels;
 using Polokus.Core.Interfaces.Execution;
-using Polokus.Core.Models;
+using Polokus.Core.BpmnModels;
 
 namespace Polokus.Core.Execution
 {

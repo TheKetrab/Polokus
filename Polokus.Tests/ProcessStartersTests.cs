@@ -1,6 +1,6 @@
 ﻿using Moq;
 using Polokus.Core;
-using Polokus.Core.Hooks;
+using Polokus.Core.Extensibility.Hooks;
 using Polokus.Core.Interfaces;
 using Polokus.Tests.Helpers;
 using System;

@@ -1,4 +1,6 @@
-﻿namespace Polokus.Core.Interfaces.BpmnModels
+﻿using Polokus.Core.Interfaces.Execution;
+
+namespace Polokus.Core.Interfaces.BpmnModels
 {
     /// <summary>
     /// FlowNode is a Polokus's representation of tNode stored in XML.
