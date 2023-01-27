@@ -17,6 +17,7 @@ namespace Polokus.Core.Interfaces.Execution
         IProcessInstance? ParentProcessInstance { get; }
         IStatusManager StatusManager { get; }
         IHooksProvider? HooksProvider { get; set; }
+        IScriptProvider ScriptProvider { get; }
 
 
         ICollection<IProcessInstance> ChildrenProcessInstances { get; }

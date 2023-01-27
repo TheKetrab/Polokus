@@ -104,7 +104,7 @@ namespace Polokus.Tests.NodeHandlersTests
             await wf.RunProcessAsync(pi, startNode);
 
             // Assert
-            Assert.AreEqual(12, wf.ScriptProvider.Globals.TryGetValue<int>("z"));
+            Assert.AreEqual(12, pi.ScriptProvider.Globals.TryGetValue<int>("z"));
         }
     }
 }

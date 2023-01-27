@@ -28,7 +28,7 @@ namespace Polokus.Tests.NodeHandlersTests
             await wf.RunProcessAsync(pi, startNode);
 
             // Assert
-            Assert.AreEqual(720 + 222, wf.ScriptProvider.Globals.TryGetValue<int>("a"));
+            Assert.AreEqual(720 + 222, pi.ScriptProvider.Globals.TryGetValue<int>("a"));
             Assert.AreEqual("start;tScriptTask;tScriptTask;exclusive;end1", visitor.GetResult());
 
         }

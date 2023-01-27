@@ -35,5 +35,6 @@ namespace Polokus.Core.Interfaces.Execution
         /// </summary>
         /// <param name="str">Variable name with '$'.</param>
         bool IsValidOutgoingVariable(string str);
+
     }
 }

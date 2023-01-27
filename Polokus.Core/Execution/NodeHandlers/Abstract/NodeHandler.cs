@@ -20,7 +20,7 @@ namespace Polokus.Core.Execution.NodeHandlers.Abstract
         public IFlowNode Node => TypedNode;
         public CancellationTokenSource CancellationTokenSource { get; set; }
         public bool IsJoining => Node.Incoming.Count > 1;
-        public IScriptProvider ScriptProvider => ProcessInstance.Workflow.ScriptProvider;
+        public IScriptProvider ScriptProvider => ProcessInstance.ScriptProvider;
 
         private Dictionary<BoundaryEventType, INodeHandlerWaiter> boundaryEventsWaiters;
 

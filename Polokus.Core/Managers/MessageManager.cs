@@ -1,5 +1,6 @@
 ﻿using Polokus.Core.Execution;
 using Polokus.Core.Extensibility.Hooks;
+using Polokus.Core.Helpers;
 using Polokus.Core.Interfaces.BpmnModels;
 using Polokus.Core.Interfaces.Execution;
 using Polokus.Core.Interfaces.Managers;
@@ -40,6 +41,13 @@ namespace Polokus.Core.Managers
 
                     var context = await listener.GetContextAsync();
 
+                    string? variables = context.Request.QueryString["variables"];
+                    if (variables != null)
+                    {
+                        VariablesEncoder.SetVariablesFromQueryString(
+                            waiter.ProcessInstance.ScriptProvider.Globals, variables);
+                    }
+
                     if (!IsWaiterCancelled(waiter.Id))
                     {
                         waiter.Invoke();
@@ -78,16 +86,31 @@ namespace Polokus.Core.Managers
                     starter.HooksProvider?.OnCallerChanged(starter.Id, nameof(CallerChangedType.StarterStartedProcess));
 
                     string? parentProcessId = context.Request.QueryString["parent"];
+                    string? variables = context.Request.QueryString["variables"];
                     if (parentProcessId != null)
                     {
                         var processInstance = starter.Workflow.GetProcessInstanceById(parentProcessId)
                             ?? throw new Exception($"Process instance with id {parentProcessId} doesn't exist.");
                         var subProcessInstance = processInstance.CreateSubProcessInstance(starter.BpmnProcess);
-                        starter.Workflow.StartProcessInstance(subProcessInstance, starter.StartNode, null);
+
+                        if (variables != null)
+                        {
+                            VariablesEncoder.SetVariablesFromQueryString(
+                                subProcessInstance.ScriptProvider.Globals, variables);
+                        }
+
+                        starter.Workflow.StartProcessInstance(subProcessInstance, starter.StartNode);
                     }
                     else
                     {
-                        starter.Workflow.StartProcessInstance(starter.BpmnProcess, starter.StartNode, null);
+                        var processInstance = starter.Workflow.CreateProcessInstance(starter.BpmnProcess);
+                        if (variables != null)
+                        {
+                            VariablesEncoder.SetVariablesFromQueryString(
+                                processInstance.ScriptProvider.Globals, variables);
+                        }
+
+                        starter.Workflow.StartProcessInstance(processInstance, starter.StartNode);
                     }
                 }
             }

@@ -14,6 +14,8 @@ namespace Polokus.Core.Execution.NodeHandlers.Special
         {
         }
 
+        
+
         private async Task PingStarter(IMessageFlow outgoing)
         {
             var starterToPing = EncodingIds.GetStarterId(
@@ -21,8 +23,18 @@ namespace Polokus.Core.Execution.NodeHandlers.Special
                 outgoing.TargetProcess.Id,
                 outgoing.Target!.Id);
 
+            List<string> queryArgs = new List<string>();
+            queryArgs.Add($"parent={ProcessInstance.Id}");
+
+            string? variablesString = VariablesEncoder.GetVariablesQueryString(
+                ProcessInstance.ScriptProvider.Globals, outgoing.Name);
+            if (variablesString != null)
+            {
+                queryArgs.Add(variablesString);
+            }
+
             await ProcessInstance.Workflow.MessageManager
-                .PingListener(starterToPing, $"parent={ProcessInstance.Id}");
+                .PingListener(starterToPing, string.Join('&', queryArgs));
         }
 
         private async Task PingWaiter(IMessageFlow outgoing)
@@ -38,9 +50,17 @@ namespace Polokus.Core.Execution.NodeHandlers.Special
                 outgoing.TargetProcess.Id,
                 outgoing.Target!.Id);
 
-            await ProcessInstance.Workflow.MessageManager
-                .PingListener(waiterToPing);
+            List<string> queryArgs = new List<string>();
+            string? variablesString = VariablesEncoder.GetVariablesQueryString(
+                ProcessInstance.ScriptProvider.Globals, outgoing.Name);
 
+            if (variablesString != null)
+            {
+                queryArgs.Add(variablesString);
+            }
+
+            await ProcessInstance.Workflow.MessageManager
+                .PingListener(waiterToPing, string.Join('&', queryArgs));
         }
 
         private async Task<IProcessInstance> GetProcessInstanceToCall(IMessageFlow outgoing)

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0xqstfg" targetNamespace="http://bpmn.io/schema/bpmn" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="10.3.0">
+<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0xqstfg" targetNamespace="http://bpmn.io/schema/bpmn" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="11.1.0">
   <bpmn:collaboration id="Collaboration_0uk8350">
     <bpmn:participant id="Participant_1r4z4yt" processRef="Process_05l3o9f" />
     <bpmn:participant id="Participant_0brdcit" processRef="Process_196bqf5" />
     <bpmn:messageFlow id="Flow_1wc6ghj" sourceRef="Event_0voi7cb" targetRef="Event_038zmw8" />
-    <bpmn:messageFlow id="Flow_1mbyca7" sourceRef="Event_1tdi69j" targetRef="Event_1n7300b" />
+    <bpmn:messageFlow id="Flow_1mbyca7" name="$y" sourceRef="Event_1tdi69j" targetRef="Event_1n7300b" />
   </bpmn:collaboration>
   <bpmn:process id="Process_05l3o9f" isExecutable="false">
     <bpmn:laneSet id="LaneSet_047k1k6" />
@@ -128,7 +128,7 @@
         <di:waypoint x="540" y="238" />
         <di:waypoint x="540" y="490" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="549" y="353" width="13" height="14" />
+          <dc:Bounds x="549" y="361" width="13" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>

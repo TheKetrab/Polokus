@@ -8,6 +8,7 @@ using Polokus.Core.Interfaces.Execution.NodeHandlers;
 using Polokus.Core.Interfaces.Serialization;
 using Polokus.Core.Managers;
 using Polokus.Core.Serialization;
+using Polokus.Core.Execution.Scripting;
 
 namespace Polokus.Core.Execution
 {
@@ -20,8 +21,9 @@ namespace Polokus.Core.Execution
         public object TasksMutex { get; } = new object();
         public IActiveTasksManager ActiveTasksManager { get; private set; }
         public IStatusManager StatusManager { get; private set; }
-
+        public IScriptProvider ScriptProvider { get; private set; }
         public IHooksProvider? HooksProvider { get; set; }
+
         public IProcessInstance? ParentProcessInstance { get; private set; }
 
         public ICollection<IProcessInstance> ChildrenProcessInstances { get; }
@@ -72,6 +74,7 @@ namespace Polokus.Core.Execution
             Workflow = workflow;
             ActiveTasksManager = new ActiveTasksManager(this);
             StatusManager = new StatusManager(this);
+            ScriptProvider = new ScriptProvider();
 
             BpmnProcess = bpmnProcess;
             ParentProcessInstance = parent;
