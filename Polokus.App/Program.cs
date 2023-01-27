@@ -43,6 +43,9 @@ namespace Polokus.App
             {
                 _mainWindow = new MainWindow();
                 PolokusApp.RegisterAppHooksProvider();
+
+
+
                 Application.Run(_mainWindow);
             }
 

@@ -6,6 +6,7 @@ using Polokus.Core.Interfaces;
 using Polokus.Core.Interfaces.Communication;
 using System.Data;
 using System.Reflection;
+using System.Text;
 
 namespace Polokus.App.Views
 {
@@ -27,6 +28,7 @@ namespace Polokus.App.Views
             chromiumWindow.Dock = DockStyle.Fill;
 
             LoadBpmnFiles();
+            RestoreNotFinishedInstances();
 
             this.listViewProcesses.SizeChanged += ListViewProcesses_SizeChanged;
             this.listViewProcesses.SelectedIndexChanged += ListViewProcesses_SelectedIndexChanged;
@@ -41,6 +43,33 @@ namespace Polokus.App.Views
 
             InitializeComboBoxWorkflows();
 
+        }
+
+        private void RestoreNotFinishedInstances()
+        {
+            if (PolokusApp.LocalPolokus == null)
+            {
+                return;
+            }
+
+            var notFinishedSnapshots = PolokusApp.LocalPolokus.StateSerializerManager.GetInfoForAllSnapshots();
+            if (notFinishedSnapshots.Any())
+            {
+                StringBuilder sb = new StringBuilder("Exists not finished process instances:\n");
+                foreach (var info in notFinishedSnapshots)
+                {
+                    sb.AppendLine($"Workflow: {info.Item1} Process: {info.Item2}");
+                }
+                sb.AppendLine("Do you want to continue them?");
+                if (MessageBox.Show(sb.ToString(), "Info", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    foreach (var info in notFinishedSnapshots)
+                    {
+                        string filePath = info.Item3;
+                        PolokusApp.LocalPolokus.StateSerializerManager.Reconstruct(filePath);
+                    }
+                }
+            }
         }
 
         private void ListViewProcesses_SelectedIndexChanged(object? sender, EventArgs e)

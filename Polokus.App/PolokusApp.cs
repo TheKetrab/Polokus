@@ -10,6 +10,7 @@ using Polokus.Core.Interfaces.Exceptions;
 using Polokus.Core.Services.Remote;
 
 using RemoteServices;
+using System.Text;
 
 namespace Polokus.App
 {
@@ -61,6 +62,7 @@ namespace Polokus.App
             Remote
         }
 
+        public static PolokusMaster? LocalPolokus { get; private set; }
         
         public static bool TryRegisterRemotePolokus()
         {
@@ -125,6 +127,7 @@ namespace Polokus.App
         private static IServicesProvider CreateLocalPolokus()
         {
             PolokusMaster polokus = new PolokusMaster(true);
+            LocalPolokus = polokus;
             var serviceProvider = new OnPremiseServicesProvider(polokus);
             return serviceProvider;
         }

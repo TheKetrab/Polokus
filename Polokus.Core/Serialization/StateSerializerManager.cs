@@ -18,6 +18,8 @@ namespace Polokus.Core.Serialization
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Polokus", "ProcessInstances");
 
         private Dictionary<string, object> _locks = new();
+
+        private int _stepsToClearLocks = 0;
         private object GetLockForFile(string filename)
         {
             if (_locks.ContainsKey(filename))
@@ -26,6 +28,13 @@ namespace Polokus.Core.Serialization
             }
             else
             {
+                _stepsToClearLocks++;
+                if (_stepsToClearLocks > 50)
+                {
+                    RemoveUnusedLocks();
+                    _stepsToClearLocks = 0;
+                }
+
                 _locks.Add(filename, new object());
                 return _locks[filename];
             }
@@ -36,6 +45,18 @@ namespace Polokus.Core.Serialization
             if (_locks.ContainsKey(filename))
             {
                 _locks.Remove(filename);
+            }
+        }
+
+        private void RemoveUnusedLocks()
+        {
+            var keys = _locks.Keys;
+            foreach(var path in keys)
+            {
+                if (!File.Exists(path))
+                {
+                    RemoveLock(path);
+                }
             }
         }
 
@@ -73,19 +94,19 @@ namespace Polokus.Core.Serialization
         private static string DEC(string str)
         {
             return str
-                .Replace("__", @"(")
-                .Replace("___", @")")
-                .Replace("____", @"/")
-                .Replace("_____", @"\");
+                .Replace("._____.", @"\")
+                .Replace(".____.", @"/")
+                .Replace(".___.", @")")
+                .Replace(".__.", @"(");
         }
 
         private static string ENC(string str)
         {
             return str
-                .Replace(@"(", "__")
-                .Replace(@")", "___")
-                .Replace(@"/", "____")
-                .Replace(@"\", "_____");
+                .Replace(@"(", ".__.")
+                .Replace(@")", ".___.")
+                .Replace(@"/", ".____.")
+                .Replace(@"\", "._____.");
         }
 
         public void SerializeState(string wfId, string piId)
@@ -106,21 +127,38 @@ namespace Polokus.Core.Serialization
             }
         }
 
-        public ProcessInstance ReconstructProcessInstance(string wfId, string piId)
+        public ProcessInstanceSnapShot DeserializeState(string filePath)
         {
-            // TODO!!
-            throw new NotImplementedException();
+            object l = GetLockForFile(filePath);
+            lock (l)
+            {
+                string json = File.ReadAllText(filePath);
+                return JsonSerializer.Deserialize<ProcessInstanceSnapShot>(json)
+                    ?? throw new Exception($"Unable to deserialize file {filePath}");
+            }
         }
 
-        public IEnumerable<Tuple<string, string>> GetInfoForAllSnapshots()
+        public void Reconstruct(string filePath)
         {
-            List<Tuple<string, string>> result = new();
+            var snapshot = DeserializeState(filePath);
+
+            var workflow = _master.GetWorkflow(snapshot.WorkflowId);
+            var bpmnProcess = workflow.BpmnWorkflow.BpmnProcesses.First(x => x.Id == snapshot.BpmnProcessId);
+
+            var pi = (ProcessInstance)workflow.CreateProcessInstance(bpmnProcess);
+            pi.Restore(_master, snapshot);
+            
+        }
+
+        public IEnumerable<Tuple<string, string, string>> GetInfoForAllSnapshots()
+        {
+            List<Tuple<string, string, string>> result = new();
 
             string[] files = Directory.GetFiles(PiStateDirectory);
             foreach (var file in files)
             {
                 GetWfPiFromFilePath(file, out string wfId, out string piId);
-                result.Add(Tuple.Create(wfId, piId));
+                result.Add(Tuple.Create(wfId, piId, file));
             }
 
             return result;

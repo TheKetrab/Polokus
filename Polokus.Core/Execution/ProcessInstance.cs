@@ -15,9 +15,9 @@ namespace Polokus.Core.Execution
     public class ProcessInstance : IProcessInstance,
         IRestorable<IProcessInstanceSnapShot>, IDumpable<ProcessInstanceSnapShot>
     {
-        public string Id { get; set; }
-        public IWorkflow Workflow { get; }
-        public IBpmnProcess BpmnProcess { get; }
+        public string Id { get; private set; }
+        public IWorkflow Workflow { get; private set; }
+        public IBpmnProcess BpmnProcess { get; private set; }
         public object TasksMutex { get; } = new object();
         public IActiveTasksManager ActiveTasksManager { get; private set; }
         public IStatusManager StatusManager { get; private set; }
@@ -243,23 +243,26 @@ namespace Polokus.Core.Execution
         {
             var id = source.Id;
             var wf = master.GetWorkflow(source.WorkflowId);
-            var bpmn = wf.BpmnWorkflow.BpmnProcesses.FirstOrDefault(x => x.Id == source.BpmnProcessId);
+            var bpmn = wf.BpmnWorkflow.BpmnProcesses.FirstOrDefault(x => x.Id == source.BpmnProcessId)
+                ?? throw new Exception($"Unable to find bpmn with id {source.BpmnProcessId}");
 
-            var pi = new ProcessInstance(id, wf, bpmn, null);
+            this.Id = id;
+            this.Workflow = wf;
+            this.BpmnProcess = bpmn;
 
             // restore hooks provider
-            pi.HooksProvider = wf.HooksProvider;
+            this.HooksProvider = wf.HooksProvider;
 
             if (!string.IsNullOrEmpty(source.ParentProcessInstanceId))
             {
-                pi.ParentProcessInstance = wf.GetProcessInstanceById(source.ParentProcessInstanceId);
-                pi.ParentProcessInstance?.ChildrenProcessInstances.Add(pi);
+                this.ParentProcessInstance = wf.GetProcessInstanceById(source.ParentProcessInstanceId);
+                this.ParentProcessInstance?.ChildrenProcessInstances.Add(this);
             }
 
-            ((StatusManager)pi.StatusManager).Restore(master, source.Status);
-            pi.FailedExecutionNodeIds = source.FailedExecutionNodeIds.ToList();
+            ((StatusManager)this.StatusManager).Restore(master, source.Status);
+            this.FailedExecutionNodeIds = source.FailedExecutionNodeIds.ToList();
 
-            source.AciveNodes.ForEach(x => pi.StartNewSequence(bpmn.GetNodeById(x), null)); // executes new sequences (on another threads)
+            source.AciveNodes.ForEach(x => this.StartNewSequence(bpmn.GetNodeById(x), null)); // executes new sequences (on another threads)
             Thread.Sleep(300);
 
             // restore waiters
