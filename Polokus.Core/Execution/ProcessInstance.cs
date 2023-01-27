@@ -199,8 +199,7 @@ namespace Polokus.Core.Execution
             HooksProvider?.BeforeStartNewSequence(Workflow.Id, Id, firstNode.Id, caller?.Id);
             var newTask = ActiveTasksManager.AddNewTask(GetNodeHandlerForNode(firstNode));
             int taskId = newTask.Item1;
-            CancellationToken ctoken = newTask.Item2;
-            Task task = new Task(() => ExecuteNode(firstNode, taskId, caller), ctoken);
+            Task task = new Task(() => ExecuteNode(firstNode, taskId, caller), newTask.Item2.Token);
             task.Start();
         }
 

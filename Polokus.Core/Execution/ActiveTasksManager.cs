@@ -13,7 +13,7 @@ namespace Polokus.Core.Execution
     {
         private int _cnt = 0;
         private Dictionary<int, Tuple<CancellationTokenSource, INodeHandler>> ActiveTasks = new(); // taskId;<cts,worker>
-        public ProcessInstance ProcessInstance { get; }
+        public IProcessInstance ProcessInstance { get; }
 
         public ActiveTasksManager(ProcessInstance processInstance)
         {
@@ -49,14 +49,14 @@ namespace Polokus.Core.Execution
             return ActiveTasks.Count;
         }
 
-        public Tuple<int, CancellationToken> AddNewTask(INodeHandler nh)
+        public Tuple<int, CancellationTokenSource> AddNewTask(INodeHandler nh)
         {
             int taskId = _cnt++;
             CancellationTokenSource cts = new CancellationTokenSource();
 
             ActiveTasks.Add(taskId, Tuple.Create(cts, nh)); // TODO to bardzo wazne zeby to nie byl null
             ProcessInstance.HooksProvider?.OnTasksChanged(ProcessInstance.Workflow.Id, ProcessInstance.Id);
-            return Tuple.Create(taskId, cts.Token);
+            return Tuple.Create(taskId, cts);
         }
 
         public void AssignTaskToAnotherNodeHandler(int taskId, INodeHandler nh)

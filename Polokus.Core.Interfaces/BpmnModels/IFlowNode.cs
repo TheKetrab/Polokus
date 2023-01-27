@@ -20,6 +20,9 @@ namespace Polokus.Core.Interfaces.BpmnModels
 
         ICollection<IBoundaryEvent> BoundaryEvents { get; }
 
+        /// <summary>
+        /// Concrete type of waiter that will be created if necessary to wait.
+        /// </summary>
         WaiterType RequireWaiter { get; }
     }
 

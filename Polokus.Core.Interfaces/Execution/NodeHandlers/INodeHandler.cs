@@ -23,8 +23,10 @@ namespace Polokus.Core.Interfaces.Execution.NodeHandlers
         IWorkflow Workflow { get; }
         IPolokusMaster Master { get; }
 
+        /// <summary>
+        /// Cancellation object allows node cancelling itself.
+        /// </summary>
         CancellationTokenSource CancellationTokenSource { get; set; }
-
 
     }
 }

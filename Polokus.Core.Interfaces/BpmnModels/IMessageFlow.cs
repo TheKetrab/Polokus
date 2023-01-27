@@ -1,5 +1,8 @@
 ﻿namespace Polokus.Core.Interfaces.BpmnModels
 {
+    /// <summary>
+    /// Message Flow represents line between node and target process or node.
+    /// </summary>
     public interface IMessageFlow
     {
         public string Name { get; }
