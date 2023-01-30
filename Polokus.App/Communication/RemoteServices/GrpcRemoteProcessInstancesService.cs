@@ -1,4 +1,5 @@
 ﻿using Grpc.Net.Client;
+using Polokus.Core.Interfaces;
 using Polokus.Core.Interfaces.Communication;
 using RemoteServices;
 using System;
@@ -67,7 +68,7 @@ namespace Polokus.Core.Remote
 
             var reply = _serviceClient.GetNodeXmlType(request);
 
-            Assembly assem = typeof(PolokusMaster).Assembly;
+            Assembly assem = typeof(IPolokusMaster).Assembly; // interfaces assembly
             var type = assem.GetType(reply.TypeName);
 
             return type;

@@ -7,12 +7,9 @@ using Polokus.Core.Interfaces.Execution;
 
 namespace Polokus.Core.Execution.NodeHandlers.Abstract
 {
-    public interface ISubprocessingNodeHandler : INodeHandler
-    {
-        IProcessInstance? SubProcessInstance { get; }
-    }
 
-    public abstract class SubprocessingNodeHandler<T> : NodeHandler<T> where T : tFlowNode
+    public abstract class SubprocessingNodeHandler<T> : NodeHandler<T>, ISubprocessingNodeHandler
+        where T : tFlowNode
     {
         public IProcessInstance? SubProcessInstance { get; private set; }
 

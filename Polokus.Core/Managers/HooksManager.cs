@@ -32,20 +32,30 @@ namespace Polokus.Core.Managers
         }
 
         private List<HooksProviderInfo> _hooksProviders = new();
+        private object _mutex = new();
 
         public void RegisterHooksProvider(IHooksProvider hooksProvider, bool waitFor = true)
         {
-            _hooksProviders.Add(new HooksProviderInfo(hooksProvider, waitFor));
+            lock(_mutex)
+            {
+                _hooksProviders.Add(new HooksProviderInfo(hooksProvider, waitFor));
+            }
         }
 
         public void DeregisterHooksProvider(IHooksProvider hooksProvider)
         {
-            _hooksProviders.RemoveAll(x => x.Object == hooksProvider);
+            lock(_mutex)
+            {
+                _hooksProviders.RemoveAll(x => x.Object == hooksProvider);
+            }
         }
 
         public IEnumerable<IHooksProvider> GetHooksProviders()
         {
-            return _hooksProviders.Select(x => x.Object);
+            lock(_mutex)
+            {
+                return _hooksProviders.Select(x => x.Object);
+            }
         }
 
         private void ExecuteAction(bool waitFor, Action action)
@@ -63,20 +73,29 @@ namespace Polokus.Core.Managers
         #region IHooksProviderImpl
         public void AfterExecuteNodeFailure(string wfId, string piId, string nodeId, int taskId)
         {
-            _hooksProviders.ForEach(x => ExecuteAction(x.WaitFor,
-                () => x.Object.AfterExecuteNodeFailure(wfId, piId, nodeId, taskId)));
+            lock (_mutex)
+            {
+                _hooksProviders.ForEach(x => ExecuteAction(x.WaitFor,
+                    () => x.Object.AfterExecuteNodeFailure(wfId, piId, nodeId, taskId)));
+            }
         }
 
         public void AfterExecuteNodeSuccess(string wfId, string piId, string nodeId, int taskId)
         {
-            _hooksProviders.ForEach(x => ExecuteAction(x.WaitFor,
-                () => x.Object.AfterExecuteNodeSuccess(wfId, piId, nodeId, taskId)));
+            lock (_mutex)
+            {
+                _hooksProviders.ForEach(x => ExecuteAction(x.WaitFor,
+                    () => x.Object.AfterExecuteNodeSuccess(wfId, piId, nodeId, taskId)));
+            }
         }
 
         public void AfterExecuteNodeSuspension(string wfId, string piId, string nodeId, int taskId)
         {
-            _hooksProviders.ForEach(x => ExecuteAction(x.WaitFor,
-                () => x.Object.AfterExecuteNodeSuspension(wfId, piId, nodeId, taskId)));
+            lock (_mutex)
+            {
+                _hooksProviders.ForEach(x => ExecuteAction(x.WaitFor,
+                    () => x.Object.AfterExecuteNodeSuspension(wfId, piId, nodeId, taskId)));
+            }
         }
 
         public void BeforeExecuteNode(string wfId, string piId, string nodeId, int taskId, string? callerNodeId)
@@ -86,50 +105,74 @@ namespace Polokus.Core.Managers
                 Thread.Sleep(1000); // TODO: settings provider
             }
 
-            _hooksProviders.ForEach(x => ExecuteAction(x.WaitFor,
-                () => x.Object.BeforeExecuteNode(wfId, piId, nodeId, taskId, callerNodeId)));
+            lock (_mutex)
+            {
+                _hooksProviders.ForEach(x => ExecuteAction(x.WaitFor,
+                    () => x.Object.BeforeExecuteNode(wfId, piId, nodeId, taskId, callerNodeId)));
+            }
         }
 
         public void BeforeStartNewSequence(string wfId, string piId, string nodeId, string? callerNodeId)
         {
-            _hooksProviders.ForEach(x => ExecuteAction(x.WaitFor,
-                () => x.Object.BeforeStartNewSequence(wfId, piId, nodeId, callerNodeId)));
+            lock (_mutex)
+            {
+                _hooksProviders.ForEach(x => ExecuteAction(x.WaitFor,
+                    () => x.Object.BeforeStartNewSequence(wfId, piId, nodeId, callerNodeId)));
+            }
         }
 
         public void OnProcessFinished(string wfId, string piId, string result)
         {
-            _hooksProviders.ForEach(x => ExecuteAction(x.WaitFor,
-                () => x.Object.OnProcessFinished(wfId, piId, result)));
+            lock (_mutex)
+            {
+                _hooksProviders.ForEach(x => ExecuteAction(x.WaitFor,
+                    () => x.Object.OnProcessFinished(wfId, piId, result)));
+            }
         }
 
         public void OnStatusChanged(string wfId, string piId)
         {
-            _hooksProviders.ForEach(x => ExecuteAction(x.WaitFor,
-                () => x.Object.OnStatusChanged(wfId, piId)));
+            lock (_mutex)
+            {
+                _hooksProviders.ForEach(x => ExecuteAction(x.WaitFor,
+                    () => x.Object.OnStatusChanged(wfId, piId)));
+            }
         }
 
         public void OnTasksChanged(string wfId, string piId)
         {
-            _hooksProviders.ForEach(x => ExecuteAction(x.WaitFor,
-                () => x.Object.OnTasksChanged(wfId, piId)));
+            lock (_mutex)
+            {
+                _hooksProviders.ForEach(x => ExecuteAction(x.WaitFor,
+                    () => x.Object.OnTasksChanged(wfId, piId)));
+            }
         }
 
         public void OnTimeout(string wfId, string piId)
         {
-            _hooksProviders.ForEach(x => ExecuteAction(x.WaitFor,
-                () => x.Object.OnTimeout(wfId, piId)));
+            lock (_mutex)
+            {
+                _hooksProviders.ForEach(x => ExecuteAction(x.WaitFor,
+                    () => x.Object.OnTimeout(wfId, piId)));
+            }
         }
 
         public void OnCallerChanged(string callerId, string callerChangedType)
         {
-            _hooksProviders.ForEach(x => ExecuteAction(x.WaitFor,
-                () => x.Object.OnCallerChanged(callerId, callerChangedType)));
+            lock (_mutex)
+            {
+                _hooksProviders.ForEach(x => ExecuteAction(x.WaitFor,
+                    () => x.Object.OnCallerChanged(callerId, callerChangedType)));
+            }
         }
 
         public void OnAwaitingTokenCreated(string wfId, string piId, string nodeId, string token)
         {
-            _hooksProviders.ForEach(x => ExecuteAction(x.WaitFor,
-                () => x.Object.OnAwaitingTokenCreated(wfId, piId, nodeId, token)));
+            lock (_mutex)
+            {
+                _hooksProviders.ForEach(x => ExecuteAction(x.WaitFor,
+                    () => x.Object.OnAwaitingTokenCreated(wfId, piId, nodeId, token)));
+            }
         }
         #endregion
     }

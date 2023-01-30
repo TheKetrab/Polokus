@@ -116,7 +116,10 @@ namespace Polokus.Core.Execution.NodeHandlers.Abstract
                         continue;
                     }
 
-                    Action continuation = () => this.ProcessInstance.ActiveTasksManager.CancellNodeHandler(this);
+                    Action continuation = () =>
+                    {
+                        this.ProcessInstance.ActiveTasksManager.CancellNodeHandler(this);
+                    };
 
                     INodeHandlerWaiter? waiter = null;
                     var manager = GetManagerByType(this.ProcessInstance.Workflow, be.Type);
