@@ -52,7 +52,7 @@ TimeoutForProcessSec = -1        # > Maximum time after which kill single proces
                                  #   if not finished yet. -1 means infinity.
 RestoreProcessesOnStart = False  # > If application close when there are some
                                  #   not finished processes, service will continue
-								 #   processing it when this flag is set.
+                                 #   processing it when this flag is set.
 ```
 
 ### > externals.json
