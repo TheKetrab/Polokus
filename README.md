@@ -32,7 +32,6 @@ Polokus can be configured with settings file (`config.ini`) and externals file (
 [Main]
 BpmnPath = ./BPMN     # > Path to directory with .bpmn files
                       #   that will be parsed to Workflows.
-EnableLogs = True     # > Flag to disable/enable logging in app.
 
 [App]
 DelayPerNodeHandlerMs = 0  # > When app is connected to Polokus Service,
@@ -51,48 +50,50 @@ MessageListenerPort = 8085       # > Message communication within a process
 ExternalsPath = ./externals.json # > Path to file with externals.
 TimeoutForProcessSec = -1        # > Maximum time after which kill single process
                                  #   if not finished yet. -1 means infinity.
+RestoreProcessesOnStart = False  # > If application close when there are some
+                                 #   not finished processes, service will continue
+								 #   processing it when this flag is set.
 ```
 
 ### > externals.json
 ```json
 {
-    "SettingsProvider": 
+  "SettingsProvider": 
     {
-        "Name": "",
-        "Assembly": "",
-        "ClassName": ""
+      "Name": "",
+      "Assembly": "",
+      "ClassName": ""
     }
-	"ServiceTasks": [
-		{
-			"Name": "",
-			"Assembly": "",
-			"ClassName": "",
-			"ServiceTaskName": ""
-		}
-	],
-	"Monitors": [
-		{
-			"Name": "",
-			"Assembly": "",
-			"ClassName": "",
-			"Arguments": [ "" ]			
-		},
-		{
-			"Name": "",
-			"Assembly": "",
-			"ClassName": "",
-			"Arguments": [ "" ],
-			"Dependencies": [ "" ]
-		}			
-	],
-	"HooksProviders": [
-		{
-			"Name": "",
-			"Assembly": "",
-			"ClassName": ""
-		}
-	]
-			
+  "ServiceTasks": [
+    {
+      "Name": "",
+      "Assembly": "",
+      "ClassName": "",
+      "ServiceTaskName": ""
+    }
+  ],
+  "Monitors": [
+    {
+      "Name": "",
+      "Assembly": "",
+      "ClassName": "",
+      "Arguments": [ "" ]
+    },
+    {
+      "Name": "",
+      "Assembly": "",
+      "ClassName": "",
+      "Arguments": [ "" ],
+      "Dependencies": [ "" ]
+    }
+  ],
+  "HooksProviders": [
+    {
+      "Name": "",
+      "Assembly": "",
+      "ClassName": ""
+    }
+  ]
 }
 ```
 
