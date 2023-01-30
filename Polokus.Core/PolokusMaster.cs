@@ -14,6 +14,7 @@ using Polokus.Core.Interfaces.Managers;
 using Polokus.Core.Interfaces.Xsd;
 using Polokus.Core.Managers;
 using Polokus.Core.Serialization;
+using System.Text;
 
 namespace Polokus.Core
 {
@@ -152,6 +153,25 @@ namespace Polokus.Core
                 SettingsProvider = new DefaultSettingsProvider();
             }
 
+            // ===== ===== RESTORE NOT FINISHED PROCESSES ===== =====
+            if (Settings.RestoreProcessesOnStart)
+            {
+                RestoreNotFinishedProcesses();
+            }
+
+        }
+
+        private void RestoreNotFinishedProcesses()
+        {
+            var notFinishedSnapshots = StateSerializerManager.GetInfoForAllSnapshots();
+            if (notFinishedSnapshots.Any())
+            {
+                foreach (var info in notFinishedSnapshots)
+                {
+                    string filePath = info.Item3;
+                    StateSerializerManager.Reconstruct(filePath);
+                }
+            }
         }
 
         public void RegisterMonitor(IMonitor monitor)

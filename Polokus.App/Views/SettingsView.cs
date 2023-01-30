@@ -44,7 +44,7 @@ namespace Polokus.App.Views
         {
             // Main
             textBoxBpmnPath.DataBindings.Add("Text", Settings.Instance, "bpmnPath", true, DataSourceUpdateMode.OnPropertyChanged);
-            checkBoxEnableLogs.DataBindings.Add("Checked", Settings.Instance, "enableLogs", true, DataSourceUpdateMode.OnPropertyChanged);
+            checkBoxRestoreOnStart.DataBindings.Add("Checked", Settings.Instance, "restoreProcessesOnStart", true, DataSourceUpdateMode.OnPropertyChanged);
 
             // App
             numericUpDownDelayPerNodeHandler.DataBindings.Add("Value", Settings.Instance, "delayPerNodeHandlerMs", true, DataSourceUpdateMode.OnPropertyChanged);

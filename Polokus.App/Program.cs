@@ -51,10 +51,7 @@ namespace Polokus.App
 
 
             // ----- EXIT -----
-            if (Settings.EnableLogs)
-            {
-                PrintLogs();
-            }
+            PrintLogs();
 
         }
 

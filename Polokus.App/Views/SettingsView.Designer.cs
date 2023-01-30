@@ -55,7 +55,7 @@ namespace Polokus.App.Views
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.buttonBrowseBpmnPath = new Polokus.App.Controls.PolokusButton();
             this.textBoxBpmnPath = new System.Windows.Forms.TextBox();
-            this.checkBoxEnableLogs = new System.Windows.Forms.CheckBox();
+            this.checkBoxRestoreOnStart = new System.Windows.Forms.CheckBox();
             this.polokusLabel1 = new Polokus.App.Controls.PolokusLabel();
             this.panel1.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -102,6 +102,7 @@ namespace Polokus.App.Views
             // 
             this.groupBox3.Controls.Add(this.polokusLabel2);
             this.groupBox3.Controls.Add(this.numericUpDownMessageListenerPort);
+            this.groupBox3.Controls.Add(this.checkBoxRestoreOnStart);
             this.groupBox3.Controls.Add(this.buttonExternalsPath);
             this.groupBox3.Controls.Add(this.textBoxExternalsPath);
             this.groupBox3.Controls.Add(this.polokusLabel3);
@@ -126,7 +127,7 @@ namespace Polokus.App.Views
             this.polokusLabel2.Location = new System.Drawing.Point(15, 116);
             this.polokusLabel2.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.polokusLabel2.Name = "polokusLabel2";
-            this.polokusLabel2.Size = new System.Drawing.Size(143, 16);
+            this.polokusLabel2.Size = new System.Drawing.Size(178, 21);
             this.polokusLabel2.TabIndex = 11;
             this.polokusLabel2.Text = "Message Listener Port:";
             // 
@@ -140,7 +141,7 @@ namespace Polokus.App.Views
             0,
             0});
             this.numericUpDownMessageListenerPort.Name = "numericUpDownMessageListenerPort";
-            this.numericUpDownMessageListenerPort.Size = new System.Drawing.Size(98, 25);
+            this.numericUpDownMessageListenerPort.Size = new System.Drawing.Size(98, 30);
             this.numericUpDownMessageListenerPort.TabIndex = 10;
             // 
             // buttonExternalsPath
@@ -164,7 +165,7 @@ namespace Polokus.App.Views
             this.textBoxExternalsPath.Location = new System.Drawing.Point(312, 34);
             this.textBoxExternalsPath.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.textBoxExternalsPath.Name = "textBoxExternalsPath";
-            this.textBoxExternalsPath.Size = new System.Drawing.Size(736, 22);
+            this.textBoxExternalsPath.Size = new System.Drawing.Size(736, 26);
             this.textBoxExternalsPath.TabIndex = 8;
             // 
             // polokusLabel3
@@ -174,7 +175,7 @@ namespace Polokus.App.Views
             this.polokusLabel3.Location = new System.Drawing.Point(15, 38);
             this.polokusLabel3.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.polokusLabel3.Name = "polokusLabel3";
-            this.polokusLabel3.Size = new System.Drawing.Size(126, 16);
+            this.polokusLabel3.Size = new System.Drawing.Size(158, 21);
             this.polokusLabel3.TabIndex = 7;
             this.polokusLabel3.Text = "Path with externals:";
             // 
@@ -185,7 +186,7 @@ namespace Polokus.App.Views
             this.polokusLabel7.Location = new System.Drawing.Point(552, 73);
             this.polokusLabel7.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.polokusLabel7.Name = "polokusLabel7";
-            this.polokusLabel7.Size = new System.Drawing.Size(13, 16);
+            this.polokusLabel7.Size = new System.Drawing.Size(17, 21);
             this.polokusLabel7.TabIndex = 6;
             this.polokusLabel7.Text = "s";
             // 
@@ -204,7 +205,7 @@ namespace Polokus.App.Views
             0,
             -2147483648});
             this.numericUpDownTimeoutForManualProcesses.Name = "numericUpDownTimeoutForManualProcesses";
-            this.numericUpDownTimeoutForManualProcesses.Size = new System.Drawing.Size(71, 25);
+            this.numericUpDownTimeoutForManualProcesses.Size = new System.Drawing.Size(71, 30);
             this.numericUpDownTimeoutForManualProcesses.TabIndex = 5;
             // 
             // trackBarTimeOutForManualProcesses
@@ -214,7 +215,7 @@ namespace Polokus.App.Views
             this.trackBarTimeOutForManualProcesses.Maximum = 300;
             this.trackBarTimeOutForManualProcesses.Minimum = -1;
             this.trackBarTimeOutForManualProcesses.Name = "trackBarTimeOutForManualProcesses";
-            this.trackBarTimeOutForManualProcesses.Size = new System.Drawing.Size(149, 45);
+            this.trackBarTimeOutForManualProcesses.Size = new System.Drawing.Size(149, 56);
             this.trackBarTimeOutForManualProcesses.TabIndex = 3;
             this.trackBarTimeOutForManualProcesses.TickStyle = System.Windows.Forms.TickStyle.None;
             this.trackBarTimeOutForManualProcesses.TrackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(18)))), ((int)(((byte)(51)))));
@@ -226,7 +227,7 @@ namespace Polokus.App.Views
             this.polokusLabel5.Location = new System.Drawing.Point(15, 73);
             this.polokusLabel5.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.polokusLabel5.Name = "polokusLabel5";
-            this.polokusLabel5.Size = new System.Drawing.Size(180, 16);
+            this.polokusLabel5.Size = new System.Drawing.Size(222, 21);
             this.polokusLabel5.TabIndex = 2;
             this.polokusLabel5.Text = "Timeout for manual process:";
             // 
@@ -263,7 +264,7 @@ namespace Polokus.App.Views
             this.textBoxRemotePolokusUri.Location = new System.Drawing.Point(312, 112);
             this.textBoxRemotePolokusUri.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.textBoxRemotePolokusUri.Name = "textBoxRemotePolokusUri";
-            this.textBoxRemotePolokusUri.Size = new System.Drawing.Size(266, 22);
+            this.textBoxRemotePolokusUri.Size = new System.Drawing.Size(266, 26);
             this.textBoxRemotePolokusUri.TabIndex = 11;
             // 
             // labelPolokusUri
@@ -273,7 +274,7 @@ namespace Polokus.App.Views
             this.labelPolokusUri.Location = new System.Drawing.Point(15, 116);
             this.labelPolokusUri.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.labelPolokusUri.Name = "labelPolokusUri";
-            this.labelPolokusUri.Size = new System.Drawing.Size(136, 16);
+            this.labelPolokusUri.Size = new System.Drawing.Size(168, 21);
             this.labelPolokusUri.TabIndex = 10;
             this.labelPolokusUri.Text = "Remote Polokus URI:";
             // 
@@ -284,7 +285,7 @@ namespace Polokus.App.Views
             this.checkBoxUseRemotePolokus.Location = new System.Drawing.Point(15, 73);
             this.checkBoxUseRemotePolokus.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.checkBoxUseRemotePolokus.Name = "checkBoxUseRemotePolokus";
-            this.checkBoxUseRemotePolokus.Size = new System.Drawing.Size(148, 20);
+            this.checkBoxUseRemotePolokus.Size = new System.Drawing.Size(182, 25);
             this.checkBoxUseRemotePolokus.TabIndex = 9;
             this.checkBoxUseRemotePolokus.Text = "Use remote Polokus";
             this.checkBoxUseRemotePolokus.UseVisualStyleBackColor = true;
@@ -296,7 +297,7 @@ namespace Polokus.App.Views
             this.polokusLabel6.Location = new System.Drawing.Point(552, 38);
             this.polokusLabel6.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.polokusLabel6.Name = "polokusLabel6";
-            this.polokusLabel6.Size = new System.Drawing.Size(26, 16);
+            this.polokusLabel6.Size = new System.Drawing.Size(33, 21);
             this.polokusLabel6.TabIndex = 8;
             this.polokusLabel6.Text = "ms";
             // 
@@ -310,7 +311,7 @@ namespace Polokus.App.Views
             0,
             0});
             this.numericUpDownDelayPerNodeHandler.Name = "numericUpDownDelayPerNodeHandler";
-            this.numericUpDownDelayPerNodeHandler.Size = new System.Drawing.Size(71, 25);
+            this.numericUpDownDelayPerNodeHandler.Size = new System.Drawing.Size(71, 30);
             this.numericUpDownDelayPerNodeHandler.TabIndex = 7;
             // 
             // polokusLabel4
@@ -320,7 +321,7 @@ namespace Polokus.App.Views
             this.polokusLabel4.Location = new System.Drawing.Point(15, 38);
             this.polokusLabel4.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.polokusLabel4.Name = "polokusLabel4";
-            this.polokusLabel4.Size = new System.Drawing.Size(151, 16);
+            this.polokusLabel4.Size = new System.Drawing.Size(188, 21);
             this.polokusLabel4.TabIndex = 6;
             this.polokusLabel4.Text = "Delay per NodeHandler:";
             // 
@@ -330,7 +331,7 @@ namespace Polokus.App.Views
             this.trackBarDelayPerNodeHandler.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.trackBarDelayPerNodeHandler.Maximum = 10000;
             this.trackBarDelayPerNodeHandler.Name = "trackBarDelayPerNodeHandler";
-            this.trackBarDelayPerNodeHandler.Size = new System.Drawing.Size(149, 45);
+            this.trackBarDelayPerNodeHandler.Size = new System.Drawing.Size(149, 56);
             this.trackBarDelayPerNodeHandler.TabIndex = 5;
             this.trackBarDelayPerNodeHandler.TickFrequency = 10;
             this.trackBarDelayPerNodeHandler.TickStyle = System.Windows.Forms.TickStyle.None;
@@ -348,7 +349,6 @@ namespace Polokus.App.Views
             // 
             this.groupBox1.Controls.Add(this.buttonBrowseBpmnPath);
             this.groupBox1.Controls.Add(this.textBoxBpmnPath);
-            this.groupBox1.Controls.Add(this.checkBoxEnableLogs);
             this.groupBox1.Controls.Add(this.polokusLabel1);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox1.Location = new System.Drawing.Point(10, 10);
@@ -383,20 +383,20 @@ namespace Polokus.App.Views
             this.textBoxBpmnPath.Location = new System.Drawing.Point(312, 34);
             this.textBoxBpmnPath.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.textBoxBpmnPath.Name = "textBoxBpmnPath";
-            this.textBoxBpmnPath.Size = new System.Drawing.Size(736, 22);
+            this.textBoxBpmnPath.Size = new System.Drawing.Size(736, 26);
             this.textBoxBpmnPath.TabIndex = 1;
             // 
-            // checkBoxEnableLogs
+            // checkBoxRestoreOnStart
             // 
-            this.checkBoxEnableLogs.AutoSize = true;
-            this.checkBoxEnableLogs.Font = new System.Drawing.Font("Montserrat", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.checkBoxEnableLogs.Location = new System.Drawing.Point(15, 69);
-            this.checkBoxEnableLogs.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            this.checkBoxEnableLogs.Name = "checkBoxEnableLogs";
-            this.checkBoxEnableLogs.Size = new System.Drawing.Size(95, 20);
-            this.checkBoxEnableLogs.TabIndex = 0;
-            this.checkBoxEnableLogs.Text = "Enable logs";
-            this.checkBoxEnableLogs.UseVisualStyleBackColor = true;
+            this.checkBoxRestoreOnStart.AutoSize = true;
+            this.checkBoxRestoreOnStart.Font = new System.Drawing.Font("Montserrat", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.checkBoxRestoreOnStart.Location = new System.Drawing.Point(15, 158);
+            this.checkBoxRestoreOnStart.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.checkBoxRestoreOnStart.Name = "checkBoxRestoreOnStart";
+            this.checkBoxRestoreOnStart.Size = new System.Drawing.Size(376, 25);
+            this.checkBoxRestoreOnStart.TabIndex = 0;
+            this.checkBoxRestoreOnStart.Text = "Restore not finished process instances on start";
+            this.checkBoxRestoreOnStart.UseVisualStyleBackColor = true;
             // 
             // polokusLabel1
             // 
@@ -405,13 +405,13 @@ namespace Polokus.App.Views
             this.polokusLabel1.Location = new System.Drawing.Point(15, 38);
             this.polokusLabel1.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.polokusLabel1.Name = "polokusLabel1";
-            this.polokusLabel1.Size = new System.Drawing.Size(135, 16);
+            this.polokusLabel1.Size = new System.Drawing.Size(169, 21);
             this.polokusLabel1.TabIndex = 0;
             this.polokusLabel1.Text = "Path with bpmn files:";
             // 
             // SettingsView
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 21F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.panel1);
             this.Font = new System.Drawing.Font("Montserrat", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
@@ -438,7 +438,7 @@ namespace Polokus.App.Views
 
         private Panel panel1;
         private GroupBox groupBox2;
-        private CheckBox checkBoxEnableLogs;
+        private CheckBox checkBoxRestoreOnStart;
         private GroupBox groupBox1;
         private PolokusButton buttonBrowseBpmnPath;
         private TextBox textBoxBpmnPath;

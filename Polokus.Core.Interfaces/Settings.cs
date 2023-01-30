@@ -46,7 +46,7 @@ namespace Polokus.Core.Interfaces
         public static void ResetSettings()
         {
             BpmnPath = "./BPMN";
-            EnableLogs = true;
+            RestoreProcessesOnStart = false;
             MessageListenerPort = 8085;
             ExternalsPath = "./externals.json";
             TimeoutForProcessSec = -1;
@@ -82,11 +82,11 @@ namespace Polokus.Core.Interfaces
                 // BpmnPath
                 _bpmnPath = data[MainSection]["BpmnPath"];
 
-                // EnableLogs
+                // RestoreProcessesOnStart
                 {
-                    if (bool.TryParse(data[MainSection]["EnableLogs"], out bool res))
+                    if (bool.TryParse(data[ServiceSection]["RestoreProcessesOnStart"], out bool res))
                     {
-                        _enableLogs = res;
+                        _restoreProcessesOnStart = res;
                     }
                 }
 
@@ -159,20 +159,20 @@ namespace Polokus.Core.Interfaces
             set => Instance.bpmnPath = value;
         }
 
-        private bool? _enableLogs;
-        public bool enableLogs
+        private bool? _restoreProcessesOnStart;
+        public bool restoreProcessesOnStart
         {
-            get => _enableLogs ?? true;
+            get => _restoreProcessesOnStart ?? true;
             set
             {
-                _enableLogs = value;
-                UpdateSetting(MainSection, "EnableLogs", value.ToString());
+                _restoreProcessesOnStart = value;
+                UpdateSetting(MainSection, "RestoreProcessesOnStart", value.ToString());
             }
         }
-        public static bool EnableLogs 
+        public static bool RestoreProcessesOnStart
         {
-            get => Instance.enableLogs;
-            set => Instance.enableLogs = value;
+            get => Instance.restoreProcessesOnStart;
+            set => Instance.restoreProcessesOnStart = value;
         }
 
         private int? _messageListenerPort;
