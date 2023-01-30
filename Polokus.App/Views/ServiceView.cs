@@ -27,9 +27,15 @@ namespace Polokus.App.Views
             chromiumWindow.Parent = panelBpmnio;
             chromiumWindow.Dock = DockStyle.Fill;
 
-            LoadBpmnFiles();
-            RestoreNotFinishedInstances();
+            InitializeListsEvents();
+            InitializeComboBoxWorkflows();
 
+            AnyBpmnProcessSelected = false;
+            AnyProcessInstanceSelected = false;
+        }
+
+        private void InitializeListsEvents()
+        {
             this.listViewProcesses.SizeChanged += ListViewProcesses_SizeChanged;
             this.listViewProcesses.SelectedIndexChanged += ListViewProcesses_SelectedIndexChanged;
 
@@ -37,40 +43,8 @@ namespace Polokus.App.Views
             this.listViewInstances.SelectedIndexChanged += ListViewInstances_SelectedIndexChanged;
             this.listViewStarters.SizeChanged += ListViewStarters_SizeChanged;
             this.listViewWaiters.SizeChanged += ListViewWaiters_SizeChanged;
-
-            AnyBpmnProcessSelected = false;
-            AnyProcessInstanceSelected = false;
-
-            InitializeComboBoxWorkflows();
-
         }
 
-        private void RestoreNotFinishedInstances()
-        {
-            if (PolokusApp.LocalPolokus == null)
-            {
-                return;
-            }
-
-            var notFinishedSnapshots = PolokusApp.LocalPolokus.StateSerializerManager.GetInfoForAllSnapshots();
-            if (notFinishedSnapshots.Any())
-            {
-                StringBuilder sb = new StringBuilder("Exists not finished process instances:\n");
-                foreach (var info in notFinishedSnapshots)
-                {
-                    sb.AppendLine($"Workflow: {info.Item1} Process: {info.Item2}");
-                }
-                sb.AppendLine("Do you want to continue them?");
-                if (MessageBox.Show(sb.ToString(), "Info", MessageBoxButtons.YesNo) == DialogResult.Yes)
-                {
-                    foreach (var info in notFinishedSnapshots)
-                    {
-                        string filePath = info.Item3;
-                        PolokusApp.LocalPolokus.StateSerializerManager.Reconstruct(filePath);
-                    }
-                }
-            }
-        }
 
         private void ListViewProcesses_SelectedIndexChanged(object? sender, EventArgs e)
         {
@@ -186,29 +160,6 @@ namespace Polokus.App.Views
             this.listViewProcesses.Columns[0].Width = maxWidth;
         }
 
-        private void LoadBpmnFiles()
-        {
-            string bpmnDir = Settings.BpmnPath;
-            if (!Directory.Exists(bpmnDir))
-            {
-                string msg = $"BpmnPath {bpmnDir} does not exists. Do you want to create this directory?";
-                if (MessageBox.Show(msg, "", MessageBoxButtons.YesNo) == DialogResult.Yes)
-                {
-                    Directory.CreateDirectory(bpmnDir);
-                }
-                else
-                {
-                    return;
-                }
-            }
-
-            var files = Directory.GetFiles(Settings.BpmnPath);
-            foreach (var file in files)
-            {
-                LoadXmlFile(file);
-            }
-
-        }
 
         private void LoadXmlFile(string file)
         {
@@ -236,9 +187,13 @@ namespace Polokus.App.Views
         private List<string> _loadedWorkflows = new();
         private void InitializeComboBoxWorkflows()
         {
+            var workflows = _services.PolokusService.GetWorkflowsIds();
+            foreach (var wf in workflows)
+            {
+                _loadedWorkflows.Add(wf);
+            }
+
             comboBoxWorkflows.DataSource = new BindingSource(this._loadedWorkflows, null);
-            //comboBoxWorkflows.DisplayMember = "Key";
-            //comboBoxWorkflows.ValueMember = "Value";
             comboBoxWorkflows.SelectedIndexChanged += comboBoxWorkflows_SelectedIndexChanged;
         }
 

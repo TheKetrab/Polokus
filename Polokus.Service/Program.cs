@@ -1,5 +1,6 @@
 ﻿using log4net;
 using log4net.Config;
+using Polokus.Core.Interfaces;
 using Polokus.Service;
 using System.Reflection;
 using Topshelf;

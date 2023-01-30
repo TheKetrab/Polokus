@@ -61,8 +61,6 @@ namespace Polokus.App
             Local,
             Remote
         }
-
-        public static PolokusMaster? LocalPolokus { get; private set; }
         
         public static bool TryRegisterRemotePolokus()
         {
@@ -127,9 +125,32 @@ namespace Polokus.App
         private static IServicesProvider CreateLocalPolokus()
         {
             PolokusMaster polokus = new PolokusMaster(true);
-            LocalPolokus = polokus;
+            polokus.LoadWorkflows();
+            RestoreNotFinishedInstances(polokus);
             var serviceProvider = new OnPremiseServicesProvider(polokus);
             return serviceProvider;
+        }
+
+        private static void RestoreNotFinishedInstances(PolokusMaster master)
+        {
+            var notFinishedSnapshots = master.StateSerializerManager.GetInfoForAllSnapshots();
+            if (notFinishedSnapshots.Any())
+            {
+                StringBuilder sb = new StringBuilder("Exists not finished process instances:\n");
+                foreach (var info in notFinishedSnapshots)
+                {
+                    sb.AppendLine($"Workflow: {info.Item1} Process: {info.Item2}");
+                }
+                sb.AppendLine("Do you want to continue them?");
+                if (MessageBox.Show(sb.ToString(), "Info", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    foreach (var info in notFinishedSnapshots)
+                    {
+                        string filePath = info.Item3;
+                        master.StateSerializerManager.Reconstruct(filePath);
+                    }
+                }
+            }
         }
 
         /// <summary>

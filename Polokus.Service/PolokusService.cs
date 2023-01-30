@@ -2,6 +2,7 @@
 using log4net;
 using Polokus.Core;
 using Polokus.Core.Communication.Services.OnPremise;
+using Polokus.Core.Interfaces;
 using Polokus.Service.Communication.Services;
 
 namespace Polokus.Service
@@ -63,6 +64,20 @@ namespace Polokus.Service
         public void Start()
         {
             Task.Run(() => StartServer());
+            Master.LoadWorkflows();
+            
+            var workflows = Master.GetWorkflows();
+            foreach (var wf in workflows)
+            {
+                PrintHelper.PrintInfo($"Loaded workflow: {wf.Id}");
+            }
+            
+            if (Settings.RestoreProcessesOnStart)
+            {
+                Master.RestoreNotFinishedProcesses();
+            }
+
+
             PrintHelper.PrintInfo("Service started.");
         }
 

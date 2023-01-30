@@ -44,8 +44,6 @@ namespace Polokus.App
                 _mainWindow = new MainWindow();
                 PolokusApp.RegisterAppHooksProvider();
 
-
-
                 Application.Run(_mainWindow);
             }
 
@@ -94,7 +92,7 @@ namespace Polokus.App
                 }
 
                 var result = MessageBox.Show(
-                    "Failed to connect to remote server. Do you want to start PolokusMaster within GUI App?", "Connection error",
+                    $"Failed to connect to remote server. Not found a service on {Settings.RemotePolokusUri}. Do you want to start PolokusMaster within GUI App?", "Connection error",
                     MessageBoxButtons.YesNo);
                 
                 if (result == DialogResult.Yes)

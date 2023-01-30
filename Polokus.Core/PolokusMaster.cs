@@ -14,6 +14,7 @@ using Polokus.Core.Interfaces.Managers;
 using Polokus.Core.Interfaces.Xsd;
 using Polokus.Core.Managers;
 using Polokus.Core.Serialization;
+using System.Diagnostics.Metrics;
 using System.Text;
 
 namespace Polokus.Core
@@ -153,15 +154,9 @@ namespace Polokus.Core
                 SettingsProvider = new DefaultSettingsProvider();
             }
 
-            // ===== ===== RESTORE NOT FINISHED PROCESSES ===== =====
-            if (Settings.RestoreProcessesOnStart)
-            {
-                RestoreNotFinishedProcesses();
-            }
-
         }
 
-        private void RestoreNotFinishedProcesses()
+        public void RestoreNotFinishedProcesses()
         {
             var notFinishedSnapshots = StateSerializerManager.GetInfoForAllSnapshots();
             if (notFinishedSnapshots.Any())
@@ -219,6 +214,16 @@ namespace Polokus.Core
             RegisterStarters(workflow);
 
             AddWorkflow(bpmnWorkflowName, workflow);
+        }
+
+        public void LoadWorkflows()
+        {
+            var files = Directory.GetFiles(Settings.BpmnPath);
+            foreach (var bpmn in files)
+            {
+                string xml = File.ReadAllText(bpmn);
+                LoadXmlString(xml, Path.GetFileName(bpmn));
+            }
         }
 
         private void RegisterStarters(Workflow workflow)
