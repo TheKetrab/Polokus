@@ -46,7 +46,7 @@ namespace Polokus.App.Controls
 
             float x1 = (this.Width - textSize.Width - spacing - imgSize) / 2;
             float y1 = (this.Height - textSize.Height) / 2;
-            e.Graphics.DrawString(text, PolokusStyle.HeaderFont, Brushes.AliceBlue, new PointF(x1, y1));
+            e.Graphics.DrawString(text, PolokusStyle.HeaderFont, PolokusStyle.PolokusLogoBrush, new PointF(x1, y1));
 
             float x2 = x1 + textSize.Width + spacing;
             float y2 = (this.Height - imgSize) / 2;

@@ -1,5 +1,6 @@
 ﻿using Polokus.App.Forms;
 using Polokus.App.Utils;
+using System.ComponentModel;
 using System.Data;
 using System.Runtime.InteropServices;
 
@@ -18,11 +19,39 @@ namespace Polokus.App.Controls
             _mainWindow = mainWindow;
             InitializeComponent();
 
+            SetStyle();
+
             this.panelProcesses.Visible = false;
             this.buttonSettings.Dock = DockStyle.Top;
             _processPanelVisible = false;
             InitializeTreeView();
 
+        }
+
+        private void SetStyle()
+        {
+            this.panelSideMenu.BackColor = PolokusStyle.SideMenuColor;
+
+            this.buttonGraphView.Image = PolokusStyle.ButtonGraphImage;
+            this.buttonGraphView.SetStyle();
+
+            this.buttonProcesses.Image = PolokusStyle.ButtonProcessesImage;
+            this.buttonProcesses.SetStyle();
+
+            this.buttonScriptView.Image = PolokusStyle.ButtonScriptImage;
+            this.buttonScriptView.SetStyle();
+
+            this.buttonSettings.Image = PolokusStyle.ButtonSettingsImage;
+            this.buttonSettings.SetStyle();
+
+            this.buttonService.Image = PolokusStyle.ButtonWrenchImage;
+            this.buttonService.SetStyle();
+
+            this.buttonXmlView.Image = PolokusStyle.ButtonXMLImage;
+            this.buttonXmlView.SetStyle();
+
+            this.buttonEditor.Image = PolokusStyle.ButtonGraphImage;
+            this.buttonEditor.SetStyle();
         }
 
         public void AdjustSize(Size size)

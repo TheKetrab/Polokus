@@ -1,4 +1,6 @@
-﻿namespace Polokus.App.Views
+﻿using Polokus.App.Controls;
+
+namespace Polokus.App.Views
 {
     partial class GraphView
     {
@@ -57,7 +59,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.Red;
+            this.BackColor = PolokusStyle.MainWindowBackColor;
             this.Controls.Add(this.panelMain);
             this.Name = "GraphView";
             this.Size = new System.Drawing.Size(859, 595);

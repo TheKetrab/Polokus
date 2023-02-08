@@ -20,6 +20,8 @@ namespace Polokus.App
     /// </summary>
     public static class PolokusApp
     {
+        public static bool LightMode => Settings.LightMode;
+
         public static string BpmnPath
         {
             get

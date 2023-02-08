@@ -10,7 +10,19 @@ namespace Polokus.App.Controls
     {
         public PolokusIconButton()
         {
+            SetStyle();
+        }
+
+        public void SetStyle()
+        {
             this.FlatStyle = FlatStyle.Flat;
+            this.FlatAppearance.BorderSize = 0;
+            this.FlatAppearance.BorderColor = PolokusStyle.ForeColor;
+        }
+
+        public void SetFocused(bool focused)
+        {
+            this.FlatAppearance.BorderSize = focused ? 1 : 0;
         }
 
         protected override void OnPaint(PaintEventArgs pevent)

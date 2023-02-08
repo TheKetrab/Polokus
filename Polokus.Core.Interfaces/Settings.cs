@@ -53,6 +53,7 @@ namespace Polokus.Core.Interfaces
             DelayPerNodeHandlerMs = 0;
             UseRemotePolokus = false;
             RemotePolokusUri = "http://localhost:3000";
+            LightMode = false;
         }
 
         public static void ReloadSettings()
@@ -127,6 +128,14 @@ namespace Polokus.Core.Interfaces
 
                 // RemotePolokusUri
                 _remotePolokusUri = data[AppSection]["RemotePolokusUri"];
+
+                // LightMode
+                {
+                    if (bool.TryParse(data[AppSection]["LightMode"], out bool res))
+                    {
+                        _lightMode = res;
+                    }
+                }
 
             }
         }
@@ -270,6 +279,22 @@ namespace Polokus.Core.Interfaces
         {
             get => Instance.remotePolokusUri;
             set => Instance.remotePolokusUri = value;
+        }
+
+        private bool? _lightMode;
+        public bool? lightMode
+        {
+            get => _lightMode;
+            set
+            {
+                _lightMode = value;
+                UpdateSetting(AppSection, "LightMode", value?.ToString() ?? "False");
+            }
+        }
+        public static bool LightMode
+        {
+            get => Instance.lightMode ?? false;
+            set => Instance.lightMode = value;
         }
 
         #endregion

@@ -14,14 +14,28 @@ namespace Polokus.App.Controls
 
         public PolokusMenuButton()
         {
+            SetStyle();
+        }
+
+        public void SetFocused(bool focused)
+        {
+            this.FlatAppearance.BorderSize = focused ? 1 : 0;
+        }
+
+        public void SetStyle()
+        {
             this.TextImageRelation = TextImageRelation.ImageBeforeText;
-            this.ForeColor = Color.White;
-            this.FlatAppearance.BorderSize = 0;
-            this.FlatStyle = FlatStyle.Flat;
-            this.UseVisualStyleBackColor = true;
+            this.ForeColor = PolokusStyle.ForeColor;
             this.ImageAlign = ContentAlignment.MiddleLeft;
 
             this.Margin = new Padding(0, 10, 0, 10);
+
+            this.FlatStyle = FlatStyle.Flat;
+            this.FlatAppearance.BorderSize = 0;
+            this.FlatAppearance.BorderColor = PolokusStyle.ForeColor;
+            this.BackColor = PolokusStyle.BackColor;
+            this.ForeColor = PolokusStyle.ForeColor;
+
         }
 
         protected override void OnMouseEnter(EventArgs e)

@@ -2,6 +2,7 @@
 using Polokus.App.Fonts;
 using Polokus.App.Utils;
 using System.Runtime.InteropServices;
+using System.Windows.Forms.VisualStyles;
 
 namespace Polokus.App.Forms
 {
@@ -28,6 +29,8 @@ namespace Polokus.App.Forms
         {
             ViewModel = new MainWindowViewModel(this);
             InitializeComponent();
+
+            SetStyle();
 
             Menu = new MainWindowSideMenu(this);
             Menu.Parent = this.splitContainer1.Panel1;
@@ -71,6 +74,17 @@ namespace Polokus.App.Forms
             Menu.AdjustSize(this.splitContainer1.Panel1.Size);
 
 
+        }
+
+        public void SetStyle()
+        {
+            this.panelTaskBar.GradientAngle = 0F;
+            this.panelTaskBar.GradientBeginColor = PolokusStyle.TaskBarColor1;
+            this.panelTaskBar.GradientEndColor = PolokusStyle.TaskBarColor2;
+
+            this.labelConnectionTo.ForeColor = PolokusStyle.ForeColor;
+
+            this.BackColor = PolokusStyle.MainWindowBackColor;
         }
 
         public void SetConnectionToLabelText(string text)
