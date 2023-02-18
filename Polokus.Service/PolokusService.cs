@@ -4,6 +4,8 @@ using Polokus.Core;
 using Polokus.Core.Communication.Services.OnPremise;
 using Polokus.Core.Interfaces;
 using Polokus.Service.Communication.Services;
+using System.Text;
+using System.Timers;
 
 namespace Polokus.Service
 {
@@ -20,11 +22,37 @@ namespace Polokus.Service
         }
 
 
-        WebApplication _server;
+        private WebApplication _server;
+        private System.Timers.Timer _piLoggingTimer;
 
         public PolokusService()
         {
             _server = CreateGrpcServer();
+            _piLoggingTimer = new System.Timers.Timer();
+            InitPiLoggingTimer();
+        }
+
+        private bool _nonzero = false;
+        private void InitPiLoggingTimer()
+        {
+            _piLoggingTimer.Interval = 1000;
+            _piLoggingTimer.Start();
+            _piLoggingTimer.AutoReset = true;
+            _piLoggingTimer.Enabled = true;
+            _piLoggingTimer.Elapsed += (s, e) =>
+            {
+                var runningProcessInstances = Master.GetWorkflows().SelectMany(x => x.ProcessInstances.GetAll()).ToList();
+                if (runningProcessInstances.Any())
+                {
+                    _nonzero = true;
+                    PrintHelper.PrintInfo($"Running instances: {runningProcessInstances.Count()}");
+                }
+                else if (_nonzero)
+                {
+                    _nonzero = false;
+                    PrintHelper.PrintInfo("Running instances: 0");
+                }
+            };
         }
 
         private WebApplication CreateGrpcServer()
@@ -79,6 +107,83 @@ namespace Polokus.Service
 
 
             PrintHelper.PrintInfo("Service started.");
+
+            if (Master.HooksManager.GetHooksProviders().Count() > 0)
+            {
+                StringBuilder sb = new StringBuilder("Registered Hooks Providers:");
+                sb.AppendLine();
+                foreach (var hp in Master.HooksManager.GetHooksProviders())
+                {
+                    sb.AppendLine(hp.GetType().FullName);
+                }
+                PrintHelper.PrintInfo(sb.ToString());
+            }
+            else
+            {
+                PrintHelper.PrintInfo("Registered Hooks Providers: 0");
+            }
+
+            if (!string.IsNullOrEmpty(Settings.OnStartFunctions))
+            {
+                Task.Run(async () =>
+                {
+                    try
+                    {
+                        //await Task.Delay(10000); // 10s
+                        PrintHelper.PrintInfo("On Start Functions - starting.");
+                        DoOnStartFunctions();
+                        PrintHelper.PrintInfo("On Start Functions run succeed.");
+                    }
+                    catch (Exception e)
+                    {
+                        PrintHelper.PrintInfo("!!! ERROR while processing on start functions." + e.Message);
+                    }
+                });
+            }
+
+        }
+
+        private void DoOnStartFunctions()
+        {
+            string[] functions = Settings.OnStartFunctions.Split('#');
+
+            foreach (var f in functions)
+            {
+                string funcname = f.Substring(0, f.IndexOf('('));
+                string argspart = f[(f.IndexOf('(') + 1)..(f.IndexOf(')'))];
+
+                string[][] args = argspart.Split(',')
+                    .Select(x => x.Split(':', StringSplitOptions.TrimEntries))
+                    .ToArray();
+
+                switch (funcname)
+                {
+                    case "StartProcessManually":
+                        {
+                            if (args[0][0] == "wfId" && args[1][0] == "piId" && args[2][0] == "cnt")
+                            {
+                                string wfId = args[0][1];
+                                string bpmnProcessId = args[1][1];
+                                int count = int.Parse(args[2][1]);
+
+                                var workflow = Master.GetWorkflow(wfId);
+                                for (int i = 0; i < count; i++)
+                                {
+                                    workflow.StartProcessManually(bpmnProcessId);
+                                }
+
+                            }
+                            else
+                            {
+                                throw new Exception("Invalid argument names.");
+                            }
+                            break;
+                        }
+                    default:
+                        throw new Exception();
+                }
+            }
+
         }
 
         private async Task StartServer()

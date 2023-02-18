@@ -32,8 +32,8 @@ namespace Polokus.Core.Execution
         public ISignalManager SignalManager { get; }
 
 
-        public ICollection<IProcessInstance> History { get; } = new List<IProcessInstance>();
-        public ICollection<IProcessInstance> ProcessInstances { get; } = new List<IProcessInstance>();
+        public IConcurencyList<IProcessInstance> History { get; } = new ConcurencyList<IProcessInstance>();
+        public IConcurencyList<IProcessInstance> ProcessInstances { get; } = new ConcurencyList<IProcessInstance>();
         public IDictionary<IProcessInstance, IProcessInstanceSnapShot> Paused { get; }
             = new Dictionary<IProcessInstance, IProcessInstanceSnapShot>();
 
@@ -98,16 +98,16 @@ namespace Polokus.Core.Execution
                 if (IsTimeout(start, timeout))
                 {
                     HooksProvider?.OnTimeout(instance.Workflow.Id, instance.Id);
-                    ProcessInstances.Remove(instance);
+                    ProcessInstances.Remove(x => x.Id == instance.Id);
                     History.Add(instance);
 
                     return false;
                 }
             }
 
-            Logger.Global.Log($"Process finished. Time: {DateTime.Now - start}");
+            Logger.Global.Log($"Process {instance.Id} finished. Time: {DateTime.Now - start}");
             instance.StatusManager.Finish();
-            ProcessInstances.Remove(instance);
+            ProcessInstances.Remove(x => x.Id == instance.Id);
             History.Add(instance);
             HooksProvider?.OnProcessFinished(instance.Workflow.Id, instance.Id, instance.StatusManager.Status.ToString());
 
@@ -134,8 +134,8 @@ namespace Polokus.Core.Execution
 
         public IProcessInstance? GetProcessInstanceById(string processInstanceId)
         {
-            return ProcessInstances.FirstOrDefault(x => x.Id == processInstanceId)
-                ?? History.FirstOrDefault(x => x.Id == processInstanceId);
+            return ProcessInstances.GetAll().FirstOrDefault(x => x.Id == processInstanceId)
+                ?? History.GetAll().FirstOrDefault(x => x.Id == processInstanceId);
         }
 
         public void StartProcessInstance(IProcessInstance processInstance, IFlowNode startNode, int? timeout)

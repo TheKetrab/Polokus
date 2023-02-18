@@ -54,6 +54,7 @@ namespace Polokus.Core.Interfaces
             UseRemotePolokus = false;
             RemotePolokusUri = "http://localhost:3000";
             LightMode = false;
+            OnStartFunctions = "";
         }
 
         public static void ReloadSettings()
@@ -136,6 +137,9 @@ namespace Polokus.Core.Interfaces
                         _lightMode = res;
                     }
                 }
+
+                // OnStartFunctions
+                _onStartFunctions = data[ServiceSection]["OnStartFunctions"];
 
             }
         }
@@ -296,6 +300,23 @@ namespace Polokus.Core.Interfaces
             get => Instance.lightMode ?? false;
             set => Instance.lightMode = value;
         }
+
+        private string? _onStartFunctions;
+        public string onStartFunctions
+        {
+            get => _onStartFunctions ?? "";
+            set
+            {
+                _onStartFunctions = value;
+                UpdateSetting(ServiceSection, "OnStartFunctions", value);
+            }
+        }
+        public static string OnStartFunctions
+        {
+            get => Instance.onStartFunctions;
+            set => Instance.onStartFunctions = value;
+        }
+
 
         #endregion
     }

@@ -29,6 +29,7 @@ namespace Polokus.App.Views
 
             InitializeListsEvents();
             InitializeComboBoxWorkflows();
+            SetDefaultTextForScripting();
 
             AnyBpmnProcessSelected = false;
             AnyProcessInstanceSelected = false;
@@ -489,5 +490,47 @@ namespace Polokus.App.Views
 
         }
 
+        private void btnScriptingRunScript_Click(object sender, EventArgs e)
+        {
+            string script = this.textBoxScripting.Text;
+
+            string funcname = script.Substring(0, script.IndexOf('('));
+            string argspart = script[(script.IndexOf('(') + 1)..(script.IndexOf(')'))];
+
+            string[][] args = argspart.Split(',')
+                .Select(x => x.Split(':',StringSplitOptions.TrimEntries))
+                .ToArray();
+
+            switch (funcname)
+            {
+                case "StartProcessManually":
+                    {
+                        if (args[0][0] == "id" && args[1][0] == "count")
+                        {
+                            var wfId = ActiveWorkflow ?? throw new Exception();
+                            string bpmnProcessId = args[0][1];
+                            int count = int.Parse(args[1][1]);
+
+                            for (int i=0; i<count; i++)
+                            {
+                                _services.WorkflowsService.StartProcessManually(wfId, bpmnProcessId);
+                            }
+
+                        }
+                        else
+                        {
+                            throw new Exception("Invalid arguments");
+                        }
+                        break;
+                    }
+                default:
+                    throw new Exception();
+            }
+        }
+
+        private void SetDefaultTextForScripting()
+        {
+            this.textBoxScripting.Text = "StartProcessManually(id:___,count:1)";
+        }
     }
 }

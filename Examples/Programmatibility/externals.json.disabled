@@ -1,0 +1,40 @@
+{
+	"ServiceTasks": [
+		{
+			"Name": "My custom service task",
+			"Assembly": "C:/Custom/BPMN/Polokus/Polokus.ExternalsExample/bin/Debug/net6.0/Polokus.ExternalsExample.dll",
+			"ClassName": "Polokus.ExternalsExample.MyCustomServiceTaskNodeHandler",
+			"ServiceTaskName": "MyCustomServiceTaskNodeHandler"
+		}
+	],
+	"Monitors": [
+		{
+			"Name": "File monitor",
+			"Assembly": "C:/Custom/BPMN/Polokus/Polokus.ExternalsExample/bin/Debug/net6.0/Polokus.ExternalsExample.dll",
+			"ClassName": "Polokus.ExternalsExample.FileMonitoring.FileMonitor",
+			"Arguments": [ "C:/Custom/BPMN/Polokus/Examples/PathToMonitor" ]			
+		},
+		{
+			"Name": "Gmail monitor",
+			"Assembly": "C:/Custom/BPMN/Polokus/Polokus.ExternalsExample/bin/Debug/net6.0/Polokus.ExternalsExample.dll",
+			"ClassName": "Polokus.ExternalsExample.MailMonitoring.GmailMonitor",
+			"Arguments": [ "C:/Custom/BPMN/Polokus/Auth/credentials.json" ],
+			"Dependencies": [ 
+				"C:/Custom/BPMN/Polokus/Polokus.ExternalsExample/bin/Debug/net6.0/Google.Apis.Gmail.v1.dll",
+				"C:/Custom/BPMN/Polokus/Polokus.ExternalsExample/bin/Debug/net6.0/Google.Apis.Auth.dll",
+				"C:/Custom/BPMN/Polokus/Polokus.ExternalsExample/bin/Debug/net6.0/Google.Apis.Auth.PlatformServices.dll",
+				"C:/Custom/BPMN/Polokus/Polokus.ExternalsExample/bin/Debug/net6.0/Google.Apis.Core.dll",
+				"C:/Custom/BPMN/Polokus/Polokus.ExternalsExample/bin/Debug/net6.0/Google.Apis.dll",
+				"C:/Custom/BPMN/Polokus/Polokus.ExternalsExample/bin/Debug/net6.0/Newtonsoft.Json.dll"
+				]
+		}			
+	],
+	"HooksProviders": [
+		{
+			"Name": "External hooks provider 1",
+			"Assembly": "C:/Custom/BPMN/Polokus/Polokus.ExternalsExample/bin/Debug/net6.0/Polokus.ExternalsExample.dll",
+			"ClassName": "Polokus.ExternalsExample.ExampleHooksProvider"
+		}
+	]
+			
+}

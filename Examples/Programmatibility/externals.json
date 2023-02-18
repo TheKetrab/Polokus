@@ -1,37 +1,26 @@
 {
-	"Workflows": [
-	{
-		"Name": "processServiceTask.bpmn",
-		"ServiceTasks": [
+	"ServiceTasks": [
 		{
-			"Assembly": "C:/Custom/BPMN/Polokus/Polokus.ExternalsExample.dll",
+			"Name": "My custom service task",
+			"Assembly": "C:/Custom/BPMN/Polokus/Polokus.ExternalsExample/bin/Debug/net6.0/Polokus.ExternalsExample.dll",
 			"ClassName": "Polokus.ExternalsExample.MyCustomServiceTaskNodeHandler",
 			"ServiceTaskName": "MyCustomServiceTaskNodeHandler"
 		}
-		]
-	}
 	],
-	"FileMonitors": [
-	{
-		"Path": "pathtomonitor",
-		"Actions": [
+	"Monitors": [
 		{
-			"Event": "FileCreated",
-			"Trigger": "messagename",
-			"Params": "parameters to invoke with"
+			"Name": "File monitor",
+			"Assembly": "C:/Custom/BPMN/Polokus/Polokus.ExternalsExample/bin/Debug/net6.0/Polokus.ExternalsExample.dll",
+			"ClassName": "Polokus.ExternalsExample.FileMonitoring.FileMonitor",
+			"Arguments": [ "C:/Custom/BPMN/Polokus/Examples/PathToMonitor" ]			
 		}
-		]
-	}
 	],
 	"HooksProviders": [
 		{
-			"Assembly": "C:/Custom/BPMN/Polokus/Polokus.ExternalsExample.dll",
+			"Name": "External hooks provider 1",
+			"Assembly": "C:/Custom/BPMN/Polokus/Polokus.ExternalsExample/bin/Debug/net6.0/Polokus.ExternalsExample.dll",
 			"ClassName": "Polokus.ExternalsExample.ExampleHooksProvider"
 		}
-	],
-	"SettingsProvider": {
-		"Assembly": "pathtoassembly",
-		"ClassName": "classname"
-	}
+	]
 			
 }

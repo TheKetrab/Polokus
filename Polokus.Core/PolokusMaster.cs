@@ -42,7 +42,7 @@ namespace Polokus.Core
 
         public event EventHandler<ISignal>? Signal;
 
-        public StateSerializerManager StateSerializerManager { get; }
+        public StateSerializerManager? StateSerializerManager { get; }
 
         public Logger GetOrCreateLogger(string wfId, string piId)
         {
@@ -144,9 +144,9 @@ namespace Polokus.Core
 
             ConnectionManager = new ConnectionManager(isGUIAppManaged);
 
-            StateSerializerManager = new StateSerializerManager(this);
-            StateSerializerHooks stateSerializer = new StateSerializerHooks(this);
-            HooksManager.RegisterHooksProvider(stateSerializer);
+            //StateSerializerManager = new StateSerializerManager(this);
+            //StateSerializerHooks stateSerializer = new StateSerializerHooks(this);
+            //HooksManager.RegisterHooksProvider(stateSerializer);
 
             // ===== ===== ASSURE SETTINGS PROVIDER IS NOT NULL ===== =====
             if (SettingsProvider == null)

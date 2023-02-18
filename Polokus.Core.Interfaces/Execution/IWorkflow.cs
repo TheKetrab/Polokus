@@ -24,12 +24,12 @@ namespace Polokus.Core.Interfaces.Execution
         /// <summary>
         /// List of active instances of processes, defined in BpmnWorkflow.
         /// </summary>
-        ICollection<IProcessInstance> ProcessInstances { get; }
+        IConcurencyList<IProcessInstance> ProcessInstances { get; }
 
         /// <summary>
         /// List of instancess of processes, defined in BpmnWorkflow, which are already finished.
         /// </summary>
-        ICollection<IProcessInstance> History { get; }
+        IConcurencyList<IProcessInstance> History { get; }
 
         /// <summary>
         /// Collection of paused processes, with information to restore them.

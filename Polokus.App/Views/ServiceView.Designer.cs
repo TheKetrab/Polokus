@@ -35,6 +35,11 @@ namespace Polokus.App.Views
             this.readOnlyRichTextBox1 = new Polokus.App.Controls.ReadOnlyRichTextBox();
             this.panelBpmnio = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.panel7 = new System.Windows.Forms.Panel();
+            this.textBoxScripting = new System.Windows.Forms.TextBox();
+            this.panel11 = new System.Windows.Forms.Panel();
+            this.btnScriptingRunScript = new System.Windows.Forms.Button();
+            this.label4 = new System.Windows.Forms.Label();
             this.panel5 = new System.Windows.Forms.Panel();
             this.buttonRaiseSignal = new System.Windows.Forms.Button();
             this.textBoxRaiseSignal = new System.Windows.Forms.TextBox();
@@ -73,12 +78,15 @@ namespace Polokus.App.Views
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.panelWorkspace = new System.Windows.Forms.Panel();
             this.splitContainerWorkspace1 = new System.Windows.Forms.SplitContainer();
+            this.panel12 = new System.Windows.Forms.Panel();
             this.panelWorkflowSelect = new System.Windows.Forms.Panel();
             this.buttonLoadWorkflow = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
             this.comboBoxWorkflows = new System.Windows.Forms.ComboBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
+            this.panel7.SuspendLayout();
+            this.panel11.SuspendLayout();
             this.panel5.SuspendLayout();
             this.panel4.SuspendLayout();
             this.panel6.SuspendLayout();
@@ -95,6 +103,7 @@ namespace Polokus.App.Views
             this.splitContainerWorkspace1.Panel1.SuspendLayout();
             this.splitContainerWorkspace1.Panel2.SuspendLayout();
             this.splitContainerWorkspace1.SuspendLayout();
+            this.panel12.SuspendLayout();
             this.panelWorkflowSelect.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -131,6 +140,7 @@ namespace Polokus.App.Views
             // panel2
             // 
             this.panel2.AutoScroll = true;
+            this.panel2.Controls.Add(this.panel7);
             this.panel2.Controls.Add(this.panel5);
             this.panel2.Controls.Add(this.panel4);
             this.panel2.Controls.Add(this.panel6);
@@ -142,8 +152,58 @@ namespace Polokus.App.Views
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
             this.panel2.Padding = new System.Windows.Forms.Padding(6, 7, 11, 7);
-            this.panel2.Size = new System.Drawing.Size(321, 768);
+            this.panel2.Size = new System.Drawing.Size(321, 821);
             this.panel2.TabIndex = 2;
+            // 
+            // panel7
+            // 
+            this.panel7.Controls.Add(this.textBoxScripting);
+            this.panel7.Controls.Add(this.panel11);
+            this.panel7.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel7.Location = new System.Drawing.Point(6, 743);
+            this.panel7.Name = "panel7";
+            this.panel7.Size = new System.Drawing.Size(283, 125);
+            this.panel7.TabIndex = 11;
+            // 
+            // textBoxScripting
+            // 
+            this.textBoxScripting.Dock = System.Windows.Forms.DockStyle.Top;
+            this.textBoxScripting.Location = new System.Drawing.Point(0, 30);
+            this.textBoxScripting.Multiline = true;
+            this.textBoxScripting.Name = "textBoxScripting";
+            this.textBoxScripting.Size = new System.Drawing.Size(283, 100);
+            this.textBoxScripting.TabIndex = 0;
+            // 
+            // panel11
+            // 
+            this.panel11.Controls.Add(this.btnScriptingRunScript);
+            this.panel11.Controls.Add(this.label4);
+            this.panel11.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel11.Location = new System.Drawing.Point(0, 0);
+            this.panel11.Name = "panel11";
+            this.panel11.Size = new System.Drawing.Size(283, 30);
+            this.panel11.TabIndex = 3;
+            // 
+            // btnScriptingRunScript
+            // 
+            this.btnScriptingRunScript.Dock = System.Windows.Forms.DockStyle.Right;
+            this.btnScriptingRunScript.Location = new System.Drawing.Point(175, 0);
+            this.btnScriptingRunScript.Name = "btnScriptingRunScript";
+            this.btnScriptingRunScript.Size = new System.Drawing.Size(108, 30);
+            this.btnScriptingRunScript.TabIndex = 2;
+            this.btnScriptingRunScript.Text = "Run script";
+            this.btnScriptingRunScript.UseVisualStyleBackColor = true;
+            this.btnScriptingRunScript.Click += new System.EventHandler(this.btnScriptingRunScript_Click);
+            // 
+            // label4
+            // 
+            this.label4.Dock = System.Windows.Forms.DockStyle.Left;
+            this.label4.Location = new System.Drawing.Point(0, 0);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(114, 30);
+            this.label4.TabIndex = 1;
+            this.label4.Text = "Scripting";
+            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // panel5
             // 
@@ -153,13 +213,13 @@ namespace Polokus.App.Views
             this.panel5.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel5.Location = new System.Drawing.Point(6, 696);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(304, 47);
+            this.panel5.Size = new System.Drawing.Size(283, 47);
             this.panel5.TabIndex = 3;
             // 
             // buttonRaiseSignal
             // 
             this.buttonRaiseSignal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonRaiseSignal.Location = new System.Drawing.Point(218, 7);
+            this.buttonRaiseSignal.Location = new System.Drawing.Point(197, 7);
             this.buttonRaiseSignal.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.buttonRaiseSignal.Name = "buttonRaiseSignal";
             this.buttonRaiseSignal.Size = new System.Drawing.Size(86, 33);
@@ -174,7 +234,7 @@ namespace Polokus.App.Views
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxRaiseSignal.Location = new System.Drawing.Point(95, 9);
             this.textBoxRaiseSignal.Name = "textBoxRaiseSignal";
-            this.textBoxRaiseSignal.Size = new System.Drawing.Size(115, 27);
+            this.textBoxRaiseSignal.Size = new System.Drawing.Size(94, 27);
             this.textBoxRaiseSignal.TabIndex = 1;
             // 
             // label2
@@ -194,13 +254,13 @@ namespace Polokus.App.Views
             this.panel4.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel4.Location = new System.Drawing.Point(6, 649);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(304, 47);
+            this.panel4.Size = new System.Drawing.Size(283, 47);
             this.panel4.TabIndex = 2;
             // 
             // buttonPingWaiter
             // 
             this.buttonPingWaiter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonPingWaiter.Location = new System.Drawing.Point(217, 7);
+            this.buttonPingWaiter.Location = new System.Drawing.Point(196, 7);
             this.buttonPingWaiter.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.buttonPingWaiter.Name = "buttonPingWaiter";
             this.buttonPingWaiter.Size = new System.Drawing.Size(86, 33);
@@ -215,7 +275,7 @@ namespace Polokus.App.Views
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxPingWaiter.Location = new System.Drawing.Point(95, 11);
             this.textBoxPingWaiter.Name = "textBoxPingWaiter";
-            this.textBoxPingWaiter.Size = new System.Drawing.Size(115, 27);
+            this.textBoxPingWaiter.Size = new System.Drawing.Size(94, 27);
             this.textBoxPingWaiter.TabIndex = 1;
             // 
             // label1
@@ -234,7 +294,7 @@ namespace Polokus.App.Views
             this.panel6.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel6.Location = new System.Drawing.Point(6, 516);
             this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(304, 133);
+            this.panel6.Size = new System.Drawing.Size(283, 133);
             this.panel6.TabIndex = 10;
             // 
             // listViewWaiters
@@ -246,7 +306,7 @@ namespace Polokus.App.Views
             this.listViewWaiters.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listViewWaiters.Location = new System.Drawing.Point(0, 20);
             this.listViewWaiters.Name = "listViewWaiters";
-            this.listViewWaiters.Size = new System.Drawing.Size(304, 113);
+            this.listViewWaiters.Size = new System.Drawing.Size(283, 113);
             this.listViewWaiters.TabIndex = 7;
             this.listViewWaiters.UseCompatibleStateImageBehavior = false;
             this.listViewWaiters.View = System.Windows.Forms.View.Details;
@@ -282,7 +342,7 @@ namespace Polokus.App.Views
             this.panel10.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel10.Location = new System.Drawing.Point(6, 383);
             this.panel10.Name = "panel10";
-            this.panel10.Size = new System.Drawing.Size(304, 133);
+            this.panel10.Size = new System.Drawing.Size(283, 133);
             this.panel10.TabIndex = 9;
             // 
             // listViewStarters
@@ -294,7 +354,7 @@ namespace Polokus.App.Views
             this.listViewStarters.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listViewStarters.Location = new System.Drawing.Point(0, 20);
             this.listViewStarters.Name = "listViewStarters";
-            this.listViewStarters.Size = new System.Drawing.Size(304, 113);
+            this.listViewStarters.Size = new System.Drawing.Size(283, 113);
             this.listViewStarters.TabIndex = 7;
             this.listViewStarters.UseCompatibleStateImageBehavior = false;
             this.listViewStarters.View = System.Windows.Forms.View.Details;
@@ -330,7 +390,7 @@ namespace Polokus.App.Views
             this.panel9.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel9.Location = new System.Drawing.Point(6, 183);
             this.panel9.Name = "panel9";
-            this.panel9.Size = new System.Drawing.Size(304, 200);
+            this.panel9.Size = new System.Drawing.Size(283, 200);
             this.panel9.TabIndex = 5;
             // 
             // listViewInstances
@@ -342,7 +402,7 @@ namespace Polokus.App.Views
             this.listViewInstances.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listViewInstances.Location = new System.Drawing.Point(0, 20);
             this.listViewInstances.Name = "listViewInstances";
-            this.listViewInstances.Size = new System.Drawing.Size(304, 180);
+            this.listViewInstances.Size = new System.Drawing.Size(283, 180);
             this.listViewInstances.TabIndex = 7;
             this.listViewInstances.UseCompatibleStateImageBehavior = false;
             this.listViewInstances.View = System.Windows.Forms.View.Details;
@@ -378,7 +438,7 @@ namespace Polokus.App.Views
             this.panel8.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel8.Location = new System.Drawing.Point(6, 50);
             this.panel8.Name = "panel8";
-            this.panel8.Size = new System.Drawing.Size(304, 133);
+            this.panel8.Size = new System.Drawing.Size(283, 133);
             this.panel8.TabIndex = 6;
             // 
             // listViewProcesses
@@ -388,7 +448,7 @@ namespace Polokus.App.Views
             this.listViewProcesses.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listViewProcesses.Location = new System.Drawing.Point(0, 20);
             this.listViewProcesses.Name = "listViewProcesses";
-            this.listViewProcesses.Size = new System.Drawing.Size(304, 113);
+            this.listViewProcesses.Size = new System.Drawing.Size(283, 113);
             this.listViewProcesses.TabIndex = 1;
             this.listViewProcesses.UseCompatibleStateImageBehavior = false;
             this.listViewProcesses.View = System.Windows.Forms.View.Details;
@@ -419,7 +479,7 @@ namespace Polokus.App.Views
             this.panel3.Name = "panel3";
             this.panel3.Padding = new System.Windows.Forms.Padding(3);
             this.panel3.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.panel3.Size = new System.Drawing.Size(304, 43);
+            this.panel3.Size = new System.Drawing.Size(283, 43);
             this.panel3.TabIndex = 1;
             // 
             // buttonStop
@@ -481,7 +541,7 @@ namespace Polokus.App.Views
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer1.Location = new System.Drawing.Point(0, 53);
             this.splitContainer1.Name = "splitContainer1";
             this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -500,9 +560,9 @@ namespace Polokus.App.Views
             // 
             this.panelWorkspace.Controls.Add(this.splitContainerWorkspace1);
             this.panelWorkspace.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelWorkspace.Location = new System.Drawing.Point(0, 53);
+            this.panelWorkspace.Location = new System.Drawing.Point(0, 0);
             this.panelWorkspace.Name = "panelWorkspace";
-            this.panelWorkspace.Size = new System.Drawing.Size(1091, 768);
+            this.panelWorkspace.Size = new System.Drawing.Size(1091, 821);
             this.panelWorkspace.TabIndex = 0;
             // 
             // splitContainerWorkspace1
@@ -514,15 +574,25 @@ namespace Polokus.App.Views
             // 
             // splitContainerWorkspace1.Panel1
             // 
-            this.splitContainerWorkspace1.Panel1.Controls.Add(this.splitContainer1);
+            this.splitContainerWorkspace1.Panel1.Controls.Add(this.panel12);
             // 
             // splitContainerWorkspace1.Panel2
             // 
             this.splitContainerWorkspace1.Panel2.Controls.Add(this.panel2);
-            this.splitContainerWorkspace1.Size = new System.Drawing.Size(1091, 768);
+            this.splitContainerWorkspace1.Size = new System.Drawing.Size(1091, 821);
             this.splitContainerWorkspace1.SplitterDistance = 765;
             this.splitContainerWorkspace1.SplitterWidth = 5;
             this.splitContainerWorkspace1.TabIndex = 0;
+            // 
+            // panel12
+            // 
+            this.panel12.Controls.Add(this.splitContainer1);
+            this.panel12.Controls.Add(this.panelWorkflowSelect);
+            this.panel12.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel12.Location = new System.Drawing.Point(0, 0);
+            this.panel12.Name = "panel12";
+            this.panel12.Size = new System.Drawing.Size(765, 821);
+            this.panel12.TabIndex = 3;
             // 
             // panelWorkflowSelect
             // 
@@ -532,7 +602,7 @@ namespace Polokus.App.Views
             this.panelWorkflowSelect.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelWorkflowSelect.Location = new System.Drawing.Point(0, 0);
             this.panelWorkflowSelect.Name = "panelWorkflowSelect";
-            this.panelWorkflowSelect.Size = new System.Drawing.Size(1091, 53);
+            this.panelWorkflowSelect.Size = new System.Drawing.Size(765, 53);
             this.panelWorkflowSelect.TabIndex = 0;
             // 
             // buttonLoadWorkflow
@@ -567,12 +637,14 @@ namespace Polokus.App.Views
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.panelWorkspace);
-            this.Controls.Add(this.panelWorkflowSelect);
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "ServiceView";
             this.Size = new System.Drawing.Size(1091, 821);
             this.panel1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
+            this.panel7.ResumeLayout(false);
+            this.panel7.PerformLayout();
+            this.panel11.ResumeLayout(false);
             this.panel5.ResumeLayout(false);
             this.panel5.PerformLayout();
             this.panel4.ResumeLayout(false);
@@ -595,6 +667,7 @@ namespace Polokus.App.Views
             this.splitContainerWorkspace1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerWorkspace1)).EndInit();
             this.splitContainerWorkspace1.ResumeLayout(false);
+            this.panel12.ResumeLayout(false);
             this.panelWorkflowSelect.ResumeLayout(false);
             this.panelWorkflowSelect.PerformLayout();
             this.ResumeLayout(false);
@@ -649,5 +722,11 @@ namespace Polokus.App.Views
         private Button buttonRaiseSignal;
         private TextBox textBoxRaiseSignal;
         private Label label2;
+        private Panel panel7;
+        private Button btnScriptingRunScript;
+        private TextBox textBoxScripting;
+        private Label label4;
+        private Panel panel11;
+        private Panel panel12;
     }
 }

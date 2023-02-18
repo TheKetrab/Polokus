@@ -45,7 +45,7 @@ namespace Polokus.Core.Communication.Services.OnPremise
             var result = new List<RawProcessInstance>();
 
             result.AddRange(
-                _polokus.GetWorkflow(wfId).ProcessInstances.Select(x => new RawProcessInstance()
+                _polokus.GetWorkflow(wfId).ProcessInstances.GetAll().Select(x => new RawProcessInstance()
                 {
                     Id = x.Id,
                     ActiveTasks = x.ActiveTasksManager.Count().ToString(),
@@ -53,7 +53,7 @@ namespace Polokus.Core.Communication.Services.OnPremise
                 }));
 
             result.AddRange(
-                _polokus.GetWorkflow(wfId).History.Select(x => new RawProcessInstance()
+                _polokus.GetWorkflow(wfId).History.GetAll().Select(x => new RawProcessInstance()
                 {
                     Id = x.Id,
                     ActiveTasks = x.ActiveTasksManager.Count().ToString(),

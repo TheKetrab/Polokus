@@ -135,6 +135,11 @@ namespace Polokus.App
 
         private static void RestoreNotFinishedInstances(PolokusMaster master)
         {
+            if (master.StateSerializerManager == null)
+            {
+                return;
+            }
+
             var notFinishedSnapshots = master.StateSerializerManager.GetInfoForAllSnapshots();
             if (notFinishedSnapshots.Any())
             {

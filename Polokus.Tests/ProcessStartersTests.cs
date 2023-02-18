@@ -35,7 +35,7 @@ namespace Polokus.Tests
             while (true)
             {
                 await Task.Delay(100);
-                var running = master.GetWorkflows().SelectMany(x => x.ProcessInstances);
+                var running = master.GetWorkflows().SelectMany(x => x.ProcessInstances.GetAll());
                 if (!running.Any())
                 {
                     break;
