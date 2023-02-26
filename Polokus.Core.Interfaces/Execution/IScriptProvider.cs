@@ -17,17 +17,17 @@ namespace Polokus.Core.Interfaces.Execution
         string Decode(string script);
 
         /// <summary>
-        /// This method runs C# script dynamically and returns result as type <typeparamref name="T"/>.
+        /// This method runs script dynamically and returns result as type <typeparamref name="T"/>.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="script">C# script to evaluate.</param>
-        Task<T> EvalCSharpScriptAsync<T>(string script);
+        /// <param name="script">Script to evaluate.</param>
+        Task<T> EvalScriptAsync<T>(string script);
 
         /// <summary>
-        /// This method runs C# script dynamically.
+        /// This method runs script dynamically.
         /// </summary>
-        /// <param name="script">C# script to evaluate.</param>
-        Task EvalCSharpScriptAsync(string script);
+        /// <param name="script">Script to evaluate.</param>
+        Task EvalScriptAsync(string script);
 
         /// <summary>
         /// Decides if given string is valid variable name (for outgoing edges).

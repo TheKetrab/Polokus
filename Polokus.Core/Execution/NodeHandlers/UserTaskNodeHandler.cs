@@ -56,7 +56,7 @@ namespace Polokus.Core.Execution.NodeHandlers
                     {
                         // perform: $x = decision
                         string script = $"{outgoing.Name} = {userDecision};";
-                        await ScriptProvider.EvalCSharpScriptAsync(script);
+                        await ScriptProvider.EvalScriptAsync(script);
                     }
                     else
                     {

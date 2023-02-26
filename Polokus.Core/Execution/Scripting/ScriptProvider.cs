@@ -9,16 +9,8 @@ using System.Text.RegularExpressions;
 
 namespace Polokus.Core.Execution.Scripting
 {
-    public class ScriptProvider : IScriptProvider
+    public abstract class ScriptProvider : IScriptProvider
     {
-        public static ScriptOptions ScriptOptions => ScriptOptions.Default
-            .AddImports("System", "System.IO", "System.Collections.Generic", "System.Console",
-            "System.Diagnostics", "System.Dynamic", "System.Linq", "System.Text", "System.Threading.Tasks")
-            .AddReferences("System")
-            .AddReferences("System.Core")
-            .AddReferences("Microsoft.CSharp");
-
-
         public IScriptVariables Globals { get; } = new ScriptVariables();
 
         public string MarkVariables(string script)
@@ -58,41 +50,7 @@ namespace Polokus.Core.Execution.Scripting
             return WebUtility.HtmlDecode(script);
         }
 
-
-        static SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(3, 3);
-        public async Task<T> EvalCSharpScriptAsync<T>(string script)
-        {
-            string script2 = MarkVariables(script);
-
-            try
-            {
-                await _semaphoreSlim.WaitAsync();
-                var res = await CSharpScript.EvaluateAsync<T>(script2, ScriptOptions, Globals, typeof(ScriptVariables));
-                return res;
-            }
-            finally
-            {
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-                _semaphoreSlim.Release();
-            }
-        }
-
-        public async Task EvalCSharpScriptAsync(string script)
-        {
-            string script2 = MarkVariables(script);
-
-            try
-            {
-                await _semaphoreSlim.WaitAsync();
-                await CSharpScript.EvaluateAsync(script2, ScriptOptions, Globals, typeof(ScriptVariables));
-            }
-            finally
-            {
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-                _semaphoreSlim.Release();
-            }
-        }
+        public abstract Task<T> EvalScriptAsync<T>(string script);
+        public abstract Task EvalScriptAsync(string script);
     }
 }

@@ -5,30 +5,63 @@ namespace Polokus.Core.Execution.Scripting
 {
     public class ScriptVariables : IScriptVariables
     {
-        public ConcurrentDictionary<string, dynamic> globals = new ();
+        public Dictionary<string, dynamic> globals = new();
 
+        private object _lock = new object();
 
         public List<object> Values => globals.Values.ToList();
         public List<string> Variables => globals.Keys.ToList();
 
         public object GetValue(string variable)
         {
-            return globals[variable];
+            lock (_lock)
+            {
+                return globals[variable];
+            }
         }
 
         public void SetValue(string variable, object value)
         {
-            globals.AddOrUpdate(variable, value, (k, v) => value);
+            lock (_lock)
+            {
+                if (globals.ContainsKey(variable))
+                {
+                    globals[variable] = value;
+                }
+                else
+                {
+                    globals.Add(variable, value);
+                }
+            }
         }
 
         public T? TryGetValue<T>(string variable)
         {
-            if (globals.ContainsKey(variable) && globals[variable] is T typedVal)
+            lock (_lock)
             {
-                return typedVal;
-            }
+                if (globals.ContainsKey(variable) && globals[variable] is T typedVal)
+                {
+                    return typedVal;
+                }
 
-            return default(T);
+                return default(T);
+            }
+        }
+
+        public string GetJson()
+        {
+            lock (_lock)
+            {
+                return System.Text.Json.JsonSerializer.Serialize(globals);
+            }
+        }
+
+        public void SetValues(IDictionary<string,object> values)
+        {
+            lock (_lock)
+            {
+                globals = new Dictionary<string, object>(values);
+            }
         }
     }
 }

@@ -33,7 +33,7 @@ namespace Polokus.Core.Execution.NodeHandlers
 
                 return false; // if default sequence exists, choose it on the end
             }
-            return await ScriptProvider.EvalCSharpScriptAsync<bool>(condition);
+            return await ScriptProvider.EvalScriptAsync<bool>(condition);
         }
 
         protected override async Task<ProcessResultInfo> Process(INodeCaller? caller)

@@ -74,7 +74,7 @@ namespace Polokus.Core.Execution
             Workflow = workflow;
             ActiveTasksManager = new ActiveTasksManager(this);
             StatusManager = new StatusManager(this);
-            ScriptProvider = new ScriptProvider();
+            ScriptProvider = new JSScriptProvider(); // TODO INJECTION by settings
 
             BpmnProcess = bpmnProcess;
             ParentProcessInstance = parent;

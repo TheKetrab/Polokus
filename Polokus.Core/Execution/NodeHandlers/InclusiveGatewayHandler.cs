@@ -28,7 +28,7 @@ namespace Polokus.Core.Execution.NodeHandlers
             {
                 return true; // accept by default
             }
-            return await ScriptProvider.EvalCSharpScriptAsync<bool>(condition);
+            return await ScriptProvider.EvalScriptAsync<bool>(condition);
         }
 
         protected override async Task<ProcessResultInfo> Process(INodeCaller? caller)

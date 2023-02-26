@@ -17,7 +17,7 @@ namespace Polokus.Core.Execution.NodeHandlers
         public override async Task Action(INodeCaller? caller)
         {
             string script = ScriptProvider.Decode(Node.Name);
-            await ScriptProvider.EvalCSharpScriptAsync(script);
+            await ScriptProvider.EvalScriptAsync(script);
         }
 
     }

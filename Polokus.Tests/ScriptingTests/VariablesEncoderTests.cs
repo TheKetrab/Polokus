@@ -2,7 +2,7 @@
 using Polokus.Core.Helpers;
 using Polokus.Core.Interfaces.Execution;
 
-namespace Polokus.Tests
+namespace Polokus.Tests.ScriptingTests
 {
     public class VariablesEncoderTests
     {

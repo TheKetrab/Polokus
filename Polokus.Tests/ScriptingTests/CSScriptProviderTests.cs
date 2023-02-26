@@ -1,18 +1,18 @@
 ﻿using Polokus.Core.Execution.Scripting;
 
-namespace Polokus.Tests
+namespace Polokus.Tests.ScriptingTests
 {
-    public class ScriptProviderTests
+    public class CSScriptProviderTests
     {
 
         [Test]
         public async Task EvalCSharpScript_SimpleScript()
         {
             // Arrange
-            var scriptProvider = new ScriptProvider();
+            var scriptProvider = new CSScriptProvider();
 
             // Act
-            int x = await scriptProvider.EvalCSharpScriptAsync<int>("int x = 1; return x;");
+            int x = await scriptProvider.EvalScriptAsync<int>("int x = 1; return x;");
 
             // Assert
             Assert.AreEqual(1, x);
@@ -36,7 +36,7 @@ namespace Polokus.Tests
         public void EvalCSharpScript_MarkVariables(string input, string output)
         {
             // Arrange
-            var scriptProvider = new ScriptProvider();
+            var scriptProvider = new CSScriptProvider();
 
             // Act
             string marked = scriptProvider.MarkVariables(input);
@@ -46,14 +46,14 @@ namespace Polokus.Tests
         }
 
         [Test]
-        [TestCase("$a",true)]
+        [TestCase("$a", true)]
         [TestCase("$_vlmq", true)]
         [TestCase("$a + 13", false)]
         [TestCase("", false)]
         public void IsValidOutgoingVariable_Tests(string str, bool valid)
         {
             // Arrange
-            var scriptProvider = new ScriptProvider();
+            var scriptProvider = new CSScriptProvider();
 
             // Act
             bool result = scriptProvider.IsValidOutgoingVariable(str);

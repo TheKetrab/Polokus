@@ -20,9 +20,9 @@ namespace Polokus.Tests.NodeHandlersTests
 
             public override async Task Run()
             {
-                int x1 = await Parent.ProcessInstance.ScriptProvider.EvalCSharpScriptAsync<int>("$x = -1; return (int)$x;");
-                int x2 = await Parent.ProcessInstance.ScriptProvider.EvalCSharpScriptAsync<int>("int y; y=(42+58) * (int)$x; $y = y; return y;");
-                int x3 = await Parent.ProcessInstance.ScriptProvider.EvalCSharpScriptAsync<int>("return $y;");
+                int x1 = await Parent.ProcessInstance.ScriptProvider.EvalScriptAsync<int>("$x = -1; return (int)$x;");
+                int x2 = await Parent.ProcessInstance.ScriptProvider.EvalScriptAsync<int>("int y; y=(42+58) * (int)$x; $y = y; return y;");
+                int x3 = await Parent.ProcessInstance.ScriptProvider.EvalScriptAsync<int>("return $y;");
             }
         }
 
