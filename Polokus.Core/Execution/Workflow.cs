@@ -60,7 +60,7 @@ namespace Polokus.Core.Execution
 
             TimeManager = new TimeManager(this);
             SettingsProvider = settingsProvider;
-            MessageManager = new MessageManager(this, SettingsProvider.MessageListenerPort);
+            MessageManager = new MessageManager(this, Settings.MessageListenerPort);
             SignalManager = new SignalManager(this);
 
 

@@ -2,14 +2,16 @@
 using Microsoft.CodeAnalysis.Scripting;
 using Polokus.Core.Interfaces;
 using Polokus.Core.Interfaces.Execution;
+using System.Linq.Expressions;
 using System.Net;
+using System.Runtime.Loader;
 using System.Text.RegularExpressions;
 
 namespace Polokus.Core.Execution.Scripting
 {
     public class ScriptProvider : IScriptProvider
     {
-        public ScriptOptions ScriptOptions => ScriptOptions.Default
+        public static ScriptOptions ScriptOptions => ScriptOptions.Default
             .AddImports("System", "System.IO", "System.Collections.Generic", "System.Console",
             "System.Diagnostics", "System.Dynamic", "System.Linq", "System.Text", "System.Threading.Tasks")
             .AddReferences("System")
@@ -56,17 +58,41 @@ namespace Polokus.Core.Execution.Scripting
             return WebUtility.HtmlDecode(script);
         }
 
+
+        static SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(3, 3);
         public async Task<T> EvalCSharpScriptAsync<T>(string script)
         {
             string script2 = MarkVariables(script);
-            return await CSharpScript.EvaluateAsync<T>(script2, ScriptOptions, Globals, typeof(ScriptVariables));
+
+            try
+            {
+                await _semaphoreSlim.WaitAsync();
+                var res = await CSharpScript.EvaluateAsync<T>(script2, ScriptOptions, Globals, typeof(ScriptVariables));
+                return res;
+            }
+            finally
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                _semaphoreSlim.Release();
+            }
         }
 
         public async Task EvalCSharpScriptAsync(string script)
         {
             string script2 = MarkVariables(script);
-            await CSharpScript.EvaluateAsync(script2, ScriptOptions, Globals, typeof(ScriptVariables));
-        }
 
+            try
+            {
+                await _semaphoreSlim.WaitAsync();
+                await CSharpScript.EvaluateAsync(script2, ScriptOptions, Globals, typeof(ScriptVariables));
+            }
+            finally
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                _semaphoreSlim.Release();
+            }
+        }
     }
 }
