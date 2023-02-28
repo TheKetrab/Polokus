@@ -139,6 +139,27 @@ namespace Polokus.Tests {
         
         /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+        ///&lt;bpmn2:definitions xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:bpmn2=&quot;http://www.omg.org/spec/BPMN/20100524/MODEL&quot; xmlns:bpmndi=&quot;http://www.omg.org/spec/BPMN/20100524/DI&quot; xmlns:dc=&quot;http://www.omg.org/spec/DD/20100524/DC&quot; xmlns:di=&quot;http://www.omg.org/spec/DD/20100524/DI&quot; id=&quot;sample-diagram&quot; targetNamespace=&quot;http://bpmn.io/schema/bpmn&quot; xsi:schemaLocation=&quot;http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd&quot;&gt;
+        ///  &lt;bpmn2:process id=&quot;Process_1&quot; isExecutable [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string FileSegregation {
+            get {
+                return ResourceManager.GetString("FileSegregation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+        ///&lt;bpmn2:definitions xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:bpmn2=&quot;http://www.omg.org/spec/BPMN/20100524/MODEL&quot; xmlns:bpmndi=&quot;http://www.omg.org/spec/BPMN/20100524/DI&quot; xmlns:dc=&quot;http://www.omg.org/spec/DD/20100524/DC&quot; xmlns:di=&quot;http://www.omg.org/spec/DD/20100524/DI&quot; id=&quot;sample-diagram&quot; targetNamespace=&quot;http://bpmn.io/schema/bpmn&quot; exporter=&quot;bpmn-js (https://demo.bpmn.io)&quot; exporterVersion=&quot;11.4.1&quot; xsi:schemaLocation=&quot;http://www.omg.org/spec/BPMN/20100 [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string GradingStudent {
+            get {
+                return ResourceManager.GetString("GradingStudent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
         ///&lt;bpmn:definitions xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:bpmn=&quot;http://www.omg.org/spec/BPMN/20100524/MODEL&quot; xmlns:bpmndi=&quot;http://www.omg.org/spec/BPMN/20100524/DI&quot; xmlns:dc=&quot;http://www.omg.org/spec/DD/20100524/DC&quot; xmlns:di=&quot;http://www.omg.org/spec/DD/20100524/DI&quot; id=&quot;Definitions_1vib7aw&quot; targetNamespace=&quot;http://bpmn.io/schema/bpmn&quot; exporter=&quot;bpmn-js (https://demo.bpmn.io)&quot; exporterVersion=&quot;10.2.0&quot;&gt;
         ///  &lt;bpmn:process id=&quot;Process_1gdeqgm&quot; isExecutable= [rest of string was truncated]&quot;;.
         /// </summary>
@@ -186,7 +207,7 @@ namespace Polokus.Tests {
         
         /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-        ///&lt;bpmn:definitions xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:bpmn=&quot;http://www.omg.org/spec/BPMN/20100524/MODEL&quot; xmlns:bpmndi=&quot;http://www.omg.org/spec/BPMN/20100524/DI&quot; xmlns:dc=&quot;http://www.omg.org/spec/DD/20100524/DC&quot; xmlns:di=&quot;http://www.omg.org/spec/DD/20100524/DI&quot; id=&quot;Definitions_0xqstfg&quot; targetNamespace=&quot;http://bpmn.io/schema/bpmn&quot; exporter=&quot;bpmn-js (https://demo.bpmn.io)&quot; exporterVersion=&quot;10.3.0&quot;&gt;
+        ///&lt;bpmn:definitions xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:bpmn=&quot;http://www.omg.org/spec/BPMN/20100524/MODEL&quot; xmlns:bpmndi=&quot;http://www.omg.org/spec/BPMN/20100524/DI&quot; xmlns:dc=&quot;http://www.omg.org/spec/DD/20100524/DC&quot; xmlns:di=&quot;http://www.omg.org/spec/DD/20100524/DI&quot; id=&quot;Definitions_0xqstfg&quot; targetNamespace=&quot;http://bpmn.io/schema/bpmn&quot; exporter=&quot;bpmn-js (https://demo.bpmn.io)&quot; exporterVersion=&quot;11.1.0&quot;&gt;
         ///  &lt;bpmn:collaboration id=&quot;Collaboration_0uk8350&quot;&gt;
         /// [rest of string was truncated]&quot;;.
         /// </summary>

@@ -139,6 +139,12 @@
   <data name="Exclusive2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\Bpmn\Exclusive2.bpmn;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1250</value>
   </data>
+  <data name="FileSegregation" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Integration\FileSegregation.bpmn;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1250</value>
+  </data>
+  <data name="GradingStudent" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Integration\GradingStudent.bpmn;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1250</value>
+  </data>
   <data name="Inclusive1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\Bpmn\Inclusive1.bpmn;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1250</value>
   </data>

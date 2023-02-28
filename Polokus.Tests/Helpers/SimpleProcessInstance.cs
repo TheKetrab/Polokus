@@ -24,6 +24,13 @@ namespace Polokus.Tests.Helpers
             return master;
         }
 
+        public static PolokusMaster ReadBpmnWithoutPi(string bpmnXml, out IWorkflow wf)
+        {
+            var master = BpmnLoader.LoadBpmnXmlIntoMaster(bpmnXml);
+            wf = master.GetFirstWorkflow();
+            return master;
+        }
+
 
     }
 }
