@@ -7,7 +7,7 @@
         /// </summary>
         /// <param name="signal">Id of signal.</param>
         /// <param name="parameters">Parameters to invoke signal with.</param>
-        void EmitSignal(string signal, string? parameters = null);
+        void EmitSignal(string signal, params string[] parameters);
 
     }
 }

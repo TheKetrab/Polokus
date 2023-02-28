@@ -261,7 +261,7 @@ namespace Polokus.Core
         }
 
 
-        public void EmitSignal(object? sender, string signal, string? parameters)
+        public void EmitSignal(object? sender, string signal, params string[] parameters)
         {
             Signal?.Invoke(sender, new Signal(signal,parameters));
         }

@@ -21,5 +21,10 @@
         /// </summary>
         public abstract Task Run();
 
+        /// <summary>
+        /// Global variables of current process instance.
+        /// </summary>
+        public IScriptVariables Variables => Parent.ProcessInstance.ScriptProvider.Globals;
+
     }
 }

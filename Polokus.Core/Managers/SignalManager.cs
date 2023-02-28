@@ -16,7 +16,7 @@ namespace Polokus.Core.Managers
             Workflow = workflow;
         }
 
-        public void EmitSignal(string signal, string? parameters = null)
+        public void EmitSignal(string signal, params string[] parameters)
         {
             Workflow.PolokusMaster.EmitSignal(Workflow, signal, parameters);
         }
@@ -56,8 +56,17 @@ namespace Polokus.Core.Managers
             {
                 if (e.Name == starter.StartNode.Name)
                 {
-                    // TODO: passing parameters to signal?
-                    starter.Workflow.StartProcessInstance(starter.BpmnProcess, starter.StartNode, null);
+                    var pi = starter.Workflow.CreateProcessInstance(starter.BpmnProcess);
+                    if (e.Params != null)
+                    {
+                        int i = 0;
+                        foreach (var p in e.Params)
+                        {
+                            pi.ScriptProvider.Globals.SetValue($"arg{i++}", p);
+                        }
+                    }
+
+                    starter.Workflow.StartProcessInstance(pi, starter.StartNode);
                 }
             };
         }

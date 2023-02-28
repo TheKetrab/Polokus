@@ -65,7 +65,7 @@ namespace Polokus.Core.Interfaces
         /// </summary>
         /// <param name="signal">Name of signal.</param>
         /// <param name="parameters">Parameters of signal.</param>
-        void EmitSignal(object? sender, string signal, string? parameters);
+        void EmitSignal(object? sender, string signal, params string[] parameters);
 
         /// <summary>
         /// Logs an info.
