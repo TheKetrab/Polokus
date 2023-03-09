@@ -63,5 +63,23 @@ namespace Polokus.Core.Execution.Scripting
                 globals = new Dictionary<string, object>(values);
             }
         }
+
+        public T GetValue<T>(string variable)
+        {
+            lock (_lock)
+            {
+                if (globals.ContainsKey(variable))
+                {
+                    if (globals[variable] is T typedVal)
+                    {
+                        return typedVal;
+                    }
+
+                    throw new Exception($"Variable {variable} is of type {globals[variable].GetType().FullName} but should be {typeof(T).FullName}");
+                }
+
+                throw new Exception($"Variable {variable} not found.");
+            }
+        }
     }
 }

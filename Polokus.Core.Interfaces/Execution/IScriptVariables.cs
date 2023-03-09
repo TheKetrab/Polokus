@@ -7,6 +7,7 @@
         T? TryGetValue<T>(string variable);
         void SetValue(string variable, object value);
         object GetValue(string variable);
+        T GetValue<T>(string variable);
         string GetJson();
         void SetValues(IDictionary<string, object> values);
     }
