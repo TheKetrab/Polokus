@@ -118,7 +118,17 @@ namespace Polokus.Core.Managers
 
         public override IProcessStarter RegisterStarter(IBpmnProcess bpmnProcess, IFlowNode startNode)
         {
-            throw new NotImplementedException();
+            var starter = new ProcessStarter(Workflow, bpmnProcess, startNode);
+            string croneString = startNode.Name;
+
+            if (!TimeString.IsCroneString(croneString))
+            {
+                throw new Exception($"The starter seems not to be with proper crone string: {croneString}");
+            }
+
+            RegisterStarter(croneString, starter);
+
+            return starter;
         }
     }
 
