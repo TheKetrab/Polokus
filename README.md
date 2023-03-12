@@ -97,4 +97,17 @@ RestoreProcessesOnStart = False  # > If application close when there are some
 }
 ```
 
+Manual installation:
+```
+git clone https://github.com/TheKetrab/Polokus.git
+cd Polokus
+
+cd Polokus.Bpmnio
+npm install --save --legacy-peer-deps
+npm run build
+
+dotnet build Polokus.sln
+```
+
+
 > @ Bartłomiej Grochowski 2022-2023
