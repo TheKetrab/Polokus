@@ -2,6 +2,7 @@
 using Polokus.Core.Extensibility.Externals;
 using Polokus.Core.Extensibility.Externals.Models;
 using Polokus.Core.Interfaces;
+using Polokus.Core.Interfaces.Exceptions;
 
 namespace Polokus.App.Views
 {
@@ -20,12 +21,22 @@ namespace Polokus.App.Views
         void FillData()
         {
             textBoxExternalsFile.Text = Settings.ExternalsPath;
-            var externals = ExternalsManager.TryLoadExternals(Settings.ExternalsPath);
+            if (Settings.ExternalsPath != null)
+            {
+                var externals = ExternalsManager.TryLoadExternals(Settings.ExternalsPath);
+                if (externals == null)
+                {
+                    throw new PolokusException("Failed to load externals.");
+                }
 
-            InitializeListViewHooks(externals.HooksProviders);
-            InitializeListViewMonitors(externals.Monitors);
-            InitializeListViewServiceTasks(externals.ServiceTasks);
-            InitializeListViewSettings(externals.SettingsProvider);
+                if (externals.HooksProviders != null)
+                {
+                    InitializeListViewHooks(externals.HooksProviders);
+                }
+                InitializeListViewMonitors(externals.Monitors);
+                InitializeListViewServiceTasks(externals.ServiceTasks);
+                InitializeListViewSettings(externals.SettingsProvider);
+            }
         }
 
 

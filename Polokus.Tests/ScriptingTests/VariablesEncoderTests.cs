@@ -49,8 +49,8 @@ namespace Polokus.Tests.ScriptingTests
             VariablesEncoder.SetVariablesFromQueryString(variables, str);
 
             // Assert
-            Assert.AreEqual(variables.GetValue("a"), 17);
-            Assert.AreEqual(variables.GetValue("b"), 42.5);
+            Assert.AreEqual(17, variables.GetValue("a"));
+            Assert.AreEqual(42.5, variables.GetValue("b"));
         }
 
         [Test]
@@ -67,8 +67,8 @@ namespace Polokus.Tests.ScriptingTests
             VariablesEncoder.SetVariablesFromQueryString(variables, str);
 
             // Assert
-            Assert.AreEqual(variables.GetValue("a"), 123);
-            Assert.AreEqual(variables.GetValue("b").GetType(), typeof(float));
+            Assert.AreEqual(123, variables.GetValue("a"));
+            Assert.AreEqual(typeof(float), variables.GetValue("b").GetType());
         }
 
 

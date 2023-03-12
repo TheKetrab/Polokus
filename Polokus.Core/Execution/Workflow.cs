@@ -4,6 +4,7 @@ using Polokus.Core.Factories;
 using Polokus.Core.Helpers;
 using Polokus.Core.Interfaces;
 using Polokus.Core.Interfaces.BpmnModels;
+using Polokus.Core.Interfaces.Exceptions;
 using Polokus.Core.Interfaces.Execution;
 using Polokus.Core.Interfaces.Execution.NodeHandlers;
 using Polokus.Core.Interfaces.Extensibility;
@@ -28,7 +29,6 @@ namespace Polokus.Core.Execution
         public ISettingsProvider SettingsProvider { get; set; }
         public ITimeManager TimeManager { get; }
         public IMessageManager MessageManager { get; }
-        public IScriptProvider ScriptProvider { get; }
         public ISignalManager SignalManager { get; }
 
 
@@ -132,10 +132,11 @@ namespace Polokus.Core.Execution
             return instance;
         }
 
-        public IProcessInstance? GetProcessInstanceById(string processInstanceId)
+        public IProcessInstance GetProcessInstanceById(string processInstanceId)
         {
             return ProcessInstances.GetAll().FirstOrDefault(x => x.Id == processInstanceId)
-                ?? History.GetAll().FirstOrDefault(x => x.Id == processInstanceId);
+                ?? History.GetAll().FirstOrDefault(x => x.Id == processInstanceId)
+                ?? throw new ProcessInstanceNotFoundException(processInstanceId);
         }
 
         public void StartProcessInstance(IProcessInstance processInstance, IFlowNode startNode, int? timeout)

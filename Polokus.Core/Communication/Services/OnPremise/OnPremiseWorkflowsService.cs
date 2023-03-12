@@ -1,11 +1,6 @@
-﻿using Polokus.Core.Helpers;
-using Polokus.Core.Interfaces.Communication;
+﻿using Polokus.Core.Interfaces.Communication;
 using Polokus.Core.Interfaces.Communication.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Polokus.Core.Interfaces.Exceptions;
 
 namespace Polokus.Core.Communication.Services.OnPremise
 {
@@ -75,7 +70,8 @@ namespace Polokus.Core.Communication.Services.OnPremise
 
         public string GetRawString(string wfId)
         {
-            return _polokus.GetWorkflow(wfId).BpmnWorkflow.RawString;
+            return _polokus.GetWorkflow(wfId).BpmnWorkflow.RawString
+                ?? throw new PolokusException($"Workflow {wfId} does not have raw string.");
         }
 
         public void PauseProcessInstance(string wfId, string piId)

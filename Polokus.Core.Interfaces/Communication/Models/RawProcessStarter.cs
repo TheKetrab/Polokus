@@ -2,8 +2,8 @@
 {
     public class RawProcessStarter
     {
-        public string Id { get; set; }
-        public string StartNode { get; set; }
-        public string StarterType { get; set; }
+        public string Id { get; set; } = string.Empty;
+        public string StartNode { get; set; } = string.Empty;
+        public string StarterType { get; set; } = string.Empty;
     }
 }

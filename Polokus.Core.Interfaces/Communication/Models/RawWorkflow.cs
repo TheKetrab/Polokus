@@ -2,7 +2,7 @@
 {
     public class RawWorkflow
     {
-        string Id { get; }
-        string BpmnRawString { get; }
+        string Id { get; } = string.Empty;
+        string BpmnRawString { get; } = string.Empty;
     }
 }

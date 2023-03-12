@@ -13,12 +13,12 @@ namespace Polokus.Core.Extensibility.Hooks
 
         public override void BeforeExecuteNode(string wfId, string piId, string nodeId, int taskId, string? nodeCallerId)
         {
-            _master.StateSerializerManager.SerializeState(wfId, piId);
+            _master.StateSerializerManager?.SerializeState(wfId, piId);
         }
 
         public override void OnProcessFinished(string wfId, string piId, string result)
         {
-            _master.StateSerializerManager.ClearStateFor(wfId, piId);
+            _master.StateSerializerManager?.ClearStateFor(wfId, piId);
         }
     }
 }

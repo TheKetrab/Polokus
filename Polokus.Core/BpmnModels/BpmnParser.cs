@@ -1,6 +1,7 @@
 ﻿using Polokus.Core.Factories;
 using Polokus.Core.Helpers;
 using Polokus.Core.Interfaces.BpmnModels;
+using Polokus.Core.Interfaces.Exceptions;
 using Polokus.Core.Interfaces.Xsd;
 using System.Xml;
 using System.Xml.Serialization;
@@ -102,9 +103,9 @@ namespace Polokus.Core.BpmnModels
             {
                 string attachedToId = evt.attachedToRef.Name;
                 var node = process.GetNodeById(attachedToId);
-                var boundaryEvt = process.GetNodeById(evt.id) as BoundaryEvent;
+                var boundaryEvt = process.GetNodeById(evt.id) as BoundaryEvent
+                    ?? throw new PolokusException($"Failed to get boundary event {evt.id}");
 
-                // TODO null checks
                 boundaryEvt.AttachedTo = node;
                 node.BoundaryEvents.Add(boundaryEvt);
             }

@@ -4,16 +4,22 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
     <PackageReference Include="Moq" Version="4.18.2" />
-    <PackageReference Include="NUnit" Version="3.13.3" />
-    <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
-    <PackageReference Include="NUnit.Analyzers" Version="3.3.0" />
+	  <PackageReference Include="NUnit" Version="3.13.3">
+		  <NoWarn>NUnit2005</NoWarn>
+	  </PackageReference>
+	  <PackageReference Include="NUnit3TestAdapter" Version="4.2.1">
+		  <NoWarn>NUnit2005</NoWarn>
+	  </PackageReference>
+	  <PackageReference Include="NUnit.Analyzers" Version="3.3.0">
+		  <NoWarn>NUnit2005</NoWarn>
+	  </PackageReference>
+	  
     <PackageReference Include="coverlet.collector" Version="3.1.2" />
   </ItemGroup>
 
@@ -36,6 +42,14 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\Custom\BPMN\Polokus\Polokus.Tests\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="C:\Custom\BPMN\Polokus\Polokus.Tests\.editorconfig" />
   </ItemGroup>
 
 </Project>

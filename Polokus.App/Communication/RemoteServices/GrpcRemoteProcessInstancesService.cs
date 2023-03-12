@@ -1,6 +1,7 @@
 ﻿using Grpc.Net.Client;
 using Polokus.Core.Interfaces;
 using Polokus.Core.Interfaces.Communication;
+using Polokus.Core.Interfaces.Exceptions;
 using RemoteServices;
 using System;
 using System.Collections.Generic;
@@ -69,7 +70,8 @@ namespace Polokus.Core.Remote
             var reply = _serviceClient.GetNodeXmlType(request);
 
             Assembly assem = typeof(IPolokusMaster).Assembly; // interfaces assembly
-            var type = assem.GetType(reply.TypeName);
+            var type = assem.GetType(reply.TypeName)
+                ?? throw new PolokusException("Type not found.");
 
             return type;
         }

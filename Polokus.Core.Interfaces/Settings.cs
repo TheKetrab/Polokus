@@ -281,7 +281,8 @@ namespace Polokus.Core.Interfaces
         }
         public static string RemotePolokusUri
         {
-            get => Instance.remotePolokusUri;
+            get => Instance.remotePolokusUri
+                ?? throw new SettingNotFoundException("RemotePolokusUri");
             set => Instance.remotePolokusUri = value;
         }
 

@@ -13,27 +13,27 @@ namespace Polokus.App.Views
         {
             _mainWindow = mainWindow;
             InitializeComponent();
-            InitializeChromium(mode);
+            chromeBrowser = CreateAndInitializeChromium(mode);
         }
 
         public ChromiumWebBrowser chromeBrowser;
 
-        public void InitializeChromium(string mode)
+        private ChromiumWebBrowser CreateAndInitializeChromium(string mode)
         {
             string opts = "";
             if (mode == "viewer")
             {
                 opts = "?mode=viewer";
             }
-            chromeBrowser = new ChromiumWebBrowser(bpmnioPage + opts);
+            var chromeBrowser = new ChromiumWebBrowser(bpmnioPage + opts);
             chromeBrowser.Dock = DockStyle.Fill;
 
             DownloadHandler downloadHandler = new DownloadHandler();
             chromeBrowser.DownloadHandler = downloadHandler;
 
-
-
             this.Controls.Add(chromeBrowser);
+
+            return chromeBrowser;
         }
 
     }

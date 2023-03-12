@@ -40,7 +40,7 @@ namespace Polokus.Core.Interfaces.Execution
         /// This method returns instance of BPMN process by id (active or inactive) or null if not found.
         /// </summary>
         /// <param name="processInstanceId">Id of process instance.</param>
-        IProcessInstance? GetProcessInstanceById(string processInstanceId);
+        IProcessInstance GetProcessInstanceById(string processInstanceId);
 
         /// <summary>
         /// This method creates an instance of BPMN process and sets id for them.

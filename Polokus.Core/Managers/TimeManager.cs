@@ -7,6 +7,7 @@ using Polokus.Core.Interfaces.Execution;
 using Polokus.Core.Interfaces.Managers;
 using Quartz;
 using Quartz.Impl;
+using Polokus.Core.Interfaces.Exceptions;
 
 namespace Polokus.Core.Managers
 {
@@ -34,6 +35,11 @@ namespace Polokus.Core.Managers
             await scheduler.ScheduleJob(job, trigger);
             await scheduler.Start();
 
+            if (starter == null)
+            {
+                throw new PolokusException("Starter unexpectly is null.");
+            }
+
             AddStarter(starter.Id, starter);
             starter.HooksProvider?.OnCallerChanged(starter.Id, nameof(CallerChangedType.StarterStartedProcess));
         }
@@ -48,12 +54,20 @@ namespace Polokus.Core.Managers
             job.JobDataMap.Add("OneTime", oneTime);
             job.JobDataMap.Add("Waiter", waiter);
             job.JobDataMap.Add("TimeManager", this);
-            job.JobDataMap.Add("Continuation", continuation);
+            if (continuation != null)
+            {
+                job.JobDataMap.Add("Continuation", continuation);
+            }
 
             ITrigger trigger = TriggerBuilder.Create().WithCronSchedule(timeString).Build();
 
             await scheduler.ScheduleJob(job, trigger);
             await scheduler.Start();
+
+            if (waiter == null)
+            {
+                throw new PolokusException("Waiter unexpectly is null.");
+            }
 
             AddWaiter(waiter.Id, waiter);
             waiter.HooksProvider?.OnCallerChanged(waiter.Id, nameof(CallerChangedType.WaiterInserted));

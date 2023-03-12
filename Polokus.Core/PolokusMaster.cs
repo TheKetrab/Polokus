@@ -158,6 +158,11 @@ namespace Polokus.Core
 
         public void RestoreNotFinishedProcesses()
         {
+            if (StateSerializerManager == null)
+            {
+                return;
+            }
+
             var notFinishedSnapshots = StateSerializerManager.GetInfoForAllSnapshots();
             if (notFinishedSnapshots.Any())
             {

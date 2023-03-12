@@ -4,6 +4,7 @@ using Polokus.Core;
 using Polokus.Core.Communication.Services.OnPremise;
 using Polokus.Core.Interfaces;
 using Polokus.Service.Communication.Services;
+using System.Diagnostics;
 using System.Text;
 using System.Timers;
 
@@ -32,7 +33,6 @@ namespace Polokus.Service
             InitPiLoggingTimer();
         }
 
-        private bool _nonzero = false;
         private void InitPiLoggingTimer()
         {
             _piLoggingTimer.Interval = 1000;
@@ -41,16 +41,23 @@ namespace Polokus.Service
             _piLoggingTimer.Enabled = true;
             _piLoggingTimer.Elapsed += (s, e) =>
             {
-                var runningProcessInstances = Master.GetWorkflows().SelectMany(x => x.ProcessInstances.GetAll()).ToList();
-                if (runningProcessInstances.Any())
+                try
                 {
-                    _nonzero = true;
+                    var runningProcessInstances = Master.GetWorkflows().ToList()
+                        .SelectMany(x => x.ProcessInstances.GetAll()).ToList();
                     PrintHelper.PrintInfo($"Running instances: {runningProcessInstances.Count()}");
                 }
-                else if (_nonzero)
+                catch (Exception ex)
                 {
-                    _nonzero = false;
-                    PrintHelper.PrintInfo("Running instances: 0");
+                    PrintHelper.PrintInfo(ex.Message);
+                    PrintHelper.PrintInfo(ex.StackTrace ?? "");
+                    while (ex.InnerException != null)
+                    {
+                        ex = ex.InnerException;
+                        PrintHelper.PrintInfo("---");
+                        PrintHelper.PrintInfo(ex.Message);
+                        PrintHelper.PrintInfo(ex.StackTrace ?? "");
+                    }
                 }
             };
         }
@@ -129,7 +136,7 @@ namespace Polokus.Service
                 {
                     try
                     {
-                        //await Task.Delay(10000); // 10s
+                        await Task.Delay(1000); // 1s
                         PrintHelper.PrintInfo("On Start Functions - starting.");
                         DoOnStartFunctions();
                         PrintHelper.PrintInfo("On Start Functions run succeed.");

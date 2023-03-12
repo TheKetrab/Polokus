@@ -2,8 +2,8 @@
 {
     public class RawNodeHandlerWaiter
     {
-        public string Id { get; set;  }
-        public string NodeToCall { get; set; }
-        public string WaiterType { get; set; }
+        public string Id { get; set; } = string.Empty;
+        public string NodeToCall { get; set; } = string.Empty;
+        public string WaiterType { get; set; } = string.Empty;
     }
 }

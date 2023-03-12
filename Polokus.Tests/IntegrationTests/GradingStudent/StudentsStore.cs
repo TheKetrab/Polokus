@@ -66,7 +66,12 @@ namespace Polokus.Tests.IntegrationTests.GradingStudent
             {
                 while (!sw.EndOfStream)
                 {
-                    string line = sw.ReadLine();
+                    string? line = sw.ReadLine();
+                    if (line == null)
+                    {
+                        continue;
+                    }
+
                     string[] parts = line.Split(',');
 
                     var student = new Student(

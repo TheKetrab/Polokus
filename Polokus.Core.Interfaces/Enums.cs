@@ -41,4 +41,13 @@
         Cancellation,
         ErrorBoundaryEvent
     }
+
+    public enum ObjectType
+    {
+        None,
+        Workflow,
+        ProcessInstance,
+        FlowNode,
+        Sequence
+    }
 }

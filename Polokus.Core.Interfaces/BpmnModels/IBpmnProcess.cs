@@ -16,16 +16,16 @@
         IBpmnWorkflow BpmnWorkflow { get; }
 
         /// <summary>
-        /// This method gets node of given <paramref name="id"/>. Returns null if node not found.
+        /// This method gets node of given <paramref name="id"/>. Throws exception if node not found.
         /// </summary>
         /// <param name="id">Id of node.</param>
-        IFlowNode? GetNodeById(string id);
+        IFlowNode GetNodeById(string id);
 
         /// <summary>
-        /// This method gets sequence of given <paramref name="id">. Returns null if not found.
+        /// This method gets sequence of given <paramref name="id">. Throws exception if sequence  not found.
         /// </summary>
         /// <param name="id">Id of node.</param>
-        ISequence? GetSequenceById(string id);
+        ISequence GetSequenceById(string id);
 
         /// <summary>
         /// This method sets nodes collection for BPMN process.

@@ -1,5 +1,6 @@
 ﻿using Polokus.Core.Helpers;
 using Polokus.Core.Interfaces.BpmnModels;
+using Polokus.Core.Interfaces.Exceptions;
 using Polokus.Core.Interfaces.Xsd;
 using System.Linq;
 
@@ -26,24 +27,24 @@ namespace Polokus.Core.BpmnModels
         }
 
         
-        public IFlowNode? GetNodeById(string id)
+        public IFlowNode GetNodeById(string id)
         {
             if (nodesDictionary.TryGetValue(id, out IFlowNode? node))
             {
                 return node;
             }
 
-            return null;
+            throw new FlowNodeNotFoundException($"(id = {id})");
         }
 
-        public ISequence? GetSequenceById(string id)
+        public ISequence GetSequenceById(string id)
         {
             if (sequencesDictionary.TryGetValue(id, out ISequence? sequence))
             {
                 return sequence;
             }
 
-            return null;
+            throw new SequenceNotFoundException($"(id = {id})");
         }
 
         public void SetNodes(IEnumerable<IFlowNode> nodes)

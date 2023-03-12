@@ -46,7 +46,7 @@ namespace Polokus.App.Controls
             set { }
         }
 
-        private void ReadOnlyRichTextBox_Mouse(object sender, System.Windows.Forms.MouseEventArgs e)
+        private void ReadOnlyRichTextBox_Mouse(object? sender, System.Windows.Forms.MouseEventArgs e)
         {
             HideCaret(this.Handle);
         }

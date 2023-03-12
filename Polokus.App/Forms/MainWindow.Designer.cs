@@ -314,8 +314,6 @@ namespace Polokus.App.Forms
         private Panel panelSettings;
         private Panel panelService;
         private Panel panelHome;
-        private Views.XmlView xmlView1;
-        private Views.GraphView graphView1;
         private PolokusLabel labelInfo;
         private PolokusGradientPanel panelTaskBar;
         private Panel panelWorkspace;

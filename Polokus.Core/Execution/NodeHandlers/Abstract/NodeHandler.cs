@@ -22,13 +22,14 @@ namespace Polokus.Core.Execution.NodeHandlers.Abstract
         public bool IsJoining => Node.Incoming.Count > 1;
         public IScriptProvider ScriptProvider => ProcessInstance.ScriptProvider;
 
-        private Dictionary<BoundaryEventType, INodeHandlerWaiter> boundaryEventsWaiters;
+        private Dictionary<BoundaryEventType, INodeHandlerWaiter>? _boundaryEventsWaiters;
 
 
         public NodeHandler(IProcessInstance processInstance, FlowNode<T> typedNode)
         {
             ProcessInstance = processInstance;
             TypedNode = typedNode;
+            CancellationTokenSource = new CancellationTokenSource();
         }
 
         /// <summary>
@@ -107,7 +108,7 @@ namespace Polokus.Core.Execution.NodeHandlers.Abstract
         {
             if (this.Node.BoundaryEvents.Count > 0)
             {
-                boundaryEventsWaiters = new Dictionary<BoundaryEventType,INodeHandlerWaiter>();
+                _boundaryEventsWaiters = new Dictionary<BoundaryEventType,INodeHandlerWaiter>();
 
                 foreach (var be in this.Node.BoundaryEvents)
                 {
@@ -124,7 +125,7 @@ namespace Polokus.Core.Execution.NodeHandlers.Abstract
                     INodeHandlerWaiter? waiter = null;
                     var manager = GetManagerByType(this.ProcessInstance.Workflow, be.Type);
                     waiter = manager.RegisterWaiter(ProcessInstance, be, true, continuation);
-                    boundaryEventsWaiters.Add(be.Type, waiter);
+                    _boundaryEventsWaiters.Add(be.Type, waiter);
                 }
 
             }
@@ -132,9 +133,9 @@ namespace Polokus.Core.Execution.NodeHandlers.Abstract
 
         private void RemoveWaitersForBoundaryEvents()
         {
-            if (boundaryEventsWaiters != null)
+            if (_boundaryEventsWaiters != null)
             {
-                foreach (var waiterKV in boundaryEventsWaiters)
+                foreach (var waiterKV in _boundaryEventsWaiters)
                 {
                     var manager = GetManagerByType(this.ProcessInstance.Workflow, waiterKV.Key);
                     manager.RemoveWaiter(waiterKV.Value.Id);

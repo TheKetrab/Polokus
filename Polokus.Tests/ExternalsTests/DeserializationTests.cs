@@ -57,7 +57,7 @@ namespace Polokus.Tests.ExternalsTests
             var externals = ExternalsManager.LoadExternals(Resources.TestExternals);
 
             // Assert
-            Assert.AreEqual(2, externals.HooksProviders.Count);
+            Assert.AreEqual(2, externals.HooksProviders!.Count);
 
             Assert.AreEqual("assembly1.dll", externals.HooksProviders[0].Assembly);
             Assert.AreEqual("HooksProvider1", externals.HooksProviders[0].ClassName);
@@ -75,7 +75,7 @@ namespace Polokus.Tests.ExternalsTests
             var externals = ExternalsManager.LoadExternals(Resources.TestExternals);
 
             // Assert
-            Assert.AreEqual("SettingsProviderAssembly.dll", externals.SettingsProvider.Assembly);
+            Assert.AreEqual("SettingsProviderAssembly.dll", externals.SettingsProvider!.Assembly);
             Assert.AreEqual("SettingsProviderClass", externals.SettingsProvider.ClassName);
         }
 

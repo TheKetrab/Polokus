@@ -87,6 +87,7 @@ namespace Polokus.App.Controls
         {
             if (m.Msg == WM_REFLECT + WM_NOFITY)
             {
+
                 var pnmhdr = (NMHDR)m.GetLParam(typeof(NMHDR));
                 if (pnmhdr.code == NM_CUSTOMDRAW)
                 {

@@ -102,7 +102,7 @@ namespace Polokus.Tests.IntegrationTests.GradingStudent
         {
         }
 
-        public async override Task Run()
+        public override Task Run()
         {
             string answer = (string)Variables.GetValue("answer");
 
@@ -114,6 +114,8 @@ namespace Polokus.Tests.IntegrationTests.GradingStudent
             {
                 Variables.SetValue("ok", false);
             }
+
+            return Task.CompletedTask;
         }
     }
 
@@ -125,7 +127,7 @@ namespace Polokus.Tests.IntegrationTests.GradingStudent
         {
         }
 
-        public async override Task Run()
+        public override Task Run()
         {
             string path = GradingStudentIntegrationTest.FilePath;
 
@@ -136,6 +138,8 @@ namespace Polokus.Tests.IntegrationTests.GradingStudent
             s.G4 = Grade;
 
             StudentsStore.SaveStudentsStore(students, path);
+
+            return Task.CompletedTask;
         }
 
     }

@@ -21,9 +21,6 @@ namespace Polokus.Core.Execution.Scripting
             .AddReferences("Microsoft.CSharp");
 
 
-        public IScriptVariables Globals { get; } = new ScriptVariables();
-
-
         static SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(3, 3);
         public override async Task<T> EvalScriptAsync<T>(string script)
         {
