@@ -2,16 +2,13 @@
 using Polokus.Core.Execution.NodeHandlers.Abstract;
 using Polokus.Core.Interfaces.Xsd;
 
-namespace Polokus.Core.Execution.NodeHandlers
+namespace Polokus.Core.Execution.NodeHandlers.Special
 {
-    public class TimerEventNodeHandler : NodeHandler<tIntermediateCatchEvent>
+    public class MessageCatchingHandler<T> : NodeHandler<T> where T : tFlowNode
     {
-        public string TimeDefinitions { get; set; }
-        public TimerEventNodeHandler(IProcessInstance processInstance,
-            FlowNode<tIntermediateCatchEvent> typedNode, string timeDefinitions)
+        public MessageCatchingHandler(IProcessInstance processInstance, FlowNode<T> typedNode)
             : base(processInstance, typedNode)
         {
-            TimeDefinitions = timeDefinitions;
         }
 
         public override Task<bool> CanProcess(INodeCaller? caller)
@@ -21,10 +18,10 @@ namespace Polokus.Core.Execution.NodeHandlers
                 return Task.FromResult(true);
             }
 
-            Workflow.TimeManager.RegisterWaiter(ProcessInstance, Node, true);
+            ProcessInstance.Workflow.MessageManager.RegisterWaiter(
+                this.ProcessInstance, this.Node, true);
 
             return Task.FromResult(false);
         }
-
     }
 }

@@ -4,9 +4,9 @@ using Polokus.Core.Interfaces.Xsd;
 
 namespace Polokus.Core.Execution.NodeHandlers.Special
 {
-    public class SignalEmittingNodeHandler<T> : NodeHandler<T> where T : tFlowNode
+    public class SignalEmittingHandler<T> : NodeHandler<T> where T : tFlowNode
     {
-        public SignalEmittingNodeHandler(IProcessInstance processInstance, FlowNode<T> typedNode)
+        public SignalEmittingHandler(IProcessInstance processInstance, FlowNode<T> typedNode)
             : base(processInstance, typedNode)
         {
         }

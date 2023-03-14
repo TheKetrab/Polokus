@@ -4,9 +4,9 @@ using Polokus.Core.Interfaces.Xsd;
 
 namespace Polokus.Core.Execution.NodeHandlers
 {
-    public class SubProcessNodeHandler : SubprocessingNodeHandler<tSubProcess>
+    public class SubProcessHandler : SubprocessingHandler<tSubProcess>
     {
-        public SubProcessNodeHandler(IProcessInstance processInstance, FlowNode<tSubProcess> typedNode)
+        public SubProcessHandler(IProcessInstance processInstance, FlowNode<tSubProcess> typedNode)
             : base(processInstance, typedNode)
         {
         }

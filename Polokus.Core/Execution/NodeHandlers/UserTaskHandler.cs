@@ -4,11 +4,11 @@ using Polokus.Core.Interfaces.Xsd;
 
 namespace Polokus.Core.Execution.NodeHandlers
 {
-    public class UserTaskNodeHandler : NodeHandler<tUserTask>
+    public class UserTaskHandler : NodeHandler<tUserTask>
     {
         private string? _userDecision = null;
 
-        public UserTaskNodeHandler(ProcessInstance processInstance, FlowNode<tUserTask> typedNode)
+        public UserTaskHandler(ProcessInstance processInstance, FlowNode<tUserTask> typedNode)
             : base(processInstance, typedNode)
         {
         }

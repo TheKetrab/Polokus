@@ -4,9 +4,9 @@ using Polokus.Core.Interfaces.Xsd;
 
 namespace Polokus.Core.Execution.NodeHandlers.Special
 {
-    public class MessageCatchingNodeHandler<T> : NodeHandler<T> where T : tFlowNode
+    internal class SignalSlottingHandler<T> : NodeHandler<T> where T : tFlowNode
     {
-        public MessageCatchingNodeHandler(IProcessInstance processInstance, FlowNode<T> typedNode)
+        public SignalSlottingHandler(IProcessInstance processInstance, FlowNode<T> typedNode)
             : base(processInstance, typedNode)
         {
         }
@@ -18,8 +18,8 @@ namespace Polokus.Core.Execution.NodeHandlers.Special
                 return Task.FromResult(true);
             }
 
-            ProcessInstance.Workflow.MessageManager.RegisterWaiter(
-                this.ProcessInstance, this.Node, true);
+            ProcessInstance.Workflow.SignalManager.RegisterWaiter(
+                ProcessInstance, Node, true);
 
             return Task.FromResult(false);
         }

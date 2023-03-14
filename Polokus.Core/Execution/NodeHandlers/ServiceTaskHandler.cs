@@ -6,9 +6,9 @@ namespace Polokus.Core.Execution.NodeHandlers
 {
 
 
-    public class ServiceTaskNodeHandler : NodeHandler<tServiceTask>
+    public class ServiceTaskHandler : NodeHandler<tServiceTask>
     {
-        public ServiceTaskNodeHandler(ProcessInstance processInstance, FlowNode<tServiceTask> typedNode)
+        public ServiceTaskHandler(ProcessInstance processInstance, FlowNode<tServiceTask> typedNode)
             : base(processInstance, typedNode)
         {
         }

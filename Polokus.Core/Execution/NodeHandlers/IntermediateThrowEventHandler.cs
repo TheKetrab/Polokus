@@ -5,11 +5,11 @@ using Polokus.Core.Interfaces.Xsd;
 
 namespace Polokus.Core.Execution.NodeHandlers
 {
-    public class IntermediateThrowEventNodeHandler : NodeHandler<tIntermediateThrowEvent>
+    public class IntermediateThrowEventHandler : NodeHandler<tIntermediateThrowEvent>
     {
         private NodeHandler<tIntermediateThrowEvent> _subhandler;
 
-        public IntermediateThrowEventNodeHandler(
+        public IntermediateThrowEventHandler(
             IProcessInstance processInstance, FlowNode<tIntermediateThrowEvent> typedNode)
             : base(processInstance, typedNode)
         {
@@ -21,11 +21,11 @@ namespace Polokus.Core.Execution.NodeHandlers
             var eventDefinition = TypedNode.XmlElement.Items[0];
             if (eventDefinition is tMessageEventDefinition)
             {
-                _subhandler = new MessageSendingNodeHandler<tIntermediateThrowEvent>(ProcessInstance, TypedNode);
+                _subhandler = new MessageSendingHandler<tIntermediateThrowEvent>(ProcessInstance, TypedNode);
             }
             else if (eventDefinition is tSignalEventDefinition)
             {
-                _subhandler = new SignalEmittingNodeHandler<tIntermediateThrowEvent>(ProcessInstance, TypedNode);
+                _subhandler = new SignalEmittingHandler<tIntermediateThrowEvent>(ProcessInstance, TypedNode);
             }
             else
             {

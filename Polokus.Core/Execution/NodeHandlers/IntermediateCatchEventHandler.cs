@@ -5,11 +5,11 @@ using Polokus.Core.Interfaces.Xsd;
 
 namespace Polokus.Core.Execution.NodeHandlers
 {
-    public class IntermediateCatchEventNodeHandler : NodeHandler<tIntermediateCatchEvent>
+    public class IntermediateCatchEventHandler : NodeHandler<tIntermediateCatchEvent>
     {
         private NodeHandler<tIntermediateCatchEvent> _subhandler;
 
-        public IntermediateCatchEventNodeHandler(
+        public IntermediateCatchEventHandler(
             ProcessInstance processInstance, FlowNode<tIntermediateCatchEvent> typedNode)
             : base(processInstance, typedNode)
         {
@@ -22,15 +22,15 @@ namespace Polokus.Core.Execution.NodeHandlers
             if (eventDefinition is tTimerEventDefinition)
             {
                 string timeDefinition = Node.Name;
-                _subhandler = new TimerEventNodeHandler(ProcessInstance, TypedNode, timeDefinition);
+                _subhandler = new TimerEventHandler(ProcessInstance, TypedNode, timeDefinition);
             }
             else if (eventDefinition is tMessageEventDefinition)
             {
-                _subhandler = new MessageCatchingNodeHandler<tIntermediateCatchEvent>(ProcessInstance, TypedNode);
+                _subhandler = new MessageCatchingHandler<tIntermediateCatchEvent>(ProcessInstance, TypedNode);
             }
             else if (eventDefinition is tSignalEventDefinition)
             {
-                _subhandler = new SignalSlottingNodeHandler<tIntermediateCatchEvent>(ProcessInstance, TypedNode);
+                _subhandler = new SignalSlottingHandler<tIntermediateCatchEvent>(ProcessInstance, TypedNode);
             }
             else
             {

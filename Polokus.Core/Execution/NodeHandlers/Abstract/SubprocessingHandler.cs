@@ -5,12 +5,12 @@ using Polokus.Core.Interfaces.Xsd;
 namespace Polokus.Core.Execution.NodeHandlers.Abstract
 {
 
-    public abstract class SubprocessingNodeHandler<T> : NodeHandler<T>, ISubprocessingNodeHandler
+    public abstract class SubprocessingHandler<T> : NodeHandler<T>, ISubprocessingNodeHandler
         where T : tFlowNode
     {
         public IProcessInstance? SubProcessInstance { get; private set; }
 
-        public SubprocessingNodeHandler(IProcessInstance processInstance, FlowNode<T> typedNode)
+        public SubprocessingHandler(IProcessInstance processInstance, FlowNode<T> typedNode)
             : base(processInstance, typedNode)
         {
         }

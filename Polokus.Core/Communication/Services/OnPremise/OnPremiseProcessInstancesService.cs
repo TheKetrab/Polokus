@@ -54,7 +54,7 @@ namespace Polokus.Core.Communication.Services.OnPremise
             var node = pi.BpmnProcess.GetNodeById(nodeId);
             var nh = pi.GetNodeHandlerForNodeIfExists(node);
 
-            if (nh is UserTaskNodeHandler userTaskNh)
+            if (nh is UserTaskHandler userTaskNh)
             {
                 userTaskNh.SetUserDecision(answer);
             }

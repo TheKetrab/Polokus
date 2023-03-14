@@ -4,7 +4,7 @@ using Polokus.Core.Interfaces.Xsd;
 
 namespace Polokus.Core.Execution.NodeHandlers
 {
-    public class CallActivityNodeHandler : SubprocessingNodeHandler<tCallActivity>
+    public class CallActivityHandler : SubprocessingHandler<tCallActivity>
     {
         private IWorkflow? _wf;
         private IWorkflow Wf
@@ -32,7 +32,7 @@ namespace Polokus.Core.Execution.NodeHandlers
             }
         }
 
-        public CallActivityNodeHandler(IProcessInstance processInstance, FlowNode<tCallActivity> typedNode)
+        public CallActivityHandler(IProcessInstance processInstance, FlowNode<tCallActivity> typedNode)
             : base(processInstance, typedNode)
         {
         }

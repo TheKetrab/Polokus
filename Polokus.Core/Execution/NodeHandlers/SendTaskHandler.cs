@@ -4,9 +4,9 @@ using Polokus.Core.Interfaces.Xsd;
 
 namespace Polokus.Core.Execution.NodeHandlers
 {
-    public class SendTaskNodeHandler : MessageSendingNodeHandler<tSendTask>
+    public class SendTaskHandler : MessageSendingHandler<tSendTask>
     {
-        public SendTaskNodeHandler(IProcessInstance processInstance, FlowNode<tSendTask> typedNode)
+        public SendTaskHandler(IProcessInstance processInstance, FlowNode<tSendTask> typedNode)
             : base(processInstance, typedNode)
         {
         }

@@ -4,9 +4,9 @@ using Polokus.Core.Interfaces.Xsd;
 
 namespace Polokus.Core.Execution.NodeHandlers
 {
-    public class ManualTaskNodeHandler : NodeHandler<tManualTask>
+    public class ManualTaskHandler : NodeHandler<tManualTask>
     {
-        public ManualTaskNodeHandler(ProcessInstance processInstance, FlowNode<tManualTask> typedNode)
+        public ManualTaskHandler(ProcessInstance processInstance, FlowNode<tManualTask> typedNode)
             : base(processInstance, typedNode)
         {
         }

@@ -4,9 +4,9 @@ using Polokus.Core.Interfaces.Xsd;
 
 namespace Polokus.Core.Execution.NodeHandlers
 {
-    public class ParallelGatewayNodeHandler : JoiningNodeHandler<tParallelGateway>
+    public class TaskHandler : NodeHandler<tTask>
     {
-        public ParallelGatewayNodeHandler(ProcessInstance processInstance, FlowNode<tParallelGateway> typedNode)
+        public TaskHandler(ProcessInstance processInstance, FlowNode<tTask> typedNode)
             : base(processInstance, typedNode)
         {
         }

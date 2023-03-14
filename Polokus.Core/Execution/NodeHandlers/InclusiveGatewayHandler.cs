@@ -5,7 +5,7 @@ using Polokus.Core.Interfaces.Xsd;
 namespace Polokus.Core.Execution.NodeHandlers
 {
 
-    public class InclusiveGatewayHandler : JoiningNodeHandler<tInclusiveGateway>
+    public class InclusiveGatewayHandler : JoiningHandler<tInclusiveGateway>
     {
         public InclusiveGatewayHandler(ProcessInstance processInstance, FlowNode<tInclusiveGateway> typedNode)
             : base(processInstance, typedNode)

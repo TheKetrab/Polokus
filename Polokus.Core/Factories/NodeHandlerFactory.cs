@@ -29,22 +29,22 @@ namespace Polokus.Core.Factories
         public void SetDefaultNodeHandlers()
         {
             RegisterNodeHandlerType<tStartEvent, StartEventHandler>();
-            RegisterNodeHandlerType<tTask, TaskNodeHandler>();
+            RegisterNodeHandlerType<tTask, TaskHandler>();
             RegisterNodeHandlerType<tEndEvent, EndEventHandler>();
             RegisterNodeHandlerType<tExclusiveGateway, ExclusiveGatewayHandler>();
             RegisterNodeHandlerType<tInclusiveGateway, InclusiveGatewayHandler>();
-            RegisterNodeHandlerType<tParallelGateway, ParallelGatewayNodeHandler>();
-            RegisterNodeHandlerType<tServiceTask, ServiceTaskNodeHandler>();
-            RegisterNodeHandlerType<tScriptTask, ScriptTaskNodeHandler>();
-            RegisterNodeHandlerType<tManualTask, ManualTaskNodeHandler>();
-            RegisterNodeHandlerType<tUserTask, UserTaskNodeHandler>();
-            RegisterNodeHandlerType<tIntermediateCatchEvent, IntermediateCatchEventNodeHandler>();
-            RegisterNodeHandlerType<tIntermediateThrowEvent, IntermediateThrowEventNodeHandler>();
-            RegisterNodeHandlerType<tReceiveTask, ReceiveTaskNodeHandler>();
-            RegisterNodeHandlerType<tSendTask, SendTaskNodeHandler>();
-            RegisterNodeHandlerType<tSubProcess, SubProcessNodeHandler>();
-            RegisterNodeHandlerType<tCallActivity, CallActivityNodeHandler>();
-            RegisterNodeHandlerType<tBoundaryEvent, BoundaryEventNodeHandler>();
+            RegisterNodeHandlerType<tParallelGateway, ParallelGatewayHandler>();
+            RegisterNodeHandlerType<tServiceTask, ServiceTaskHandler>();
+            RegisterNodeHandlerType<tScriptTask, ScriptTaskHandler>();
+            RegisterNodeHandlerType<tManualTask, ManualTaskHandler>();
+            RegisterNodeHandlerType<tUserTask, UserTaskHandler>();
+            RegisterNodeHandlerType<tIntermediateCatchEvent, IntermediateCatchEventHandler>();
+            RegisterNodeHandlerType<tIntermediateThrowEvent, IntermediateThrowEventHandler>();
+            RegisterNodeHandlerType<tReceiveTask, ReceiveTaskHandler>();
+            RegisterNodeHandlerType<tSendTask, SendTaskHandler>();
+            RegisterNodeHandlerType<tSubProcess, SubProcessHandler>();
+            RegisterNodeHandlerType<tCallActivity, CallActivityHandler>();
+            RegisterNodeHandlerType<tBoundaryEvent, BoundaryEventHandler>();
         }
 
         private Type GetTypeForNodeHandler(IFlowNode node)

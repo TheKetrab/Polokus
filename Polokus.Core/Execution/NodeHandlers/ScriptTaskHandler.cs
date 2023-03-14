@@ -4,9 +4,9 @@ using Polokus.Core.Interfaces.Xsd;
 
 namespace Polokus.Core.Execution.NodeHandlers
 {
-    public class ScriptTaskNodeHandler : NodeHandler<tScriptTask>
+    public class ScriptTaskHandler : NodeHandler<tScriptTask>
     {
-        public ScriptTaskNodeHandler(ProcessInstance processInstance, FlowNode<tScriptTask> typedNode)
+        public ScriptTaskHandler(ProcessInstance processInstance, FlowNode<tScriptTask> typedNode)
             : base(processInstance, typedNode)
         {
         }

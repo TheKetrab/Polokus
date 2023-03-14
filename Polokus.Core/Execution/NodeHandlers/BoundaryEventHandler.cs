@@ -4,9 +4,9 @@ using Polokus.Core.Interfaces.Xsd;
 
 namespace Polokus.Core.Execution.NodeHandlers
 {
-    public class BoundaryEventNodeHandler : NodeHandler<tBoundaryEvent>
+    public class BoundaryEventHandler : NodeHandler<tBoundaryEvent>
     {
-        public BoundaryEventNodeHandler(
+        public BoundaryEventHandler(
             IProcessInstance processInstance, FlowNode<tBoundaryEvent> typedNode)
             : base(processInstance, typedNode)
         {

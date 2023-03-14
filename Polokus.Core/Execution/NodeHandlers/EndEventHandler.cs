@@ -26,11 +26,11 @@ namespace Polokus.Core.Execution.NodeHandlers
             var eventDefinition = TypedNode.XmlElement.Items[0];
             if (eventDefinition is tMessageEventDefinition)
             {
-                _subhandler = new MessageSendingNodeHandler<tEndEvent>(ProcessInstance, TypedNode);
+                _subhandler = new MessageSendingHandler<tEndEvent>(ProcessInstance, TypedNode);
             }
             else if (eventDefinition is tSignalEventDefinition)
             {
-                _subhandler = new SignalEmittingNodeHandler<tEndEvent>(ProcessInstance, TypedNode);
+                _subhandler = new SignalEmittingHandler<tEndEvent>(ProcessInstance, TypedNode);
             }
             else if (eventDefinition is tErrorEventDefinition)
             {
