@@ -15,6 +15,20 @@ Download link $\rightarrow$ **soon!**
 - If you want to run processes in background, make sure Polokus Service is running: \
 `Ctrl+Alt+Delete` $\rightarrow$ Task Manager $\rightarrow$ Services
 
+---
+You can download and compile Polokus from sources by your own:
+```
+git clone https://github.com/TheKetrab/Polokus.git
+cd Polokus
+
+cd Polokus.Bpmnio
+npm install --save --legacy-peer-deps
+npm run build
+cd ..
+
+dotnet build Polokus.sln
+```
+
 # Overview
 
 Polokus is a management system for business processes. You can run your processes via background service and schedule them with crone timetables, mailbox, changes in filesystem or your own events. Included GUI application allows you to track their state and provides graphic editor to create simple or advanced BPMN processes. Here is how the application looks like:
@@ -30,83 +44,62 @@ Polokus can be configured with settings file (`config.ini`) and externals file (
 ### > config.ini
 ```ini
 [Main]
-BpmnPath = ./BPMN     # > Path to directory with .bpmn files
-                      #   that will be parsed to Workflows.
+BpmnPath = ./BPMN             ; > Path to directory with .bpmn files
+                              ;   that will be parsed to Workflows.
+SerializePiSnapshots = False  ; > Flag to decide if you want to save state
+                              ;   of process instances in case of failure.
+ScriptingLanguage = JS        ; > Language in which scripts and conditions
+                              ;   on sequences are computed. (JS - JavaScript, CS - C#)
+ExperimentalFunctions = False ; > Flag to activate experimental functions (beta only).
 
 [App]
-DelayPerNodeHandlerMs = 0  # > When app is connected to Polokus Service,
-                           #   executing of every node can be delayed
-                           #   by time defined here so that you can see
-                           #   on diagram which node is active.
-UseRemotePolokus = False   # > Flag to decide if you want to connect
-                           #   application to service (true) or you want
-                           #   to run processes only inside app (false).
-RemotePolokusUri = http://localhost:3000 # > Endpoint on which service is listening.
+DelayPerNodeHandlerMs = 0  ; > When app is connected to Polokus Service,
+                           ;   executing of every node can be delayed
+                           ;   by time defined here so that you can see
+                           ;   on diagram which node is active.
+UseRemotePolokus = False   ; > Flag to decide if you want to connect
+                           ;   application to service (true) or you want
+                           ;   to run processes only inside app (false).
+RemotePolokusUri = http://localhost:3000 ; > Endpoint on which service is listening.
+LightMode = False          ; > Changes view of application to a brighter one.
 
 [Service]
-MessageListenerPort = 8085       # > Message communication within a process
-                                 #   is made with pinging localhost port.
-                                 #   Set a free port here.
-ExternalsPath = ./externals.json # > Path to file with externals.
-TimeoutForProcessSec = -1        # > Maximum time after which kill single process
-                                 #   if not finished yet. -1 means infinity.
-RestoreProcessesOnStart = False  # > If application close when there are some
-                                 #   not finished processes, service will continue
-                                 #   processing it when this flag is set.
+MessageListenerPort = 8085       ; > Message communication within a process
+                                 ;   is made with pinging localhost port.
+                                 ;   Set a free port here.
+ExternalsPath = ./externals.json ; > Path to file with externals.
+TimeoutForProcessSec = -1        ; > Maximum time after which kill single process
+                                 ;   if not finished yet. -1 means infinity.
+RestoreProcessesOnStart = False  ; > If application close when there are some
+                                 ;   not finished processes, service will continue
+                                 ;   processing it when this flag is set.
 ```
 
 ### > externals.json
 ```json
 {
-  "SettingsProvider": 
-    {
-      "Name": "",
-      "Assembly": "",
-      "ClassName": ""
-    }
   "ServiceTasks": [
     {
-      "Name": "",
-      "Assembly": "",
-      "ClassName": "",
-      "ServiceTaskName": ""
+      "Assembly": "[PATH].[ASSEMBLY].dll",
+      "ClassName": "[NAMESPACE].[CLASS]",
+      "ServiceTaskName": "[Name of task]"
     }
   ],
   "Monitors": [
     {
-      "Name": "",
-      "Assembly": "",
-      "ClassName": "",
-      "Arguments": [ "" ]
-    },
-    {
-      "Name": "",
-      "Assembly": "",
-      "ClassName": "",
-      "Arguments": [ "" ],
-      "Dependencies": [ "" ]
+      "Assembly": "[PATH].[ASSEMBLY].dll",
+      "ClassName": "[NAMESPACE].[CLASS]",
+      "Arguments": [ "ARG1", "ARG2", "..." ],
+      "Dependencies": [ "[PATH].[ASSEMBLY].dll", "..." ]
     }
   ],
   "HooksProviders": [
     {
-      "Name": "",
-      "Assembly": "",
-      "ClassName": ""
+      "Assembly": "[PATH].[ASSEMBLY].dll",
+      "ClassName": "[NAMESPACE].[CLASS]"
     }
   ]
 }
-```
-
-Manual installation:
-```
-git clone https://github.com/TheKetrab/Polokus.git
-cd Polokus
-
-cd Polokus.Bpmnio
-npm install --save --legacy-peer-deps
-npm run build
-
-dotnet build Polokus.sln
 ```
 
 
