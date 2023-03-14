@@ -108,9 +108,20 @@ namespace Polokus.Core.Interfaces.Extensibility
                     }
                 }
 
+                // ScriptingLanguage
+                _scriptingLanguage = data[MainSection]["ScriptingLanguage"];
+
+                // ExperimentalFunctions
+                {
+                    if (bool.TryParse(data[MainSection]["ExperimentalFunctions"], out bool res))
+                    {
+                        _experimentalFunctions = res;
+                    }
+                }
 
             }
         }
+
 
         private void UpdateSetting(string section, string key, string value)
         {
@@ -246,6 +257,28 @@ namespace Polokus.Core.Interfaces.Extensibility
             {
                 _serializePiSnapshots = value;
                 UpdateSetting(MainSection, "SerializePiSnapshots", value.ToString());
+            }
+        }
+
+        private string _scriptingLanguage;
+        public string ScriptingLanguage
+        {
+            get => _scriptingLanguage;
+            set
+            {
+                _scriptingLanguage = value;
+                UpdateSetting(MainSection, "ScriptingLanguage", value);
+            }
+        }
+
+        private bool? _experimentalFunctions;
+        public bool ExperimentalFunctions
+        {
+            get => _experimentalFunctions ?? false;
+            set
+            {
+                _experimentalFunctions = value;
+                UpdateSetting(MainSection, "ExperimentalFunctions", value.ToString());
             }
         }
 

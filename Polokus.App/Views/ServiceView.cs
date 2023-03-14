@@ -32,6 +32,16 @@ namespace Polokus.App.Views
 
             AnyBpmnProcessSelected = false;
             AnyProcessInstanceSelected = false;
+
+            SetExperimentals();
+        }
+
+        private void SetExperimentals()
+        {
+            bool enabled = Settings.ExperimentalFunctions;
+
+            this.panel7.Enabled = enabled;
+            this.panel7.Visible = enabled;
         }
 
         private void InitializeListsEvents()

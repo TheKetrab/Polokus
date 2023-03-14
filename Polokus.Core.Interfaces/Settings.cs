@@ -109,6 +109,18 @@ namespace Polokus.Core.Interfaces
             set => SettingsProvider.SerializePiSnapshots = value;
         }
 
+        public static string ScriptingLanguage
+        {
+            get => SettingsProvider.ScriptingLanguage;
+            set => SettingsProvider.ScriptingLanguage = value;
+        }
+
+        public static bool ExperimentalFunctions
+        {
+            get => SettingsProvider.ExperimentalFunctions;
+            set => SettingsProvider.ExperimentalFunctions = value;
+        }
+
         #endregion
     }
 }

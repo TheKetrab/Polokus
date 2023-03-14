@@ -13,6 +13,8 @@
         bool LightMode { get; set; }
         string OnStartFunctions { get; set; }
         bool SerializePiSnapshots { get; set; }
+        string ScriptingLanguage { get; set; }
+        bool ExperimentalFunctions { get; set; }
 
     }
 }

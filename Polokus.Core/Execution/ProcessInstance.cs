@@ -1,5 +1,6 @@
 ﻿using Polokus.Core.Execution.Scripting;
 using Polokus.Core.Helpers;
+using Polokus.Core.Interfaces.Exceptions;
 using Polokus.Core.Interfaces.Execution.NodeHandlers;
 using Polokus.Core.Interfaces.Managers;
 using Polokus.Core.Interfaces.Serialization;
@@ -70,7 +71,13 @@ namespace Polokus.Core.Execution
             Workflow = workflow;
             ActiveTasksManager = new ActiveTasksManager(this);
             StatusManager = new StatusManager(this);
-            ScriptProvider = new JSScriptProvider(); // TODO INJECTION by settings
+
+            ScriptProvider = Settings.ScriptingLanguage switch
+            {
+                "CS" => new CSScriptProvider(),
+                "JS" => new JSScriptProvider(),
+                _ => throw new SettingNotFoundException("ScriptingLanguage")
+            };
 
             BpmnProcess = bpmnProcess;
             ParentProcessInstance = parent;

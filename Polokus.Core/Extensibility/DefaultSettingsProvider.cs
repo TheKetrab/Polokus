@@ -13,5 +13,8 @@
         public virtual bool LightMode { get; set; } = false;
         public virtual string OnStartFunctions { get; set; } = "";
         public virtual bool SerializePiSnapshots { get; set; } = false;
+        public string ScriptingLanguage { get; set; } = "JS";
+        public bool ExperimentalFunctions { get; set; } = false;
+
     }
 }
