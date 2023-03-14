@@ -15,7 +15,7 @@ namespace Polokus.App.Utils
                 var bitmap = svgDocument.Draw();
 
                 string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-                bitmap.Save(Path.Combine(desktopPath,"diagram.png"), ImageFormat.Png);
+                bitmap.Save(Path.Combine(desktopPath, "diagram.png"), ImageFormat.Png);
             }
         }
 

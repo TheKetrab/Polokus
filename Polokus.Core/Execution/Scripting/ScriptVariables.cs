@@ -1,7 +1,4 @@
-﻿using Polokus.Core.Interfaces.Execution;
-using System.Collections.Concurrent;
-
-namespace Polokus.Core.Execution.Scripting
+﻿namespace Polokus.Core.Execution.Scripting
 {
     public class ScriptVariables : IScriptVariables
     {
@@ -56,7 +53,7 @@ namespace Polokus.Core.Execution.Scripting
             }
         }
 
-        public void SetValues(IDictionary<string,object> values)
+        public void SetValues(IDictionary<string, object> values)
         {
             lock (_lock)
             {

@@ -1,8 +1,5 @@
-﻿using Polokus.Core.Execution;
-using Polokus.Core.Interfaces;
+﻿using Polokus.Core.BpmnModels;
 using Polokus.Core.Interfaces.Xsd;
-using Polokus.Core.BpmnModels;
-using Polokus.Core.Interfaces.Execution;
 
 namespace Polokus.Core.Execution.NodeHandlers.Abstract
 {
@@ -35,7 +32,7 @@ namespace Polokus.Core.Execution.NodeHandlers.Abstract
                     invokedBy.Add(caller.Id);
                 }
 
-                bool everybodyInvoked = ! ProcessInstance
+                bool everybodyInvoked = !ProcessInstance
                     .ExistsAnotherTaskAbleToCallTarget(this.Node, invokedBy);
 
                 return Task.FromResult(everybodyInvoked);

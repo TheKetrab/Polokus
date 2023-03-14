@@ -36,7 +36,7 @@ namespace Polokus.App.Views
                 return;
             }
 
-            string rawString = File.ReadAllText(path).Replace("\r","").Replace("\n","");
+            string rawString = File.ReadAllText(path).Replace("\r", "").Replace("\n", "");
 
             Task.Run(async () =>
             {

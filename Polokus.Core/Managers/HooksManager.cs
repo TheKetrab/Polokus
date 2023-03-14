@@ -1,12 +1,4 @@
-﻿using Polokus.Core.Interfaces;
-using Polokus.Core.Interfaces.Extensibility;
-using Polokus.Core.Interfaces.Managers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
+﻿using Polokus.Core.Interfaces.Managers;
 
 namespace Polokus.Core.Managers
 {
@@ -36,7 +28,7 @@ namespace Polokus.Core.Managers
 
         public void RegisterHooksProvider(IHooksProvider hooksProvider, bool waitFor = true)
         {
-            lock(_mutex)
+            lock (_mutex)
             {
                 _hooksProviders.Add(new HooksProviderInfo(hooksProvider, waitFor));
             }
@@ -44,7 +36,7 @@ namespace Polokus.Core.Managers
 
         public void DeregisterHooksProvider(IHooksProvider hooksProvider)
         {
-            lock(_mutex)
+            lock (_mutex)
             {
                 _hooksProviders.RemoveAll(x => x.Object == hooksProvider);
             }
@@ -52,7 +44,7 @@ namespace Polokus.Core.Managers
 
         public IEnumerable<IHooksProvider> GetHooksProviders()
         {
-            lock(_mutex)
+            lock (_mutex)
             {
                 return _hooksProviders.Select(x => x.Object);
             }

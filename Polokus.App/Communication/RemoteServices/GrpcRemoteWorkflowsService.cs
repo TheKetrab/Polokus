@@ -1,11 +1,6 @@
 ﻿using Grpc.Net.Client;
 using Polokus.Core.Interfaces.Communication;
 using RemoteServices;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using RemoteModels = Polokus.Core.Interfaces.Communication.Models;
 

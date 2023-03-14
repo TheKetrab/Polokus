@@ -17,7 +17,7 @@ namespace Polokus.App.Views
 
             textBoxBpmnPath.TextChanged += TextBoxBpmnPath_TextChanged;
 
-            
+
         }
 
         private void TextBoxBpmnPath_TextChanged(object? sender, EventArgs e)

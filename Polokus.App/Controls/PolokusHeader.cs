@@ -1,12 +1,4 @@
-﻿using Polokus.App.Fonts;
-using Polokus.App.Forms;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Polokus.App.Controls
+﻿namespace Polokus.App.Controls
 {
     public class PolokusHeader : System.Windows.Forms.Panel
     {

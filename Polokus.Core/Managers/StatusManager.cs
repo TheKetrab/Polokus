@@ -1,14 +1,7 @@
 ﻿using Polokus.Core.Execution;
 using Polokus.Core.Helpers;
-using Polokus.Core.Interfaces;
-using Polokus.Core.Interfaces.BpmnModels;
 using Polokus.Core.Interfaces.Managers;
 using Polokus.Core.Interfaces.Serialization;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Polokus.Core.Managers
 {

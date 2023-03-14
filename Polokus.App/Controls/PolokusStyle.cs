@@ -1,9 +1,4 @@
 ﻿using Polokus.App.Fonts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Polokus.App.Controls
 {
@@ -47,10 +42,10 @@ namespace Polokus.App.Controls
 
         public override Color ForeColor { get; } = Color.Black;
         public override Color BackColor { get; } = Color.White;
-        public override Color HoverForeColor { get; } = Color.FromArgb(30,30,30);
+        public override Color HoverForeColor { get; } = Color.FromArgb(30, 30, 30);
         public override Color HoverBackColor { get; } = Color.FromArgb(240, 240, 240);
 
-        public override Color TaskBarColor1 { get; } = Color.FromArgb(230, 230, 230); 
+        public override Color TaskBarColor1 { get; } = Color.FromArgb(230, 230, 230);
         public override Color TaskBarColor2 { get; } = Color.FromArgb(170, 170, 170);
 
 

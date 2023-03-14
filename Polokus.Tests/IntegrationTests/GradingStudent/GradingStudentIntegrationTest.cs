@@ -1,15 +1,6 @@
-﻿using NUnit.Framework;
-using Polokus.Core.Extensibility.Hooks;
-using Polokus.Core.Interfaces.BpmnModels;
+﻿using Polokus.Core.Interfaces.BpmnModels;
 using Polokus.Core.Interfaces.Execution;
-using Polokus.ExternalsExample;
 using Polokus.Tests.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Polokus.Tests.IntegrationTests.GradingStudent.StudentsStore;
 
 namespace Polokus.Tests.IntegrationTests.GradingStudent
 {

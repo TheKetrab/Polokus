@@ -1,13 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Text;
-using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
+﻿using System.Drawing.Text;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Polokus.App.Fonts
 {
@@ -54,7 +46,7 @@ namespace Polokus.App.Fonts
 
         private static int GetIndexOf(string name)
         {
-            for (int i=0; i<pfc.Families.Length; i++)
+            for (int i = 0; i < pfc.Families.Length; i++)
             {
                 if (pfc.Families[i].Name == name)
                 {
@@ -86,7 +78,7 @@ namespace Polokus.App.Fonts
             stream.Read(bytes, 0, (int)stream.Length);
 
             stream.Close();
-            
+
             IntPtr memPointer = Marshal.AllocHGlobal(
                 Marshal.SizeOf(typeof(byte)) * bytes.Length);
             Marshal.Copy(bytes, 0, memPointer, bytes.Length);

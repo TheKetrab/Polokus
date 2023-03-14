@@ -1,10 +1,4 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Scripting;
-using Microsoft.CodeAnalysis.Scripting;
-using Polokus.Core.Interfaces;
-using Polokus.Core.Interfaces.Execution;
-using System.Linq.Expressions;
-using System.Net;
-using System.Runtime.Loader;
+﻿using System.Net;
 using System.Text.RegularExpressions;
 
 namespace Polokus.Core.Execution.Scripting
@@ -18,7 +12,7 @@ namespace Polokus.Core.Execution.Scripting
             script = script.Replace("\r\n", "\n");
 
             var splitted = script.Split('\n');
-            for (int i=0; i<splitted.Length; i++)
+            for (int i = 0; i < splitted.Length; i++)
             {
                 splitted[i] = MarkVariablesSingleLine(splitted[i]);
             }

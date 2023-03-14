@@ -1,6 +1,4 @@
-﻿using Polokus.Core.Interfaces.Extensibility;
-
-namespace Polokus.Core.Extensibility.Hooks
+﻿namespace Polokus.Core.Extensibility.Hooks
 {
     public class StateSerializerHooks : EmptyHooksProvider
     {

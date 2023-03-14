@@ -1,10 +1,4 @@
 ﻿using Polokus.Core.Interfaces.Execution.NodeHandlers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
 
 namespace Polokus.Tests.IntegrationTests.GradingStudent
 {
@@ -23,7 +17,7 @@ namespace Polokus.Tests.IntegrationTests.GradingStudent
                 .OrderBy(x => (x.G1 + x.G2 + x.G3) / 3)
                 .Take(3)
                 .ToArray();
-            
+
             Variables.SetValue("x", worstStudents[0].Name);
             Variables.SetValue("y", worstStudents[1].Name);
             Variables.SetValue("z", worstStudents[2].Name);
@@ -41,7 +35,7 @@ namespace Polokus.Tests.IntegrationTests.GradingStudent
         public override Task Run()
         {
             int id = Random.Shared.Next(3);
-            string[] names = new string[3] 
+            string[] names = new string[3]
             {
                 (string)Variables.GetValue("x"),
                 (string)Variables.GetValue("y"),

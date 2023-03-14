@@ -1,9 +1,6 @@
-﻿using Polokus.Core.Interfaces;
-using Polokus.Core.Interfaces.BpmnModels;
-using Polokus.Core.Interfaces.Xsd;
-using Polokus.Core.BpmnModels;
+﻿using Polokus.Core.BpmnModels;
 using Polokus.Core.Interfaces.Execution.NodeHandlers;
-using Polokus.Core.Interfaces.Execution;
+using Polokus.Core.Interfaces.Xsd;
 
 namespace Polokus.Core.Execution.NodeHandlers.Abstract
 {

@@ -1,11 +1,4 @@
-﻿using Polokus.Core.Interfaces.Extensibility;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Polokus.Core.Extensibility
+﻿namespace Polokus.Core.Extensibility
 {
     public class DefaultSettingsProvider : ISettingsProvider
     {

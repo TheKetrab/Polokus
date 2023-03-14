@@ -1,16 +1,8 @@
-﻿using Polokus.Core.Execution;
-using Polokus.Core.Extensibility.Hooks;
+﻿using Polokus.Core.Extensibility.Hooks;
 using Polokus.Core.Interfaces;
 using Polokus.Core.Interfaces.BpmnModels;
-using Polokus.Core.BpmnModels;
-using Polokus.Tests.Helpers;
-using Quartz;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Polokus.Core.Interfaces.Execution;
+using Polokus.Tests.Helpers;
 
 namespace Polokus.Tests.NodeHandlersTests
 {
@@ -71,7 +63,7 @@ namespace Polokus.Tests.NodeHandlersTests
             const int timeout = 5;
 
             // Act
-            for (int i = 0; i<permutation.Length; i++)
+            for (int i = 0; i < permutation.Length; i++)
             {
                 wf.StartProcessInstance(
                     processInstances[permutation[i]],

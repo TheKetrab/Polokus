@@ -22,7 +22,7 @@ namespace Polokus.Core.Interfaces.Execution
 
         ICollection<IProcessInstance> ChildrenProcessInstances { get; }
         IEnumerable<INodeHandlerWaiter> Waiters { get; }
-        IDictionary<string,INodeHandler> AvailableNodeHandlers { get; }
+        IDictionary<string, INodeHandler> AvailableNodeHandlers { get; }
         ICollection<string> FailedExecutionNodeIds { get; }
         ICollection<string> AwaitingTokens { get; }
 
@@ -35,5 +35,5 @@ namespace Polokus.Core.Interfaces.Execution
         void Log(string info, MsgType type);
     }
 
-   
+
 }

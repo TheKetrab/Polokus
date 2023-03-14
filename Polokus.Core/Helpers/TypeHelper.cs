@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Numerics;
 
 namespace Polokus.Core.Helpers
 {
@@ -39,7 +33,7 @@ namespace Polokus.Core.Helpers
             if (type == typeof(SByte)) { return TypeId.SByte; }
             if (type == typeof(UInt16)) { return TypeId.UInt16; }
             if (type == typeof(UInt32)) { return TypeId.UInt32; }
-            if (type == typeof(UInt64)) { return TypeId.UInt64; }   
+            if (type == typeof(UInt64)) { return TypeId.UInt64; }
             if (type == typeof(BigInteger)) { return TypeId.BigInteger; }
             if (type == typeof(Decimal)) { return TypeId.Decimal; }
             if (type == typeof(Double)) { return TypeId.Double; }

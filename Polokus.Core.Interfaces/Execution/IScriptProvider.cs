@@ -1,6 +1,4 @@
-﻿using Polokus.Core.Interfaces.Execution;
-
-namespace Polokus.Core.Interfaces.Execution
+﻿namespace Polokus.Core.Interfaces.Execution
 {
     public interface IScriptProvider
     {

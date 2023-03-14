@@ -1,12 +1,8 @@
-﻿using Moq;
-using System;
-using Polokus.Tests.Helpers;
-using Polokus.Core.Execution;
-using Polokus.Core.Interfaces.Xsd;
+﻿using Polokus.Core.Extensibility.Hooks;
 using Polokus.Core.Interfaces.BpmnModels;
-using Polokus.Core.Interfaces.Execution.NodeHandlers;
 using Polokus.Core.Interfaces.Execution;
-using Polokus.Core.Extensibility.Hooks;
+using Polokus.Core.Interfaces.Execution.NodeHandlers;
+using Polokus.Tests.Helpers;
 
 namespace Polokus.Tests.NodeHandlersTests
 {

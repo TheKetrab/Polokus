@@ -1,7 +1,4 @@
-﻿
-using Polokus.Core;
-using Polokus.Core.Extensibility.Hooks;
-using Polokus.Core.Interfaces;
+﻿using Polokus.Core.Extensibility.Hooks;
 using Polokus.Core.Interfaces.BpmnModels;
 using Polokus.Core.Interfaces.Execution;
 using Polokus.Tests.Helpers;

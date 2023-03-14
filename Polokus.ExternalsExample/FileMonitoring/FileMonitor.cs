@@ -85,7 +85,7 @@ namespace Polokus.ExternalsExample.FileMonitoring
             IsMonitoring = false;
         }
 
-       
+
 
         public void Dispose()
         {

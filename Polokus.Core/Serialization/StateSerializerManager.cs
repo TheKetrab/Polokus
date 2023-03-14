@@ -1,11 +1,6 @@
 ﻿using Polokus.Core.Execution;
 using Polokus.Core.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Polokus.Core.Serialization
 {
@@ -51,7 +46,7 @@ namespace Polokus.Core.Serialization
         private void RemoveUnusedLocks()
         {
             var keys = _locks.Keys;
-            foreach(var path in keys)
+            foreach (var path in keys)
             {
                 if (!File.Exists(path))
                 {
@@ -147,7 +142,7 @@ namespace Polokus.Core.Serialization
 
             var pi = (ProcessInstance)workflow.CreateProcessInstance(bpmnProcess);
             pi.Restore(_master, snapshot);
-            
+
         }
 
         public IEnumerable<Tuple<string, string, string>> GetInfoForAllSnapshots()

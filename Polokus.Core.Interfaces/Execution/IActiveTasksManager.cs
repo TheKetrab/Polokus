@@ -54,6 +54,6 @@ namespace Polokus.Core.Interfaces.Execution
         /// Removes task with given id.
         /// </summary>
         /// <param name="taskId">Id of task to remove.</param>
-        void RemoveRunningTask(int taskId);       
+        void RemoveRunningTask(int taskId);
     }
 }

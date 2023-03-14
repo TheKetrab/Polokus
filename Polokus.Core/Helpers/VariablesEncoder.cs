@@ -1,13 +1,4 @@
-﻿using Polokus.Core.Execution;
-using Polokus.Core.Interfaces.Execution;
-using System;
-using System.Collections.Generic;
-using System.IO.Pipes;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Polokus.Core.Helpers
+﻿namespace Polokus.Core.Helpers
 {
     public static class VariablesEncoder
     {

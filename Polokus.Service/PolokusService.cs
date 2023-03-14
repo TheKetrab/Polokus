@@ -4,9 +4,7 @@ using Polokus.Core;
 using Polokus.Core.Communication.Services.OnPremise;
 using Polokus.Core.Interfaces;
 using Polokus.Service.Communication.Services;
-using System.Diagnostics;
 using System.Text;
-using System.Timers;
 
 namespace Polokus.Service
 {
@@ -79,9 +77,9 @@ namespace Polokus.Service
             });
 
             builder.Services.AddGrpc();
-            
+
             var app = builder.Build();
-            
+
             // Configure the HTTP request pipeline.
             app.MapGrpcService<GrpcLogsService>();
             app.MapGrpcService<GrpcPolokusService>();
@@ -100,13 +98,13 @@ namespace Polokus.Service
         {
             Task.Run(() => StartServer());
             Master.LoadWorkflows();
-            
+
             var workflows = Master.GetWorkflows();
             foreach (var wf in workflows)
             {
                 PrintHelper.PrintInfo($"Loaded workflow: {wf.Id}");
             }
-            
+
             if (Settings.RestoreProcessesOnStart)
             {
                 Master.RestoreNotFinishedProcesses();

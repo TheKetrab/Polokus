@@ -1,12 +1,4 @@
-﻿using Polokus.Core.Interfaces;
-using Polokus;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Polokus.Core.Extensibility.Externals.Models;
+﻿using Polokus.Core.Extensibility.Externals.Models;
 
 namespace Polokus.Core.Extensibility.Externals
 {

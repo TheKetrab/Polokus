@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Text;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-using Polokus.App.Fonts;
+﻿using Polokus.App.Fonts;
 
 namespace Polokus.App.Controls
 {
@@ -21,7 +11,7 @@ namespace Polokus.App.Controls
         public float FontSize { get; set; } = 13f;
         public FontStyle FontStyle { get; set; } = FontStyle.Bold;
 
-        protected int KeyVal => (FontChar == FontsManager.SegMDL2.Custom) 
+        protected int KeyVal => (FontChar == FontsManager.SegMDL2.Custom)
             ? FontCharCustom : (int)FontChar;
 
         public IconBtn()
@@ -31,9 +21,9 @@ namespace Polokus.App.Controls
 
 
         private string _text = "";
-        public override string Text 
+        public override string Text
         {
-            get => ""; 
+            get => "";
             set => _text = value;
         }
 
@@ -79,7 +69,7 @@ namespace Polokus.App.Controls
             stringFormat.LineAlignment = StringAlignment.Center;
 
             Font iconFont = new Font(FontsManager.FFSegMDL2, fontSize, FontStyle);
-            
+
             e.Graphics.DrawString(iconChar, iconFont,
                 new SolidBrush(this.ForeColor),
                 new Rectangle(0, 0, this.Width, this.Height),

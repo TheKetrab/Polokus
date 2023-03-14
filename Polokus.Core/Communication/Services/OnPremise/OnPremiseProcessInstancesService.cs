@@ -16,7 +16,7 @@ namespace Polokus.Core.Communication.Services.OnPremise
         public IEnumerable<string> GetActiveNodesIds(string wfId, string piId)
         {
             var results = new List<string>();
-            
+
             var pi = GetProcessInstance(wfId, piId);
 
             results.AddRange(
@@ -53,7 +53,7 @@ namespace Polokus.Core.Communication.Services.OnPremise
             var pi = GetProcessInstance(wfId, piId);
             var node = pi.BpmnProcess.GetNodeById(nodeId);
             var nh = pi.GetNodeHandlerForNodeIfExists(node);
-            
+
             if (nh is UserTaskNodeHandler userTaskNh)
             {
                 userTaskNh.SetUserDecision(answer);

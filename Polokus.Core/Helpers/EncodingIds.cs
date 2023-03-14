@@ -12,7 +12,7 @@ namespace Polokus.Core.Helpers
         {
             return $"Starter_({workflowId})_({bpmnProcessId})_({flowNodeId})";
         }
-        
+
         public static string GetWaiterId(string workflowId, string processInstanceId, string bpmnProcessId, string nodeToCallId)
         {
             return $"Waiter_({workflowId})_({processInstanceId})_({bpmnProcessId})_({nodeToCallId})";
@@ -71,11 +71,11 @@ namespace Polokus.Core.Helpers
 
         public static string GetWorkflowIdFromCaller(string callerId)
         {
-            if (IsWaiter(callerId)) 
+            if (IsWaiter(callerId))
             {
                 return GetWorkflowIdFromWaiter(callerId);
             }
-            
+
             if (IsStarter(callerId))
             {
                 return GetWorkflowIdFromStarter(callerId);

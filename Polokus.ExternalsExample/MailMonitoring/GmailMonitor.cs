@@ -17,7 +17,7 @@ namespace Polokus.ExternalsExample.MailMonitoring
         public GmailMonitor(IPolokusMaster master, string gmailCredentialsPath)
         {
             _master = master;
-            _manager = new GmailManager(gmailCredentialsPath);            
+            _manager = new GmailManager(gmailCredentialsPath);
         }
 
         public bool IsMonitoring => _activeCts != null && _activeTask != null;

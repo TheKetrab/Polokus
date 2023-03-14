@@ -1,6 +1,4 @@
-﻿using Polokus.Core.Interfaces;
-using Polokus.Core.Interfaces.BpmnModels;
-using Polokus.Core.Interfaces.Xsd;
+﻿using Polokus.Core.Interfaces.Xsd;
 
 namespace Polokus.Core.BpmnModels
 {
@@ -18,7 +16,7 @@ namespace Polokus.Core.BpmnModels
         public ICollection<IMessageFlow> IncommingMessages { get; set; } = new List<IMessageFlow>();
         public ICollection<IBoundaryEvent> BoundaryEvents { get; set; } = new List<IBoundaryEvent>();
 
-        public FlowNode(BpmnProcess bpmnProcess, T xmlElement) 
+        public FlowNode(BpmnProcess bpmnProcess, T xmlElement)
         {
             XmlElement = xmlElement;
             Name = xmlElement.name ?? "";
@@ -56,10 +54,10 @@ namespace Polokus.Core.BpmnModels
             }
             else if (typeof(T) == typeof(tReceiveTask))
             {
-                RequireWaiter = WaiterType.Message;                
+                RequireWaiter = WaiterType.Message;
             }
         }
 
     }
-    
+
 }

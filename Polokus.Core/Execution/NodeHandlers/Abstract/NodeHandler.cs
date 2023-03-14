@@ -1,12 +1,8 @@
-﻿using Polokus.Core.Execution;
+﻿using Polokus.Core.BpmnModels;
 using Polokus.Core.Helpers;
-using Polokus.Core.Interfaces;
-using Polokus.Core.Interfaces.BpmnModels;
-using Polokus.Core.Interfaces.Execution;
+using Polokus.Core.Interfaces.Execution.NodeHandlers;
 using Polokus.Core.Interfaces.Managers;
 using Polokus.Core.Interfaces.Xsd;
-using Polokus.Core.BpmnModels;
-using Polokus.Core.Interfaces.Execution.NodeHandlers;
 
 namespace Polokus.Core.Execution.NodeHandlers.Abstract
 {
@@ -108,7 +104,7 @@ namespace Polokus.Core.Execution.NodeHandlers.Abstract
         {
             if (this.Node.BoundaryEvents.Count > 0)
             {
-                _boundaryEventsWaiters = new Dictionary<BoundaryEventType,INodeHandlerWaiter>();
+                _boundaryEventsWaiters = new Dictionary<BoundaryEventType, INodeHandlerWaiter>();
 
                 foreach (var be in this.Node.BoundaryEvents)
                 {

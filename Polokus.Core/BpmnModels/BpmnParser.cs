@@ -1,6 +1,5 @@
 ﻿using Polokus.Core.Factories;
 using Polokus.Core.Helpers;
-using Polokus.Core.Interfaces.BpmnModels;
 using Polokus.Core.Interfaces.Exceptions;
 using Polokus.Core.Interfaces.Xsd;
 using System.Xml;

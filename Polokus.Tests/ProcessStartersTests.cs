@@ -1,15 +1,5 @@
-﻿using Moq;
-using Polokus.Core;
-using Polokus.Core.Extensibility.Hooks;
-using Polokus.Core.Interfaces;
+﻿using Polokus.Core.Extensibility.Hooks;
 using Polokus.Tests.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Polokus.Tests
 {

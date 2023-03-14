@@ -1,16 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Polokus.Core.Interfaces;
-using Polokus.Core.Interfaces.BpmnModels;
-using Polokus.Core.Interfaces.Execution;
-using Polokus.Core.BpmnModels;
-
-namespace Polokus.Core.Execution
+﻿namespace Polokus.Core.Execution
 {
-    
+
 
     public class SuccessProcessResultInfo : ProcessResultInfo
     {

@@ -1,20 +1,13 @@
-﻿using Polokus.Core.Interfaces.BpmnModels;
-using Polokus.Core.Interfaces.Execution;
+﻿using Polokus.Core.Interfaces.Execution;
 using Polokus.ExternalsExample.FileMonitoring;
 using Polokus.Tests.Helpers;
-using Polokus.Tests.IntegrationTests.GradingStudent;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Polokus.Tests.IntegrationTests.FileSegregation
 {
     public class FileSegregationIntegrationTest
     {
         private static string? _mainPath;
-        public static string MainPath => _mainPath ??= Path.Combine(Path.GetTempPath(),"PolokusTestFileSegregation");
+        public static string MainPath => _mainPath ??= Path.Combine(Path.GetTempPath(), "PolokusTestFileSegregation");
 
         public static string ObservedPath;
         public static string LongPath;
@@ -54,7 +47,7 @@ namespace Polokus.Tests.IntegrationTests.FileSegregation
             master.RegisterMonitor(fileMonitor);
 
             // Act
-            for (int i=0; i<200; i+=2)
+            for (int i = 0; i < 200; i += 2)
             {
                 string fileName = $"f{i}.txt";
                 string filePath = Path.Combine(MainPath, fileName);
@@ -70,7 +63,7 @@ namespace Polokus.Tests.IntegrationTests.FileSegregation
 
             // Assert
             await Task.Delay(10000);
-            for (int i=0; i<= 100; i+=2)
+            for (int i = 0; i <= 100; i += 2)
             {
                 Assert.IsTrue(File.Exists(Path.Combine(ShortPath, $"f{i}.txt")));
             }

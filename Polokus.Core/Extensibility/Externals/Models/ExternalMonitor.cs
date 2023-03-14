@@ -1,7 +1,4 @@
-﻿using Polokus;
-using System;
-
-namespace Polokus.Core.Extensibility.Externals.Models
+﻿namespace Polokus.Core.Extensibility.Externals.Models
 {
     public class ExternalMonitor
     {

@@ -54,7 +54,7 @@ namespace Polokus.App.Views
             listViewSettingsProvider.Columns.Add("Class", 300, HorizontalAlignment.Left);
             listViewSettingsProvider.Columns.Add("Assembly path", 100, HorizontalAlignment.Left);
 
-            
+
             ListViewItem item = new ListViewItem();
             item.Text = settingsProvider.Name;
             item.SubItems.Add(settingsProvider.Assembly.Substring(settingsProvider.Assembly.LastIndexOfAny(new char[] { '\\', '/' }) + 1));
@@ -84,7 +84,7 @@ namespace Polokus.App.Views
             {
                 ListViewItem item = new ListViewItem();
                 item.Text = m.Name;
-                item.SubItems.Add( m.Assembly.Substring(m.Assembly.LastIndexOfAny(new char[] { '\\' ,'/'}) + 1) );
+                item.SubItems.Add(m.Assembly.Substring(m.Assembly.LastIndexOfAny(new char[] { '\\', '/' }) + 1));
                 item.SubItems.Add(m.ClassName);
                 item.SubItems.Add(string.Join(", ", m.Arguments));
                 item.SubItems.Add(m.Assembly);

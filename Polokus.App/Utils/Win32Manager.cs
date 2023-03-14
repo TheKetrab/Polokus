@@ -65,18 +65,18 @@ namespace Polokus.App.Utils
         }
         public static void HandleRestoringSize(MainWindow window, ref Message m)
         {
-                //Keep form size when it is minimized and restored. Since the form is resized because it takes into account the size of the title bar and borders.
-                /// <see cref="https://docs.microsoft.com/en-us/windows/win32/menurc/wm-syscommand"/>
-                /// Quote:
-                /// In WM_SYSCOMMAND messages, the four low - order bits of the wParam parameter 
-                /// are used internally by the system.To obtain the correct result when testing 
-                /// the value of wParam, an application must combine the value 0xFFF0 with the 
-                /// wParam value by using the bitwise AND operator.
-                int wParam = (m.WParam.ToInt32() & 0xFFF0);
-                if (wParam == SC_MINIMIZE)  //Before
-                    window.FormSize = window.ClientSize;
-                if (wParam == SC_RESTORE)// Restored form(Before)
-                    window.Size = window.FormSize;
+            //Keep form size when it is minimized and restored. Since the form is resized because it takes into account the size of the title bar and borders.
+            /// <see cref="https://docs.microsoft.com/en-us/windows/win32/menurc/wm-syscommand"/>
+            /// Quote:
+            /// In WM_SYSCOMMAND messages, the four low - order bits of the wParam parameter 
+            /// are used internally by the system.To obtain the correct result when testing 
+            /// the value of wParam, an application must combine the value 0xFFF0 with the 
+            /// wParam value by using the bitwise AND operator.
+            int wParam = (m.WParam.ToInt32() & 0xFFF0);
+            if (wParam == SC_MINIMIZE)  //Before
+                window.FormSize = window.ClientSize;
+            if (wParam == SC_RESTORE)// Restored form(Before)
+                window.Size = window.FormSize;
         }
     }
 }

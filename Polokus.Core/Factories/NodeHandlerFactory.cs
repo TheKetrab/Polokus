@@ -1,6 +1,4 @@
 ﻿using Polokus.Core.Execution.NodeHandlers;
-using Polokus.Core.Interfaces.BpmnModels;
-using Polokus.Core.Interfaces.Execution;
 using Polokus.Core.Interfaces.Execution.NodeHandlers;
 using Polokus.Core.Interfaces.Xsd;
 
@@ -10,7 +8,7 @@ namespace Polokus.Core.Factories
     {
         private Dictionary<Type, Type> _nodeHandlers = new();
         private Dictionary<string, Type> _serviceTasksHandlers = new();
- 
+
         public void RegisterNodeHandlerForServiceTask<TNodeHandler>(string serviceTask)
             where TNodeHandler : ServiceTaskNodeHandlerImpl
         {
@@ -76,7 +74,7 @@ namespace Polokus.Core.Factories
             {
                 activatorException = exc;
             }
-            
+
             return nodeHandler ?? throw new Exception("Unable to create nodehandler.", activatorException);
         }
 

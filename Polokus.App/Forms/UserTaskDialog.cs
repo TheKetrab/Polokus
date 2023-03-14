@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Data;
 
 namespace Polokus.App.Forms
 {
@@ -44,7 +36,7 @@ namespace Polokus.App.Forms
             string taskName = userTaskDefinition.Substring(0, a).Trim();
             this.readOnlyRichTextBoxMsg.Text = taskName;
 
-            string taskOptions = userTaskDefinition.Substring(a+1, b - a - 1);
+            string taskOptions = userTaskDefinition.Substring(a + 1, b - a - 1);
             var options = taskOptions.Split(';').Select(x => x.Trim());
 
             InitializeRadioButtons(options);

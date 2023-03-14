@@ -2,7 +2,6 @@
 using Polokus.App.Fonts;
 using Polokus.App.Utils;
 using System.Runtime.InteropServices;
-using System.Windows.Forms.VisualStyles;
 
 namespace Polokus.App.Forms
 {
@@ -53,12 +52,14 @@ namespace Polokus.App.Forms
 
 
             // panelSService kills performance while resizing, therefore its live-resizing is disabled
-            this.ResizeBegin += (s, e) => {
+            this.ResizeBegin += (s, e) =>
+            {
                 this.panelService.SuspendLayout();
                 this.Menu.Header.Frozen = true;
                 this.MainPanel.SuspendLayout();
             };
-            this.ResizeEnd += (s, e) => { 
+            this.ResizeEnd += (s, e) =>
+            {
                 this.panelService.ResumeLayout(true);
                 this.Menu.Header.Frozen = false;
                 this.Menu.Header.Invalidate();
@@ -174,10 +175,10 @@ namespace Polokus.App.Forms
             if (m.Msg == Win32Manager.WM_NCHITTEST)
             {
                 base.WndProc(ref m);
-                Win32Manager.HandleMsgResize(this, ref m);                
+                Win32Manager.HandleMsgResize(this, ref m);
                 return;
             }
-            
+
             if (m.Msg == Win32Manager.WM_NCCALCSIZE && m.WParam.ToInt32() == 1)
             {
                 // Remove border and keep snap window
@@ -196,7 +197,7 @@ namespace Polokus.App.Forms
         }
 
         #region Events Functions
-        
+
         private void MainWindow_Resize(object sender, EventArgs e)
         {
             AdjustForm();

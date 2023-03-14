@@ -1,14 +1,11 @@
-﻿using Polokus.Core.Interfaces;
-using Polokus.Core.Interfaces.BpmnModels;
-using Polokus.Core.Interfaces.Xsd;
-using Polokus.Core.BpmnModels;
+﻿using Polokus.Core.BpmnModels;
 using Polokus.Core.Execution.NodeHandlers.Abstract;
-using Polokus.Core.Interfaces.Execution;
+using Polokus.Core.Interfaces.Xsd;
 
 namespace Polokus.Core.Execution.NodeHandlers
 {
     public class SubProcessNodeHandler : SubprocessingNodeHandler<tSubProcess>
-    {        
+    {
         public SubProcessNodeHandler(IProcessInstance processInstance, FlowNode<tSubProcess> typedNode)
             : base(processInstance, typedNode)
         {

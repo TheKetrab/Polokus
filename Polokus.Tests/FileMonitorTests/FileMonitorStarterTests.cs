@@ -1,13 +1,7 @@
 ﻿using Polokus.Core;
-using Polokus;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using Polokus.ExternalsExample.FileMonitoring;
 using Polokus.Core.Extensibility.Hooks;
+using Polokus.ExternalsExample.FileMonitoring;
+using System.Reflection;
 
 namespace Polokus.Tests.FileMonitorTests
 {
@@ -35,7 +29,7 @@ namespace Polokus.Tests.FileMonitorTests
 
             var fileMonitor = new FileMonitor(master, _dirToMonitor);
             master.RegisterMonitor(fileMonitor);
-            
+
             // Act
             string filePath = Path.Combine(_dirToMonitor, "file.txt");
             File.Create(filePath).Close();

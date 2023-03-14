@@ -11,7 +11,7 @@
         protected INodeHandler Parent { get; }
 
 
-        public ServiceTaskNodeHandlerImpl(INodeHandler parent) 
+        public ServiceTaskNodeHandlerImpl(INodeHandler parent)
         {
             Parent = parent;
         }

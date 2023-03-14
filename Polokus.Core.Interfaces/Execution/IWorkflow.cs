@@ -48,7 +48,7 @@ namespace Polokus.Core.Interfaces.Execution
         /// <param name="bpmnProcess"></param>
         /// <returns></returns>
         IProcessInstance CreateProcessInstance(IBpmnProcess bpmnProcess, IProcessInstance? parent = null);
-        
+
         /// <summary>
         /// This method manually runs instance given as argument <paramref name="processInstance"/>
         /// starting from <paramref name="startNode"/> and asynchronously wait for process to be finished.
@@ -88,12 +88,12 @@ namespace Polokus.Core.Interfaces.Execution
         /// <summary>
         /// This method retrieves all waiters now available with their type.
         /// </summary>
-        IEnumerable<Tuple<string,INodeHandlerWaiter>> GetAllWaiters();
+        IEnumerable<Tuple<string, INodeHandlerWaiter>> GetAllWaiters();
 
         /// <summary>
         /// This method retrieves all process starters for current workflow with their type.
         /// </summary>
-        IEnumerable<Tuple<string,IProcessStarter>> GetAllProcessStarters();
+        IEnumerable<Tuple<string, IProcessStarter>> GetAllProcessStarters();
 
         /// <summary>
         /// Logs an info.

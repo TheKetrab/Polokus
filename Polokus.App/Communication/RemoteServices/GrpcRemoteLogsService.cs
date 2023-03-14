@@ -14,7 +14,7 @@ namespace Polokus.Core.Remote
             _serviceClient = new RemoteServices.RemoteLogsService.RemoteLogsServiceClient(channel);
         }
 
-        public List<Tuple<MsgType,string>> GetMessages(string wfId, string piId)
+        public List<Tuple<MsgType, string>> GetMessages(string wfId, string piId)
         {
             var request = new GetMessagesRequest()
             {

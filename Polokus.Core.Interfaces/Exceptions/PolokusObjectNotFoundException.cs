@@ -18,7 +18,7 @@
 
     public class ProcessInstanceNotFoundException : PolokusObjectNotFoundException
     {
-        public ProcessInstanceNotFoundException(string name) : base(ObjectType.ProcessInstance,name) { }
+        public ProcessInstanceNotFoundException(string name) : base(ObjectType.ProcessInstance, name) { }
     }
 
     public class FlowNodeNotFoundException : PolokusObjectNotFoundException

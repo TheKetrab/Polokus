@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-
-namespace Polokus.Service
+﻿namespace Polokus.Service
 {
     public static class PrintHelper
     {

@@ -6,7 +6,6 @@ using Polokus.Core.Interfaces;
 using Polokus.Core.Interfaces.Communication;
 using System.Data;
 using System.Reflection;
-using System.Text;
 
 namespace Polokus.App.Views
 {
@@ -23,7 +22,7 @@ namespace Polokus.App.Views
             _mainWindow = mainWindow;
             InitializeComponent();
 
-            chromiumWindow = new ChromiumWindow(_mainWindow,"viewer");
+            chromiumWindow = new ChromiumWindow(_mainWindow, "viewer");
             chromiumWindow.Parent = panelBpmnio;
             chromiumWindow.Dock = DockStyle.Fill;
 
@@ -63,7 +62,7 @@ namespace Polokus.App.Views
         public bool AnyBpmnProcessSelected
         {
             get => _anyBpmnProcessSelected;
-            set 
+            set
             {
                 _anyBpmnProcessSelected = value;
                 this.buttonAdd.Enabled = value;
@@ -306,7 +305,7 @@ namespace Polokus.App.Views
 
             return listView.SelectedItems[0].Text;
         }
-        
+
         public string? ActiveWorkflow { get; private set; } = null;
         private string? ActiveProcessInstance { get; set; } = null;
         public string? GetOpenedProcessInstanceGlobalId()
@@ -465,7 +464,7 @@ namespace Polokus.App.Views
         }
 
         private void buttonPingWaiter_Click(object sender, EventArgs e)
-        {            
+        {
             if (ActiveWorkflow == null)
             {
                 throw new Exception("None workflow is active.");
@@ -498,7 +497,7 @@ namespace Polokus.App.Views
             string argspart = script[(script.IndexOf('(') + 1)..(script.IndexOf(')'))];
 
             string[][] args = argspart.Split(',')
-                .Select(x => x.Split(':',StringSplitOptions.TrimEntries))
+                .Select(x => x.Split(':', StringSplitOptions.TrimEntries))
                 .ToArray();
 
             switch (funcname)
@@ -511,7 +510,7 @@ namespace Polokus.App.Views
                             string bpmnProcessId = args[0][1];
                             int count = int.Parse(args[1][1]);
 
-                            for (int i=0; i<count; i++)
+                            for (int i = 0; i < count; i++)
                             {
                                 _services.WorkflowsService.StartProcessManually(wfId, bpmnProcessId);
                             }

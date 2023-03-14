@@ -1,13 +1,4 @@
-﻿using Polokus.Core.Interfaces;
-using Polokus.Core.Interfaces.BpmnModels;
-using Polokus.Core.Interfaces.Extensibility;
-using Polokus.Core.Interfaces.Xsd;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
+﻿using Polokus.Core.Interfaces.Xsd;
 
 namespace Polokus.Core.Extensibility.Hooks
 {
@@ -16,8 +7,8 @@ namespace Polokus.Core.Extensibility.Hooks
         BeforeExecute = 1,
         AfterExecuteSuccess = 1 << 1,
         AfterExecuteSuspension = 1 << 2,
-        AfterExecuteFailure =  1 << 3,
-        
+        AfterExecuteFailure = 1 << 3,
+
         MarkNameForSpecialNodes = 1 << 4,
         PutNameInParenthesis = 1 << 5,
 
@@ -44,7 +35,7 @@ namespace Polokus.Core.Extensibility.Hooks
 
         private void LogActionSafe(IFlowNode node, VisitTime visitTime)
         {
-            lock(sb)
+            lock (sb)
             {
                 LogAction(node, visitTime);
             }
@@ -107,7 +98,7 @@ namespace Polokus.Core.Extensibility.Hooks
 
         public override void BeforeExecuteNode(string wfId, string piId, string nodeId, int taskId, string? nodeCaller)
         {
-            LogActionSafe(GetFlowNode(wfId,piId,nodeId), VisitTime.BeforeExecute);
+            LogActionSafe(GetFlowNode(wfId, piId, nodeId), VisitTime.BeforeExecute);
         }
 
         public override void AfterExecuteNodeSuccess(string wfId, string piId, string nodeId, int taskId)

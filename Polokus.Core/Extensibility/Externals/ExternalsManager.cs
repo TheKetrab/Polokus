@@ -1,6 +1,4 @@
 ﻿using Polokus.Core.Extensibility.Externals.Models;
-using Polokus.Core.Interfaces;
-using Polokus.Core.Interfaces.Extensibility;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text.Json;
@@ -24,7 +22,7 @@ namespace Polokus.Core.Extensibility.Externals
         {
             var options = new JsonSerializerOptions();
 
-            return JsonSerializer.Deserialize<Externals>(jsonString,options)
+            return JsonSerializer.Deserialize<Externals>(jsonString, options)
                 ?? throw new SerializationException("Failed to load externals.");
         }
 

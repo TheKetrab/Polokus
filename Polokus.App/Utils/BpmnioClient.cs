@@ -8,7 +8,7 @@ namespace Polokus.App.Utils
     public class BpmnioClient : IBpmnClient
     {
         ChromiumWebBrowser chromiumWebBrowser;
-        
+
         public BpmnioClient(ChromiumWindow chromiumWindow)
         {
             chromiumWebBrowser = chromiumWindow.chromeBrowser;
@@ -21,7 +21,7 @@ namespace Polokus.App.Utils
 
         public async Task<string> GetBpmnSvg(string bpmnXml)
         {
-            bpmnXml = bpmnXml.Replace('\n', ' ');            
+            bpmnXml = bpmnXml.Replace('\n', ' ');
             string script = GetPromisedScript("window.xml2Svg", $"\'{bpmnXml}\'");
             var result = await chromiumWebBrowser.EvaluateScriptAsPromiseAsync(script);
             return result.Result?.ToString() ?? throw new Exception("Script evaluation failed.");

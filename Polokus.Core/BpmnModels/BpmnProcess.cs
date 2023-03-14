@@ -1,8 +1,6 @@
 ﻿using Polokus.Core.Helpers;
-using Polokus.Core.Interfaces.BpmnModels;
 using Polokus.Core.Interfaces.Exceptions;
 using Polokus.Core.Interfaces.Xsd;
-using System.Linq;
 
 namespace Polokus.Core.BpmnModels
 {
@@ -26,7 +24,7 @@ namespace Polokus.Core.BpmnModels
             Id = id;
         }
 
-        
+
         public IFlowNode GetNodeById(string id)
         {
             if (nodesDictionary.TryGetValue(id, out IFlowNode? node))
@@ -144,7 +142,7 @@ namespace Polokus.Core.BpmnModels
             return node as IMessageCallerNode
                 ?? throw new Exception($"Node with id {id} is {node.GetType()}, not IMessageCaller.");
         }
-        
+
         public IMessageReceiverNode GetMessageReceiverNode(string id)
         {
             IFlowNode node = GetNodeById(id)

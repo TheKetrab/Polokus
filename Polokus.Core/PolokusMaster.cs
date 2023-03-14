@@ -3,19 +3,12 @@ using Polokus.Core.Communication;
 using Polokus.Core.Execution;
 using Polokus.Core.Extensibility;
 using Polokus.Core.Extensibility.Externals;
-using Polokus.Core.Extensibility.Hooks;
 using Polokus.Core.Helpers;
-using Polokus.Core.Interfaces;
-using Polokus.Core.Interfaces.BpmnModels;
 using Polokus.Core.Interfaces.Communication;
-using Polokus.Core.Interfaces.Execution;
-using Polokus.Core.Interfaces.Extensibility;
 using Polokus.Core.Interfaces.Managers;
 using Polokus.Core.Interfaces.Xsd;
 using Polokus.Core.Managers;
 using Polokus.Core.Serialization;
-using System.Diagnostics.Metrics;
-using System.Text;
 
 namespace Polokus.Core
 {
@@ -71,7 +64,7 @@ namespace Polokus.Core
             }
 
             IWorkflow workflow = _workflows[wfId];
-            
+
             IProcessInstance? processInstance = workflow.GetProcessInstanceById(piId);
 
             if (processInstance == null)
@@ -268,7 +261,7 @@ namespace Polokus.Core
 
         public void EmitSignal(object? sender, string signal, params string[] parameters)
         {
-            Signal?.Invoke(sender, new Signal(signal,parameters));
+            Signal?.Invoke(sender, new Signal(signal, parameters));
         }
     }
 }

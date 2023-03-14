@@ -17,7 +17,7 @@ namespace Polokus.App.Utils
         public AppHooksProvider(ServiceView serviceView)
         {
             _serviceView = serviceView;
-        }        
+        }
 
         public void AfterExecuteNodeFailure(string wfId, string piId, string nodeId, int taskId)
         {
@@ -133,7 +133,7 @@ namespace Polokus.App.Utils
             {
                 string nodeName = _services.ProcessInstancesService.GetNodeName(wfId, piId, nodeId);
                 MessageBox.Show($"Waiting for manual task: {nodeName}");
-                _services.ProcessInstancesService.RemoveAwaitingToken(wfId,piId,token);
+                _services.ProcessInstancesService.RemoveAwaitingToken(wfId, piId, token);
             }
             else if (nodeXmlType == typeof(tUserTask))
             {

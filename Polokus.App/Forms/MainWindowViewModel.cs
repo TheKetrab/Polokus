@@ -1,12 +1,4 @@
-﻿using Grpc.Net.Client;
-using Polokus.Core.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Drawing.Printing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using Polokus.Core.Helpers;
 
 namespace Polokus.App.Forms
 {

@@ -1,13 +1,7 @@
 ﻿using Polokus.Core.Extensibility.Hooks;
-using Polokus.Core.Interfaces;
 using Polokus.Core.Interfaces.BpmnModels;
 using Polokus.Core.Interfaces.Execution;
 using Polokus.Tests.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Polokus.Tests.NodeHandlersTests
 {

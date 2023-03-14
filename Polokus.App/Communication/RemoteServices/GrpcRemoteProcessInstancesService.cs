@@ -3,12 +3,7 @@ using Polokus.Core.Interfaces;
 using Polokus.Core.Interfaces.Communication;
 using Polokus.Core.Interfaces.Exceptions;
 using RemoteServices;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Polokus.Core.Remote
 {

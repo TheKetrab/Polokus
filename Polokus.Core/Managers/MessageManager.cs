@@ -1,8 +1,6 @@
 ﻿using Polokus.Core.Execution;
 using Polokus.Core.Extensibility.Hooks;
 using Polokus.Core.Helpers;
-using Polokus.Core.Interfaces.BpmnModels;
-using Polokus.Core.Interfaces.Execution;
 using Polokus.Core.Interfaces.Managers;
 using System.Net;
 
