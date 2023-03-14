@@ -3,6 +3,7 @@ using Polokus.Core.Communication;
 using Polokus.Core.Execution;
 using Polokus.Core.Extensibility;
 using Polokus.Core.Extensibility.Externals;
+using Polokus.Core.Extensibility.Hooks;
 using Polokus.Core.Helpers;
 using Polokus.Core.Interfaces.Communication;
 using Polokus.Core.Interfaces.Managers;
@@ -17,14 +18,11 @@ namespace Polokus.Core
         internal IDictionary<string, IWorkflow> _workflows
             = new Dictionary<string, IWorkflow>();
 
-        public ISettingsProvider SettingsProvider { get; set; }
-
         public IHooksManager HooksManager { get; set; }
 
         /// <summary>
         /// Object that reprezents externals and manages them. Can be null if externals.json not found.
         /// </summary>
-
         public Externals? Externals { get; }
 
         public ICollection<IMonitor> Monitors { get; }
@@ -104,7 +102,7 @@ namespace Polokus.Core
         public PolokusMaster(bool isGUIAppManaged = false)
         {
             HooksManager = new HooksManager(this);
-            Externals = ExternalsManager.TryLoadExternals("C:\\Custom\\BPMN\\Polokus\\Examples\\Programmatibility\\externals.json");
+            Externals = ExternalsManager.TryLoadExternals(@".\externals.json");
             if (Externals != null)
             {
                 // ----- Register Hooks Providers -----
@@ -120,7 +118,8 @@ namespace Polokus.Core
                 // ----- Register Settings Provider -----
                 if (Externals.SettingsProvider != null)
                 {
-                    SettingsProvider = ExternalsManager.InstantiateSettingsProvider(Externals.SettingsProvider);
+                    var settingsProvider = ExternalsManager.InstantiateSettingsProvider(Externals.SettingsProvider);
+                    Settings.RegisterSettingsProvider(settingsProvider);
                 }
 
                 // ----- Register Monitors -----
@@ -137,14 +136,11 @@ namespace Polokus.Core
 
             ConnectionManager = new ConnectionManager(isGUIAppManaged);
 
-            //StateSerializerManager = new StateSerializerManager(this);
-            //StateSerializerHooks stateSerializer = new StateSerializerHooks(this);
-            //HooksManager.RegisterHooksProvider(stateSerializer);
-
-            // ===== ===== ASSURE SETTINGS PROVIDER IS NOT NULL ===== =====
-            if (SettingsProvider == null)
+            if (Settings.SerializePiSnapshots)
             {
-                SettingsProvider = new DefaultSettingsProvider();
+                StateSerializerManager = new StateSerializerManager(this);
+                StateSerializerHooks stateSerializer = new StateSerializerHooks(this);
+                HooksManager.RegisterHooksProvider(stateSerializer);
             }
 
         }

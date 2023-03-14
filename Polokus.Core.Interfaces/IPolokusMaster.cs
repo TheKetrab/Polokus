@@ -31,11 +31,6 @@ namespace Polokus.Core.Interfaces
 
 
         /// <summary>
-        /// Object that provides dynamic injection of settings.
-        /// </summary>
-        ISettingsProvider SettingsProvider { get; set; }
-
-        /// <summary>
         /// Object that provides dynamic injection of many hooks and invokes all of them.
         /// </summary>
         IHooksManager HooksManager { get; set; }

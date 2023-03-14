@@ -45,11 +45,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EditorConfigFiles Remove="C:\Custom\BPMN\Polokus\Polokus.Tests\.editorconfig" />
+    <EditorConfigFiles Remove="..\Polokus.Tests\.editorconfig" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="C:\Custom\BPMN\Polokus\Polokus.Tests\.editorconfig" />
+    <None Include="..\Polokus.Tests\.editorconfig" />
   </ItemGroup>
 
 </Project>

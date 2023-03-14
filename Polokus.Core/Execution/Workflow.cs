@@ -21,7 +21,6 @@ namespace Polokus.Core.Execution
             }
         }
 
-        public ISettingsProvider SettingsProvider { get; set; }
         public ITimeManager TimeManager { get; }
         public IMessageManager MessageManager { get; }
         public ISignalManager SignalManager { get; }
@@ -40,21 +39,11 @@ namespace Polokus.Core.Execution
 
         public IHooksProvider? HooksProvider { get; }
 
-        public void SetSettingsProvider(ISettingsProvider provider)
-        {
-            SettingsProvider = provider;
-        }
 
-        public Workflow(IPolokusMaster polokus, IBpmnWorkflow bpmnWorkflow, string id,
-            IHooksProvider? hooksProvider = null, ISettingsProvider? settingsProvider = null)
+        public Workflow(IPolokusMaster polokus, IBpmnWorkflow bpmnWorkflow,
+            string id, IHooksProvider? hooksProvider = null)
         {
-            if (settingsProvider == null)
-            {
-                settingsProvider = new DefaultSettingsProvider();
-            }
-
             TimeManager = new TimeManager(this);
-            SettingsProvider = settingsProvider;
             MessageManager = new MessageManager(this, Settings.MessageListenerPort);
             SignalManager = new SignalManager(this);
 

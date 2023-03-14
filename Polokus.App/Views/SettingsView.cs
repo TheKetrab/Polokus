@@ -43,22 +43,22 @@ namespace Polokus.App.Views
         public void InitBindings()
         {
             // Main
-            textBoxBpmnPath.DataBindings.Add("Text", Settings.Instance, "bpmnPath", true, DataSourceUpdateMode.OnPropertyChanged);
-            checkBoxRestoreOnStart.DataBindings.Add("Checked", Settings.Instance, "restoreProcessesOnStart", true, DataSourceUpdateMode.OnPropertyChanged);
+            textBoxBpmnPath.DataBindings.Add("Text", Settings.SettingsProvider, "bpmnPath", true, DataSourceUpdateMode.OnPropertyChanged);
+            checkBoxRestoreOnStart.DataBindings.Add("Checked", Settings.SettingsProvider, "restoreProcessesOnStart", true, DataSourceUpdateMode.OnPropertyChanged);
 
             // App
-            numericUpDownDelayPerNodeHandler.DataBindings.Add("Value", Settings.Instance, "delayPerNodeHandlerMs", true, DataSourceUpdateMode.OnPropertyChanged);
-            trackBarDelayPerNodeHandler.DataBindings.Add("Value", Settings.Instance, "delayPerNodeHandlerMs", true, DataSourceUpdateMode.OnPropertyChanged);
+            numericUpDownDelayPerNodeHandler.DataBindings.Add("Value", Settings.SettingsProvider, "delayPerNodeHandlerMs", true, DataSourceUpdateMode.OnPropertyChanged);
+            trackBarDelayPerNodeHandler.DataBindings.Add("Value", Settings.SettingsProvider, "delayPerNodeHandlerMs", true, DataSourceUpdateMode.OnPropertyChanged);
 
-            textBoxRemotePolokusUri.DataBindings.Add("Text", Settings.Instance, "remotePolokusUri", true, DataSourceUpdateMode.OnPropertyChanged);
-            checkBoxUseRemotePolokus.DataBindings.Add("Checked", Settings.Instance, "useRemotePolokus", true, DataSourceUpdateMode.OnPropertyChanged);
+            textBoxRemotePolokusUri.DataBindings.Add("Text", Settings.SettingsProvider, "remotePolokusUri", true, DataSourceUpdateMode.OnPropertyChanged);
+            checkBoxUseRemotePolokus.DataBindings.Add("Checked", Settings.SettingsProvider, "useRemotePolokus", true, DataSourceUpdateMode.OnPropertyChanged);
 
             // Service
-            numericUpDownMessageListenerPort.DataBindings.Add("Value", Settings.Instance, "messageListenerPort", true, DataSourceUpdateMode.OnPropertyChanged);
-            textBoxExternalsPath.DataBindings.Add("Text", Settings.Instance, "externalsPath", true, DataSourceUpdateMode.OnPropertyChanged);
+            numericUpDownMessageListenerPort.DataBindings.Add("Value", Settings.SettingsProvider, "messageListenerPort", true, DataSourceUpdateMode.OnPropertyChanged);
+            textBoxExternalsPath.DataBindings.Add("Text", Settings.SettingsProvider, "externalsPath", true, DataSourceUpdateMode.OnPropertyChanged);
 
-            numericUpDownTimeoutForManualProcesses.DataBindings.Add("Value", Settings.Instance, "timeoutForProcessSec", true, DataSourceUpdateMode.OnPropertyChanged);
-            trackBarTimeOutForManualProcesses.DataBindings.Add("Value", Settings.Instance, "timeoutForProcessSec", true, DataSourceUpdateMode.OnPropertyChanged);
+            numericUpDownTimeoutForManualProcesses.DataBindings.Add("Value", Settings.SettingsProvider, "timeoutForProcessSec", true, DataSourceUpdateMode.OnPropertyChanged);
+            trackBarTimeOutForManualProcesses.DataBindings.Add("Value", Settings.SettingsProvider, "timeoutForProcessSec", true, DataSourceUpdateMode.OnPropertyChanged);
 
         }
 

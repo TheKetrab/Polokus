@@ -1,47 +1,30 @@
-﻿using IniParser;
-using IniParser.Model;
-using Polokus.Core.Interfaces.Exceptions;
+﻿using Polokus.Core.Interfaces.Extensibility;
 
 namespace Polokus.Core.Interfaces
-{
-    public class Settings
+{   
+    public static class Settings
     {
-        const string ConfigFile = "config.ini";
-        const string MainSection = "Main";
-        const string AppSection = "App";
-        const string ServiceSection = "Service";
-
-
-        private static Settings? _instance;
         private static object _lock = new object();
-        public static Settings Instance
+        private static ISettingsProvider? _settingsProvider;
+        public static ISettingsProvider SettingsProvider
         {
             get
             {
-                if (_instance == null)
+                lock (_lock)
                 {
-                    lock (_lock)
-                    {
-                        if (_instance == null)
-                        {
-                            _instance = new Settings();
-                        }
-                    }
+                    _settingsProvider ??= new IniSettingsProvider();
+                    return _settingsProvider;
                 }
-                return _instance;
             }
         }
 
-        private FileIniDataParser _parser;
-        private string _configFile;
-        private Settings()
+        public static void RegisterSettingsProvider(ISettingsProvider settingsProvider)
         {
-            _parser = new FileIniDataParser();
-            _configFile = CreateOrGetConfigPath();
-
-            LoadSettings();
+            lock (_lock)
+            {
+                _settingsProvider = settingsProvider;
+            }
         }
-
 
         public static void ResetSettings()
         {
@@ -55,269 +38,76 @@ namespace Polokus.Core.Interfaces
             RemotePolokusUri = "http://localhost:3000";
             LightMode = false;
             OnStartFunctions = "";
-        }
-
-        public static void ReloadSettings()
-        {
-            Instance.LoadSettings();
-        }
-
-
-        private string CreateOrGetConfigPath()
-        {
-            string maindir = AppDomain.CurrentDomain.BaseDirectory;
-            string configFile = Path.Combine(maindir, ConfigFile);
-            if (!File.Exists(configFile))
-            {
-                File.Create(configFile).Close();
-            }
-
-            return configFile;
-        }
-
-        private void LoadSettings()
-        {
-            lock (_lock)
-            {
-                IniData data = _parser.ReadFile(_configFile);
-
-                // BpmnPath
-                _bpmnPath = data[MainSection]["BpmnPath"];
-
-                // RestoreProcessesOnStart
-                {
-                    if (bool.TryParse(data[ServiceSection]["RestoreProcessesOnStart"], out bool res))
-                    {
-                        _restoreProcessesOnStart = res;
-                    }
-                }
-
-                // MessageListenerPort
-                {
-                    if (int.TryParse(data[ServiceSection]["MessageListenerPort"], out int res))
-                    {
-                        _messageListenerPort = res;
-                    }
-                }
-
-                // ExternalsPath
-                _externalsPath = data[ServiceSection]["ExternalsPath"];
-
-                // TimeoutForProcessSec
-                {
-                    if (int.TryParse(data[ServiceSection]["TimeoutForProcessSec"], out int res))
-                    {
-                        _timeoutForProcessSec = res;
-                    }
-                }
-
-                // DelayPerNodeHandlerMs
-                {
-                    if (int.TryParse(data[AppSection]["DelayPerNodeHandlerMs"], out int res))
-                    {
-                        _delayPerNodeHandlerMs = res;
-                    }
-                }
-
-                // UseRemotePolokus
-                {
-                    if (bool.TryParse(data[AppSection]["UseRemotePolokus"], out bool res))
-                    {
-                        _useRemotePolokus = res;
-                    }
-                }
-
-                // RemotePolokusUri
-                _remotePolokusUri = data[AppSection]["RemotePolokusUri"];
-
-                // LightMode
-                {
-                    if (bool.TryParse(data[AppSection]["LightMode"], out bool res))
-                    {
-                        _lightMode = res;
-                    }
-                }
-
-                // OnStartFunctions
-                _onStartFunctions = data[ServiceSection]["OnStartFunctions"];
-
-            }
-        }
-
-        private void UpdateSetting(string section, string key, string value)
-        {
-            lock (_lock)
-            {
-                IniData data = _parser.ReadFile(_configFile);
-                data[section][key] = value;
-                _parser.WriteFile(_configFile, data);
-            }
+            SerializePiSnapshots = false;
         }
 
         #region Settings
 
-        private string? _bpmnPath;
-        public string bpmnPath
-        {
-            get => _bpmnPath ?? throw new SettingNotFoundException("BpmnPath");
-            set
-            {
-                _bpmnPath = value;
-                UpdateSetting(MainSection, "BpmnPath", value);
-            }
-        }
         public static string BpmnPath
         {
-            get => Instance.bpmnPath;
-            set => Instance.bpmnPath = value;
+            get => SettingsProvider.BpmnPath;
+            set => SettingsProvider.BpmnPath = value;
         }
 
-        private bool? _restoreProcessesOnStart;
-        public bool restoreProcessesOnStart
-        {
-            get => _restoreProcessesOnStart ?? true;
-            set
-            {
-                _restoreProcessesOnStart = value;
-                UpdateSetting(MainSection, "RestoreProcessesOnStart", value.ToString());
-            }
-        }
         public static bool RestoreProcessesOnStart
         {
-            get => Instance.restoreProcessesOnStart;
-            set => Instance.restoreProcessesOnStart = value;
+            get => SettingsProvider.RestoreProcessesOnStart;
+            set => SettingsProvider.RestoreProcessesOnStart = value;
         }
 
-        private int? _messageListenerPort;
-        public int messageListenerPort
-        {
-            get => _messageListenerPort ?? throw new SettingNotFoundException("MessageListenerPort");
-            set
-            {
-                _messageListenerPort = value;
-                UpdateSetting(ServiceSection, "MessageListenerPort", value.ToString());
-            }
-        }
         public static int MessageListenerPort
         {
-            get => Instance.messageListenerPort;
-            set => Instance.messageListenerPort = value;
+            get => SettingsProvider.MessageListenerPort;
+            set => SettingsProvider.MessageListenerPort = value;
         }
 
-        private string? _externalsPath;
-        public string? externalsPath
+        public static string ExternalsPath
         {
-            get => _externalsPath;
-            set
-            {
-                _externalsPath = value;
-                UpdateSetting(ServiceSection, "ExternalsPath", value ?? "");
-            }
-        }
-        public static string? ExternalsPath
-        {
-            get => Instance.externalsPath;
-            set => Instance.externalsPath = value;
+            get => SettingsProvider.ExternalsPath;
+            set => SettingsProvider.ExternalsPath = value;
         }
 
-        private int? _timeoutForProcessSec;
-        public int timeoutForProcessSec
-        {
-            get => _timeoutForProcessSec ?? -1;
-            set
-            {
-                _timeoutForProcessSec = value;
-                UpdateSetting(ServiceSection, "TimeoutForProcessSec", value.ToString());
-            }
-        }
         public static int TimeoutForProcessSec
         {
-            get => Instance.timeoutForProcessSec;
-            set => Instance.timeoutForProcessSec = value;
+            get => SettingsProvider.TimeoutForProcessSec;
+            set => SettingsProvider.TimeoutForProcessSec = value;
         }
-        
 
-        private int? _delayPerNodeHandlerMs;
-        public int delayPerNodeHandlerMs 
-        {
-            get => _delayPerNodeHandlerMs ?? 0;
-            set
-            {
-                _delayPerNodeHandlerMs = value;
-                UpdateSetting(AppSection, "DelayPerNodeHandlerMs", value.ToString());
-            }
-        }
         public static int DelayPerNodeHandlerMs
         {
-            get => Instance.delayPerNodeHandlerMs;
-            set => Instance.delayPerNodeHandlerMs = value;
+            get => SettingsProvider.DelayPerNodeHandlerMs;
+            set => SettingsProvider.DelayPerNodeHandlerMs = value;
         }
 
-        private bool? _useRemotePolokus;
-        public bool useRemotePolokus 
-        {
-            get => _useRemotePolokus ?? false;
-            set
-            {
-                _useRemotePolokus = value;
-                UpdateSetting(AppSection, "UseRemotePolokus", value.ToString());
-            }
-        }
         public static bool UseRemotePolokus
         {
-            get => Instance.useRemotePolokus;
-            set => Instance.useRemotePolokus = true;
+            get => SettingsProvider.UseRemotePolokus;
+            set => SettingsProvider.UseRemotePolokus = true;
         }
 
-        private string? _remotePolokusUri;
-        public string? remotePolokusUri 
-        {
-            get => _remotePolokusUri;
-            set
-            {
-                _remotePolokusUri = value;
-                UpdateSetting(AppSection, "RemotePolokusUri", value ?? "");
-            }
-        }
         public static string RemotePolokusUri
         {
-            get => Instance.remotePolokusUri
-                ?? throw new SettingNotFoundException("RemotePolokusUri");
-            set => Instance.remotePolokusUri = value;
+            get => SettingsProvider.RemotePolokusUri;
+            set => SettingsProvider.RemotePolokusUri = value;
         }
 
-        private bool? _lightMode;
-        public bool? lightMode
-        {
-            get => _lightMode;
-            set
-            {
-                _lightMode = value;
-                UpdateSetting(AppSection, "LightMode", value?.ToString() ?? "False");
-            }
-        }
         public static bool LightMode
         {
-            get => Instance.lightMode ?? false;
-            set => Instance.lightMode = value;
+            get => SettingsProvider.LightMode;
+            set => SettingsProvider.LightMode = value;
         }
 
-        private string? _onStartFunctions;
-        public string onStartFunctions
-        {
-            get => _onStartFunctions ?? "";
-            set
-            {
-                _onStartFunctions = value;
-                UpdateSetting(ServiceSection, "OnStartFunctions", value);
-            }
-        }
         public static string OnStartFunctions
         {
-            get => Instance.onStartFunctions;
-            set => Instance.onStartFunctions = value;
+            get => SettingsProvider.OnStartFunctions;
+            set => SettingsProvider.OnStartFunctions = value;
         }
 
+        public static bool SerializePiSnapshots
+        {
+            get => SettingsProvider.SerializePiSnapshots;
+            set => SettingsProvider.SerializePiSnapshots = value;
+        }
 
         #endregion
     }

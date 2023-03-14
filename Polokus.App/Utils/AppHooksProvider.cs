@@ -44,11 +44,6 @@ namespace Polokus.App.Utils
         {
             UpdateActiveNodesInGraphIfNeeded(wfId, piId);
             Log(wfId, piId, $"Executing: {nodeId} taskId = {taskId}");
-            //Thread.Sleep(_serviceView.PolokusMaster.SettingsProvider.DelayForNodeHandlerMs); // delay execution
-            //Thread.Sleep(500); // TODO
-
-
-
         }
 
         public void BeforeStartNewSequence(string wfId, string piId, string nodeId, string? nodeCallerId)

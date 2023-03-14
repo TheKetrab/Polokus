@@ -16,7 +16,6 @@ namespace Polokus.Core.Interfaces.Execution
         ITimeManager TimeManager { get; }
         IMessageManager MessageManager { get; }
         ISignalManager SignalManager { get; }
-        ISettingsProvider SettingsProvider { get; }
         IPolokusMaster PolokusMaster { get; }
         INodeHandlerFactory NodeHandlerFactory { get; }
         IHooksProvider? HooksProvider { get; }

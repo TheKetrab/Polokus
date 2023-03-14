@@ -2,10 +2,16 @@
 {
     public class DefaultSettingsProvider : ISettingsProvider
     {
-        public int MessageListenerPort => 8080;
-
-        public string ServiceTasksExternals => "";
-        public int TimeOutForProcessSec => -1;
-        public int DelayForNodeHandlerMs => 0;
+        public virtual string BpmnPath { get; set; } = "./BPMN";
+        public virtual bool RestoreProcessesOnStart { get; set; } = false;
+        public int MessageListenerPort { get; set; } = 8085;
+        public virtual string ExternalsPath { get; set; } = "./externals.json";
+        public virtual int TimeoutForProcessSec { get; set; } = -1;
+        public virtual int DelayPerNodeHandlerMs { get; set; } = 300;
+        public virtual bool UseRemotePolokus { get; set; } = false;
+        public virtual string RemotePolokusUri { get; set; } = "";
+        public virtual bool LightMode { get; set; } = false;
+        public virtual string OnStartFunctions { get; set; } = "";
+        public virtual bool SerializePiSnapshots { get; set; } = false;
     }
 }
