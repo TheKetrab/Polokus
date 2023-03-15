@@ -1,4 +1,5 @@
-﻿using Polokus.Core.Execution.Scripting;
+﻿using Polokus.Core.BpmnModels;
+using Polokus.Core.Execution.Scripting;
 using Polokus.Core.Helpers;
 using Polokus.Core.Interfaces.Exceptions;
 using Polokus.Core.Interfaces.Execution.NodeHandlers;
@@ -98,29 +99,30 @@ namespace Polokus.Core.Execution
         /// <param name="callers">Nodes that already called target.</param>
         public bool ExistsAnotherTaskAbleToCallTarget(IFlowNode target, List<string> callers)
         {
-            foreach (var w in Waiters)
-            {
-                // TODO: zrobic odpowiednia logike i testy
-            }
+            var activeNodes = ActiveTasksManager.GetNodeHandlers().Select(nh => nh.Node);
+            var nodesFromWaiters = Waiters.Select(x => x.NodeToCall);
 
-            foreach (var nh in ActiveTasksManager.GetNodeHandlers())
+            var potentialCallers = activeNodes.Concat(nodesFromWaiters);
+
+            // TODO: unit test with waiter
+
+            foreach (var node in potentialCallers)
             {
-                if (callers.Contains(nh.Node.Id))
+                if (callers.Contains(node.Id))
                 {
                     continue;
                 }
-                if (nh.Node.Id == target.Id)
+                if (node.Id == target.Id)
                 {
                     continue;
                 }
-                if (BpmnProcess.IsReachable(nh.Node, target))
+                if (BpmnProcess.IsReachable(node, target))
                 {
                     return true;
                 }
             }
 
             return false;
-
         }
 
         public void Log(string info, MsgType type)
