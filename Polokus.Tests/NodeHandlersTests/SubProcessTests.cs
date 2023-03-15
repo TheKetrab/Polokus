@@ -5,7 +5,7 @@ using Polokus.Tests.Helpers;
 
 namespace Polokus.Tests.NodeHandlersTests
 {
-    public class SubProcessTests
+    public class SubProcessTests : PolokusTestBase
     {
         [Test]
         public async Task SubProcessTest_SubProcessExpanded_Success()

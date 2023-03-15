@@ -6,7 +6,7 @@ using Polokus.Tests.Helpers;
 
 namespace Polokus.Tests.NodeHandlersTests
 {
-    public class BoundaryEventsTests
+    public class BoundaryEventsTests : PolokusTestBase
     {
         [Test]
         public async Task BoundaryEvent_Exception()

@@ -3,7 +3,7 @@ using Polokus.Tests.Helpers;
 
 namespace Polokus.Tests
 {
-    public class ProcessStartersTests
+    public class ProcessStartersTests : PolokusTestBase
     {
         [Test]
         public async Task ProcessStarters_StartProcessViaMessage()

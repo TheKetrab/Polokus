@@ -6,7 +6,7 @@ using Polokus.Tests.Helpers;
 
 namespace Polokus.Tests.NodeHandlersTests
 {
-    public class ServiceTaskTests
+    public class ServiceTaskTests : PolokusTestBase
     {
         private class CustomServiceTaskNodeHandler : ServiceTaskNodeHandlerImpl
         {

@@ -6,7 +6,7 @@ using Polokus.Tests.Helpers;
 
 namespace Polokus.Tests.NodeHandlersTests
 {
-    public class MessageFlowTests
+    public class MessageFlowTests : PolokusTestBase
     {
         [Test]
         public async Task MessageBetweenProcesses_TwoProcessesCommunication_ReachEnd()

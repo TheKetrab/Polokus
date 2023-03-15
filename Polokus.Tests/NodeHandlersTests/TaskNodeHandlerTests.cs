@@ -5,7 +5,7 @@ using Polokus.Tests.Helpers;
 
 namespace Polokus.Tests.NodeHandlersTests
 {
-    public class TaskNodeHandlerTests
+    public class TaskNodeHandlerTests : PolokusTestBase
     {
 
         [Test]

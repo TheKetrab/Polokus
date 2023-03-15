@@ -4,7 +4,7 @@ using Polokus.Tests.Helpers;
 
 namespace Polokus.Tests.IntegrationTests.FileSegregation
 {
-    public class FileSegregationIntegrationTest
+    public class FileSegregationIntegrationTest : PolokusTestBase
     {
         private static string? _mainPath;
         public static string MainPath => _mainPath ??= Path.Combine(Path.GetTempPath(), "PolokusTestFileSegregation");

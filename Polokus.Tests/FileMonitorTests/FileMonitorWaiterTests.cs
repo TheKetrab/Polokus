@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace Polokus.Tests.FileMonitorTests
 {
-    public class FileMonitorWaiterTests
+    public class FileMonitorWaiterTests : PolokusTestBase
     {
         private string _dirToMonitor;
 

@@ -5,7 +5,7 @@ using Polokus.Tests.Helpers;
 
 namespace Polokus.Tests.NodeHandlersTests
 {
-    public class InclusiveGatewayTests
+    public class InclusiveGatewayTests : PolokusTestBase
     {
         [Test]
         public async Task InclusiveGatewayNodeHandler_BaseBehaviour_1()

@@ -5,7 +5,7 @@ using Polokus.Tests.Helpers;
 
 namespace Polokus.Tests.NodeHandlersTests
 {
-    public class ParallelNodeHandlerTests
+    public class ParallelNodeHandlerTests : PolokusTestBase
     {
         //[Test]
         //public async Task ParallelNodeHandler_HandlerExecuted_2Times()

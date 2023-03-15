@@ -5,7 +5,7 @@ using Polokus.Tests.Helpers;
 
 namespace Polokus.Tests.NodeHandlersTests
 {
-    public class ExclusiveGatewayTests
+    public class ExclusiveGatewayTests : PolokusTestBase
     {
         [Test]
         public async Task ExclusiveGateway_BaseBehaviour_Ok()

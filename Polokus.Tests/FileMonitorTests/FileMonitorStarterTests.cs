@@ -1,11 +1,12 @@
 ﻿using Polokus.Core;
 using Polokus.Core.Extensibility.Hooks;
 using Polokus.ExternalsExample.FileMonitoring;
+using Polokus.Tests.Helpers;
 using System.Reflection;
 
 namespace Polokus.Tests.FileMonitorTests
 {
-    public class FileMonitorStarterTests
+    public class FileMonitorStarterTests : PolokusTestBase
     {
         private string _dirToMonitor;
 

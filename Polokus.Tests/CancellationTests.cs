@@ -8,7 +8,7 @@ using Polokus.Tests.Helpers;
 namespace Polokus.Tests
 {
     [NonParallelizable]
-    public class CancellationTests
+    public class CancellationTests : PolokusTestBase
     {
         const string FailureMsg = "Action should be cancelled but wasn't.";
 

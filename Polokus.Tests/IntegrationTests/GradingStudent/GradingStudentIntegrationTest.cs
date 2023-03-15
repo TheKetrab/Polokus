@@ -4,7 +4,7 @@ using Polokus.Tests.Helpers;
 
 namespace Polokus.Tests.IntegrationTests.GradingStudent
 {
-    public class GradingStudentIntegrationTest
+    public class GradingStudentIntegrationTest : PolokusTestBase
     {
         private static string? _filePath;
         public static string FilePath => _filePath ??= Path.GetTempFileName();

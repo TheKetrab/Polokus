@@ -5,7 +5,7 @@ using Polokus.Tests.Helpers;
 
 namespace Polokus.Tests.NodeHandlersTests
 {
-    public class ScriptTaskTests
+    public class ScriptTaskTests : PolokusTestBase
     {
         [Test]
         public async Task ScriptTaskNodeHandler_1()
