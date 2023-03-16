@@ -192,7 +192,8 @@ namespace Polokus.Core.Execution
                     ActiveTasksManager.RemoveRunningTask(taskId);
                     break;
                 case ProcessResultState.Cancellation:
-                    break; // do nothing, action will be handled by ActiveTasksManager
+                    ActiveTasksManager.RemoveRunningTask(taskId);
+                    break;
                 default:
                     throw new Exception($"Unhandled state of resultInfo: {resultInfo.State}");
 

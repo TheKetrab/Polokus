@@ -10,6 +10,8 @@ namespace Polokus.Core.Execution.NodeHandlers.Abstract
     public abstract class JoiningHandler<T> : NodeHandler<T> where T : tFlowNode
     {
         private object _mutex = new object();
+        private bool _everybodyInvokedOneTime = false;
+        private bool _firstTime = true;
 
         protected List<string> invokedBy = new();
 
@@ -27,6 +29,21 @@ namespace Polokus.Core.Execution.NodeHandlers.Abstract
 
             lock (_mutex)
             {
+                if (_firstTime)
+                {
+                    // on first visit create a cycle time waiter that will try to invoke this gate
+                    // (because maybe this gate will never be reached by all sequences!)
+                    _firstTime = false;
+                    var waiter = new NodeHandlerWaiter(ProcessInstance, Node);
+                    Workflow.TimeManager.RegisterWaiterNotCrone("1s", waiter, false, () =>
+                    {
+                        if (_everybodyInvokedOneTime)
+                        {
+                            Workflow.TimeManager.RemoveWaiter(waiter.Id);
+                        }
+                    });
+                }
+
                 if (caller != null)
                 {
                     invokedBy.Add(caller.Id);
@@ -34,6 +51,19 @@ namespace Polokus.Core.Execution.NodeHandlers.Abstract
 
                 bool everybodyInvoked = !ProcessInstance
                     .ExistsAnotherTaskAbleToCallTarget(this.Node, invokedBy);
+
+                if (_everybodyInvokedOneTime)
+                {
+                    // cancel this execution of nodehandler, because it comes
+                    // from separate thread and was already done by other thread
+                    CancellationTokenSource.Cancel();
+                    return Task.FromResult(true);
+                }
+
+                if (everybodyInvoked)
+                {
+                    _everybodyInvokedOneTime = true;
+                }
 
                 return Task.FromResult(everybodyInvoked);
             }

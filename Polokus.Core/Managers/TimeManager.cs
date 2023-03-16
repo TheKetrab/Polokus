@@ -72,9 +72,17 @@ namespace Polokus.Core.Managers
 
         public void RegisterWaiterNotCrone(string timeString, INodeHandlerWaiter waiter, bool oneTime, Action? continuation = null)
         {
+            RegisterWaiterNotCrone(timeString, waiter, oneTime, false, continuation);
+        }
+
+        private void RegisterWaiterNotCrone(string timeString, INodeHandlerWaiter waiter, bool oneTime, bool invokedAgain, Action ? continuation = null)
+        {
             Task task = new Task(async () =>
             {
-                AddWaiter(waiter.Id, waiter, continuation);
+                if (!invokedAgain)
+                {
+                    AddWaiter(waiter.Id, waiter, continuation);
+                }
                 int waitTime = TimeString.ParseToMiliseconds(timeString);
                 await Task.Delay(waitTime);
                 if (!IsWaiterCancelled(waiter.Id))
@@ -89,7 +97,10 @@ namespace Polokus.Core.Managers
                 }
                 else
                 {
-                    RegisterWaiterNotCrone(timeString, waiter, oneTime, continuation);
+                    if (!IsWaiterCancelled(waiter.Id))
+                    {
+                        RegisterWaiterNotCrone(timeString, waiter, oneTime, true, continuation);
+                    }
                 }
             });
 
