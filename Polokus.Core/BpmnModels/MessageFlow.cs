@@ -23,7 +23,7 @@ namespace Polokus.Core.BpmnModels
         public MessageFlow(IBpmnProcess sourceProcess, IBpmnProcess targetProcess, tMessageFlow xmlElement)
         {
             XmlElement = xmlElement;
-            Name = xmlElement.name;
+            Name = xmlElement.name ?? "";
             Id = xmlElement.id;
             SourceProcess = sourceProcess;
             TargetProcess = targetProcess;
