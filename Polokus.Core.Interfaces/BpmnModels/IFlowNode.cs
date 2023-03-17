@@ -7,7 +7,14 @@ namespace Polokus.Core.Interfaces.BpmnModels
     /// </summary>
     public interface IFlowNode : INodeCaller
     {
+        /// <summary>
+        /// Name of FlowNode. Points to "name" attribute of XmlElement.
+        /// </summary>
         string Name { get; }
+
+        /// <summary>
+        /// Bpmn process the FlowNode is in.
+        /// </summary>
         IBpmnProcess BpmnProcess { get; }
 
         /// <summary>
@@ -15,9 +22,19 @@ namespace Polokus.Core.Interfaces.BpmnModels
         /// </summary>
         Type XmlType { get; }
 
+        /// <summary>
+        /// Sequences that are incoming edges in directed graph of process.
+        /// </summary>
         ICollection<ISequence> Incoming { get; }
+
+        /// <summary>
+        /// Sequences that are outgoing edges in directed graph of process.
+        /// </summary>
         ICollection<ISequence> Outgoing { get; }
 
+        /// <summary>
+        /// All boundary events attached to this node.
+        /// </summary>
         ICollection<IBoundaryEvent> BoundaryEvents { get; }
 
         /// <summary>

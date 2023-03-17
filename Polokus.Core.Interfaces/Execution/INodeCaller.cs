@@ -5,6 +5,9 @@
     /// </summary>
     public interface INodeCaller
     {
+        /// <summary>
+        /// Id of caller.
+        /// </summary>
         string Id { get; }
     }
 }

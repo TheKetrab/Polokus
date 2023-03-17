@@ -11,13 +11,44 @@ namespace Polokus.Core.Interfaces.Execution
     /// </summary>
     public interface IWorkflow
     {
+        /// <summary>
+        /// Id of workflow.
+        /// </summary>
         string Id { get; }
+
+        /// <summary>
+        /// Parsed definition of bpmn file that the workflow has been created.
+        /// </summary>
         IBpmnWorkflow BpmnWorkflow { get; }
+
+        /// <summary>
+        /// Object that manages time events.
+        /// </summary>
         ITimeManager TimeManager { get; }
+
+        /// <summary>
+        /// Object that manages message events.
+        /// </summary>
         IMessageManager MessageManager { get; }
+
+        /// <summary>
+        /// Object that manages signal events.
+        /// </summary>
         ISignalManager SignalManager { get; }
+
+        /// <summary>
+        /// Master object of the engine.
+        /// </summary>
         IPolokusMaster PolokusMaster { get; }
+
+        /// <summary>
+        /// Factory that provides NodeHandlers for different BPMN elements.
+        /// </summary>
         INodeHandlerFactory NodeHandlerFactory { get; }
+
+        /// <summary>
+        /// Hooks provider of the engine.
+        /// </summary>
         IHooksProvider? HooksProvider { get; }
 
         /// <summary>

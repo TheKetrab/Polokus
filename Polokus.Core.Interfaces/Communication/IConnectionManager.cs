@@ -5,10 +5,14 @@
     /// </summary>
     public interface IConnectionManager
     {
+        /// <summary>
+        /// Information if GUI application is connected (opened).
+        /// </summary>
         bool ClientConnected { get; }
-        void SetLostConnection();
+
+        /// <summary>
+        /// Sets necessary flags so that ClientConnected returns true.
+        /// </summary>
         void SetHaveConnection();
-        void DisableAdversaryTimer();
-        void EnableAdversaryTimer();
     }
 }

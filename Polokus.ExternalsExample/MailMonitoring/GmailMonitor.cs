@@ -3,6 +3,9 @@ using Polokus.Core.Interfaces.Extensibility;
 
 namespace Polokus.ExternalsExample.MailMonitoring
 {
+    /// <summary>
+    /// GMail monitor observes mailing account (if given permissions) and provides some events.
+    /// </summary>
     public class GmailMonitor : IMonitor
     {
         private string? _lastMailId;

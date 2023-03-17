@@ -7,12 +7,39 @@ namespace Polokus.Core.Interfaces.Managers
     /// </summary>
     public interface IStatusManager
     {
+        /// <summary>
+        /// Status of the process instance.
+        /// </summary>
         ProcessStatus Status { get; }
+
+        /// <summary>
+        /// Returns true iff process instance already started.
+        /// </summary>
         bool IsStarted { get; }
+
+        /// <summary>
+        /// Returns true iff process instance was killed by user. 
+        /// </summary>
         bool IsStopped { get; }
+
+        /// <summary>
+        /// Returns true iff process instane is paused (can be resumed).
+        /// </summary>
         bool IsPaused { get; }
+
+        /// <summary>
+        /// Returns true iff process instance finished (not necessarily with success).
+        /// </summary>
         bool IsFinished { get; }
+
+        /// <summary>
+        /// Returns true iff process instance is active (any task still runs, or waiter waits).
+        /// </summary>
         bool IsActive { get; }
+
+        /// <summary>
+        /// Returns total time of execution of process instance.
+        /// </summary>
         TimeSpan TotalTime { get; }
 
         /// <summary>

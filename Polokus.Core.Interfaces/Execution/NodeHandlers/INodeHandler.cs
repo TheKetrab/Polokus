@@ -19,8 +19,19 @@ namespace Polokus.Core.Interfaces.Execution.NodeHandlers
         /// </summary>
         IFlowNode Node { get; }
 
+        /// <summary>
+        /// Instance of process that this NodeHandler is attached to.
+        /// </summary>
         IProcessInstance ProcessInstance { get; }
+
+        /// <summary>
+        /// Workflow of process that this NodeHandler is attached to.
+        /// </summary>
         IWorkflow Workflow { get; }
+
+        /// <summary>
+        /// Master object of the engine.
+        /// </summary>
         IPolokusMaster Master { get; }
 
         /// <summary>

@@ -1,5 +1,8 @@
 ﻿namespace Polokus.Core.Interfaces.BpmnModels
 {
+    /// <summary>
+    /// Object that stores information about outgoing and incoming MessageFlows objects.
+    /// </summary>
     public interface IMessageFlowNode : IFlowNode, IMessageCallerNode, IMessageReceiverNode
     {
     }
