@@ -9,7 +9,7 @@
 		<Platforms>x64</Platforms>
 		<CefSharpAnyCpuSupport>true</CefSharpAnyCpuSupport>
 		<ApplicationIcon>Resources\Polokus.ico</ApplicationIcon>
-
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 	</PropertyGroup>
 
   <ItemGroup>
