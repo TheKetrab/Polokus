@@ -227,6 +227,11 @@ namespace Polokus.Core
 
         public void LoadWorkflows()
         {
+            if (!Directory.Exists(Settings.BpmnPath))
+            {
+                Directory.CreateDirectory(Settings.BpmnPath);
+            }
+
             var files = Directory.GetFiles(Settings.BpmnPath);
             foreach (var bpmn in files)
             {
