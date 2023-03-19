@@ -41,7 +41,7 @@ namespace Polokus.Core.Execution
 
 
         public Workflow(IPolokusMaster polokus, IBpmnWorkflow bpmnWorkflow,
-            string id, IHooksProvider? hooksProvider = null)
+            string id, INodeHandlerFactory nhFactory, IHooksProvider? hooksProvider = null)
         {
             TimeManager = new TimeManager(this);
             MessageManager = new MessageManager(this, Settings.MessageListenerPort);
@@ -53,9 +53,6 @@ namespace Polokus.Core.Execution
             Id = id;
 
             HooksProvider = hooksProvider;
-
-            var nhFactory = new NodeHandlerFactory();
-            nhFactory.SetDefaultNodeHandlers();
 
             NodeHandlerFactory = nhFactory;
         }

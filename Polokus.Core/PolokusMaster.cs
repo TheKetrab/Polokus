@@ -1,9 +1,9 @@
 ﻿using Polokus.Core.BpmnModels;
 using Polokus.Core.Communication;
 using Polokus.Core.Execution;
-using Polokus.Core.Extensibility;
 using Polokus.Core.Extensibility.Externals;
 using Polokus.Core.Extensibility.Hooks;
+using Polokus.Core.Factories;
 using Polokus.Core.Helpers;
 using Polokus.Core.Interfaces.Communication;
 using Polokus.Core.Interfaces.Managers;
@@ -17,6 +17,8 @@ namespace Polokus.Core
     {
         internal IDictionary<string, IWorkflow> _workflows
             = new Dictionary<string, IWorkflow>();
+
+        private NodeHandlerFactory _nhFactory;
 
         public IHooksManager HooksManager { get; set; }
 
@@ -101,10 +103,23 @@ namespace Polokus.Core
 
         public PolokusMaster(bool isGUIAppManaged = false)
         {
+            _nhFactory = new NodeHandlerFactory();
+            _nhFactory.SetDefaultNodeHandlers();
+
             HooksManager = new HooksManager(this);
             Externals = ExternalsManager.TryLoadExternals(@".\externals.json");
             if (Externals != null)
             {
+                // ----- Register Service Tasks -----
+                if (Externals.ServiceTasks != null)
+                {
+                    foreach (var st in Externals.ServiceTasks)
+                    {
+                        Type t = ExternalsManager.GetType(st.Assembly, st.ClassName);
+                        _nhFactory.RegisterNodeHandlerForServiceTask(t, st.ServiceTaskName);
+                    }
+                }
+
                 // ----- Register Hooks Providers -----
                 if (Externals.HooksProviders != null)
                 {
@@ -204,7 +219,7 @@ namespace Polokus.Core
             BpmnParser parser = new BpmnParser();
             IBpmnWorkflow bpmnWorkflow = parser.ParseBpmnXml(xmlString);
 
-            var workflow = new Workflow(this, bpmnWorkflow, bpmnWorkflowName, hooksProvider: HooksManager);
+            var workflow = new Workflow(this, bpmnWorkflow, bpmnWorkflowName, _nhFactory, hooksProvider: HooksManager);
             RegisterStarters(workflow);
 
             AddWorkflow(bpmnWorkflowName, workflow);

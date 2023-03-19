@@ -10,7 +10,8 @@ namespace Polokus.Core.Execution
     public class ActiveTasksManager : IActiveTasksManager
     {
         private int _cnt = 0;
-        private Dictionary<int, Tuple<CancellationTokenSource, INodeHandler>> ActiveTasks = new(); // taskId;<cts,worker>
+        private object _mutex = new object();
+        private Dictionary<int, Tuple<CancellationTokenSource, INodeHandler>> _activeTasks = new(); // taskId;<cts,worker>
         public IProcessInstance ProcessInstance { get; }
 
         public ActiveTasksManager(ProcessInstance processInstance)
@@ -20,73 +21,100 @@ namespace Polokus.Core.Execution
 
         public void CancellNodeHandler(INodeHandler nh)
         {
-            var toCancell = ActiveTasks.FirstOrDefault(x => x.Value.Item2 == nh);
-            if (toCancell.Value != null)
+            lock (_mutex)
             {
-                ActiveTasks.Remove(toCancell.Key);
-
-                toCancell.Value.Item1.Cancel();
-                if (nh is ISubprocessingNodeHandler spnh && spnh.SubProcessInstance != null)
+                var toCancell = _activeTasks.FirstOrDefault(x => x.Value.Item2 == nh);
+                if (toCancell.Value != null)
                 {
-                    spnh.SubProcessInstance.StatusManager.Stop();
-                    spnh.SubProcessInstance.HooksProvider?.OnProcessFinished(
-                        spnh.SubProcessInstance.Workflow.Id, spnh.SubProcessInstance.Id, "cancell");
+                    _activeTasks.Remove(toCancell.Key);
+
+                    toCancell.Value.Item1.Cancel();
+                    if (nh is ISubprocessingNodeHandler spnh && spnh.SubProcessInstance != null)
+                    {
+                        spnh.SubProcessInstance.StatusManager.Stop();
+                        spnh.SubProcessInstance.HooksProvider?.OnProcessFinished(
+                            spnh.SubProcessInstance.Workflow.Id, spnh.SubProcessInstance.Id, "cancell");
+
+                    }
 
                 }
-
             }
         }
 
         public bool AnyRunning()
         {
-            return ActiveTasks.Any();
+            lock (_mutex)
+            {
+                return _activeTasks.Any();
+            }
         }
 
         public int Count()
         {
-            return ActiveTasks.Count;
+            lock (_mutex)
+            {
+                return _activeTasks.Count;
+            }
         }
 
         public Tuple<int, CancellationTokenSource> AddNewTask(INodeHandler nh)
         {
-            int taskId = _cnt++;
-            CancellationTokenSource cts = new CancellationTokenSource();
+            lock (_mutex)
+            {
+                int taskId = _cnt++;
+                CancellationTokenSource cts = new CancellationTokenSource();
 
-            ActiveTasks.Add(taskId, Tuple.Create(cts, nh)); // TODO to bardzo wazne zeby to nie byl null
-            ProcessInstance.HooksProvider?.OnTasksChanged(ProcessInstance.Workflow.Id, ProcessInstance.Id);
-            return Tuple.Create(taskId, cts);
+                _activeTasks.Add(taskId, Tuple.Create(cts, nh)); // TODO to bardzo wazne zeby to nie byl null
+                ProcessInstance.HooksProvider?.OnTasksChanged(ProcessInstance.Workflow.Id, ProcessInstance.Id);
+                return Tuple.Create(taskId, cts);
+            }
         }
 
         public void AssignTaskToAnotherNodeHandler(int taskId, INodeHandler nh)
         {
-            var ctoken = ActiveTasks[taskId].Item1;
-            ActiveTasks[taskId] = Tuple.Create(ctoken, nh);
-            nh.CancellationTokenSource = ctoken;
+            lock (_mutex)
+            {
+                var ctoken = _activeTasks[taskId].Item1;
+                _activeTasks[taskId] = Tuple.Create(ctoken, nh);
+                nh.CancellationTokenSource = ctoken;
+            }
 
         }
 
         public void RemoveRunningTask(int taskId)
         {
-            ActiveTasks.Remove(taskId);
-            ProcessInstance.HooksProvider?.OnTasksChanged(ProcessInstance.Workflow.Id, ProcessInstance.Id);
+            lock (_mutex)
+            {
+                _activeTasks.Remove(taskId);
+                ProcessInstance.HooksProvider?.OnTasksChanged(ProcessInstance.Workflow.Id, ProcessInstance.Id);
+            }
         }
 
         public void Stop()
         {
-            ActiveTasks.Values.ForEach(x => x.Item1.Cancel(true));
-            ActiveTasks.Clear();
-            ProcessInstance.AvailableNodeHandlers.Clear();
-            ProcessInstance.HooksProvider?.OnTasksChanged(ProcessInstance.Workflow.Id, ProcessInstance.Id);
+            lock (_mutex)
+            {
+                _activeTasks.Values.ForEach(x => x.Item1.Cancel(true));
+                _activeTasks.Clear();
+                ProcessInstance.AvailableNodeHandlers.Clear();
+                ProcessInstance.HooksProvider?.OnTasksChanged(ProcessInstance.Workflow.Id, ProcessInstance.Id);
+            }
         }
 
-        public IEnumerable<INodeHandler> GetNodeHandlers()
+        public IList<INodeHandler> GetNodeHandlers()
         {
-            return ActiveTasks.Values.Select(x => x.Item2);
+            lock (_mutex)
+            {
+                return _activeTasks.Values.Select(x => x.Item2).ToList();
+            }
         }
 
         public string[] Dump()
         {
-            return ActiveTasks.Values.Select(x => x.Item2.Node.Id).ToArray();
+            lock (_mutex)
+            {
+                return _activeTasks.Values.Select(x => x.Item2.Node.Id).ToArray();
+            }
         }
 
     }

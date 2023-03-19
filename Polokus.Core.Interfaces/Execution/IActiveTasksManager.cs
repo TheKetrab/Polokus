@@ -29,7 +29,7 @@ namespace Polokus.Core.Interfaces.Execution
         /// <summary>
         /// Returns list of NodeHandlers that are active.
         /// </summary>
-        IEnumerable<INodeHandler> GetNodeHandlers();
+        IList<INodeHandler> GetNodeHandlers();
 
         /// <summary>
         /// If NodeHandler is active, it removes concrete active task and cancell NodeHandler.

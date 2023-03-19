@@ -15,6 +15,17 @@ namespace Polokus.ExternalsExample.FileMonitoring
         public FileMonitor(IPolokusMaster master, string path)
         {
             _master = master;
+
+            if (path.StartsWith('.'))
+            {
+                path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
+            }
+
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
             _path = path;
 
             _watcher = new FileSystemWatcher(_path);

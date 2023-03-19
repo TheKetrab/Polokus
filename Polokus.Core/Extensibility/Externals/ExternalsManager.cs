@@ -64,14 +64,9 @@ namespace Polokus.Core.Extensibility.Externals
             return Instantiate<IMonitor>(externalMonitor.Assembly, externalMonitor.ClassName, args);
         }
 
-        private static T Instantiate<T>(string assembly, string className, object?[]? arguments = null)
+        private static T Instantiate<T>(string assemblyPath, string className, object?[]? arguments = null)
         {
-            var asm = Assembly.LoadFile(assembly);
-            var type = asm.GetType(className);
-            if (type == null)
-            {
-                throw new Exception($"Cannot find type {className} in assembly: {assembly}");
-            }
+            Type type = GetType(assemblyPath, className);
 
             object? obj = Activator.CreateInstance(type, arguments);
             if (obj == null)
@@ -86,6 +81,23 @@ namespace Polokus.Core.Extensibility.Externals
             {
                 throw new Exception($"Unable to cast object of type {obj?.GetType().FullName} to {typeof(T).FullName}");
             }
+        }
+
+        public static Type GetType(string assemblyPath, string className)
+        {
+            if (assemblyPath.StartsWith("./"))
+            {
+                assemblyPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, assemblyPath);
+            }
+
+            var asm = Assembly.LoadFile(assemblyPath);
+            var type = asm.GetType(className);
+            if (type == null)
+            {
+                throw new Exception($"Cannot find type {className} in assembly: {assemblyPath}");
+            }
+
+            return type;
         }
 
 
