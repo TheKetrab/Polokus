@@ -51,7 +51,7 @@ namespace Polokus.Core.Execution.NodeHandlers
         {
             if (ErrorEndEvent)
             {
-                throw new Exception();
+                throw new Exception(); // TODO valid type of exception
             }
 
             else if (TerminateEndEvent)

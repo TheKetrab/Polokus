@@ -38,7 +38,8 @@ namespace Polokus.Tests.NodeHandlersTests
             var master = TestHelper.ReadBpmn(Resources.TimerEvent2,
                 out IWorkflow wf, out IProcessInstance pi, out IFlowNode startNode);
 
-            var visitor = new VisitorHooks(master, VisitTime.BeforeExecute | VisitTime.MarkNameForSpecialNodes);
+            var visitor = new VisitorHooks(master,
+                VisitTime.BeforeExecute | VisitTime.MarkNameForSpecialNodes | VisitTime.IgnoreWhenWaiterIsCalling);
             master.HooksManager.RegisterHooksProvider(visitor);
 
             // Act
@@ -46,9 +47,9 @@ namespace Polokus.Tests.NodeHandlersTests
 
             // Assert
             CustomAsserts.MatchAnyRegex(visitor.GetResult(),
-                "start;par1;taskA;par2;tIntermediateCatchEvent;tIntermediateCatchEventtaskB;par2;end",
-                "start;par1;taskA;tIntermediateCatchEvent;par2;tIntermediateCatchEvent;taskB;par2;end",
-                "start;par1;tIntermediateCatchEvent;taskA;par2;tIntermediateCatchEvent;taskB;par2;end"
+                "start;par1;taskA;par2;tIntermediateCatchEvent;taskB;par2;end",
+                "start;par1;taskA;tIntermediateCatchEvent;par2;taskB;par2;end",
+                "start;par1;tIntermediateCatchEvent;taskA;par2;taskB;par2;end"
                 );
 
         }

@@ -37,9 +37,12 @@ namespace Polokus.Core.Execution.NodeHandlers.Abstract
                     var waiter = new NodeHandlerWaiter(ProcessInstance, Node);
                     Workflow.TimeManager.RegisterWaiterNotCrone("1s", waiter, false, () =>
                     {
-                        if (_everybodyInvokedOneTime)
+                        lock (_mutex)
                         {
-                            Workflow.TimeManager.RemoveWaiter(waiter.Id);
+                            if (_everybodyInvokedOneTime)
+                            {
+                                Workflow.TimeManager.RemoveWaiter(waiter.Id);
+                            }
                         }
                     });
                 }
@@ -52,6 +55,11 @@ namespace Polokus.Core.Execution.NodeHandlers.Abstract
                 bool everybodyInvoked = !ProcessInstance
                     .ExistsAnotherTaskAbleToCallTarget(this.Node, invokedBy);
 
+                if (!everybodyInvoked)
+                {
+                    return Task.FromResult(false);
+                }
+
                 if (_everybodyInvokedOneTime)
                 {
                     // cancel this execution of nodehandler, because it comes
@@ -60,12 +68,8 @@ namespace Polokus.Core.Execution.NodeHandlers.Abstract
                     return Task.FromResult(true);
                 }
 
-                if (everybodyInvoked)
-                {
-                    _everybodyInvokedOneTime = true;
-                }
-
-                return Task.FromResult(everybodyInvoked);
+                _everybodyInvokedOneTime = true;
+                return Task.FromResult(true);
             }
         }
     }

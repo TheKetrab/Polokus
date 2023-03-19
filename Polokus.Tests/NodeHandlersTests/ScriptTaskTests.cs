@@ -1,4 +1,5 @@
 ﻿using Polokus.Core.Extensibility.Hooks;
+using Polokus.Core.Interfaces;
 using Polokus.Core.Interfaces.BpmnModels;
 using Polokus.Core.Interfaces.Execution;
 using Polokus.Tests.Helpers;
@@ -7,10 +8,12 @@ namespace Polokus.Tests.NodeHandlersTests
 {
     public class ScriptTaskTests : PolokusTestBase
     {
+
         [Test]
         public async Task ScriptTaskNodeHandler_1()
         {
             // Arrange
+            Settings.ScriptingLanguage = "CS";
             var master = TestHelper.ReadBpmn(Resources.ScriptTask1,
                 out IWorkflow wf, out IProcessInstance pi, out IFlowNode startNode);
 

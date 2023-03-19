@@ -11,8 +11,9 @@ namespace Polokus.Core.Extensibility.Hooks
 
         MarkNameForSpecialNodes = 1 << 4,
         PutNameInParenthesis = 1 << 5,
+        IgnoreWhenWaiterIsCalling = 1 << 6,
 
-        StartNewSequence = 1 << 6,
+        StartNewSequence = 1 << 7,
     }
 
     public class VisitorHooks : EmptyHooksProvider
@@ -98,6 +99,11 @@ namespace Polokus.Core.Extensibility.Hooks
 
         public override void BeforeExecuteNode(string wfId, string piId, string nodeId, int taskId, string? nodeCaller)
         {
+            if (FitWithMask(VisitTime.IgnoreWhenWaiterIsCalling) && nodeCaller?.StartsWith("Waiter") == true)
+            {
+                return;
+            }
+
             LogActionSafe(GetFlowNode(wfId, piId, nodeId), VisitTime.BeforeExecute);
         }
 

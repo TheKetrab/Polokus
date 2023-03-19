@@ -1,4 +1,6 @@
-﻿namespace Polokus.Core.Execution.Scripting
+﻿using Polokus.Core.Helpers;
+
+namespace Polokus.Core.Execution.Scripting
 {
     public class ScriptVariables : IScriptVariables
     {
@@ -36,12 +38,15 @@
         {
             lock (_lock)
             {
-                if (globals.ContainsKey(variable) && globals[variable] is T typedVal)
+                try
                 {
-                    return typedVal;
+                    return GetValue<T>(variable);
+                }
+                catch (Exception) // todo better exception type
+                {
+                    return default(T);
                 }
 
-                return default(T);
             }
         }
 
@@ -70,6 +75,10 @@
                     if (globals[variable] is T typedVal)
                     {
                         return typedVal;
+                    }
+                    else if (TypeHelper.IsNumeric(globals[variable].GetType()))
+                    {
+                        return (T)globals[variable];
                     }
 
                     throw new Exception($"Variable {variable} is of type {globals[variable].GetType().FullName} but should be {typeof(T).FullName}");

@@ -1,4 +1,5 @@
 ﻿using Polokus.Core.Extensibility.Hooks;
+using Polokus.Core.Interfaces;
 using Polokus.Core.Interfaces.BpmnModels;
 using Polokus.Core.Interfaces.Execution;
 using Polokus.Core.Interfaces.Execution.NodeHandlers;
@@ -27,6 +28,7 @@ namespace Polokus.Tests.NodeHandlersTests
         public async Task DefaultServiceTask()
         {
             // Arrange
+            Settings.ScriptingLanguage = "CS";
             var master = TestHelper.ReadBpmn(Resources.ServiceTask1,
                 out IWorkflow wf, out IProcessInstance pi, out IFlowNode startNode);
 

@@ -99,12 +99,10 @@ namespace Polokus.Core.Execution
         /// <param name="callers">Nodes that already called target.</param>
         public bool ExistsAnotherTaskAbleToCallTarget(IFlowNode target, List<string> callers)
         {
-            var activeNodes = ActiveTasksManager.GetNodeHandlers().Select(nh => nh.Node);
-            var nodesFromWaiters = Waiters.Select(x => x.NodeToCall);
+            var activeNodes = ActiveTasksManager.GetNodeHandlers().ToList().Select(nh => nh.Node).ToList();
+            var nodesFromWaiters = Waiters.ToList().Select(x => x.NodeToCall).ToList();
 
-            var potentialCallers = activeNodes.Concat(nodesFromWaiters);
-
-            // TODO: unit test with waiter
+            var potentialCallers = activeNodes.Concat(nodesFromWaiters).ToList();
 
             foreach (var node in potentialCallers)
             {
@@ -169,6 +167,11 @@ namespace Polokus.Core.Execution
             {
                 HandleExecutionResult(node, executionResult, taskId);
             }
+            if (executionResult.State == ProcessResultState.Success)
+            {
+                bool forceAllNewSequences = (executionResult.Message == "forceAllNewSequences");
+                RunFurtherNodes(node, taskId, executionResult.SequencesToInvoke!.ToArray(), forceAllNewSequences);
+            }
         }
 
         public void HandleExecutionResult(IFlowNode node, IProcessResultInfo resultInfo, int taskId)
@@ -178,8 +181,6 @@ namespace Polokus.Core.Execution
                 case ProcessResultState.Success:
                     HooksProvider?.AfterExecuteNodeSuccess(Workflow.Id, Id, node.Id, taskId);
                     AvailableNodeHandlers.Remove(node.Id);
-                    bool forceAllNewSequences = (resultInfo.Message == "forceAllNewSequences");
-                    RunFurtherNodes(node, taskId, resultInfo.SequencesToInvoke!.ToArray(), forceAllNewSequences);
                     break;
                 case ProcessResultState.Failure:
                     this.FailedExecutionNodeIds.Add(node.Id);
@@ -203,7 +204,36 @@ namespace Polokus.Core.Execution
         public void StartNewSequence(IFlowNode firstNode, INodeCaller? caller)
         {
             HooksProvider?.BeforeStartNewSequence(Workflow.Id, Id, firstNode.Id, caller?.Id);
-            var newTask = ActiveTasksManager.AddNewTask(GetNodeHandlerForNode(firstNode));
+
+            INodeHandler nodeHandlerForNode;
+            if (caller != null && caller is NodeHandlerWaiter)
+            {
+                if (firstNode is BoundaryEvent)
+                {
+                    // Waiters can create NodeHandlers only for coundary events!
+                    nodeHandlerForNode = GetNodeHandlerForNode(firstNode);
+                }
+                else
+                {
+                    var nh = GetNodeHandlerForNodeIfExists(firstNode);
+                    if (nh == null)
+                    {
+                        // Waiters should not create NodeHandlers. If NodeHandler for this node does not exist
+                        // it means that the waiter is an 'orphan' and will be deleted soon.
+                        // So do not start a sequence!
+                        return;
+                    }
+
+                    nodeHandlerForNode = nh;
+                }
+
+            }
+            else
+            {
+                nodeHandlerForNode = GetNodeHandlerForNode(firstNode);
+            }
+
+            var newTask = ActiveTasksManager.AddNewTask(nodeHandlerForNode);
             int taskId = newTask.Item1;
             Task task = new Task(() => ExecuteNode(firstNode, taskId, caller), newTask.Item2.Token);
             task.Start();

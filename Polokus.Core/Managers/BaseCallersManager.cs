@@ -22,6 +22,11 @@ namespace Polokus.Core.Managers
 
         protected void AddWaiter(string waiterId, INodeHandlerWaiter waiter, Action? continuation = null)
         {
+            if (_waiters.ContainsKey(waiterId))
+            {
+                return;
+            }
+
             _waiters.Add(waiterId, Tuple.Create(waiter, continuation));
             Workflow.HooksProvider?.OnCallerChanged(
                 waiterId, nameof(CallerChangedType.WaiterInserted));
