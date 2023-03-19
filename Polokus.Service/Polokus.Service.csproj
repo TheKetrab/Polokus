@@ -37,6 +37,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Polokus.Core.Interfaces\Polokus.Core.Interfaces.csproj" />
     <ProjectReference Include="..\Polokus.Core\Polokus.Core.csproj" />
+    <ProjectReference Include="..\Polokus.ExternalsExample\Polokus.ExternalsExample.csproj" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

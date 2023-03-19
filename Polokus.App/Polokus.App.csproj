@@ -12,7 +12,15 @@
         <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 	</PropertyGroup>
 
-  <ItemGroup>
+	<PropertyGroup Condition="'$(PlatformTarget)' == 'x64'">
+		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(PlatformTarget)' == 'x86'">
+		<RuntimeIdentifier>win-x86</RuntimeIdentifier>
+	</PropertyGroup>
+
+	<ItemGroup>
     <None Remove="Communication\Protos\hooks.proto" />
     <None Remove="Fonts\segmdl2.ttf" />
   </ItemGroup>
@@ -36,6 +44,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Polokus.Core.Interfaces\Polokus.Core.Interfaces.csproj" />
     <ProjectReference Include="..\Polokus.Core\Polokus.Core.csproj" />
+    <ProjectReference Include="..\Polokus.ExternalsExample\Polokus.ExternalsExample.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Forms\UserTaskDialog.cs">
