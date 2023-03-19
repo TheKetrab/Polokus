@@ -10,7 +10,7 @@ namespace Polokus.ExternalsExample
 
         public override Task Run()
         {
-            const string path = "./mycustomservice.txt";
+            const string path = "./Examples/mycustomservice.txt";
             using (var fs = File.OpenWrite(path))
             {
                 using (var writer = new StreamWriter(fs))

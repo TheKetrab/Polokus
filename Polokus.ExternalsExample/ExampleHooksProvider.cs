@@ -6,7 +6,7 @@ namespace Polokus.ExternalsExample
     {
         private static object _lock = new object();
 
-        private string logPath = "./exampleHooksProviderLog.log";
+        private string logPath = "./Examples/exampleHooksProviderLog.log";
         public override void AfterExecuteNodeSuccess(string wfId, string piId, string nodeId, int taskId)
         {
             lock (_lock)
