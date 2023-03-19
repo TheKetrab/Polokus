@@ -57,7 +57,7 @@
     </bpmn:task>
     <bpmn:sequenceFlow id="Flow_1770ic8" sourceRef="Event_06gc1b2" targetRef="Activity_0f7jw1l" />
     <bpmn:sequenceFlow id="Flow_0uzoggk" sourceRef="Activity_0f7jw1l" targetRef="Event_1eige5j" />
-    <bpmn:intermediateCatchEvent id="Event_1eige5j" name="10s">
+    <bpmn:intermediateCatchEvent id="Event_1eige5j" name="4s">
       <bpmn:incoming>Flow_0uzoggk</bpmn:incoming>
       <bpmn:outgoing>Flow_1gicioy</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_1gpq111" />

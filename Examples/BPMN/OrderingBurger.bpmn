@@ -38,7 +38,7 @@
       <bpmn:incoming>Flow_02dtmdy</bpmn:incoming>
       <bpmn:outgoing>Flow_0zr91aj</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:intermediateCatchEvent id="Event_0durufm" name="10s">
+    <bpmn:intermediateCatchEvent id="Event_0durufm" name="5s">
       <bpmn:incoming>Flow_0d52hht</bpmn:incoming>
       <bpmn:outgoing>Flow_0irlqma</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_1utxsxr" />
