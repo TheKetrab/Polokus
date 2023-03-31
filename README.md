@@ -6,7 +6,7 @@ This project focuses on creating a simple engine that processes business process
 
 # Installation
 
-Download link $\rightarrow$ **soon!**
+Download link $\rightarrow$ <a href="https://drive.google.com/file/d/1kbfsfphMDqDSdNvBn4EtgX2bdQLnw-KS/view?usp=share_link">Click!</a>
 
 - Download and run an installer
 - Follow the installation process
